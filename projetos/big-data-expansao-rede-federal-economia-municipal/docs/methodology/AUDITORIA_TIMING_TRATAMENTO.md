@@ -1,189 +1,116 @@
 # Auditoria de Timing do Tratamento
 
-## 1. Status e escopo
+## Status atual: auditoria reproduzível dos Parquets processados
 
-Auditoria empírica do timing do tratamento ("primeira presença federal
-EPT observada no Censo Escolar"), conforme
-[CONTRATO_CAUSAL.md](CONTRATO_CAUSAL.md). Nenhum ATT foi estimado, nenhum
-estimador staggered foi executado, o matching não foi alterado e o
-contrato causal não foi tocado.
+Esta é a auditoria operacional do timing observável para os **147 municípios
+oficiais** da Expansão Fase II. Ela é executada por
+`src/auditoria_timing_tratamento.py`, usa exclusivamente os dois Parquets
+processados abaixo e grava uma linha por código IBGE em
+`outputs/diagnostics/auditoria_timing_tratamento.csv`.
 
-**Resultado principal desta execução: a auditoria não pôde ser realizada
-sobre dados observados, porque nenhuma fonte tabular de tratamento,
-município, matching ou Censo Escolar existe neste repositório.**
-
-Confirmado por varredura completa do projeto (excluindo `.venv/` e
-`.git/`): `data/raw`, `data/interim` e `data/processed` contêm apenas
-`.gitkeep`; `src/` e `tests/` também continham apenas `.gitkeep` antes
-desta execução. Isso é consistente com o próprio
-[RECUPERACAO_CONTEXTO_FREEZE.md](../freeze/RECUPERACAO_CONTEXTO_FREEZE.md),
-que registra que a pasta do projeto exploratório original não estava
-versionada no Git e foi removida em uma reorganização do repositório —
-ou seja, os números do funil (144 → 119 → 53 → 47) e os resultados de
-matching/pré-tendências existem **apenas como texto** nos documentos
-congelados, sem tabela subjacente reproduzível neste repositório.
-
-## 2. O que foi reutilizado / criado
-
-- Reutilizado: nada — não havia rotina, dataset ou schema no projeto.
-- Criado: `src/auditoria_timing_tratamento.py` (varre `data/raw|interim|
-  processed` por fontes tabulares candidatas relacionadas a tratamento/
-  município/matching/Censo Escolar; se nenhuma existir, gera a tabela de
-  auditoria apenas com o cabeçalho especificado, sem inventar linhas).
-- Criado: `outputs/diagnostics/auditoria_timing_tratamento.csv` (saída do
-  script; 0 linhas de dado).
-- Criado: este relatório.
-
-## 3. Auditoria mínima obrigatória — item a item
-
-### 3.1 Identificação da fonte tabular
-
-| Campo exigido | Fonte tabular localizada |
+| Fonte | Uso |
 |---|---|
-| código IBGE do município | **NENHUMA** |
-| ano | **NENHUMA** |
-| presença federal EPT | **NENHUMA** |
-| primeiro ano observado | **NENHUMA** |
-| coorte de tratamento | **NENHUMA** |
-| pertencimento à Fase II | **NENHUMA** |
-| common support | **NENHUMA** |
-| amostra core | **NENHUMA** |
+| `data/processed/fase_ii_municipios.parquet` | Cadastro oficial: código IBGE, município e UF dos 147 municípios |
+| `data/processed/painel_presenca_federal_ept_fase_ii_2007_2019.parquet` | Série município-ano 2007–2019 e flags de presença observada |
 
-Fonte ausente, especificamente: não há em `data/raw`, `data/interim` nem
-`data/processed` nenhum arquivo `.csv`, `.parquet`, `.xlsx`, `.json` ou
-`.duckdb` com dados do Censo Escolar, do CEMPRE, de códigos municipais
-IBGE, de resultado de matching ou de classificação de coortes. Os únicos
-registros existentes são as afirmações em prosa no
-PROTOCOLO_PRE_ANALISE.md e no RECUPERACAO_CONTEXTO_FREEZE.md.
+O script valida, antes da escrita, 147 códigos oficiais únicos e não nulos,
+cobertura completa de 2007–2019, uma linha por município-ano, igualdade entre
+as chaves do cadastro e do painel, flags booleanas e coerência dos
+diagnósticos temporais. Não lê ZIPs brutos, não faz matching e não atribui um
+tratamento causal definitivo.
 
-### 3.2 Validações (unicidade, cobertura, códigos, estabilidade, etc.)
+### Definições observáveis separadas
 
-Todas as validações abaixo são **DADOS_INSUFICIENTES** — não executáveis
-sem a fonte tabular da seção 3.1:
+As três definições não são intercambiáveis:
 
-- Unicidade de município-ano.
-- Cobertura temporal 2007–2019.
-- Códigos municipais ausentes, inválidos ou duplicados.
-- Estabilidade do primeiro ano de tratamento.
-- Municípios que aparecem tratados e depois deixam de aparecer
-  (flag_reversao_tratamento).
-- Presença federal anterior ao ano atribuído como tratamento
-  (flag_presenca_anterior).
-- Lacunas de observação próximas ao primeiro ano (flag_lacuna_timing).
-- Coerência das coortes 2010, 2011, 2012 e 2013.
-- Casos especiais de Sobral/CE e Campinas/SP — os únicos dados
-  disponíveis sobre esses dois casos são as observações qualitativas já
-  registradas em PROTOCOLO_PRE_ANALISE.md (seção 7), sem data municipal
-  verificável em fonte tabular.
+| Definição | Flag do painel | Significado |
+|---|---|---|
+| presença federal | `fl_presenca_federal` | Ao menos uma escola federal observada |
+| presença federal com EPT | `fl_presenca_federal_ept` | Ao menos uma escola federal com oferta de EPT, independentemente de estar ativa |
+| presença federal com EPT ativa | `fl_presenca_federal_ept_ativa` | Ao menos uma escola federal em atividade com oferta de EPT |
 
-### 3.3 Reconciliação do funil 144 → 119 → 53 → 47
+Para cada uma, a saída registra número de anos presentes, primeiro e último
+ano, censura à esquerda, interrupções internas, número de interrupções e
+trajetória monotônica. Há censura à esquerda quando a presença já é verdadeira
+em 2007: o início pode ser anterior ao primeiro ano observável. Uma interrupção
+é um bloco contíguo de anos falsos entre o primeiro e o último ano verdadeiros.
+Uma trajetória é monotônica somente se, após o primeiro verdadeiro, permanece
+verdadeira até 2019; nenhuma lacuna é corrigida silenciosamente.
 
-**Não reconciliável nesta execução.** Os quatro números existem somente
-como texto nos documentos congelados:
+Para cada primeiro ano não nulo, `n_pre = primeiro_ano - 2007` e
+`n_pos = 2019 - primeiro_ano`; o próprio ano de primeira presença não integra
+nenhuma das duas janelas. Para EPT federal ativa, a auditoria também registra
+o primeiro ano da sequência final contínua até 2019. Esse campo é diagnóstico
+e não substitui automaticamente o primeiro ano observado.
 
-- 144 municípios Fase II (RECUPERACAO_CONTEXTO_FREEZE.md, "População Fase
-  II").
-- 119 tratados 2010–2013 = 37+65+14+3 (mesma seção — a soma aritmética
-  bate, mas não há lista de códigos municipais para conferir contra os
-  144).
-- 53 tratados em common support (mesmo documento, seção "Common
-  support").
-- 47 pares nas coortes 2010–2011 = 17+30 (seção "Amostra causal core
-  candidata").
+### Resultados reproduzidos na execução atual
 
-Sem uma tabela município-ano subjacente, não é possível confirmar que
-os 119 são de fato um subconjunto dos 144, que os 53 são de fato um
-subconjunto dos 119, ou que os 47 são de fato um subconjunto dos 53.
-A aritmética interna de cada etapa (37+65+14+3=119; 17+30=47) está
-correta, mas isso comprova apenas consistência textual, não consistência
-observacional.
+| Primeiro ano observado | Presença federal | Federal com EPT | Federal com EPT ativa |
+|---:|---:|---:|---:|
+| 2007 | 6 | 2 | 2 |
+| 2008 | 2 | 3 | 3 |
+| 2009 | 22 | 23 | 23 |
+| 2010 | 36 | 32 | 32 |
+| 2011 | 66 | 69 | 69 |
+| 2012 | 14 | 14 | 14 |
+| 2013 | 1 | 3 | 3 |
+| 2016 | 0 | 1 | 1 |
 
-**Atenção sobre "47 pares"**: o protocolo (RECUPERACAO_CONTEXTO_FREEZE.md,
-"Matching exploratório") registra 53 tratados matched, **51 controles
-únicos** e ESS dos controles ≈ 49,3 — ou seja, o próprio documento já
-indica que o matching foi feito com reposição e que pode haver controle
-repetido entre pares (ESS < número de tratados). Para a amostra core de
-47, não existe fonte que informe se os controles associados aos 47
-tratados são distintos entre si. As colunas `controle_utilizado` e
-`controle_repetido` da tabela de auditoria não puderam ser preenchidas
-por essa mesma razão. **Não deve ser assumido que existem 47 controles
-distintos.**
+Em EPT federal ativa, há 2 municípios censurados à esquerda, 143 trajetórias
+monotônicas e 4 intermitentes: Jequié/BA (`2918001`), Montes Claros/MG
+(`3143302`), Nossa Senhora da Glória/SE (`2804508`) e Piracicaba/SP
+(`3538709`). As quatro trajetórias têm uma interrupção interna; os primeiros
+anos persistentes são, respectivamente, 2018, 2011, 2018 e 2018.
 
-## 4. Regra de classificação (definida para uso futuro, não aplicada a nenhum município)
+Com o primeiro ano de EPT federal ativa, 142 municípios atendem à regra de ao
+menos 2 anos pré e 3 pós; 119 atendem à regra de ao menos 3 pré e 3 pós. A
+coorte observável 2010–2013 soma 118 municípios (`32+69+14+3`) e 2010–2011
+soma 101. Em particular, 2009 tem somente 2 anos pré e não é elegível na
+regra 3/3.
 
-Regra explícita a ser aplicada quando a fonte tabular existir:
+### Reconciliações e limitações
 
-- `timing_consistente`: primeiro ano de presença estável entre
-  reprocessamentos, sem presença federal observada em ano anterior ao
-  atribuído, sem lacuna de observação nos 2 anos anteriores ao primeiro
-  ano, e sem reversão do tratamento (ano de presença não pode "desaparecer"
-  em anos posteriores).
-- `timing_com_alerta`: um dos itens acima falha de forma limitada (ex.:
-  uma lacuna isolada de 1 ano na série, ou pequena instabilidade entre
-  bases) mas o primeiro ano permanece o candidato mais plausível.
-- `timing_inconsistente`: presença federal observada antes do ano
-  atribuído como tratamento, reversão de tratamento sem explicação
-  documentada, ou múltiplos primeiros anos conflitantes entre fontes.
-- `dados_insuficientes`: não há série de Censo Escolar (ou equivalente)
-  para o município permitindo qualquer uma das checagens acima.
+- **150 → 147 está reconciliado:** as quatro regiões administrativas do DF
+  são associadas ao código IBGE de Brasília, reduzindo 150 cidades-polo para
+  147 municípios distintos.
+- **144 não foi reproduzido:** a contagem histórica não tem lista de códigos
+  IBGE disponível para reconciliação individual.
+- **Dois números "119" com significados diferentes — a igualdade é
+  coincidência:**
+  1. **119 elegíveis pela regra 3/3 na auditoria atual:** soma
+     `32+69+14+3+1 = 119`, onde 118 (`32+69+14+3`) vêm das coortes
+     observáveis 2010–2013 e 1 município adicional tem o primeiro ano de
+     EPT federal ativa observado em 2016 (caso de borda exato da regra:
+     9 anos pré, 3 anos pós).
+  2. **119 histórico não reproduzido:** distribuição documental
+     `37+65+14+3`, atribuída inteiramente às coortes 2010–2013, sem lista
+     individual de municípios disponível para conferência.
 
-Nesta execução, **os 144/119/53/47 municípios candidatos não puderam ser
-classificados** — todos cairiam em `dados_insuficientes` caso uma lista
-de códigos municipais existisse, mas nem essa lista está presente no
-repositório para gerar as linhas da tabela.
+  As duas populações e as duas regras de elegibilidade não são
+  equivalentes — a primeira vem de uma regra de janela pré/pós aplicada
+  ao painel reproduzível; a segunda é uma contagem documental sem chave
+  municipal. A coincidência numérica não deve ser interpretada como
+  reprodução do número histórico.
+- **53 e 47 não são populações operacionais:** não há artefatos individuais
+  de common support, matching ou pares que permitam reconstituí-las.
 
-## 5. Tabela de auditoria
+As contagens históricas 144, 119, 53 e 47 não devem orientar estimação,
+matching ou definição de população causal enquanto não forem reconstruídas
+com chaves municipais e regras reproduzíveis. A decisão metodológica ainda
+pendente é confrontar o timing anual observável com evidência institucional de
+criação, inauguração e início efetivo das atividades, além de definir a
+população identificável e o grupo de comparação.
 
-Caminho: `outputs/diagnostics/auditoria_timing_tratamento.csv`.
+---
 
-Colunas gravadas (conforme especificação): `codigo_municipio`,
-`municipio`, `uf`, `fase_ii`, `primeiro_ano_presenca`,
-`coorte_tratamento`, `common_support`, `amostra_core`,
-`controle_utilizado`, `controle_repetido`, `flag_presenca_anterior`,
-`flag_reversao_tratamento`, `flag_lacuna_timing`, `flag_caso_especial`,
-`status_timing`, `observacao`.
+## Nota histórica
 
-Linhas de dado: **0** — nenhum código municipal foi inventado. O CSV
-existe apenas como definição de schema, pronto para ser populado quando
-a fonte de tratamento/Censo Escolar for reconstruída ou revalidada.
-
-## 6. Gate consolidado
-
-### NAO_APTO
-
-Justificativa: o gate avalia exclusivamente a consistência observacional
-do timing, conforme escopo desta tarefa. Não existe, neste repositório,
-nenhuma tabela município-ano, nenhum código IBGE, nenhuma série de Censo
-Escolar e nenhum resultado de matching reproduzível. Toda a evidência
-disponível é textual (documentos congelados), não auditável no nível
-município-ano exigido. Sem essa base observável, não é possível emitir
-`APTO` nem `PROMISSOR_COM_ALERTAS` — ambos pressupõem ter checado, ainda
-que parcialmente, dados reais. Este gate **não** se pronuncia sobre
-identificação causal válida, apenas sobre a impossibilidade de auditar o
-timing com os artefatos hoje disponíveis.
-
-## 7. O que não foi realizado e por quê
-
-- Nenhuma das 9 validações da seção "Auditoria mínima obrigatória" (item
-  2 do pedido original) foi executada sobre dados reais — não há fonte.
-- A tabela de auditoria não pôde ser populada linha a linha — não há
-  lista de códigos municipais no repositório.
-- Testes existentes relacionados: não executados porque `tests/` contém
-  apenas `.gitkeep` — não há suíte de testes no projeto.
-- Reconciliação numérica do funil 144→119→53→47 contra dados: não
-  realizada — apenas a consistência aritmética textual foi conferida
-  (seção 3.3).
-
-## 8. Problemas fora do escopo (não corrigidos)
-
-- O `.gitignore` do monorepo (`C:/GitHub/data-science-projects/.gitignore`,
-  regra `*.csv`) ignora silenciosamente qualquer `.csv` deste projeto,
-  incluindo `outputs/diagnostics/auditoria_timing_tratamento.csv` — o
-  arquivo existe em disco mas não aparece em `git status`. Isso é uma
-  configuração do repositório pai, fora do escopo desta tarefa.
-- `src/` e `tests/` estavam vazios antes desta execução, apesar de o
-  README descrever `src` como "pipeline reproduzível" — não há pipeline
-  implementado ainda.
-- Não há, no repositório, nenhum arquivo com a lista dos 144 municípios
-  Fase II nem dos códigos IBGE citados no funil — esse é o bloqueio
-  central para qualquer auditoria futura de timing.
+Uma primeira tentativa desta auditoria foi executada antes da
+reconstrução dos Parquets processados (`fase_ii_municipios.parquet` e
+`painel_presenca_federal_ept_fase_ii_2007_2019.parquet`). Naquele
+momento nenhuma fonte tabular existia no repositório, e a execução
+produziu um CSV vazio (0 linhas). Essa versão foi integralmente
+substituída pela auditoria reproduzível acima. Os detalhes daquela
+execução — incluindo a varredura que constatou a ausência de dados —
+não são reproduzidos aqui; permanecem preservados nos documentos de
+freeze (`docs/freeze/`) quando necessário para rastreabilidade.

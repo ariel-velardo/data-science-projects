@@ -38,28 +38,41 @@ Pessoal ocupado assalariado do CEMPRE.
 
 ---
 
-## Tratamento operacional atual
+## Tratamento operacional candidato
 
-Primeira presença federal EPT observada no Censo Escolar.
+> Primeira presença federal com EPT ativa observada no Censo Escolar.
 
-Ressalva: esse timing é uma proxy anual e ainda precisa ser confrontado
-com criação, inauguração e início efetivo das atividades na
-reconstrução institucional.
+Ressalva: essa definição
+
+- é uma proxy anual;
+- ainda depende de validação institucional (confronto com criação,
+  inauguração e início efetivo das atividades);
+- não transforma automaticamente trajetórias intermitentes em
+  tratamento permanente.
 
 ---
 
 ## População causal principal
 
-47 pares em common support, coortes 2010–2011.
+A população histórica de 47 pares em common support, coortes 2010–2011,
+fica **temporariamente suspensa como população operacional**. Não há artefato
+reproduzível que identifique individualmente common support, matching e pares.
 
-Coortes 2012–2013: somente sensibilidade.
+Coortes 2012–2013: somente sensibilidade, caso a população identificável seja
+reconstruída.
 
-Universo original de 119 tratados: caracterização e validade externa,
-não estimativa causal principal.
+O universo histórico de 119 tratados permanece apenas como caracterização
+histórica, não como estimativa causal principal. A auditoria reproduzível de
+timing baseada no Censo Escolar registra 118 municípios com primeira presença
+federal EPT ativa em 2010–2013; isso não reconstitui o antigo matching nem
+autoriza substituir a população de 47 pares.
 
-## Controles principais
+## Grupo de comparação candidato
 
-Municípios never-treated pareados.
+Municípios never-treated pareados — **grupo de comparação candidato**,
+não um grupo principal já validado: depende da reconstrução reproduzível
+do common support e do matching (ver "População causal principal"
+acima).
 
 ---
 
@@ -67,10 +80,11 @@ Municípios never-treated pareados.
 
 Callaway–Sant'Anna.
 
-## Estimando
+## Estimando candidato
 
 ATT dinâmico por event-time para tratados das coortes 2010–2011 com
-suporte comum.
+suporte comum — **estimando candidato**, condicionado à reconstrução
+reproduzível do common support e do matching.
 
 TWFE convencional: não usar como estimador causal principal.
 
