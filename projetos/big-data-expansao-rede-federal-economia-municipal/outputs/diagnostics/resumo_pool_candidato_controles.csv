@@ -1,0 +1,17 @@
+metrica,valor
+total_municipios,5570
+sem_exposicao_observada_2007_2019,4970
+com_exposicao_observada_2007_2019,600
+presente_nos_13_anos_do_universo,5564
+universo_incompleto,6
+pertence_fase_ii,147
+nao_pertence_fase_ii,5423
+elegivel_controle_candidato,4964
+inelegivel_controle_candidato,606
+excluido_por_exposicao_observada,600
+excluido_por_universo_incompleto,6
+excluido_por_fase_ii,147
+sobreposicao_exposicao_e_universo_incompleto,0
+sobreposicao_exposicao_e_fase_ii,147
+sobreposicao_universo_incompleto_e_fase_ii,0
+sobreposicao_tres_motivos,0

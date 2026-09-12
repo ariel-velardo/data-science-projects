@@ -72,6 +72,8 @@ data/processed/*
 !data/processed/fase_ii_municipios.parquet
 !data/processed/painel_presenca_federal_ept_fase_ii_2007_2019.parquet
 !data/processed/resumo_exposicao_rede_federal_municipio_2007_2019.parquet
+!data/processed/cadastro_elegibilidade_controles_2007_2019.parquet
+!data/processed/pool_candidato_controles_sem_exposicao_2007_2019.parquet
 
 # ============================================================
 # Outputs reproduziveis
@@ -88,6 +90,7 @@ outputs/tables/*
 !outputs/diagnostics/auditoria_timing_tratamento.csv
 !outputs/diagnostics/cadastro_causal_tratamento_fase_ii.csv
 !outputs/diagnostics/resumo_correspondencia_unidades_fase_ii.csv
+!outputs/diagnostics/resumo_pool_candidato_controles.csv
 
 # ============================================================
 # Temporarios
