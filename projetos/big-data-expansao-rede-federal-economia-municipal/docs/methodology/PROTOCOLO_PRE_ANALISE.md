@@ -42,6 +42,9 @@ EFEITO_CAUSAL_ESTIMADO = NAO
 
 FASE_ATUAL = DESENVOLVIMENTO_ACADEMICO
 
+CADASTRO_CAUSAL_PRELIMINAR = APROVADO_E_VERSIONADO (147 municípios oficiais;
+ver seção 4.8 e `docs/methodology/CADASTRO_CAUSAL_TRATAMENTO_FASE_II.md`).
+
 ---
 
 # 4. Decisões já congeladas
@@ -57,8 +60,21 @@ Município-ano.
 
 ## 4.3 Definição conceitual do tratamento
 
-Primeira presença federal de EPT observada no município associada à
-Expansão Fase II.
+Presença operacional de campus da Rede Federal associado à Expansão Fase
+II no município.
+
+O Censo Escolar fornece apenas uma **proxy anual observacional** dessa
+presença operacional (primeiro ano com EPT federal ativa) — a primeira
+observação no Censo não equivale automaticamente a criação
+administrativa, autorização, inauguração ou início institucional das
+atividades; essas datas, quando documentadas, têm precedência sobre a
+proxy (ver `CADASTRO_CAUSAL_TRATAMENTO_FASE_II.md`).
+
+O tratamento é conceitualmente absorvente: uma vez presente, o campus não
+deixa de ter existido. Municípios com trajetória intermitente na flag do
+Censo e sem validação institucional que confirme a natureza da lacuna
+permanecem sob revisão, fora da especificação absorvente principal (ver
+`CONTRATO_CAUSAL.md`, seção "Tratamento candidato").
 
 ## 4.4 Interpretação do timing
 
@@ -99,9 +115,46 @@ Portanto, qualquer estimando futuro deve explicitar a diferença entre:
 
 Não será feita generalização automática para toda a Expansão Fase II.
 
+## 4.8 Cadastro causal preliminar aprovado (sincronização 2026-09-12)
+
+Desde a aprovação e o versionamento de
+`docs/methodology/CADASTRO_CAUSAL_TRATAMENTO_FASE_II.md`
+(`src/constroi_cadastro_causal_fase_ii.py`,
+`src/excecoes_institucionais_fase_ii.json`), este é o cadastro reproduzível
+de referência para a população institucional e a elegibilidade temporal —
+substitui, para esse propósito, o estado exploratório descrito na seção 5:
+
+- **147** municípios oficiais (população institucional; `ever_treated=true`,
+  `pode_ser_controle=false` para todos os 147, sem exceção);
+- **129** candidatos preliminares à amostra principal;
+- **10** candidatos com ressalva;
+- **5** sob revisão;
+- **2** excluídos da população principal (Brasília/DF, Duque de Caxias/RJ —
+  expostos institucionalmente, nunca utilizáveis como controle);
+- **1** estimando especial (Porto Alegre/RS).
+
+Três camadas continuam distintas e não devem ser confundidas: população
+institucional (147), elegibilidade temporal (condição mecânica necessária,
+não suficiente) e população causal identificável (ainda não construída —
+depende de common support, matching e do grupo de comparação; ver seção
+6.5 e `CONTRATO_CAUSAL.md`, seção "Cadastro causal aprovado"). Os 129
+candidatos preliminares **não são a amostra causal final**.
+
+O outcome primário (pessoal ocupado assalariado do CEMPRE) e os outcomes
+secundários já estão formalizados no `CONTRATO_CAUSAL.md` — ver nota nas
+seções 6.1 e 6.2 abaixo, mantidas para registro do raciocínio exploratório
+que levou à escolha.
+
 ---
 
 # 5. Resultados exploratórios que funcionam como diagnóstico
+
+**Nota (2026-09-12): esta seção é histórica — anterior ao cadastro causal
+reproduzível da seção 4.8. Os números abaixo (144, 119, 53, 47) não são
+substituídos automaticamente pelos números atuais (147, 129, ...): são
+populações obtidas por métodos diferentes, e a equivalência não pode ser
+presumida (ver `docs/methodology/AUDITORIA_TIMING_TRATAMENTO.md`, seção
+"Reconciliações e limitações", para a reconciliação parcial já feita).**
 
 Estes resultados orientam o desenvolvimento, mas não constituem ainda
 a especificação causal final.
@@ -192,7 +245,13 @@ estimação final:
 
 ## 6.1 Outcome primário
 
-Candidatos atuais:
+**Atualização (2026-09-12): já formalizado como outcome primário no
+`CONTRATO_CAUSAL.md` — pessoal ocupado assalariado do CEMPRE, ligado ao
+canal mais direto do tratamento (contratação de servidores/terceirizados e
+consumo local associado ao campus). Ver seção 4.8. A escolha foi feita
+antes da observação de qualquer efeito estimado.** Candidatos considerados
+nesta fase exploratória, antes da formalização (registro histórico do
+raciocínio que levou à escolha):
 
 - pessoal ocupado assalariado;
 - pessoal ocupado total;
@@ -211,21 +270,40 @@ Não será escolhido o outcome que apresentar o maior efeito estimado.
 
 ## 6.2 Outcomes secundários
 
-Serão definidos depois da escolha do outcome primário.
+**Atualização (2026-09-12): já definidos no `CONTRATO_CAUSAL.md`** — pessoal
+ocupado total, número de unidades locais e salário médio mensal, pelo
+mesmo mecanismo institucional do outcome primário (canais adjacentes:
+criação de estabelecimentos, efeito salarial, emprego não assalariado).
 
 ## 6.3 Estimando
 
-Ainda deve ser definido formalmente.
+**Atualização (2026-09-12): já formalizado no `CONTRATO_CAUSAL.md`** como
+$ATT(g,t)$ no enquadramento de Callaway–Sant'Anna, aplicado ao
+subconjunto causal identificável de municípios tratados — condicionado à
+definição válida do timing, à elegibilidade temporal, ao grupo de
+comparação e à existência de suporte comum —, com agregação possível por
+coorte e por tempo relativo ao evento (event-time).
 
-Exemplos de perguntas que precisam ser respondidas:
+O que permanece aberto são decisões **operacionais** sobre como esse
+estimando será efetivamente calculado, não a ausência de formalização:
 
-- ATT de qual população?
-- efeito médio sobre municípios tratados com suporte comum?
-- efeito agregado por coorte?
-- efeito dinâmico por event time?
-- qual horizonte pós-tratamento é substantivamente relevante?
+- composição final da população causal identificável (depende de common
+  support e matching, ver seção 6.4);
+- never-treated vs. not-yet-treated como grupo de comparação (seção 6.5);
+- horizonte pós-tratamento e forma de agregação (por coorte, por
+  event-time, ou geral);
+- estratégia de inferência e clusterização (seção 6.9);
+- regras de antecipação e spillovers (seções 6.7-6.8).
+
+Essas decisões abertas não devem ser lidas como ausência de formalização
+do estimando — apenas como parâmetros operacionais ainda a fixar dentro
+do enquadramento já definido.
 
 ## 6.4 População causal principal
+
+**Ver seção 4.8 para o cadastro causal preliminar já aprovado (147
+municípios, 129 candidatos preliminares).** O que segue permanece
+histórico/exploratório e não deve ser lido como a especificação atual:
 
 Ainda deve ser formalizada a relação entre:
 
@@ -241,7 +319,12 @@ exploratório favorável.
 ## 6.5 Grupo de comparação
 
 O pool conservador de aproximadamente 4.958 municípios permanece como
-referência exploratória.
+referência exploratória — **ele não pode ser adotado automaticamente como
+pool final**: é preciso primeiro excluir municípios tratados por outras
+fases da Rede Federal, com presença federal anterior, potencialmente
+contaminados por spillover, ou sem suporte comum. Ver `CONTRATO_CAUSAL.md`,
+seção "Grupo de comparação candidato", para a lista completa de exclusões
+a decidir e as alternativas ainda abertas (never-treated vs. not-yet-treated).
 
 Ainda deve ser definido formalmente:
 
@@ -262,7 +345,9 @@ A decisão precisa ser fundamentada antes da análise final.
 
 ## 6.7 Antecipação
 
-Ainda será definido se:
+Mecanismos catalogados no DAG de `CONTRATO_CAUSAL.md` (anúncio, obras,
+contratação, preparação do campus podem antecipar efeitos). Ainda será
+definido se:
 
 - antecipação = 0;
 - antecipação = 1 ano;
@@ -270,7 +355,10 @@ Ainda será definido se:
 
 ## 6.8 Spillovers
 
-Precisamos avaliar:
+Ver `CONTRATO_CAUSAL.md`, seção "Spillovers", para a lista de mecanismos
+(deslocamento de estudantes/trabalhadores, compras e contratação locais,
+mercado de trabalho compartilhado com vizinhos, comércio/serviços
+regionais). Precisamos avaliar:
 
 - proximidade geográfica;
 - deslocamento de estudantes e trabalhadores;
@@ -310,6 +398,12 @@ Ainda devem ser definidos:
 
 Nenhum desses casos deve ser corrigido silenciosamente na
 especificação principal.
+
+**Atualização (2026-09-12):** ambos os casos já têm status explícito no
+cadastro causal aprovado — Sobral/CE como `candidato_com_ressalva`
+(coorte candidata 2010, ver `src/excecoes_institucionais_fase_ii.json`) e
+Campinas/SP como `sob_revisao` (sem ano civil completo confirmado). Ver
+`CADASTRO_CAUSAL_TRATAMENTO_FASE_II.md`, seção "Casos especiais".
 
 ---
 
@@ -364,29 +458,30 @@ Período exploratório principal:
 
 # 10. Ordem obrigatória antes da estimação
 
-A próxima sequência do projeto será:
+**Atualização (2026-09-12):** o cadastro causal preliminar (147
+municípios, 129 candidatos preliminares) e a auditoria institucional da
+Fase II já estão concluídos como trabalho fundacional — ver
+`CADASTRO_CAUSAL_TRATAMENTO_FASE_II.md`,
+`docs/institutional/EXPANSAO_FASE_II.md` e
+`docs/institutional/AUDITORIA_LISTA_FASE_II.md`. A pergunta de pesquisa, o
+outcome primário, o estimando e o DAG já foram formalizados em
+`CONTRATO_CAUSAL.md`. A sequência técnica vigente a partir daqui é a de
+`ROADMAP_ACADEMICO.md`:
 
-1. revisão de literatura;
-2. reconstrução histórica e institucional da Expansão Fase II;
-3. formulação do DAG;
-4. refinamento da pergunta de pesquisa;
-5. definição da população de interesse;
-6. definição da população identificável;
-7. definição formal do estimando;
-8. definição do outcome primário;
-9. definição dos outcomes secundários;
-10. formalização do tratamento e timing;
-11. definição da hipótese de antecipação;
-12. definição da política de spillovers;
-13. definição do grupo de comparação;
-14. escolha do estimador principal;
-15. definição da estratégia de inferência;
-16. validação externa do timing;
-17. reconstrução do pipeline;
-18. análise descritiva;
-19. estimação causal.
+1. construir cadastro nacional de exposição à Rede Federal;
+2. construir pool reproduzível de municípios de comparação;
+3. construir painel municipal do CEMPRE 2007–2019;
+4. incorporar covariáveis pré-tratamento (justificadas pelo DAG);
+5. formalizar regras de antecipação e spillovers;
+6. avaliar suporte comum e balanceamento;
+7. executar event study e estimação de ATT.
 
-Não executar a etapa 19 antes da conclusão documental das etapas
+Revisão de literatura adicional e reconstrução institucional continuam
+como atividades paralelas de apoio — especialmente para fundamentar
+covariáveis, antecipação e spillovers —, não como a próxima etapa técnica
+exclusiva.
+
+Não executar a etapa 7 antes da conclusão documental das etapas
 anteriores.
 
 ---
@@ -406,16 +501,13 @@ serão aceitas se:
 
 # 12. Próxima atividade
 
-A próxima atividade substantiva é a revisão de literatura e a
-reconstrução institucional da Expansão Fase II.
+A próxima atividade técnica é **construir o cadastro nacional de
+exposição à Rede Federal** (para impedir que municípios tratados por
+outras fases/campi entrem no pool de controles) e, em seguida, **derivar
+o pool reproduzível de municípios de comparação** — ver
+`ROADMAP_ACADEMICO.md`, seção "Próxima etapa técnica".
 
-Essas etapas devem fornecer evidência para decidir:
-
-- mecanismo causal;
-- seleção dos municípios;
-- timing;
-- antecipação;
-- spillovers;
-- outcomes;
-- estimando;
-- estratégia de identificação.
+Revisão de literatura adicional e reconstrução institucional permanecem
+como atividades paralelas de apoio (mecanismo causal, covariáveis,
+antecipação, spillovers), não como etapa principal anterior ao cadastro
+nacional de exposição.
