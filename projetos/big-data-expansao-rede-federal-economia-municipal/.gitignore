@@ -40,11 +40,38 @@ desktop.ini
 data/raw/*
 !data/raw/.gitkeep
 
+# Excecoes explicitas: fontes e manifestos minimos para reprodutibilidade
+!data/raw/inep/
+!data/raw/inep/censo_escolar/
+!data/raw/inep/censo_escolar/source_manifest.json
+
+!data/raw/institutional/
+!data/raw/institutional/fase_ii/
+!data/raw/institutional/fase_ii/source_manifest.json
+!data/raw/institutional/fase_ii/plano_expansao_fase_ii_ifrs_mirror.pdf
+!data/raw/institutional/fase_ii/ibge_municipios.json
+!data/raw/institutional/fase_ii/edital_chamada_publica_001_2007_ifrs.html
+!data/raw/institutional/fase_ii/edital_001_2007_ADREI_00011.pdf
+
+!data/raw/institutional/mec_sistec/
+!data/raw/institutional/mec_sistec/Unidades_da_Rede_Federal_de_EPCT.csv
+
 data/interim/*
 !data/interim/.gitkeep
 
+# Excecoes explicitas: snapshot minimo reproduzivel
+!data/interim/censo_escolas_federais_2007_2019.parquet
+!data/interim/censo_federal_municipio_ano_2007_2019.parquet
+!data/interim/fase_ii_unidades.parquet
+
 data/processed/*
 !data/processed/.gitkeep
+
+# Excecoes explicitas: snapshot minimo reproduzivel
+!data/processed/cadastro_nacional_exposicao_rede_federal_municipio_ano_2007_2019.parquet
+!data/processed/fase_ii_municipios.parquet
+!data/processed/painel_presenca_federal_ept_fase_ii_2007_2019.parquet
+!data/processed/resumo_exposicao_rede_federal_municipio_2007_2019.parquet
 
 # ============================================================
 # Outputs reproduziveis
@@ -55,6 +82,12 @@ outputs/figures/*
 
 outputs/tables/*
 !outputs/tables/.gitkeep
+
+# Excecoes explicitas: snapshot minimo reproduzivel
+!outputs/diagnostics/auditoria_correspondencia_unidades_fase_ii.csv
+!outputs/diagnostics/auditoria_timing_tratamento.csv
+!outputs/diagnostics/cadastro_causal_tratamento_fase_ii.csv
+!outputs/diagnostics/resumo_correspondencia_unidades_fase_ii.csv
 
 # ============================================================
 # Temporarios

@@ -1,0 +1,79 @@
+{
+  "data_geracao_manifesto": "2026-09-09",
+  "metodo_download": "curl --location --fail (User-Agent Mozilla/5.0), execucao direta em shell",
+  "fontes": [
+    {
+      "id": "edital_001_2007_adrei",
+      "descricao": "Chamada Publica MEC/SETEC no 001/2007 (edital), Anexo I incluso (Relacao Nominal das Cidades Polo)",
+      "classificacao": "fonte primaria (conteudo do MEC/SETEC), obtida via espelho institucional (dominio memoria.ifrs.edu.br, nao o dominio original do MEC/SETEC)",
+      "url": "https://memoria.ifrs.edu.br/wp-content/uploads/sites/4/tainacan-items/5012/14702/ADREI_00011.pdf",
+      "url_pagina_indice": "https://memoria.ifrs.edu.br/documentos/edital-chamada-publica-mec-setec-n-o-001-2007/",
+      "metodo_acesso": "curl direto (GET)",
+      "data_acesso": "2026-09-09",
+      "http_status": 200,
+      "tamanho_bytes": 212714,
+      "sha256": "6075c1ad7f719e587ba10db3a696216d82c2639c0c4b13f8146b7044d078555a",
+      "arquivo_local": "edital_001_2007_ADREI_00011.pdf",
+      "paginas_pdf": 11,
+      "texto_extraivel": true,
+      "metodo_extracao_texto": "pdftotext -layout (poppler/xpdf 4.06, ja instalado no sistema)",
+      "codificacao_texto_confirmada": "cp1252 (verificado byte a byte: 0xC9 -> E acento agudo, condizente com 'MINISTERIO')"
+    },
+    {
+      "id": "edital_001_2007_pagina_indice",
+      "descricao": "Pagina HTML do IFRS que indexa o edital (acervo Memoria IFRS)",
+      "classificacao": "espelho institucional (pagina de indice, nao o documento em si)",
+      "url": "https://memoria.ifrs.edu.br/documentos/edital-chamada-publica-mec-setec-n-o-001-2007/",
+      "metodo_acesso": "curl direto (GET)",
+      "data_acesso": "2026-09-09",
+      "http_status": 200,
+      "tamanho_bytes": 454447,
+      "sha256": "9a27d0273a05821aa6d934fe7faa9ade328ecbb699dcd7a8fb5ef97de0164df5",
+      "arquivo_local": "edital_chamada_publica_001_2007_ifrs.html",
+      "uso": "localizar o link direto para o PDF do edital (edital_001_2007_ADREI_00011.pdf); nao usada como fonte de dados"
+    },
+    {
+      "id": "plano_expansao_fase_ii_ifrs_mirror",
+      "descricao": "Plano de Expansao da Rede Federal de Educacao Tecnologica - Fase II (apresentacao/slide deck)",
+      "classificacao": "fonte primaria (documento MEC/SETEC), obtida via espelho institucional (dominio memoria.ifrs.edu.br)",
+      "url": "https://memoria.ifrs.edu.br/wp-content/uploads/sites/4/tainacan-items/5012/167488/ADMEC_00087B.pdf",
+      "metodo_acesso": "curl direto (GET)",
+      "data_acesso": "2026-09-09",
+      "http_status": 200,
+      "tamanho_bytes": 3100807,
+      "sha256": "11afeebcbabea9eee28f77fe1f0b54ec871c724fe89565d9c3825d4644da7ed9",
+      "arquivo_local": "plano_expansao_fase_ii_ifrs_mirror.pdf",
+      "paginas_pdf": 23,
+      "texto_extraivel": true,
+      "codificacao_texto_confirmada": "cp1252",
+      "observacao": "Documento tipo apresentacao (slides). Conteudo textual extraivel cobre em detalhe apenas Ceara e Rio Grande do Norte (mapas de outros estados sao imagem, sem OCR disponivel no ambiente). NAO contem a lista nacional completa das 150 cidades -- essa lista veio do Anexo I do edital (fonte 'edital_001_2007_adrei'), nao deste arquivo. Confirma explicitamente Sobral/CE como cidade-polo proposta e o criterio 'Raio de Abrangencia: 50 Km' como legenda de um mapa especifico do Ceara (nao regra nacional)."
+    },
+    {
+      "id": "ibge_municipios",
+      "descricao": "Lista de todos os municipios do Brasil (API de localidades do IBGE)",
+      "classificacao": "fonte primaria (API oficial do IBGE)",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/municipios",
+      "metodo_acesso": "curl direto (GET)",
+      "data_acesso": "2026-09-09",
+      "http_status": 200,
+      "tamanho_bytes": 2470036,
+      "sha256": "86ecdccdf97d72e7e5e46f0854cfcea8bacc28154cc1bc4ed0e6110e3a6c9c02",
+      "arquivo_local": "ibge_municipios.json",
+      "registros": 5571,
+      "codificacao": "utf-8",
+      "uso": "associacao de codigo IBGE por nome normalizado dentro da UF"
+    }
+  ],
+  "fontes_com_falha": [
+    {
+      "id": "mec_principios_concepcoes",
+      "descricao": "Institutos Federais: concepcao e diretrizes (documento MEC citado na tarefa anterior desta auditoria)",
+      "url": "https://www.gov.br/mec/pt-br/assuntos/ept/rede-federal/institutos-federais-de-educacao-ciencia-e-tecnologia/principios-concepcoes.pdf",
+      "metodo_tentado": "curl direto (GET, com e sem --location, User-Agent Mozilla/5.0)",
+      "data_tentativa": "2026-09-09",
+      "http_status": 404,
+      "corpo_resposta": "JSON de erro padrao do gov.br, Content-Length 26 bytes",
+      "observacao": "A pagina-pai (institutos-federais-de-educacao-ciencia-e-tecnologia) responde HTTP 200 mas nao contem mais link para este PDF (verificado via grep no HTML por href=*.pdf). O documento parece ter sido removido ou reorganizado no dominio gov.br desde o ultimo acesso bem-sucedido (sessao anterior, via ferramenta de fetch distinta). Nao usado nesta reconstrucao da lista -- nao era necessario para o Anexo I."
+    }
+  ]
+}

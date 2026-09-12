@@ -1,0 +1,148 @@
+﻿codigo_municipio_ibge,municipio,uf,fase_ii,n_anos_presenca_federal,primeiro_ano_presenca_federal,ultimo_ano_presenca_federal,censura_esquerda_presenca_federal,tem_interrupcao_interna_presenca_federal,n_interrupcoes_internas_presenca_federal,trajetoria_monotonica_presenca_federal,n_pre_presenca_federal,n_pos_presenca_federal,n_anos_presenca_federal_ept,primeiro_ano_presenca_federal_ept,ultimo_ano_presenca_federal_ept,censura_esquerda_presenca_federal_ept,tem_interrupcao_interna_presenca_federal_ept,n_interrupcoes_internas_presenca_federal_ept,trajetoria_monotonica_presenca_federal_ept,n_pre_presenca_federal_ept,n_pos_presenca_federal_ept,n_anos_presenca_federal_ept_ativa,primeiro_ano_presenca_federal_ept_ativa,ultimo_ano_presenca_federal_ept_ativa,censura_esquerda_presenca_federal_ept_ativa,tem_interrupcao_interna_presenca_federal_ept_ativa,n_interrupcoes_internas_presenca_federal_ept_ativa,trajetoria_monotonica_presenca_federal_ept_ativa,n_pre_presenca_federal_ept_ativa,n_pos_presenca_federal_ept_ativa,primeiro_ano_persistente_presenca_federal_ept_ativa,elegivel_ept_federal_ativa_pre2_pos3,elegivel_ept_federal_ativa_pre3_pos3,coorte_ept_federal_ativa_2010_2013,coorte_ept_federal_ativa_2010_2011,trajetoria_intermitente_ept_federal_ativa
+1200203,Cruzeiro do Sul,AC,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+1200500,Sena Madureira,AC,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+2700300,Arapiraca,AL,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2704500,Maragogi,AL,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2706703,Penedo,AL,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2707107,Piranhas,AL,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+1302405,Lábrea,AM,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+1302900,Maués,AM,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+1303403,Parintins,AM,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+1303536,Presidente Figueiredo,AM,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+1304062,Tabatinga,AM,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+1600279,Laranjal do Jari,AP,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2903904,Bom Jesus da Lapa,BA,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2910800,Feira de Santana,BA,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+2913606,Ilhéus,BA,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+2914604,Irecê,BA,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2917508,Jacobina,BA,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+2918001,Jequié,BA,True,8,2012,2019,False,False,0,True,5,7,6,2012,2019,False,True,1,False,5,7,6,2012,2019,False,True,1,False,5,7,2018,True,True,True,False,True
+2924009,Paulo Afonso,BA,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2929909,Seabra,BA,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+2300200,Acaraú,CE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2302800,Canindé,CE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2304103,Crateús,CE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2307601,Limoeiro do Norte,CE,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+2311306,Quixadá,CE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2312908,Sobral,CE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5300108,Brasília,DF,True,13,2007,2019,True,False,0,True,0,12,12,2008,2019,False,False,0,True,1,11,12,2008,2019,False,False,0,True,1,11,2008,False,False,False,False,False
+3200607,Aracruz,ES,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3202454,Ibatiba,ES,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+3203205,Linhares,ES,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3203908,Nova Venécia,ES,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3205200,Vila Velha,ES,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5201108,Anápolis,GO,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5208004,Formosa,GO,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5210208,Iporá,GO,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5211503,Itumbiara,GO,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+5212501,Luziânia,GO,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5221601,Uruaçu,GO,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+2100204,Alcântara,MA,True,13,2007,2019,True,False,0,True,0,12,12,2008,2019,False,False,0,True,1,11,12,2008,2019,False,False,0,True,1,11,2008,False,False,False,False,False
+2101202,Bacabal,MA,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2101608,Barra do Corda,MA,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2101707,Barreirinhas,MA,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2103000,Caxias,MA,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2108603,Pinheiro,MA,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2111102,São João dos Patos,MA,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2112209,Timon,MA,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+3101706,Almenara,MG,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+3103405,Araçuaí,MG,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+3104502,Arinos,MG,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3118601,Contagem,MG,True,8,2011,2019,False,True,1,False,4,8,7,2013,2019,False,False,0,True,6,6,7,2013,2019,False,False,0,True,6,6,2013,True,True,True,False,False
+3120904,Curvelo,MG,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+3126109,Formiga,MG,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3127701,Governador Valadares,MG,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+3134202,Ituiutaba,MG,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3143302,Montes Claros,MG,True,11,2007,2019,True,True,1,False,0,12,11,2007,2019,True,True,1,False,0,12,11,2007,2019,True,True,1,False,0,12,2011,False,False,False,False,True
+3143906,Muriaé,MG,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+3147006,Paracatu,MG,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3151206,Pirapora,MG,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5001102,Aquidauana,MS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5003207,Corumbá,MS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5003306,Coxim,MS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5006606,Ponta Porã,MS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5008305,Três Lagoas,MS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5101803,Barra do Garças,MT,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+5102637,Campo Novo do Parecis,MT,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+5103353,Confresa,MT,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+5105150,Juína,MT,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+5106752,Pontes e Lacerda,MT,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+5107602,Rondonópolis,MT,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+1500107,Abaetetuba,PA,True,12,2008,2019,False,False,0,True,1,11,12,2008,2019,False,False,0,True,1,11,12,2008,2019,False,False,0,True,1,11,2008,False,False,False,False,False
+1501709,Bragança,PA,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+1502707,Conceição do Araguaia,PA,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+1503606,Itaituba,PA,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+1506807,Santarém,PA,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2503209,Cabedelo,PB,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2509701,Monteiro,PB,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2510808,Patos,PB,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2511400,Picuí,PB,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2512309,Princesa Isabel,PB,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2600104,Afogados da Ingazeira,PE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2604106,Caruaru,PE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2606002,Garanhuns,PE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2609907,Ouricuri,PE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2612208,Salgueiro,PE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2200608,Angical do Piauí,PI,True,10,2010,2019,False,False,0,True,3,9,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2202901,Corrente,PI,True,10,2010,2019,False,False,0,True,3,9,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2207801,Paulistana,PI,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2208403,Piripiri,PI,True,10,2010,2019,False,False,0,True,3,9,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2210607,São Raimundo Nonato,PI,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2211209,Uruçuí,PI,True,10,2010,2019,False,False,0,True,3,9,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4108304,Foz do Iguaçu,PR,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+4111803,Jacarezinho,PR,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+4118204,Paranaguá,PR,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+4118402,Paranavaí,PR,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4127106,Telêmaco Borba,PR,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+4128104,Umuarama,PR,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+3300100,Angra dos Reis,RJ,True,13,2007,2019,True,False,0,True,0,12,7,2013,2019,False,False,0,True,6,6,7,2013,2019,False,False,0,True,6,6,2013,True,True,True,False,False
+3300704,Cabo Frio,RJ,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3301702,Duque de Caxias,RJ,True,12,2008,2019,False,False,0,True,1,11,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3302205,Itaperuna,RJ,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3303401,Nova Friburgo,RJ,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3303906,Petrópolis,RJ,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+3306305,Volta Redonda,RJ,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+2401008,Apodi,RN,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2402006,Caicó,RN,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2405801,João Câmara,RN,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2407203,Macau,RN,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2409407,Pau dos Ferros,RN,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2411205,Santa Cruz,RN,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+1100122,Ji-Paraná,RO,True,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,11,2009,2019,False,False,0,True,2,10,2009,True,False,False,False,False
+1100304,Vilhena,RO,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+1400027,Amajari,RR,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4301602,Bagé,RS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4303509,Camaquã,RS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4305108,Caxias do Sul,RS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4307005,Erechim,RS,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+4313508,Osório,RS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4313904,Panambi,RS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4314902,Porto Alegre,RS,True,13,2007,2019,True,False,0,True,0,12,13,2007,2019,True,False,0,True,0,12,13,2007,2019,True,False,0,True,0,12,2007,False,False,False,False,False
+4317202,Santa Rosa,RS,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+4318002,São Borja,RS,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+4322608,Venâncio Aires,RS,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4203808,Canoinhas,SC,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+4204608,Criciúma,SC,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4205902,Gaspar,SC,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+4208203,Itajaí,SC,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+4209300,Lages,SC,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+4217204,São Miguel do Oeste,SC,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+4219309,Videira,SC,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+2802106,Estância,SE,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+2802908,Itabaiana,SE,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+2804508,Nossa Senhora da Glória,SE,True,9,2011,2019,False,False,0,True,4,8,8,2011,2019,False,True,1,False,4,8,8,2011,2019,False,True,1,False,4,8,2018,True,True,True,True,True
+3503208,Araraquara,SP,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+3504503,Avaré,SP,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+3505500,Barretos,SP,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+3506508,Birigui,SP,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+3509502,Campinas,SP,True,13,2007,2019,True,False,0,True,0,12,4,2016,2019,False,False,0,True,9,3,4,2016,2019,False,False,0,True,9,3,2016,True,True,False,False,False
+3511102,Catanduva,SP,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+3522307,Itapetininga,SP,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+3538709,Piracicaba,SP,True,9,2011,2019,False,False,0,True,4,8,8,2011,2019,False,True,1,False,4,8,8,2011,2019,False,True,1,False,4,8,2018,True,True,True,True,True
+3541307,Presidente Epitácio,SP,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+3542602,Registro,SP,True,7,2013,2019,False,False,0,True,6,6,7,2013,2019,False,False,0,True,6,6,7,2013,2019,False,False,0,True,6,6,2013,True,True,True,False,False
+3552502,Suzano,SP,True,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,8,2012,2019,False,False,0,True,5,7,2012,True,True,True,False,False
+3557105,Votuporanga,SP,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+1702109,Araguaína,TO,True,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,10,2010,2019,False,False,0,True,3,9,2010,True,True,True,True,False
+1709500,Gurupi,TO,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False
+1718204,Porto Nacional,TO,True,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,9,2011,2019,False,False,0,True,4,8,2011,True,True,True,True,False

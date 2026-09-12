@@ -1,0 +1,151 @@
+﻿{
+    "fonte":  "INEP - Microdados do Censo Escolar da Educação Básica",
+    "pagina_indice":  "https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-escolar",
+    "periodo":  "2007-2019",
+    "gerado_em":  "2026-09-09T11:56:36-03:00",
+    "arquivos":  [
+                     {
+                         "ano":  2007,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2007.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2007.zip",
+                         "status":  "existente_valido",
+                         "tamanho_compactado_mb":  20.28,
+                         "tamanho_expandido_mb":  140.66,
+                         "quantidade_entradas":  15,
+                         "sha256":  "3D70F547AD27EEAAC44BCF1E793DDC5DBE018AA3D1899332E3F466B2F30204C9",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2008,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2008.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2008.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  20.93,
+                         "tamanho_expandido_mb":  186.87,
+                         "quantidade_entradas":  15,
+                         "sha256":  "0A596F49E1A43411AFE87AEFD2BEFE8E43E57BB348F7CC5F39ECB36AC5E15237",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2009,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2009.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2009.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  22.63,
+                         "tamanho_expandido_mb":  186.83,
+                         "quantidade_entradas":  15,
+                         "sha256":  "55831B02F4E66939D449B4F823932C5CAC32D776DA75922E9D9354E093F38069",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2010,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2010.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2010.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  21.85,
+                         "tamanho_expandido_mb":  184.51,
+                         "quantidade_entradas":  15,
+                         "sha256":  "1E5F50901E7C4F5C92122CE6F57917F5F20D940253B2DBC9E07F5562BF015998",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2011,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2011.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2011.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  24.68,
+                         "tamanho_expandido_mb":  219.8,
+                         "quantidade_entradas":  15,
+                         "sha256":  "0D637660C0DA381E083B602CD78BB29684E29CE7C29DB136989F7E18A49C59BA",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2012,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2012.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2012.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  25.57,
+                         "tamanho_expandido_mb":  220.32,
+                         "quantidade_entradas":  15,
+                         "sha256":  "3231D9E2EF0406F7DFACD736456B81ED9F01DF51E8DB53BA2FBBC22E956752DF",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2013,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2013.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2013.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  26.52,
+                         "tamanho_expandido_mb":  221.22,
+                         "quantidade_entradas":  15,
+                         "sha256":  "984C11EB6A310EBA4D5F3CFAB7A32259406E83C75F06E99092A4F5225DC4EC13",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2014,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2014.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2014.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  24.6,
+                         "tamanho_expandido_mb":  219.57,
+                         "quantidade_entradas":  15,
+                         "sha256":  "EB508DFDD50A8DF135BCF2CD1A5AAE2A0486F8747A2A8F61567DE3AA261061E3",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2015,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2015.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2015.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  25.42,
+                         "tamanho_expandido_mb":  216.44,
+                         "quantidade_entradas":  16,
+                         "sha256":  "FF7C0A9E588E01CEED43F3E79C863BC85413F1FEB0130E1D844BBF77035E040F",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2016,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2016.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2016.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  25.31,
+                         "tamanho_expandido_mb":  216.13,
+                         "quantidade_entradas":  16,
+                         "sha256":  "319349AA18BDD70527229F0F97775FC33418EED87719C07CBF37B996F859770B",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2017,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2017.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2017.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  24.5,
+                         "tamanho_expandido_mb":  214.62,
+                         "quantidade_entradas":  15,
+                         "sha256":  "6B1CA94733B49FA0956D1FBED21F800EA972E2C36036959D9B88FC58B66F9847",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2018,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2018.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2018.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  24.84,
+                         "tamanho_expandido_mb":  215.06,
+                         "quantidade_entradas":  15,
+                         "sha256":  "DD1AACC744AB41161FCA5E27469D6B064B8790C76366954C037F1B1F3C786B52",
+                         "observacao":  null
+                     },
+                     {
+                         "ano":  2019,
+                         "url":  "https://download.inep.gov.br/dados_abertos/microdados_censo_escolar_2019.zip",
+                         "arquivo":  "C:\\GitHub\\data-science-projects\\projetos\\big-data-expansao-rede-federal-economia-municipal\\data\\raw\\inep\\censo_escolar\\microdados_censo_escolar_2019.zip",
+                         "status":  "baixado_valido",
+                         "tamanho_compactado_mb":  25.01,
+                         "tamanho_expandido_mb":  207.66,
+                         "quantidade_entradas":  16,
+                         "sha256":  "FF023A2FCCAB4402772A1E1D87426CF5D35E10FCF2D13749A8BCB862D86894E7",
+                         "observacao":  null
+                     }
+                 ]
+}
