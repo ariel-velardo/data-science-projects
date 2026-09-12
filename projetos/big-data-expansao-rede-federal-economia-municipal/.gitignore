@@ -56,6 +56,11 @@ data/raw/*
 !data/raw/institutional/mec_sistec/
 !data/raw/institutional/mec_sistec/Unidades_da_Rede_Federal_de_EPCT.csv
 
+!data/raw/geobr/
+!data/raw/geobr/sedes_municipais/
+!data/raw/geobr/sedes_municipais/source_manifest.json
+!data/raw/geobr/sedes_municipais/municipalseats_2010.parquet
+
 data/interim/*
 !data/interim/.gitkeep
 
@@ -63,6 +68,7 @@ data/interim/*
 !data/interim/censo_escolas_federais_2007_2019.parquet
 !data/interim/censo_federal_municipio_ano_2007_2019.parquet
 !data/interim/fase_ii_unidades.parquet
+!data/interim/sedes_municipais_ibge_2010.parquet
 
 data/processed/*
 !data/processed/.gitkeep
@@ -74,6 +80,7 @@ data/processed/*
 !data/processed/resumo_exposicao_rede_federal_municipio_2007_2019.parquet
 !data/processed/cadastro_elegibilidade_controles_2007_2019.parquet
 !data/processed/pool_candidato_controles_sem_exposicao_2007_2019.parquet
+!data/processed/diagnostico_distancias_spillover_fase_ii.parquet
 
 # ============================================================
 # Outputs reproduziveis
@@ -91,6 +98,7 @@ outputs/tables/*
 !outputs/diagnostics/cadastro_causal_tratamento_fase_ii.csv
 !outputs/diagnostics/resumo_correspondencia_unidades_fase_ii.csv
 !outputs/diagnostics/resumo_pool_candidato_controles.csv
+!outputs/diagnostics/resumo_distancias_spillover_fase_ii.csv
 
 # ============================================================
 # Temporarios
