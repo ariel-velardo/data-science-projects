@@ -1,0 +1,617 @@
+{
+  "5300108": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "nao_aplicavel",
+    "anos_sensibilidade": [],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": false,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "multiplas_unidades_e_ondas_sob_um_codigo_ibge",
+    "status_timing": "nao_definivel_no_nivel_municipal",
+    "status_populacao_causal": "excluido_principal",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "fonte_primaria_legislativa",
+    "motivo_decisao": "Planaltina e preexistente (absorvida pelo IFB em 29/12/2008); Brasilia/Gama/Samambaia/Taguatinga foram autorizados pela Portaria MEC 1.170/2010; Riacho Fundo/Taguatinga Centro/Sao Sebastiao pertencem a uma '3a etapa de expansao' rotulada pelo proprio IFB, distinta da Fase II; Ceilandia, Estrutural e Recanto das Emas chegam ainda depois (ate 2018). Nenhum ano unico municipal representa esse conjunto sem misturar fases administrativas diferentes. Exclusao nao significa ausencia de tratamento: o municipio pertence institucionalmente a Fase II e nunca pode servir de controle.",
+    "fonte_decisao": "revisao_institucional_brasilia_multiplas_ondas",
+    "fontes": [
+      {
+        "url_ou_caminho": "https://pep.ifsp.edu.br/images/PDF/Portarias/2010/09/Portaria-n-1.170-de-21-de-setembro-de-2010.pdf",
+        "titulo": "Diário Oficial da União, Seção 1, nº 182, 22/09/2010 — Portaria MEC nº 1.170, de 21 de setembro de 2010",
+        "orgao": "Ministério da Educação / Imprensa Nacional",
+        "data_evidencia_ou_acesso": "2010-09-22",
+        "nivel_evidencia": "fonte_primaria_legislativa",
+        "descricao_factual": "Lida diretamente: o Anexo autoriza o IFB a funcionar em Brasilia, Gama, Samambaia e Taguatinga; nao inclui Riacho Fundo, Taguatinga Centro, Sao Sebastiao, Ceilandia, Estrutural ou Recanto das Emas.",
+        "campo_sustentado": "status_populacao_causal e motivo_decisao (exclusao por multiplas ondas)"
+      },
+      {
+        "url_ou_caminho": "https://www.ifb.edu.br/taguatinga/2403-ifb-inaugura-em-breve-novo-campus-em-taguatinga",
+        "titulo": "Notícias institucionais do domínio ifb.edu.br sobre a criação do Campus Taguatinga Centro",
+        "orgao": "Instituto Federal de Brasília",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "indicio_secundario",
+        "descricao_factual": "O proprio IFB descreve o Campus Taguatinga Centro (criado em agosto de 2011) como parte da '3a etapa de expansao da Rede Federal', distinta da Fase II; pagina do dominio ifb.edu.br nao foi aberta diretamente nesta revisao (falha de resolucao DNS), conteudo obtido via resumo de busca sobre paginas do dominio.",
+        "campo_sustentado": "motivo_decisao (onda administrativa distinta da Fase II)"
+      }
+    ]
+  },
+  "3301702": {
+    "ano_evento_institucional": 2006,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "nao_aplicavel",
+    "anos_sensibilidade": [],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": false,
+    "tratamento_preexistente_painel": true,
+    "status_institucional": "presenca_operacional_anterior_ao_painel",
+    "status_timing": "sem_periodo_pre_tratamento_observavel",
+    "status_populacao_causal": "excluido_principal",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": false,
+    "nivel_evidencia": "indicio_secundario",
+    "motivo_decisao": "A UNED que deu origem ao Campus Duque de Caxias do IFRJ ja funcionava desde 2006 (a partir do antigo CEFET Quimica de Nilopolis), antes do inicio do painel em 2007; a Lei 11.892/2008 apenas transforma administrativamente a unidade em Campus do IFRJ. Nao existe ano dentro do painel 2007-2019 que represente uma primeira exposicao real: usar G=2007 seria tratar uma censura a esquerda como se fosse um inicio observavel. Sem periodo pre-tratamento observavel, o municipio nao pode entrar na amostra causal principal nem servir de controle; permanece institucionalmente exposto desde antes do painel.",
+    "fonte_decisao": "revisao_institucional_duque_de_caxias_preexistencia",
+    "fontes": [
+      {
+        "url_ou_caminho": "https://ifrj.edu.br/institucional/historia-ifrj",
+        "titulo": "História do IFRJ",
+        "orgao": "Instituto Federal do Rio de Janeiro",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "indicio_secundario",
+        "descricao_factual": "UNED de Duque de Caxias criada em 2006 a partir do antigo CEFET Quimica de Nilopolis; transformada em Campus do IFRJ pela Lei 11.892 em 29/12/2008, instalada em Vila Sarapui. A pagina nao retornou o texto historico especifico quando aberta diretamente nesta revisao; a data de 2006 vem de resumo de busca sobre paginas do dominio ifrj.edu.br, nao de leitura direta confirmada do texto primario.",
+        "campo_sustentado": "ano_evento_institucional e tratamento_preexistente_painel"
+      }
+    ]
+  },
+  "2100204": {
+    "ano_evento_institucional": 2008,
+    "ano_transicao": 2008,
+    "primeiro_ano_completo": 2009,
+    "ano_coorte_candidata": 2009,
+    "origem_coorte": "institucional_validada",
+    "anos_sensibilidade": [2010],
+    "anos_excluir_estimacao": [2008],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "evento_documentado_por_fonte_institucional_direta",
+    "status_timing": "ano_parcial_documentado",
+    "status_populacao_causal": "candidato_com_ressalva",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "fonte_institucional_oficial",
+    "motivo_decisao": "Nucleo Avancado de Alcantara criado pela Resolucao CONDIR/CEFET-MA no 38/2007 (10/09/2007); primeiro semestre letivo comecou em 12/08/2008 com 115 alunos, tornando 2008 ano parcial. A propria pagina oficial do IFMA afirma que a autorizacao de funcionamento (janeiro de 2010) consolidou a unidade como parte da Fase II do Plano de Expansao. 2009 e o primeiro ano civil inteiramente exposto e usado como coorte candidata; 2010 (ano em que a unidade recebeu status pleno de Campus) fica registrado como sensibilidade. A Chamada Publica especifica de 2007 e o texto exato da autorizacao de funcionamento de 2010 nao foram lidos em fonte primaria (Diario Oficial) nesta revisao — por isso o caso permanece com ressalva e em revisao prioritaria.",
+    "fonte_decisao": "revisao_institucional_alcantara_ifma",
+    "fontes": [
+      {
+        "url_ou_caminho": "https://alcantara.ifma.edu.br/sobreocampus/",
+        "titulo": "Sobre o Campus — Campus Alcântara",
+        "orgao": "Instituto Federal do Maranhão",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "fonte_institucional_oficial",
+        "descricao_factual": "Lido diretamente: Resolucao CONDIR no 38/2007 (10/09/2007) cria o Nucleo Avancado; Resolucao no 25/2008 (21/02/2008) regulamenta o 1o processo seletivo; semestre letivo comeca em 12/08/2008 com 115 alunos; unidade recebe status de Campus a partir de 2010, com autorizacao de funcionamento em janeiro de 2010, consolidando pertencimento a Fase II do Plano de Expansao.",
+        "campo_sustentado": "ano_evento_institucional, ano_transicao, primeiro_ano_completo, anos_sensibilidade"
+      }
+    ]
+  },
+  "1500107": {
+    "ano_evento_institucional": 2008,
+    "ano_transicao": 2008,
+    "primeiro_ano_completo": 2009,
+    "ano_coorte_candidata": 2009,
+    "origem_coorte": "institucional_validada",
+    "anos_sensibilidade": [],
+    "anos_excluir_estimacao": [2008],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "evento_documentado_por_fonte_academica_revisada",
+    "status_timing": "ano_parcial_documentado",
+    "status_populacao_causal": "candidato_com_ressalva",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "fonte_institucional_oficial",
+    "motivo_decisao": "Decreto Legislativo estadual no 52/2007 (17/12/2007) aprova doacao de terreno; Portaria MEC no 698, de 09/06/2008, autoriza o CEFET-PA a funcionar sua UNED em Abaetetuba; aula inaugural em 20/10/2008, tornando 2008 ano parcial; unidade elevada a Campus do IFPA em janeiro de 2009 apos a Lei 11.892/2008. 2009 e o primeiro ano civil inteiramente exposto. A Portaria MEC 698/2008 e o Decreto Legislativo 52/2007 nao foram lidos diretamente no Diario Oficial/diario estadual nesta revisao (citados por artigo academico revisado por pares); por isso o caso permanece com ressalva.",
+    "fonte_decisao": "revisao_institucional_abaetetuba_ifpa",
+    "fontes": [
+      {
+        "url_ou_caminho": "https://editoraessentia.iff.edu.br/index.php/vertices/article/download/17000/16617?inline=1",
+        "titulo": "Memórias das experiências iniciais em um Instituto Federal: o Ensino Médio Integrado no IFPA Campus Abaetetuba (2008-2013)",
+        "orgao": "Revista Vértices (periódico acadêmico revisado por pares)",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "fonte_institucional_oficial",
+        "descricao_factual": "Lido diretamente: Decreto Legislativo no 52/2007 (17/12/2007) aprova doacao de terreno; Portaria MEC no 698, de 09/06/2008, autoriza a UNED do CEFET-PA em Abaetetuba; aula inaugural em 20/10/2008; elevacao a IFPA Campus Abaetetuba em janeiro de 2009.",
+        "campo_sustentado": "ano_evento_institucional, ano_transicao, primeiro_ano_completo"
+      }
+    ]
+  },
+  "3300704": {
+    "ano_evento_institucional": 2009,
+    "ano_transicao": 2009,
+    "primeiro_ano_completo": 2010,
+    "ano_coorte_candidata": 2010,
+    "origem_coorte": "institucional_validada",
+    "anos_sensibilidade": [2009],
+    "anos_excluir_estimacao": [2009],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "evento_documentado_unidade_relevante_separada",
+    "status_timing": "ano_parcial_documentado",
+    "status_populacao_causal": "candidato_principal",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": false,
+    "nivel_evidencia": "fonte_institucional_oficial",
+    "motivo_decisao": "IFF Campus Cabo Frio inaugurado oficialmente em 05/03/2009 (fonte institucional direta do IFF, com presenca do presidente Lula e do ministro Fernando Haddad); unidade nova da Fase II, nao transformacao de CEFET/Escola Agrotecnica anterior; 2009 e ano parcial e 2010 o primeiro ano civil completo. A 'Escola Universitaria - UFRJ' observada no Censo (2011-2014) e o Instituto Politecnico de Cabo Frio, mantido pelo nucleo UFRJMar em parceria com a prefeitura desde 2008; e instituicao distinta, sem vinculo com a Fase II, cujos 67 alunos foram transferidos ao IFF em 2016 quando o programa foi encerrado. Nao ha risco relevante de mistura entre as duas entidades.",
+    "fonte_decisao": "revisao_institucional_cabo_frio_iff",
+    "fontes": [
+      {
+        "url_ou_caminho": "https://portal1.iff.edu.br/nossos-campi/cabo-frio/apresentacao",
+        "titulo": "Apresentação — Campus Cabo Frio",
+        "orgao": "Instituto Federal Fluminense",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "fonte_institucional_oficial",
+        "descricao_factual": "Lido diretamente: inauguracao oficial em 05/03/2009 com presenca do presidente Lula e do ministro Fernando Haddad; unidade nova integrante do Plano da Rede Federal de Expansao Profissional, nao transformacao de unidade anterior.",
+        "campo_sustentado": "ano_evento_institucional, primeiro_ano_completo, status_populacao_causal"
+      },
+      {
+        "url_ou_caminho": "https://conexao.ufrj.br/2016/08/alunos-do-instituto-politecnico-serao-transferidos-para-o-iff/",
+        "titulo": "Alunos do Instituto Politécnico serão transferidos para o IFF",
+        "orgao": "Conexão UFRJ",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "indicio_secundario",
+        "descricao_factual": "Instituto Politecnico de Cabo Frio, mantido pelo nucleo UFRJMar, iniciado em 2008 em parceria com a prefeitura; 67 alunos transferidos ao IFF em 2016 quando o programa foi encerrado.",
+        "campo_sustentado": "motivo_decisao (distincao da entidade UFRJ observada no Censo)"
+      }
+    ]
+  },
+  "4314902": {
+    "ano_evento_institucional": 2010,
+    "ano_transicao": 2010,
+    "primeiro_ano_completo": 2011,
+    "ano_coorte_candidata": 2011,
+    "origem_coorte": "institucional_validada",
+    "anos_sensibilidade": [2010],
+    "anos_excluir_estimacao": [2010],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "expansao_adicional_em_municipio_com_presenca_federal_preexistente",
+    "status_timing": "ano_parcial_documentado",
+    "status_populacao_causal": "especial_estimando",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "fonte_primaria_legislativa",
+    "motivo_decisao": "O municipio ja tinha presenca federal EPT ativa continua desde 2007 (Campus Porto Alegre, ex-Escola Tecnica da UFRGS), o que impede tratar qualquer ano dentro do painel como 'primeira exposicao federal' do municipio (baseline D_g,1 ja tratado). A chegada do Campus Restinga, autorizado pela Portaria MEC 1.170/2010 (lida diretamente no Diario Oficial) com inicio de atividades em 26/06/2010, representa uma expansao adicional, distinta e nomeada separadamente ('Porto Alegre - Restinga') da unidade historica. O municipio fica excluido da amostra causal principal de 'primeira exposicao' e mantido apenas como estimando especial para a chegada do Campus Restinga; nunca utilizavel como controle never-treated ou not-yet-treated.",
+    "fonte_decisao": "revisao_institucional_porto_alegre_restinga",
+    "fontes": [
+      {
+        "url_ou_caminho": "https://pep.ifsp.edu.br/images/PDF/Portarias/2010/09/Portaria-n-1.170-de-21-de-setembro-de-2010.pdf",
+        "titulo": "Diário Oficial da União, Seção 1, nº 182, 22/09/2010 — Portaria MEC nº 1.170, de 21 de setembro de 2010",
+        "orgao": "Ministério da Educação / Imprensa Nacional",
+        "data_evidencia_ou_acesso": "2010-09-22",
+        "nivel_evidencia": "fonte_primaria_legislativa",
+        "descricao_factual": "Lido diretamente: o Anexo autoriza o IFRS a funcionar em 'Canoas, Caxias do Sul, Osorio e Porto Alegre - Restinga', nomeando a Restinga separadamente do Campus Porto Alegre historico.",
+        "campo_sustentado": "ano_evento_institucional, status_populacao_causal (identidade do Campus Restinga)"
+      },
+      {
+        "url_ou_caminho": "https://memoria.ifrs.edu.br/historia-do-ifrs/campus-restinga-porto-alegre/",
+        "titulo": "Campus Restinga (Porto Alegre) — Núcleo de Memória do IFRS",
+        "orgao": "Instituto Federal do Rio Grande do Sul",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "indicio_secundario",
+        "descricao_factual": "26/06/2010 marca o inicio das atividades em sede provisoria, com cursos tecnicos subsequentes a partir do 2o semestre de 2010. Pagina retornou erro HTTP 403 quando aberta diretamente nesta revisao; conteudo obtido via resumo de busca.",
+        "campo_sustentado": "ano_transicao, primeiro_ano_completo"
+      }
+    ]
+  },
+  "3143302": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": 2011,
+    "origem_coorte": "institucional_validada",
+    "anos_sensibilidade": [2012],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "duas_entidades_distintas_no_mesmo_municipio",
+    "status_timing": "identidade_forte_timing_incerto",
+    "status_populacao_causal": "candidato_com_ressalva",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "indicio_secundario",
+    "motivo_decisao": "O sinal de EPT ativa em 2007-2008 vem do Colegio Agricola Antonio Versiani Athayde (criado em 1964, vinculado a UFMG desde 1968), entidade distinta e sem relacao de sucessao com o Campus Montes Claros do IFNMG. O IFNMG e o campus da Fase II; seu primeiro ano persistente no Censo (2011) e usado como coorte candidata. Fontes secundarias, nao confirmadas em Diario Oficial nesta revisao, indicam inicio de atividades ja em 2010 e consolidacao de sede propria em 2011-2012; por isso 2012 fica registrado como sensibilidade, nao como coorte principal. A intermitencia agregada observada no nivel municipal (EPT ativa em 2007-2008 pelo Athayde, retomada em 2011 pelo IFNMG) nao deve ser lida como reversao operacional do campus do IFNMG: sao entidades diferentes, nao o mesmo campus fechando e reabrindo.",
+    "fonte_decisao": "revisao_institucional_montes_claros_ifnmg",
+    "fontes": [
+      {
+        "url_ou_caminho": "docs/methodology/AUDITORIA_CORRESPONDENCIA_UNIDADES_FASE_II.md",
+        "titulo": "Auditoria de Correspondência: Unidades da Fase II — seção 'Casos prioritários'",
+        "orgao": "Documento interno versionado do projeto",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "auditoria_local_dados",
+        "descricao_factual": "Documenta explicitamente: 'Colegio Agricola Antonio Versiani Athayde (UFMG, EPT ativa 2007-2008) x Campus Montes Claros do IFNMG (2011-)' como duas entidades distintas sob o mesmo codigo IBGE.",
+        "campo_sustentado": "status_institucional (distincao entre as duas entidades)"
+      },
+      {
+        "url_ou_caminho": "https://www.montesclaros.mg.leg.br/institucional/noticias/ifnmg-celebra-15-anos-de-atuacao-em-montes-claros",
+        "titulo": "IFNMG celebra 15 anos de atuação em Montes Claros",
+        "orgao": "Câmara Municipal de Montes Claros",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "indicio_secundario",
+        "descricao_factual": "Indica inicio das operacoes do IFNMG em Montes Claros por volta de 2010, com autorizacao de funcionamento datada de dezembro de 2010, operando inicialmente em espacos cedidos pela Fundacao Irma Dulce e pela Escola Municipal Ruy Lage; sede propria concluida em 2011. Numero exato da portaria de autorizacao inconsistente entre buscas; nao confirmado em Diario Oficial.",
+        "campo_sustentado": "ano_coorte_candidata (2011) e anos_sensibilidade (2012)"
+      }
+    ]
+  },
+  "3118601": {
+    "ano_evento_institucional": 2012,
+    "ano_transicao": 2012,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "nao_aplicavel",
+    "anos_sensibilidade": [2013],
+    "anos_excluir_estimacao": [2012],
+    "tratamento_absorvente": false,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "operacao_provisoria_documentada_sem_ano_completo_confirmado",
+    "status_timing": "incerteza_institucional",
+    "status_populacao_causal": "sob_revisao",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "fonte_institucional_oficial",
+    "motivo_decisao": "CEFET-MG Campus/UNED Contagem operou em espaco provisorio cedido pela FIEMG a partir do 1o semestre de 2012; a entidade so aparece no Censo Escolar a partir de 2013, defasagem tipica entre inicio real e primeira observacao administrativa. Nao ha confirmacao de que 2013 (nem qualquer outro ano da fase provisoria) tenha sido um ano civil plenamente estabilizado: a sede propria so foi inaugurada em 19/12/2019, apos operar cerca de um ano e meio no local antes da inauguracao oficial. Por isso primeiro_ano_completo e ano_coorte_candidata permanecem nulos; 2013 fica registrado apenas como fato observado/sensibilidade, nunca como coorte principal.",
+    "fonte_decisao": "revisao_institucional_contagem_cefetmg",
+    "fontes": [
+      {
+        "url_ou_caminho": "https://www.contagem.cefetmg.br/unidade-contagem-2/",
+        "titulo": "Unidade Contagem",
+        "orgao": "CEFET-MG",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "fonte_institucional_oficial",
+        "descricao_factual": "Lido diretamente: inicio das atividades no 1o semestre de 2012 em espaco cedido pela FIEMG; sede propria inaugurada em 19/12/2019; unidade parte da 2a fase do Plano de Expansao iniciado em 2007.",
+        "campo_sustentado": "ano_evento_institucional, ano_transicao"
+      }
+    ]
+  },
+  "2503209": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "proxy_censo",
+    "anos_sensibilidade": [],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "unidades_fisicas_distintas_e_separaveis",
+    "status_timing": "proxy_censo_com_revisao",
+    "status_populacao_causal": "candidato_com_ressalva",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "indicio_secundario",
+    "motivo_decisao": "IFPB Campus Cabedelo (polo da Fase II, criado a partir do Plano de Expansao de 2008) e IFPB Campus Avancado Cabedelo Centro (unidade posterior, SISTEC 2014, elevada a Campus pleno somente em 2025) sao unidades fisicas separaveis. A identidade do polo correto (Campus Cabedelo) esta razoavelmente estabelecida por fontes institucionais, mas nenhuma data legal exata de autorizacao ou de inicio das aulas foi confirmada em fonte primaria. Ate confirmacao, a coorte candidata permanece a proxy mecanica do painel do Censo, sem assumir um primeiro ano civil completo.",
+    "fonte_decisao": "revisao_institucional_cabedelo_ifpb",
+    "fontes": [
+      {
+        "url_ou_caminho": "https://www.ifpb.edu.br/institucional/historia",
+        "titulo": "História",
+        "orgao": "Instituto Federal da Paraíba",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "fonte_institucional_oficial",
+        "descricao_factual": "Cabedelo esta entre os municipios com novas unidades construidas apos a criacao dos Institutos Federais em dezembro de 2008.",
+        "campo_sustentado": "status_institucional (identidade do polo Fase II)"
+      },
+      {
+        "url_ou_caminho": "https://www.ifpb.edu.br/campus/cabedelocentro/noticias/2025/01/cabedelo-centro-se-torna-oficialmente-campus",
+        "titulo": "Cabedelo Centro se torna oficialmente Campus",
+        "orgao": "Instituto Federal da Paraíba",
+        "data_evidencia_ou_acesso": "2025-01-21",
+        "nivel_evidencia": "indicio_secundario",
+        "descricao_factual": "Campus Avancado Cabedelo Centro existia ha cerca de uma decada (desde ~2015) antes de se tornar Campus pleno pela Portaria MEC no 34/2025, confirmando ser unidade distinta e posterior ao Campus Cabedelo original.",
+        "campo_sustentado": "status_institucional (separacao entre as duas unidades)"
+      }
+    ]
+  },
+  "2918001": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "nao_aplicavel",
+    "anos_sensibilidade": [2012],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": false,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "mesmo_campus_com_lacuna_observacional_de_ept_ativa_nao_confirmada_como_fechamento",
+    "status_timing": "intermitente_observacional_sem_validacao_institucional",
+    "status_populacao_causal": "sob_revisao",
+    "validacao_institucional_individual": false,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "auditoria_local_dados",
+    "motivo_decisao": "A auditoria de timing (docs/methodology/AUDITORIA_TIMING_TRATAMENTO.md) identifica uma unica interrupcao interna na flag de EPT federal ativa para este municipio, no mesmo campus (nao ha troca de entidade); o primeiro ano persistente ate 2019 e 2018. A queda observada de EPT ativa nao comprova encerramento operacional do campus: pode refletir apenas uma pausa administrativa na oferta curricular especifica classificada pelo Censo como 'EPT', nao um fechamento fisico. Sem validacao institucional externa que confirme fechamento ou reabertura, o municipio fica sob revisao e fora da amostra principal. 2012 (primeiro ano de EPT ativa observado antes da lacuna) fica registrado apenas como sensibilidade futura de uma especificacao ingenua absorvente, documentada mas nao estimada agora.",
+    "fonte_decisao": "auditoria_local_intermitencia_jequie",
+    "fontes": [
+      {
+        "url_ou_caminho": "docs/methodology/AUDITORIA_TIMING_TRATAMENTO.md",
+        "titulo": "Auditoria de Timing do Tratamento — seção 'Resultados reproduzidos na execução atual'",
+        "orgao": "Documento interno versionado do projeto",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "auditoria_local_dados",
+        "descricao_factual": "Jequie/BA listado entre os 4 municipios com trajetoria intermitente de presenca federal EPT ativa, com uma interrupcao interna; primeiro ano persistente ate 2019 registrado como 2018.",
+        "campo_sustentado": "status_institucional, status_populacao_causal"
+      }
+    ]
+  },
+  "2804508": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "nao_aplicavel",
+    "anos_sensibilidade": [2011],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": false,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "mesmo_campus_com_lacuna_observacional_de_ept_ativa_nao_confirmada_como_fechamento",
+    "status_timing": "intermitente_observacional_sem_validacao_institucional",
+    "status_populacao_causal": "sob_revisao",
+    "validacao_institucional_individual": false,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "auditoria_local_dados",
+    "motivo_decisao": "A auditoria de timing (docs/methodology/AUDITORIA_TIMING_TRATAMENTO.md) identifica uma unica interrupcao interna na flag de EPT federal ativa para este municipio, no mesmo campus; o primeiro ano persistente ate 2019 e 2018. A queda observada nao comprova encerramento operacional do campus. Sem validacao institucional externa, o municipio fica sob revisao e fora da amostra principal. 2011 (primeiro ano de EPT ativa observado antes da lacuna) fica registrado apenas como sensibilidade futura de uma especificacao ingenua absorvente, documentada mas nao estimada agora.",
+    "fonte_decisao": "auditoria_local_intermitencia_nossa_senhora_da_gloria",
+    "fontes": [
+      {
+        "url_ou_caminho": "docs/methodology/AUDITORIA_TIMING_TRATAMENTO.md",
+        "titulo": "Auditoria de Timing do Tratamento — seção 'Resultados reproduzidos na execução atual'",
+        "orgao": "Documento interno versionado do projeto",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "auditoria_local_dados",
+        "descricao_factual": "Nossa Senhora da Gloria/SE listado entre os 4 municipios com trajetoria intermitente de presenca federal EPT ativa, com uma interrupcao interna; primeiro ano persistente ate 2019 registrado como 2018.",
+        "campo_sustentado": "status_institucional, status_populacao_causal"
+      }
+    ]
+  },
+  "3538709": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "nao_aplicavel",
+    "anos_sensibilidade": [2011],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": false,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "mesmo_campus_com_lacuna_observacional_de_ept_ativa_nao_confirmada_como_fechamento",
+    "status_timing": "intermitente_observacional_sem_validacao_institucional",
+    "status_populacao_causal": "sob_revisao",
+    "validacao_institucional_individual": false,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "auditoria_local_dados",
+    "motivo_decisao": "A auditoria de timing (docs/methodology/AUDITORIA_TIMING_TRATAMENTO.md) identifica uma unica interrupcao interna na flag de EPT federal ativa para este municipio, no mesmo campus; o primeiro ano persistente ate 2019 e 2018. A queda observada nao comprova encerramento operacional do campus. Sem validacao institucional externa, o municipio fica sob revisao e fora da amostra principal. 2011 (primeiro ano de EPT ativa observado antes da lacuna) fica registrado apenas como sensibilidade futura de uma especificacao ingenua absorvente, documentada mas nao estimada agora.",
+    "fonte_decisao": "auditoria_local_intermitencia_piracicaba",
+    "fontes": [
+      {
+        "url_ou_caminho": "docs/methodology/AUDITORIA_TIMING_TRATAMENTO.md",
+        "titulo": "Auditoria de Timing do Tratamento — seção 'Resultados reproduzidos na execução atual'",
+        "orgao": "Documento interno versionado do projeto",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "auditoria_local_dados",
+        "descricao_factual": "Piracicaba/SP listado entre os 4 municipios com trajetoria intermitente de presenca federal EPT ativa, com uma interrupcao interna; primeiro ano persistente ate 2019 registrado como 2018.",
+        "campo_sustentado": "status_institucional, status_populacao_causal"
+      }
+    ]
+  },
+  "2401008": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "proxy_censo",
+    "anos_sensibilidade": [],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "padrao_escola_agricola_de_jundiai_com_ressalva",
+    "status_timing": "proxy_censo_com_revisao",
+    "status_populacao_causal": "candidato_com_ressalva",
+    "validacao_institucional_individual": false,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "auditoria_local_dados",
+    "motivo_decisao": "Campus do IFRN observado como continuo no Censo a partir de um padrao regional associado a Escola Agricola de Jundiai; essa entidade historica nao e tratada como um novo campus da Fase II nem gera evento institucional proprio para este municipio. Sem pesquisa institucional externa individual nesta revisao; a coorte candidata permanece a proxy mecanica do painel do Censo.",
+    "fonte_decisao": "auditoria_local_padrao_eaj_rn",
+    "fontes": [
+      {
+        "url_ou_caminho": "src/auditoria_correspondencia_unidades_fase_ii.py",
+        "titulo": "Script de auditoria de correspondência de unidades da Fase II (código-fonte versionado)",
+        "orgao": "Auditoria interna versionada do projeto",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "auditoria_local_dados",
+        "descricao_factual": "Padrao recorrente de correspondencia da Escola Agricola de Jundiai nos registros MEC/SISTEC para municipios do Rio Grande do Norte associados ao IFRN, identificado pela auditoria de correspondencia, sem pesquisa institucional externa individual nesta revisao.",
+        "campo_sustentado": "status_institucional"
+      }
+    ]
+  },
+  "2402006": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "proxy_censo",
+    "anos_sensibilidade": [],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "padrao_escola_agricola_de_jundiai_com_ressalva",
+    "status_timing": "proxy_censo_com_revisao",
+    "status_populacao_causal": "candidato_com_ressalva",
+    "validacao_institucional_individual": false,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "auditoria_local_dados",
+    "motivo_decisao": "Campus do IFRN observado como continuo no Censo a partir de um padrao regional associado a Escola Agricola de Jundiai; essa entidade historica nao e tratada como um novo campus da Fase II nem gera evento institucional proprio para este municipio. Sem pesquisa institucional externa individual nesta revisao; a coorte candidata permanece a proxy mecanica do painel do Censo.",
+    "fonte_decisao": "auditoria_local_padrao_eaj_rn",
+    "fontes": [
+      {
+        "url_ou_caminho": "src/auditoria_correspondencia_unidades_fase_ii.py",
+        "titulo": "Script de auditoria de correspondência de unidades da Fase II (código-fonte versionado)",
+        "orgao": "Auditoria interna versionada do projeto",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "auditoria_local_dados",
+        "descricao_factual": "Padrao recorrente de correspondencia da Escola Agricola de Jundiai nos registros MEC/SISTEC para municipios do Rio Grande do Norte associados ao IFRN, identificado pela auditoria de correspondencia, sem pesquisa institucional externa individual nesta revisao.",
+        "campo_sustentado": "status_institucional"
+      }
+    ]
+  },
+  "2405801": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "proxy_censo",
+    "anos_sensibilidade": [],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "padrao_escola_agricola_de_jundiai_com_ressalva",
+    "status_timing": "proxy_censo_com_revisao",
+    "status_populacao_causal": "candidato_com_ressalva",
+    "validacao_institucional_individual": false,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "auditoria_local_dados",
+    "motivo_decisao": "Campus do IFRN observado como continuo no Censo a partir de um padrao regional associado a Escola Agricola de Jundiai; essa entidade historica nao e tratada como um novo campus da Fase II nem gera evento institucional proprio para este municipio. Sem pesquisa institucional externa individual nesta revisao; a coorte candidata permanece a proxy mecanica do painel do Censo.",
+    "fonte_decisao": "auditoria_local_padrao_eaj_rn",
+    "fontes": [
+      {
+        "url_ou_caminho": "src/auditoria_correspondencia_unidades_fase_ii.py",
+        "titulo": "Script de auditoria de correspondência de unidades da Fase II (código-fonte versionado)",
+        "orgao": "Auditoria interna versionada do projeto",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "auditoria_local_dados",
+        "descricao_factual": "Padrao recorrente de correspondencia da Escola Agricola de Jundiai nos registros MEC/SISTEC para municipios do Rio Grande do Norte associados ao IFRN, identificado pela auditoria de correspondencia, sem pesquisa institucional externa individual nesta revisao.",
+        "campo_sustentado": "status_institucional"
+      }
+    ]
+  },
+  "2409407": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "proxy_censo",
+    "anos_sensibilidade": [],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "padrao_escola_agricola_de_jundiai_com_ressalva",
+    "status_timing": "proxy_censo_com_revisao",
+    "status_populacao_causal": "candidato_com_ressalva",
+    "validacao_institucional_individual": false,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "auditoria_local_dados",
+    "motivo_decisao": "Campus do IFRN observado como continuo no Censo a partir de um padrao regional associado a Escola Agricola de Jundiai; essa entidade historica nao e tratada como um novo campus da Fase II nem gera evento institucional proprio para este municipio. Sem pesquisa institucional externa individual nesta revisao; a coorte candidata permanece a proxy mecanica do painel do Censo.",
+    "fonte_decisao": "auditoria_local_padrao_eaj_rn",
+    "fontes": [
+      {
+        "url_ou_caminho": "src/auditoria_correspondencia_unidades_fase_ii.py",
+        "titulo": "Script de auditoria de correspondência de unidades da Fase II (código-fonte versionado)",
+        "orgao": "Auditoria interna versionada do projeto",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "auditoria_local_dados",
+        "descricao_factual": "Padrao recorrente de correspondencia da Escola Agricola de Jundiai nos registros MEC/SISTEC para municipios do Rio Grande do Norte associados ao IFRN, identificado pela auditoria de correspondencia, sem pesquisa institucional externa individual nesta revisao.",
+        "campo_sustentado": "status_institucional"
+      }
+    ]
+  },
+  "2411205": {
+    "ano_evento_institucional": null,
+    "ano_transicao": null,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "proxy_censo",
+    "anos_sensibilidade": [],
+    "anos_excluir_estimacao": [],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "padrao_escola_agricola_de_jundiai_e_erro_de_municipio_no_sistec",
+    "status_timing": "proxy_censo_com_revisao",
+    "status_populacao_causal": "candidato_com_ressalva",
+    "validacao_institucional_individual": false,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "auditoria_local_dados",
+    "motivo_decisao": "Campus do IFRN observado como continuo no Censo (padrao Escola Agricola de Jundiai); adicionalmente, a base MEC/SISTEC associa o 'Instituto Federal do Rio Grande do Norte - Campus Santa Cruz' ao municipio de Natal (erro de origem na propria fonte, nao corrigido por inferencia de texto). Sem pesquisa institucional externa individual nesta revisao; a coorte candidata permanece a proxy mecanica do painel do Censo.",
+    "fonte_decisao": "auditoria_local_padrao_eaj_rn_e_sistec_natal",
+    "fontes": [
+      {
+        "url_ou_caminho": "docs/methodology/AUDITORIA_CORRESPONDENCIA_UNIDADES_FASE_II.md",
+        "titulo": "Auditoria de Correspondência: Unidades da Fase II — seção 'Caso sem candidato MEC/SISTEC'",
+        "orgao": "Documento interno versionado do projeto",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "auditoria_local_dados",
+        "descricao_factual": "Documenta explicitamente que o 'Instituto Federal do Rio Grande do Norte - Campus Santa Cruz' aparece na base MEC/SISTEC com nome_municipio_unidade_ensino='Natal', um erro na fonte, nao corrigido automaticamente por inferencia de texto.",
+        "campo_sustentado": "status_institucional (erro de municipio no SISTEC)"
+      }
+    ]
+  },
+  "2312908": {
+    "ano_evento_institucional": 2009,
+    "ano_transicao": 2009,
+    "primeiro_ano_completo": 2010,
+    "ano_coorte_candidata": 2010,
+    "origem_coorte": "institucional_validada",
+    "anos_sensibilidade": [2008],
+    "anos_excluir_estimacao": [2009],
+    "tratamento_absorvente": true,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "criacao_administrativa_2008_e_inauguracao_oficial_2009_sao_fatos_distintos_nao_contraditorios",
+    "status_timing": "ano_parcial_documentado_com_revisao",
+    "status_populacao_causal": "candidato_com_ressalva",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "indicio_secundario",
+    "motivo_decisao": "A UnED Sobral do entao CEFET-CE foi criada pela Portaria MEC no 689, de 09/06/2008 (criacao administrativa, registrada como fato antecedente, nao como transicao operacional); a Lei 11.892, de 29/12/2008, transforma a unidade em Campus Sobral do IFCE; a inauguracao oficial ocorreu em 10/09/2009, tornando 2009 ano parcial. 2010 e o primeiro ano civil inteiramente exposto apos a inauguracao. Esses tres fatos (criacao administrativa 2008, transformacao legal dez/2008, inauguracao set/2009) sao complementares, nao contraditorios entre si; a aparente contradicao apontada em revisoes anteriores decorria da ausencia de fontes que distinguissem os tres eventos. Nenhuma das datas foi lida diretamente em Diario Oficial nesta revisao (vieram de resumo de busca sobre Wikipedia/IFCE); por isso o caso permanece com ressalva e em revisao prioritaria, nao classificado como candidato_principal.",
+    "fonte_decisao": "revisao_institucional_sobral_ifce",
+    "fontes": [
+      {
+        "url_ou_caminho": "https://pt.wikipedia.org/wiki/Hist%C3%B3ria_do_Instituto_Federal_do_Cear%C3%A1",
+        "titulo": "História do Instituto Federal do Ceará",
+        "orgao": "Wikipédia (fonte terciária, não oficial)",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "indicio_secundario",
+        "descricao_factual": "UnED Sobral do CEFET-CE criada pela Portaria MEC no 689, de 09/06/2008; transformada em Campus Sobral pela Lei 11.892 de 29/12/2008; inauguracao oficial em 10/09/2009. Conteudo obtido via resumo de busca, nao leitura direta do texto da portaria ou da wikipedia.",
+        "campo_sustentado": "ano_evento_institucional, ano_transicao, primeiro_ano_completo, anos_sensibilidade"
+      }
+    ]
+  },
+  "3509502": {
+    "ano_evento_institucional": 2013,
+    "ano_transicao": 2013,
+    "primeiro_ano_completo": null,
+    "ano_coorte_candidata": null,
+    "origem_coorte": "nao_aplicavel",
+    "anos_sensibilidade": [2013],
+    "anos_excluir_estimacao": [2013],
+    "tratamento_absorvente": false,
+    "tratamento_preexistente_painel": false,
+    "status_institucional": "inicio_2013_documentado_sem_ano_civil_completo_confirmado",
+    "status_timing": "evento_documentado_mas_operacao_instavel_ate_sede_definitiva_2019",
+    "status_populacao_causal": "sob_revisao",
+    "validacao_institucional_individual": true,
+    "revisao_prioritaria": true,
+    "nivel_evidencia": "indicio_secundario",
+    "motivo_decisao": "As atividades do IFSP Campus Campinas comecaram em agosto de 2013 com a primeira turma do Tecnologo em Analise e Desenvolvimento de Sistemas, viabilizada por convenio com o CTI 'Renato Archer' — 2013 e portanto ano parcial, nao um ano civil completo confirmado. Fontes indicam 'uma serie de dificuldades' na implantacao, com a sede definitiva so entregue em maio de 2019; nao ha confirmacao de qual foi o primeiro ano civil efetivamente estavel apos 2013. Por isso primeiro_ano_completo e ano_coorte_candidata permanecem nulos; 2013 fica registrado apenas como fato observado/sensibilidade. O municipio pertence a Fase II e nao pode ser controle independentemente da resolucao deste timing.",
+    "fonte_decisao": "revisao_institucional_campinas_ifsp",
+    "fontes": [
+      {
+        "url_ou_caminho": "https://projetogauss.org/2022/04/08/tudo-sobre-o-ifsp-campinas/",
+        "titulo": "Tudo sobre o IFSP Campinas",
+        "orgao": "Projeto Gauss (blog estudantil, fonte informal)",
+        "data_evidencia_ou_acesso": "2026-09-11",
+        "nivel_evidencia": "indicio_secundario",
+        "descricao_factual": "Inicio das atividades em agosto de 2013 com abertura da primeira turma do curso Tecnologo em Analise e Desenvolvimento de Sistemas, viabilizado por convenio entre o CTI 'Renato Archer' e o IFSP; devido a dificuldades, a implementacao na sede definitiva so ocorreu em maio de 2019.",
+        "campo_sustentado": "ano_evento_institucional, ano_transicao, motivo_decisao (ausencia de ano civil completo confirmado)"
+      }
+    ]
+  }
+}
