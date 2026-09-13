@@ -61,6 +61,11 @@ data/raw/*
 !data/raw/geobr/sedes_municipais/source_manifest.json
 !data/raw/geobr/sedes_municipais/municipalseats_2010.parquet
 
+!data/raw/ibge/
+!data/raw/ibge/arranjos_populacionais_2010/
+!data/raw/ibge/arranjos_populacionais_2010/source_manifest.json
+!data/raw/ibge/arranjos_populacionais_2010/tab01_municipios_arranjos_populacionais_2010.xlsx
+
 data/interim/*
 !data/interim/.gitkeep
 
@@ -69,6 +74,7 @@ data/interim/*
 !data/interim/censo_federal_municipio_ano_2007_2019.parquet
 !data/interim/fase_ii_unidades.parquet
 !data/interim/sedes_municipais_ibge_2010.parquet
+!data/interim/arranjos_populacionais_municipios_2010.parquet
 
 data/processed/*
 !data/processed/.gitkeep
@@ -81,6 +87,7 @@ data/processed/*
 !data/processed/cadastro_elegibilidade_controles_2007_2019.parquet
 !data/processed/pool_candidato_controles_sem_exposicao_2007_2019.parquet
 !data/processed/diagnostico_distancias_spillover_fase_ii.parquet
+!data/processed/diagnostico_arranjos_populacionais_fase_ii.parquet
 
 # ============================================================
 # Outputs reproduziveis
@@ -99,6 +106,7 @@ outputs/tables/*
 !outputs/diagnostics/resumo_correspondencia_unidades_fase_ii.csv
 !outputs/diagnostics/resumo_pool_candidato_controles.csv
 !outputs/diagnostics/resumo_distancias_spillover_fase_ii.csv
+!outputs/diagnostics/resumo_arranjos_populacionais_fase_ii.csv
 
 # ============================================================
 # Temporarios

@@ -1,0 +1,51 @@
+{
+    "fonte": "IBGE - Arranjos Populacionais e Concentrações Urbanas do Brasil (2ª edição), Tabela 1.1 - Municípios brasileiros que participam de arranjos populacionais - 2010",
+    "autoridade_institucional": "Instituto Brasileiro de Geografia e Estatística (IBGE), Coordenação de Geografia - dado publicado diretamente pelo IBGE, sem intermediário/distribuidor",
+    "pagina_indice_produto": "https://www.ibge.gov.br/geociencias/organizacao-do-territorio/divisao-regional/15782-arranjos-populacionais-e-concentracoes-urbanas-do-brasil.html",
+    "diretorio_ftp_oficial": "https://geoftp.ibge.gov.br/organizacao_do_territorio/divisao_regional/arranjos_populacionais/",
+    "definicao_metodologica": "Um arranjo populacional é o agrupamento de dois ou mais municípios onde há forte integração populacional devido aos movimentos pendulares para trabalho ou estudo, ou devido à contiguidade entre as manchas urbanizadas principais (LEIA_ME_2ed.txt, mesmo diretório do produto). Fonte dos dados de deslocamento: amostra do Censo Demográfico 2010.",
+    "nota_de_rodape_da_tabela_original": "Fonte: IBGE, Censo Demográfico 2010. Nota: Arranjos populacionais identificados segundo metodologia desenvolvida pela Coordenação de Geografia do IBGE.",
+    "ano_referencia": 2010,
+    "edicao": "2ª edição (sufixo '_2ed' nos diretórios e planilhas oficiais do produto)",
+    "arquivo": {
+        "nome_original_no_servidor": "tab01.xlsx",
+        "nome_local": "tab01_municipios_arranjos_populacionais_2010.xlsx",
+        "url_exata": "https://geoftp.ibge.gov.br/organizacao_do_territorio/divisao_regional/arranjos_populacionais/tabelas_xls_2ed/tab01.xlsx",
+        "data_acesso": "2026-09-12T21:35:40Z",
+        "tamanho_bytes": 111497,
+        "sha256": "fcb65d94220814643536e00bc775e3fea69d9da9bbb56acd576f4abfb058da77",
+        "caminho_local": "data/raw/ibge/arranjos_populacionais_2010/tab01_municipios_arranjos_populacionais_2010.xlsx",
+        "formato_preservado": "XLSX original do servidor IBGE, sem nenhuma alteração de bytes; renomeado apenas para clareza local (mantendo o nome original registrado acima) - reconciliação de código e extração da composição ocorrem apenas na etapa de processamento (data/interim/arranjos_populacionais_municipios_2010.parquet)."
+    },
+    "estrutura_da_planilha": {
+        "aba": "Tabela 1.1_Revisada",
+        "linha_titulo": 1,
+        "linha_cabecalho": 2,
+        "linha_rodape_fonte": "última linha (nota de fonte, sem dado)",
+        "formato": "linhas de cabeçalho de grupo (nome do arranjo populacional, sem código na coluna 2) intercaladas com linhas de município (nome do município (UF), código do município IBGE de 7 dígitos, população 2010, indicador de núcleo, pessoas que trabalham/estudam em outro município do arranjo, índice de integração, mancha urbanizada contígua, município desmembrado após 1988, nível, via, iteração)"
+    },
+    "totais_confirmados_na_leitura": {
+        "arranjos_populacionais": 294,
+        "municipios_participantes": 953,
+        "codigos_municipais_unicos": 953,
+        "codigos_duplicados": 0
+    },
+    "cobertura_verificada_no_acesso": {
+        "candidatos_pool_em_algum_arranjo": 722,
+        "candidatos_pool_total": 4964,
+        "fase_ii_em_algum_arranjo": 46,
+        "fase_ii_total": 147
+    },
+    "arquivos_do_mesmo_produto_deliberadamente_NAO_baixados": {
+        "tab02_a_tab08_xlsx": "Contêm Produto Interno Bruto (PIB) municipal e número de empresas/unidades locais (variáveis de natureza CEMPRE) para 2010-2011 - deliberadamente NÃO baixados nem utilizados neste projeto, por serem outcomes econômicos fora do escopo desta rotina (ver restrição explícita do projeto contra uso de CEMPRE/outcomes).",
+        "base_de_dados_2ed_mdb": "Geodatabase Access (.mdb) com a feição 'ComposicaoRecortes_01_PorMunicipio', que inclui o código numérico interno oficial do arranjo (CodArranjo) além do nome - NÃO extraída nesta rotina por indisponibilidade de ferramenta de leitura de arquivos Access (.mdb) no ambiente de execução (nem mdbtools, nem pyodbc/driver Access). Ver limitação registrada em DIAGNOSTICO_ARRANJOS_POPULACIONAIS_FASE_II.md."
+    },
+    "restricoes_observadas": {
+        "nao_usa_api_comercial": true,
+        "nao_geocodifica_por_nome": true,
+        "nao_infere_composicao_manualmente": true,
+        "codigos_municipais_reconciliados_para_7_digitos": true,
+        "nenhum_outcome_economico_baixado_ou_usado": true
+    },
+    "uso_no_projeto": "Fonte exclusiva de composição municipal dos arranjos populacionais (Censo 2010) para o diagnóstico de integração funcional entre os 4.964 municípios candidatos a controle e os 147 municípios da Fase II (ver docs/methodology/DIAGNOSTICO_ARRANJOS_POPULACIONAIS_FASE_II.md). Não é utilizada para nenhuma outra finalidade."
+}
