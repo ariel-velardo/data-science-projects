@@ -66,6 +66,19 @@ data/raw/*
 !data/raw/ibge/arranjos_populacionais_2010/source_manifest.json
 !data/raw/ibge/arranjos_populacionais_2010/tab01_municipios_arranjos_populacionais_2010.xlsx
 
+# Exceção estreita: SOMENTE as fixtures pequenas do piloto (Fase 0) são
+# versionáveis. `data/raw/ibge/cempre/requests/` (cache operacional de
+# requests) e qualquer outro arquivo futuro sob `data/raw/ibge/cempre/`
+# continuam ignorados — cada nível é reignorado explicitamente (`/*`)
+# antes de reabrir apenas o próximo nível necessário.
+!data/raw/ibge/cempre/
+data/raw/ibge/cempre/*
+!data/raw/ibge/cempre/fixtures/
+data/raw/ibge/cempre/fixtures/*
+!data/raw/ibge/cempre/fixtures/tabela_1685_n6_3166600_serra_da_saudade_2007_2008_2009_2018_2019.json
+!data/raw/ibge/cempre/fixtures/tabela_1685_n6_4212650_pescaria_brava_2007_2013_2019.json
+!data/raw/ibge/cempre/fixtures/tabela_1685_n6_in_n3_14_roraima_2019.json
+
 data/interim/*
 !data/interim/.gitkeep
 
