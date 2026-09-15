@@ -1,14 +1,17 @@
 """constroi_painel_cempre.py
 ============================
-Piloto técnico (Fase 0) do painel CEMPRE município-ano, 2007-2019.
+Componentes técnicos do painel CEMPRE município-ano, 2007-2019.
 
-Implementa SOMENTE os componentes exigidos pelo gate `PILOTO_TECNICO_APROVADO`
-descrito em `docs/data/ESPECIFICACAO_PAINEL_CEMPRE.md` (seção 12): parser de
-`V`, normalização da long a partir da resposta bruta da API SIDRA,
-reconciliação territorial mínima, validação de chave canônica/duplicidade e
-mecânica de requests/retries/cache. NÃO extrai a série nacional 2007-2019,
-NÃO constrói a wide completa, NÃO faz merge com o cadastro causal e NÃO
-estima nenhum efeito.
+Inclui os componentes da Fase 0 exigidos pelo gate
+`PILOTO_TECNICO_APROVADO` — parser de `V`, normalização da long a partir da
+resposta bruta da API SIDRA, reconciliação territorial, validação de chave
+canônica/duplicidade e mecânica de requests/retries/cache —, a integração
+territorial e o D1: plano nacional determinístico de requests e contrato
+offline de completude.
+
+NÃO executa extração nacional, NÃO persiste a long nacional, NÃO possui
+manifesto ou orquestrador nacional, NÃO constrói wide nacional, NÃO faz merge
+com o cadastro causal e NÃO estima efeitos.
 
 Fonte: IBGE/SIDRA, Tabela 1685 (API `apisidra.ibge.gov.br/values`, sem
 autenticação). `V` é sempre string e nunca é convertido silenciosamente.
@@ -436,6 +439,332 @@ def build_requests(
                 "fonte_tabela": fonte_tabela,
             })
     return requests_spec
+
+
+# ---------------------------------------------------------------------------
+# Plano nacional de requests (bloco 1 da infraestrutura de extração
+# nacional). Gera, de forma determinística e offline, o conjunto completo
+# de lotes esperados para a estratégia vigente (ano × UF × grupo de
+# variáveis, seção 9 da especificação). NÃO chama rede, NÃO extrai dados —
+# apenas monta e valida o plano e compara com resultados já obtidos em
+# outro momento (execução real é responsabilidade de outro módulo/tarefa).
+# ---------------------------------------------------------------------------
+
+_COLUNAS_UF_CALENDARIO = {"uf_codigo", "uf_sigla"}
+_RE_UF_CODIGO = re.compile(r"^\d{2}$")
+_RE_UF_SIGLA = re.compile(r"^[A-Z]{2}$")
+
+
+def uf_list_from_calendario(calendario: pd.DataFrame) -> list[dict[str, str]]:
+    """Deriva a lista oficial de UFs (território de segmentação nacional)
+    a partir do calendário territorial já validado por
+    `load_calendar_territorial` — não de nomes de município, não de uma
+    lista digitada à parte. Isso garante que a segmentação nacional usa
+    exatamente as mesmas UFs que a reconciliação territorial já usa.
+
+    Falha explicitamente se `uf_codigo`/`uf_sigla` estiverem ausentes,
+    inconsistentes entre si (mesmo código com siglas diferentes ou
+    vice-versa) ou com formato de código inválido (2 dígitos).
+    """
+    colunas_ausentes = sorted(_COLUNAS_UF_CALENDARIO - set(calendario.columns))
+    if colunas_ausentes:
+        raise ValueError(
+            f"calendário territorial sem coluna(s) necessária(s) para derivar UFs: {colunas_ausentes}"
+        )
+
+    ufs = calendario[["uf_codigo", "uf_sigla"]].dropna().drop_duplicates()
+
+    siglas_por_codigo = ufs.groupby("uf_codigo")["uf_sigla"].nunique()
+    inconsistentes = siglas_por_codigo[siglas_por_codigo > 1]
+    if not inconsistentes.empty:
+        raise ValueError(
+            f"uf_codigo associado a mais de uma uf_sigla no calendário territorial: {inconsistentes.index.tolist()}"
+        )
+    codigos_por_sigla = ufs.groupby("uf_sigla")["uf_codigo"].nunique()
+    inconsistentes_sigla = codigos_por_sigla[codigos_por_sigla > 1]
+    if not inconsistentes_sigla.empty:
+        raise ValueError(
+            f"uf_sigla associada a mais de um uf_codigo no calendário territorial: {inconsistentes_sigla.index.tolist()}"
+        )
+
+    codigos_invalidos = [
+        codigo for codigo in ufs["uf_codigo"].astype(str) if not _RE_UF_CODIGO.fullmatch(codigo)
+    ]
+    if codigos_invalidos:
+        raise ValueError(f"uf_codigo com formato inválido no calendário territorial (esperado 2 dígitos): {codigos_invalidos}")
+
+    return [
+        {"tipo": "uf", "codigo": str(linha.uf_codigo), "sigla": str(linha.uf_sigla)}
+        for linha in ufs.sort_values("uf_codigo").itertuples()
+    ]
+
+
+def _validate_ufs_esperadas(ufs_esperadas: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Valida a referência EXTERNA de UFs do contrato nacional.
+
+    A referência não pode ser derivada do plano avaliado: é ela que define
+    a cobertura contratada. O contrato vigente exige as 27 UFs brasileiras,
+    com código e sigla únicos e consistentes. O retorno ordenado impede que
+    a ordem fornecida altere a validação lógica do plano.
+    """
+    if len(ufs_esperadas) != 27:
+        raise ValueError(
+            f"referência externa de UFs deve conter exatamente 27 UFs; recebeu {len(ufs_esperadas)}"
+        )
+
+    ufs_normalizadas: list[dict[str, str]] = []
+    for uf in ufs_esperadas:
+        if not isinstance(uf, dict) or uf.get("tipo") != "uf":
+            raise ValueError(f"UF inválida na referência externa: {uf!r}")
+        codigo = str(uf.get("codigo", ""))
+        sigla = str(uf.get("sigla", ""))
+        if not _RE_UF_CODIGO.fullmatch(codigo):
+            raise ValueError(f"código de UF inválido na referência externa: {codigo!r}")
+        if not _RE_UF_SIGLA.fullmatch(sigla):
+            raise ValueError(f"sigla de UF inválida na referência externa: {sigla!r}")
+        ufs_normalizadas.append({"tipo": "uf", "codigo": codigo, "sigla": sigla})
+
+    codigos = [uf["codigo"] for uf in ufs_normalizadas]
+    if len(codigos) != len(set(codigos)):
+        raise ValueError("código de UF duplicado na referência externa")
+    siglas = [uf["sigla"] for uf in ufs_normalizadas]
+    if len(siglas) != len(set(siglas)):
+        raise ValueError("sigla de UF duplicada na referência externa")
+
+    return sorted(ufs_normalizadas, key=lambda uf: uf["codigo"])
+
+
+def build_national_request_plan(
+    calendario: pd.DataFrame | None = None,
+    anos: list[int] | None = None,
+    variaveis: set[int] | list[int] | None = None,
+    fonte_tabela: int = FONTE_TABELA,
+) -> list[dict[str, Any]]:
+    """Gera deterministicamente o plano nacional completo de requests
+    (seção 9 da especificação): ano × UF × grupo de variáveis, cobrindo
+    2007-2019 e o território nacional segmentado por UF.
+
+    Reutiliza `build_requests` (não duplica a lógica de `request_id`/URL).
+    A origem das UFs é o calendário territorial oficial já validado por
+    `load_calendar_territorial` (via `uf_list_from_calendario`), nunca uma
+    lista paralela. Sem `calendario` explícito, carrega o Parquet nacional
+    padrão (`CALENDARIO_TERRITORIAL_PATH`) — uso apenas para gerar o plano,
+    sem qualquer chamada de rede.
+
+    `anos`/`variaveis` têm como padrão a janela e o conjunto contratados
+    (`ANO_MIN..ANO_MAX`, `VARIAVEIS_ESPERADAS`); passar valores explícitos
+    serve para testes ou planos parciais deliberados, nunca para hardcodar
+    o total esperado — o total é sempre derivado de `len(anos) *
+    len(territorios)`.
+    """
+    if calendario is None:
+        calendario = load_calendar_territorial()
+
+    anos_plano = sorted(range(ANO_MIN, ANO_MAX + 1)) if anos is None else sorted(anos)
+    variaveis_plano = sorted(VARIAVEIS_ESPERADAS if variaveis is None else variaveis)
+    territorios_plano = _validate_ufs_esperadas(uf_list_from_calendario(calendario))
+    plano = build_requests(
+        anos=anos_plano,
+        territorios=territorios_plano,
+        variaveis=variaveis_plano,
+        fonte_tabela=fonte_tabela,
+    )
+    validate_national_request_plan(
+        plano,
+        ufs_esperadas=territorios_plano,
+        anos_esperados=anos_plano,
+        variaveis_esperadas=variaveis_plano,
+    )
+    return plano
+
+
+def validate_national_request_plan(
+    plano: list[dict[str, Any]],
+    ufs_esperadas: list[dict[str, str]],
+    anos_esperados: list[int] | None = None,
+    variaveis_esperadas: set[int] | list[int] | None = None,
+) -> dict[str, Any]:
+    """Valida explicitamente o plano nacional de requests antes de qualquer
+    execução. Levanta `ValueError` (nunca falha silenciosa) se o plano
+    estiver malformado. Não chama rede.
+
+    Verifica o produto cartesiano contratado entre uma referência EXTERNA
+    de UFs, anos e um grupo contratado de variáveis: `request_id` não nulo
+    e único; combinação lógica `(uf, ano)` única; anos dentro de
+    2007-2019; UFs e siglas aderentes à referência; grupo de variáveis
+    igual ao contratado; e nenhuma combinação esperada ausente ou
+    inesperada.
+
+    Retorna um relatório com o total esperado derivado dos componentes do
+    próprio plano (nunca um número fixo hardcoded).
+    """
+    ufs_esperadas_normalizadas = _validate_ufs_esperadas(ufs_esperadas)
+    anos_esperados_normalizados = (
+        sorted(range(ANO_MIN, ANO_MAX + 1)) if anos_esperados is None else sorted(anos_esperados)
+    )
+    if not anos_esperados_normalizados:
+        raise ValueError("referência de anos esperados vazia")
+    if any(not isinstance(ano, int) or not (ANO_MIN <= ano <= ANO_MAX) for ano in anos_esperados_normalizados):
+        raise ValueError(f"ano fora do contrato {ANO_MIN}-{ANO_MAX} na referência externa")
+    variaveis_esperadas_normalizadas = sorted(
+        VARIAVEIS_ESPERADAS if variaveis_esperadas is None else variaveis_esperadas
+    )
+    if variaveis_esperadas_normalizadas != sorted(VARIAVEIS_ESPERADAS):
+        raise ValueError("grupo de variáveis da referência diverge do contrato CEMPRE")
+    if not plano:
+        raise ValueError("plano nacional de requests vazio")
+
+    ids = [item.get("request_id") for item in plano]
+    if any(not rid for rid in ids):
+        raise ValueError("request_id nulo/vazio encontrado no plano nacional")
+    if len(ids) != len(set(ids)):
+        duplicados = sorted({rid for rid in ids if ids.count(rid) > 1})
+        raise ValueError(f"request_id duplicado no plano nacional: {duplicados[:5]}")
+
+    ufs_por_codigo = {uf["codigo"]: uf for uf in ufs_esperadas_normalizadas}
+    combinacoes: set[tuple[str, int]] = set()
+    for item in plano:
+        ano = item.get("ano")
+        if not isinstance(ano, int) or not (ANO_MIN <= ano <= ANO_MAX):
+            raise ValueError(f"ano fora da janela {ANO_MIN}-{ANO_MAX} no plano nacional: {ano!r}")
+
+        territorio = item.get("territorio") or {}
+        if territorio.get("tipo") != "uf":
+            raise ValueError(f"território inválido no plano nacional (esperado tipo 'uf'): {territorio!r}")
+        codigo_uf = str(territorio.get("codigo"))
+        if not _RE_UF_CODIGO.fullmatch(codigo_uf):
+            raise ValueError(f"código de UF inválido no plano nacional: {codigo_uf!r}")
+        if codigo_uf not in ufs_por_codigo:
+            raise ValueError(f"UF fora do contrato nacional: {codigo_uf!r}")
+        if territorio.get("sigla") != ufs_por_codigo[codigo_uf]["sigla"]:
+            raise ValueError(f"sigla de UF divergente do contrato para código {codigo_uf!r}")
+
+        variaveis_item = sorted(item.get("variaveis") or [])
+        if variaveis_item != variaveis_esperadas_normalizadas:
+            raise ValueError(
+                f"grupo de variáveis inesperado no request_id={item.get('request_id')}: {variaveis_item}"
+            )
+
+        chave = (codigo_uf, ano)
+        if chave in combinacoes:
+            raise ValueError(f"combinação (UF, ano) duplicada no plano nacional: {chave}")
+        combinacoes.add(chave)
+
+    combinacoes_esperadas = {
+        (uf["codigo"], ano) for uf in ufs_esperadas_normalizadas for ano in anos_esperados_normalizados
+    }
+    ausentes = sorted(combinacoes_esperadas - combinacoes)
+    if ausentes:
+        raise ValueError(f"combinação(ões) (UF, ano) ausente(s) no plano nacional: {ausentes[:5]}")
+    inesperadas = sorted(combinacoes - combinacoes_esperadas)
+    if inesperadas:
+        raise ValueError(f"combinação(ões) (UF, ano) inesperada(s) no plano nacional: {inesperadas[:5]}")
+
+    n_grupos_variaveis = 1
+    total_esperado = len(ufs_esperadas_normalizadas) * len(anos_esperados_normalizados) * n_grupos_variaveis
+    if total_esperado != len(plano):
+        raise ValueError(
+            f"total de requests do plano nacional ({len(plano)}) diverge do total derivado "
+            f"({total_esperado} = {len(ufs_esperadas_normalizadas)} UFs × "
+            f"{len(anos_esperados_normalizados)} anos × {n_grupos_variaveis} grupo de variáveis)"
+        )
+
+    return {
+        "total_requests_esperados": total_esperado,
+        "n_ufs": len(ufs_esperadas_normalizadas),
+        "n_anos": len(anos_esperados_normalizados),
+        "n_grupos_variaveis": n_grupos_variaveis,
+        "anos": anos_esperados_normalizados,
+        "ufs": [uf["codigo"] for uf in ufs_esperadas_normalizadas],
+        "variaveis": variaveis_esperadas_normalizadas,
+        "aprovado": True,
+    }
+
+
+def _resultado_e_sucesso(resultado: dict[str, Any]) -> bool:
+    """Um resultado é sucesso somente se não houver erro registrado e o
+    payload estiver presente — independentemente de ter vindo de cache
+    (`de_cache=True`) ou de rede. Cache hit válido é sucesso; qualquer
+    `erro` não-nulo ou `resultado` ausente é falha, nunca completude.
+    """
+    return resultado.get("erro") is None and resultado.get("resultado") is not None
+
+
+def avalia_completude_plano(
+    plano: list[dict[str, Any]],
+    resultados: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Contrato de completude (bloco 1, seção 5): compara PURAMENTE OFFLINE
+    o plano esperado com os resultados já obtidos (formato de
+    `fetch_request`, seção 9 — chave `request_id`, `erro`, `resultado`,
+    `de_cache`). Não chama rede; não executa nenhum request.
+
+    Detecta lote faltante (`request_ids_ausentes`), resultado que não
+    corresponde a nenhum lote do plano (`request_ids_inesperados`) e
+    `request_id` com mais de um resultado (`request_ids_duplicados` —
+    ambíguo qual é o válido, portanto nunca contado como sucesso).
+
+    `completo=True` somente quando todos os lotes esperados têm exatamente
+    um resultado válido (`_resultado_e_sucesso`) e não há ausência,
+    duplicidade nem resultado inesperado. Falha HTTP/payload/schema
+    (resultado com `erro` preenchido) sempre impede completude.
+    """
+    ids_esperados = [item["request_id"] for item in plano]
+    set_esperados = set(ids_esperados)
+    if len(ids_esperados) != len(set_esperados):
+        raise ValueError("plano de requests com request_id duplicado — valide o plano antes de avaliar completude")
+
+    resultados_por_id: dict[str, list[dict[str, Any]]] = {}
+    resultados_malformados: list[dict[str, Any]] = []
+    for indice, resultado in enumerate(resultados):
+        if not isinstance(resultado, dict):
+            resultados_malformados.append({"indice": indice, "motivo": "resultado não é dicionário"})
+            continue
+        request_id = resultado.get("request_id")
+        if not request_id:
+            resultados_malformados.append({"indice": indice, "motivo": "request_id ausente ou vazio"})
+            continue
+        resultados_por_id.setdefault(request_id, []).append(resultado)
+
+    ids_recebidos = set(resultados_por_id)
+    request_ids_ausentes = sorted(set_esperados - ids_recebidos)
+    request_ids_inesperados = sorted(ids_recebidos - set_esperados)
+    request_ids_duplicados = sorted(rid for rid, entradas in resultados_por_id.items() if len(entradas) > 1)
+
+    n_sucessos = 0
+    n_falhas = 0
+    for rid in sorted(set_esperados & ids_recebidos):
+        entradas = resultados_por_id[rid]
+        if len(entradas) != 1:
+            # Duplicidade é ambígua — nunca decidimos arbitrariamente qual
+            # resultado é o válido; conta como falha de completude.
+            n_falhas += 1
+            continue
+        if _resultado_e_sucesso(entradas[0]):
+            n_sucessos += 1
+        else:
+            n_falhas += 1
+
+    completo = (
+        not request_ids_ausentes
+        and not request_ids_inesperados
+        and not request_ids_duplicados
+        and not resultados_malformados
+        and n_falhas == 0
+        and n_sucessos == len(set_esperados)
+    )
+
+    return {
+        "n_requests_esperados": len(set_esperados),
+        "n_requests_recebidos": len(resultados),
+        "n_sucessos": n_sucessos,
+        "n_falhas": n_falhas,
+        "request_ids_ausentes": request_ids_ausentes,
+        "request_ids_inesperados": request_ids_inesperados,
+        "request_ids_duplicados": request_ids_duplicados,
+        "resultados_malformados": resultados_malformados,
+        "completo": completo,
+    }
 
 
 # ---------------------------------------------------------------------------

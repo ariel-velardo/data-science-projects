@@ -918,5 +918,190 @@ class TestValidateCrossMeasures(unittest.TestCase):
         self.assertEqual(len(violacoes), 0)
 
 
+# ---------------------------------------------------------------------------
+# D1 — plano nacional de requests e contrato de completude (offline)
+# ---------------------------------------------------------------------------
+
+
+_UFS_CONTRATADAS_SINTETICAS = [
+    ("11", "RO"), ("12", "AC"), ("13", "AM"), ("14", "RR"),
+    ("15", "PA"), ("16", "AP"), ("17", "TO"), ("21", "MA"),
+    ("22", "PI"), ("23", "CE"), ("24", "RN"), ("25", "PB"),
+    ("26", "PE"), ("27", "AL"), ("28", "SE"), ("29", "BA"),
+    ("31", "MG"), ("32", "ES"), ("33", "RJ"), ("35", "SP"),
+    ("41", "PR"), ("42", "SC"), ("43", "RS"), ("50", "MS"),
+    ("51", "MT"), ("52", "GO"), ("53", "DF"),
+]
+
+
+class TestPlanoNacionalRequests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.calendario_sintetico = pd.DataFrame(
+            [{"uf_codigo": codigo, "uf_sigla": sigla} for codigo, sigla in _UFS_CONTRATADAS_SINTETICAS]
+        )
+        self.ufs_esperadas = cempre.uf_list_from_calendario(self.calendario_sintetico)
+        self.plano = cempre.build_national_request_plan(calendario=self.calendario_sintetico)
+
+    def _validar(self, plano: list[dict] | None = None) -> dict:
+        return cempre.validate_national_request_plan(
+            self.plano if plano is None else plano,
+            ufs_esperadas=self.ufs_esperadas,
+        )
+
+    def test_plano_nacional_e_deterministico(self) -> None:
+        segundo_plano = cempre.build_national_request_plan(calendario=self.calendario_sintetico.sample(frac=1))
+        self.assertEqual(self.plano, segundo_plano)
+
+    def test_duas_construcoes_equivalentes_tem_mesmos_request_ids(self) -> None:
+        segundo_plano = cempre.build_national_request_plan(calendario=self.calendario_sintetico.copy())
+        self.assertEqual(
+            [item["request_id"] for item in self.plano],
+            [item["request_id"] for item in segundo_plano],
+        )
+
+    def test_request_ids_sao_unicos(self) -> None:
+        request_ids = [item["request_id"] for item in self.plano]
+        self.assertEqual(len(request_ids), len(set(request_ids)))
+
+    def test_plano_contem_todos_os_anos_contratados(self) -> None:
+        self.assertEqual({item["ano"] for item in self.plano}, set(range(2007, 2020)))
+
+    def test_plano_cobre_exatamente_as_ufs_da_referencia_externa(self) -> None:
+        self._validar()
+        self.assertEqual(
+            {item["territorio"]["codigo"] for item in self.plano},
+            {item["codigo"] for item in self.ufs_esperadas},
+        )
+
+    def test_plano_usa_grupo_de_variaveis_contratado(self) -> None:
+        self.assertEqual({tuple(item["variaveis"]) for item in self.plano}, {tuple(sorted(cempre.VARIAVEIS_ESPERADAS))})
+
+    def test_total_esperado_e_derivado_do_contrato_atual(self) -> None:
+        relatorio = self._validar()
+        self.assertEqual(relatorio["total_requests_esperados"], 13 * 27 * 1)
+        self.assertEqual(len(self.plano), relatorio["total_requests_esperados"])
+
+    def test_referencia_externa_precisa_ter_27_ufs(self) -> None:
+        with self.assertRaisesRegex(ValueError, "27 UFs"):
+            cempre.validate_national_request_plan(self.plano, ufs_esperadas=self.ufs_esperadas[:-1])
+
+    def test_referencia_externa_com_codigo_duplicado_falha(self) -> None:
+        referencia_duplicada = [dict(uf) for uf in self.ufs_esperadas]
+        referencia_duplicada[-1]["codigo"] = referencia_duplicada[0]["codigo"]
+        with self.assertRaisesRegex(ValueError, "duplicado"):
+            cempre.validate_national_request_plan(self.plano, ufs_esperadas=referencia_duplicada)
+
+    def test_combinacao_uf_ano_ausente_falha(self) -> None:
+        plano_incompleto = self.plano[1:]
+        with self.assertRaisesRegex(ValueError, "ausente"):
+            self._validar(plano_incompleto)
+
+    def test_uf_inteira_ausente_falha(self) -> None:
+        plano_sem_uf = [item for item in self.plano if item["territorio"]["codigo"] != "11"]
+        with self.assertRaisesRegex(ValueError, "ausente"):
+            self._validar(plano_sem_uf)
+
+    def test_uf_inesperada_falha(self) -> None:
+        request_inesperado = dict(self.plano[0])
+        request_inesperado["request_id"] = "request_uf_inesperada"
+        request_inesperado["territorio"] = {"tipo": "uf", "codigo": "99", "sigla": "ZZ"}
+        with self.assertRaisesRegex(ValueError, "fora do contrato"):
+            self._validar(self.plano + [request_inesperado])
+
+    def test_grupo_de_variaveis_divergente_falha(self) -> None:
+        request_divergente = dict(self.plano[0])
+        request_divergente["variaveis"] = [706, 707]
+        with self.assertRaisesRegex(ValueError, "grupo de variáveis"):
+            self._validar([request_divergente] + self.plano[1:])
+
+    def test_combinacao_duplicada_falha(self) -> None:
+        duplicado = dict(self.plano[0])
+        duplicado["request_id"] = "request_combinacao_duplicada"
+        with self.assertRaisesRegex(ValueError, "combinação.*duplicada"):
+            self._validar(self.plano + [duplicado])
+
+    def test_request_id_duplicado_falha(self) -> None:
+        with self.assertRaisesRegex(ValueError, "request_id duplicado"):
+            self._validar(self.plano + [dict(self.plano[0])])
+
+    def test_ano_fora_do_contrato_falha(self) -> None:
+        request_fora_do_ano = dict(self.plano[0])
+        request_fora_do_ano["request_id"] = "request_ano_fora"
+        request_fora_do_ano["ano"] = 2006
+        with self.assertRaisesRegex(ValueError, "ano fora"):
+            self._validar(self.plano + [request_fora_do_ano])
+
+
+class TestCompletudePlanoNacional(unittest.TestCase):
+    def setUp(self) -> None:
+        calendario_sintetico = pd.DataFrame(
+            [{"uf_codigo": codigo, "uf_sigla": sigla} for codigo, sigla in _UFS_CONTRATADAS_SINTETICAS]
+        )
+        self.plano = cempre.build_national_request_plan(calendario=calendario_sintetico)
+
+    def _resultados_validos(self) -> list[dict]:
+        return [
+            {"request_id": item["request_id"], "erro": None, "resultado": {"valido": True}, "de_cache": False}
+            for item in self.plano
+        ]
+
+    def test_todos_os_resultados_validos_completam_o_plano(self) -> None:
+        relatorio = cempre.avalia_completude_plano(self.plano, self._resultados_validos())
+        self.assertTrue(relatorio["completo"])
+        self.assertEqual(relatorio["n_requests_esperados"], len(self.plano))
+        self.assertEqual(relatorio["n_sucessos"], len(self.plano))
+        self.assertEqual(relatorio["n_falhas"], 0)
+
+    def test_request_esperado_ausente_impede_completude(self) -> None:
+        relatorio = cempre.avalia_completude_plano(self.plano, self._resultados_validos()[1:])
+        self.assertFalse(relatorio["completo"])
+        self.assertEqual(len(relatorio["request_ids_ausentes"]), 1)
+        self.assertEqual(relatorio["n_sucessos"], len(self.plano) - 1)
+
+    def test_resultado_com_erro_impede_completude(self) -> None:
+        resultados = self._resultados_validos()
+        resultados[0]["erro"] = "HTTP 500"
+        resultados[0]["resultado"] = None
+        relatorio = cempre.avalia_completude_plano(self.plano, resultados)
+        self.assertFalse(relatorio["completo"])
+        self.assertEqual(relatorio["n_falhas"], 1)
+
+    def test_resultado_nulo_impede_completude(self) -> None:
+        resultados = self._resultados_validos()
+        resultados[0]["resultado"] = None
+        relatorio = cempre.avalia_completude_plano(self.plano, resultados)
+        self.assertFalse(relatorio["completo"])
+        self.assertEqual(relatorio["n_falhas"], 1)
+
+    def test_resultado_inesperado_e_sinalizado(self) -> None:
+        resultados = self._resultados_validos() + [
+            {"request_id": "request_inesperado", "erro": None, "resultado": {"valido": True}}
+        ]
+        relatorio = cempre.avalia_completude_plano(self.plano, resultados)
+        self.assertFalse(relatorio["completo"])
+        self.assertEqual(relatorio["request_ids_inesperados"], ["request_inesperado"])
+
+    def test_resultado_duplicado_e_sinalizado(self) -> None:
+        resultados = self._resultados_validos() + [dict(self._resultados_validos()[0])]
+        relatorio = cempre.avalia_completude_plano(self.plano, resultados)
+        self.assertFalse(relatorio["completo"])
+        self.assertEqual(relatorio["request_ids_duplicados"], [self.plano[0]["request_id"]])
+        self.assertEqual(relatorio["n_sucessos"], len(self.plano) - 1)
+        self.assertEqual(relatorio["n_falhas"], 1)
+
+    def test_cache_hit_valido_conta_como_sucesso(self) -> None:
+        resultados = self._resultados_validos()
+        resultados[0]["de_cache"] = True
+        relatorio = cempre.avalia_completude_plano(self.plano, resultados)
+        self.assertTrue(relatorio["completo"])
+        self.assertEqual(relatorio["n_sucessos"], len(self.plano))
+
+    def test_resultado_sem_request_id_e_malformado_controladamente(self) -> None:
+        resultados = self._resultados_validos() + [{"erro": None, "resultado": {"valido": True}}]
+        relatorio = cempre.avalia_completude_plano(self.plano, resultados)
+        self.assertFalse(relatorio["completo"])
+        self.assertEqual(len(relatorio["resultados_malformados"]), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
