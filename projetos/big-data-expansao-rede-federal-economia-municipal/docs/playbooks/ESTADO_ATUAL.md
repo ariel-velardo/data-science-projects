@@ -17,12 +17,12 @@ Branch:
 
 HEAD/origin conhecido:
 
-`dd6bbac8de866ac15f3989aa4882cd476fc7e770`
+`acd3d8a646d94a01bb6fb3275ef536d6b8bead24`
 
 Commits recentes:
 
-- `1ee321c` — `feat: constroi calendario territorial IBGE 2007-2019`
-- `a6a1a41` — `feat: implementa piloto tecnico do CEMPRE`
+- `acd3d8a` — `feat: integra calendario territorial ao pipeline CEMPRE`
+- `d17e621` — `docs: atualiza estado apos fechamento territorial`
 - `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
 
 Os tres commits foram enviados para `origin/main`.
@@ -108,9 +108,44 @@ Essa e uma limitacao de governanca nao bloqueante para o calendario
 territorial. A revisao foi focalizada; nao reabrir auditoria territorial ampla
 sem novo problema concreto.
 
+## 4. Integracao Territorial CEMPRE
+
+Status tecnico:
+
+**CONCLUIDA**
+
+Commit da integracao:
+
+`acd3d8a646d94a01bb6fb3275ef536d6b8bead24` — `feat: integra calendario territorial ao pipeline CEMPRE`
+
+Push:
+
+**CONCLUIDO**
+
+Validacoes de fechamento:
+
+- 80/80 testes CEMPRE passando;
+- 44/44 testes territoriais passando;
+- smoke-check do calendario territorial real: 72.410 linhas, 5.570 codigos,
+  anos 2007–2019 e chave municipio-ano unica;
+- testes unitarios independentes do Parquet territorial real passando;
+- integracao entre calendario territorial e CEMPRE fechada tecnicamente.
+
+Gates operacionais:
+
+`INTEGRACAO_TERRITORIAL_CEMPRE_APROVADA = SIM`
+
+`PODE_COMMITAR_INTEGRACAO = SIM`
+
+Os gates ja fechados permanecem inalterados:
+
+`PILOTO_TECNICO_APROVADO_CONFIRMADO`
+
+`CALENDARIO_TERRITORIAL_APTO_CONFIRMADO`
+
 ---
 
-## 4. Camada operacional
+## 5. Camada operacional
 
 Arquivos operacionais:
 
@@ -127,17 +162,18 @@ Esta camada e operacional e deve permanecer separada dos commits cientificos.
 
 ---
 
-## 5. Proximos passos
+## 6. Proximos passos
 
-1. integrar o calendario territorial nacional ao pipeline CEMPRE;
-2. validar tecnicamente essa integracao;
-3. somente depois avaliar liberacao da extracao nacional CEMPRE.
+1. executar gate independente pré-extração nacional CEMPRE;
+2. somente se esse gate for aprovado, autorizar explicitamente a extração nacional;
+3. depois iniciar a construção do painel técnico nacional CEMPRE;
+4. após a construção, validar cobertura, status, território, transições e diagnósticos antes de qualquer análise causal.
 
 Nao reabrir Fase 0 ou calendario territorial sem anomalia concreta.
 
 ---
 
-## 6. Extracao nacional CEMPRE
+## 7. Extracao nacional CEMPRE
 
 Status:
 
@@ -147,13 +183,12 @@ Os commits territorial e Fase 0, por si so, nao autorizam a extracao.
 
 Antes de qualquer extracao nacional ainda e necessario:
 
-- integracao do calendario ao pipeline CEMPRE;
-- validacao da integracao;
-- verificacao dos gates tecnicos correspondentes.
+- gate independente pre-extracao nacional CEMPRE aprovado;
+- autorizacao explicita para a extracao nacional.
 
 ---
 
-## 7. Regra para agentes
+## 8. Regra para agentes
 
 Antes de trabalhar:
 
