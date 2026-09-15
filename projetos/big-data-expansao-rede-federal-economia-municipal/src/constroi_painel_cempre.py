@@ -837,6 +837,54 @@ def load_cached_request(request_id: str, cache_dir: Path = CACHE_DIR) -> dict[st
     return {"resultado": dados, "hash_resposta_raw": hash_esperado, "tamanho": len(texto_resposta)}
 
 
+def _resultado_a_partir_do_cache(
+    request_id: str,
+    url: str | None,
+    cache_dir: Path,
+) -> tuple[dict[str, Any] | None, bool]:
+    """Monta um resultado no contrato de `fetch_request` (e do D2)
+    exclusivamente a partir do cache, sem NUNCA chamar rede.
+
+    Retorna `(resultado, ausente)`. `ausente=True` significa cache miss
+    (arquivo não existe) — nesse caso `resultado` é `None` e cabe ao
+    chamador decidir o que fazer (`fetch_request` cai para rede;
+    `load_results_from_cache`/D2 nunca cai, e trata isso como falha
+    explícita). Quando `ausente=False`, `resultado` já é o resultado final
+    (sucesso, cache corrompido ou payload com schema inválido), sempre com
+    `de_cache=True` e nunca decidido silenciosamente.
+    """
+    try:
+        em_cache = load_cached_request(request_id, cache_dir)
+    except ValueError as exc:
+        logger.error("request_id=%s cache corrompido: %s", request_id, exc)
+        return {
+            "request_id": request_id, "url": url, "tentativas": 0,
+            "status_http": None, "tamanho": None, "hash_resposta_raw": None,
+            "resultado": None, "erro": str(exc), "de_cache": True,
+        }, False
+
+    if em_cache is None:
+        return None, True
+
+    valido, motivo = validate_sidra_payload(em_cache["resultado"])
+    if not valido:
+        logger.error("request_id=%s payload em cache é inválido: %s", request_id, motivo)
+        return {
+            "request_id": request_id, "url": url, "tentativas": 0,
+            "status_http": None, "tamanho": em_cache["tamanho"],
+            "hash_resposta_raw": em_cache["hash_resposta_raw"],
+            "resultado": None, "erro": f"payload em cache inválido: {motivo}", "de_cache": True,
+        }, False
+
+    logger.info("request_id=%s cache hit — nenhuma chamada de rede", request_id)
+    return {
+        "request_id": request_id, "url": url, "tentativas": 0,
+        "status_http": 200, "tamanho": em_cache["tamanho"],
+        "hash_resposta_raw": em_cache["hash_resposta_raw"],
+        "resultado": em_cache["resultado"], "erro": None, "de_cache": True,
+    }, False
+
+
 def fetch_request(
     spec: dict[str, Any],
     session: requests.Session | None = None,
@@ -862,32 +910,9 @@ def fetch_request(
     explicitamente sem tentar a rede (ver `load_cached_request`).
     """
     if cache_dir is not None:
-        try:
-            em_cache = load_cached_request(spec["request_id"], cache_dir)
-        except ValueError as exc:
-            logger.error("request_id=%s cache corrompido: %s", spec["request_id"], exc)
-            return {
-                "request_id": spec["request_id"], "url": spec["url"], "tentativas": 0,
-                "status_http": None, "tamanho": None, "hash_resposta_raw": None,
-                "resultado": None, "erro": str(exc), "de_cache": True,
-            }
-        if em_cache is not None:
-            valido, motivo = validate_sidra_payload(em_cache["resultado"])
-            if not valido:
-                logger.error("request_id=%s payload em cache é inválido: %s", spec["request_id"], motivo)
-                return {
-                    "request_id": spec["request_id"], "url": spec["url"], "tentativas": 0,
-                    "status_http": None, "tamanho": em_cache["tamanho"],
-                    "hash_resposta_raw": em_cache["hash_resposta_raw"],
-                    "resultado": None, "erro": f"payload em cache inválido: {motivo}", "de_cache": True,
-                }
-            logger.info("request_id=%s cache hit — nenhuma chamada de rede", spec["request_id"])
-            return {
-                "request_id": spec["request_id"], "url": spec["url"], "tentativas": 0,
-                "status_http": 200, "tamanho": em_cache["tamanho"],
-                "hash_resposta_raw": em_cache["hash_resposta_raw"],
-                "resultado": em_cache["resultado"], "erro": None, "de_cache": True,
-            }
+        resultado_cache, ausente = _resultado_a_partir_do_cache(spec["request_id"], spec["url"], cache_dir)
+        if not ausente:
+            return resultado_cache
 
     sess = session or requests
     ultima_resposta_http: int | None = None
@@ -1083,3 +1108,339 @@ def validate_cross_measures(df_long: pd.DataFrame) -> pd.DataFrame:
             _registrar(wide[coluna] < 0, regra)
 
     return pd.DataFrame(violacoes, columns=_COLUNAS_VIOLACAO)
+
+
+# ---------------------------------------------------------------------------
+# D2 — persistência e reconstrução offline da long CEMPRE
+#
+# Fluxo: cache raw → leitura offline → normalize_long → concatenação →
+# validate_long → reconcile_territorial → persistência Parquet → reload →
+# validação/equivalência. NENHUMA função desta seção chama `fetch_request`
+# ou rede — leem exclusivamente o cache já existente em disco. Isso NÃO é
+# o orquestrador nacional (D4) nem faz extração nacional.
+# ---------------------------------------------------------------------------
+
+
+def load_results_from_cache(
+    plano: list[dict[str, Any]],
+    cache_dir: str | Path,
+) -> list[dict[str, Any]]:
+    """Reconstrói offline os resultados de um plano de requests A PARTIR
+    SOMENTE do cache já existente (D2, seção 2). NUNCA chama rede.
+
+    Contrato de saída idêntico ao de `fetch_request`/`avalia_completude_plano`
+    (D1): `request_id`, `resultado`, `hash_resposta_raw`, `erro`,
+    `de_cache=True` para cada item. Cache ausente, corrompido ou com
+    payload de schema inválido nunca são convertidos silenciosamente em
+    sucesso — cada caso produz um resultado com `erro` explícito, para que
+    `avalia_completude_plano` os trate como lote obrigatório falho.
+    """
+    cache_dir = Path(cache_dir)
+    resultados: list[dict[str, Any]] = []
+    for item in plano:
+        resultado_cache, ausente = _resultado_a_partir_do_cache(
+            item["request_id"], item.get("url"), cache_dir,
+        )
+        if ausente:
+            resultado_cache = {
+                "request_id": item["request_id"],
+                "url": item.get("url"),
+                "tentativas": 0,
+                "status_http": None,
+                "tamanho": None,
+                "hash_resposta_raw": None,
+                "resultado": None,
+                "erro": (
+                    "cache ausente para este request_id — reconstrução offline "
+                    "não pode prosseguir sem rede"
+                ),
+                "de_cache": True,
+            }
+        resultados.append(resultado_cache)
+    return resultados
+
+
+def build_long_from_results(
+    plano: list[dict[str, Any]],
+    resultados: list[dict[str, Any]],
+    calendario: pd.DataFrame,
+    data_extracao: str | None = None,
+    versao_metadados: str | None = None,
+) -> pd.DataFrame:
+    """Constrói a long CEMPRE reconciliada a partir de resultados já
+    carregados (offline ou não) e do plano esperado (D2, seção 3).
+
+    Usa `avalia_completude_plano` ANTES de normalizar: se `completo=False`
+    (lote ausente, duplicado, inesperado, malformado ou com erro), levanta
+    `ValueError` explícito e NÃO constrói uma long considerada completa.
+    Para cada resultado válido, reutiliza `normalize_long` (request_id/hash
+    reais, sem duplicar lógica de parsing); concatena, aplica
+    `validate_long` (falha explícita se `aprovado=False`) e
+    `reconcile_territorial`; retorna a long ordenada deterministicamente
+    (seção 4: `codigo_municipio_ibge`, `ano`, `codigo_variavel_sidra`,
+    `request_id`).
+    """
+    relatorio_completude = avalia_completude_plano(plano, resultados)
+    if not relatorio_completude["completo"]:
+        raise ValueError(
+            "plano incompleto — a long completa NÃO será construída "
+            f"(ausentes={relatorio_completude['request_ids_ausentes']}, "
+            f"inesperados={relatorio_completude['request_ids_inesperados']}, "
+            f"duplicados={relatorio_completude['request_ids_duplicados']}, "
+            f"n_falhas={relatorio_completude['n_falhas']}, "
+            f"malformados={relatorio_completude['resultados_malformados']})"
+        )
+
+    resultados_por_id = {resultado["request_id"]: resultado for resultado in resultados}
+    longs_por_request: list[pd.DataFrame] = []
+    for item in plano:
+        resultado = resultados_por_id[item["request_id"]]
+        long_request = normalize_long(
+            resultado["resultado"],
+            request_id=item["request_id"],
+            fonte_tabela=item.get("fonte_tabela", FONTE_TABELA),
+            data_extracao=data_extracao,
+            hash_resposta_raw=resultado.get("hash_resposta_raw"),
+            versao_metadados=versao_metadados,
+        )
+        longs_por_request.append(long_request)
+
+    long_bruta = (
+        pd.concat(longs_por_request, ignore_index=True)
+        if longs_por_request
+        else pd.DataFrame(columns=_COLUNAS_LONG)
+    )
+
+    df_validado, relatorio_validacao = validate_long(long_bruta)
+    if not relatorio_validacao["aprovado"]:
+        raise ValueError(
+            "validate_long reprovou a long construída a partir dos resultados: "
+            f"{relatorio_validacao['motivos_bloqueio']}"
+        )
+
+    df_reconciliada = reconcile_territorial(df_validado, calendario)
+    return _ordenar_long_deterministicamente(df_reconciliada)
+
+
+# Ordem determinística da long persistida (seção 4): mesmo conjunto de
+# caches deve sempre produzir a mesma ordem lógica, nunca a ordem do
+# filesystem ou de execução.
+_COLUNAS_ORDENACAO_LONG = ["codigo_municipio_ibge", "ano", "codigo_variavel_sidra", "request_id"]
+
+
+def _ordenar_long_deterministicamente(df_long: pd.DataFrame) -> pd.DataFrame:
+    colunas_ordenacao = [coluna for coluna in _COLUNAS_ORDENACAO_LONG if coluna in df_long.columns]
+    return df_long.sort_values(colunas_ordenacao, kind="mergesort").reset_index(drop=True)
+
+
+# Schema mínimo contratado da long persistida (seção 5): tudo o que
+# `normalize_long` já produz, mais os dois campos de reconciliação
+# territorial. Nenhum desses campos é removido nem convertido.
+_COLUNAS_LONG_PERSISTIDA = _COLUNAS_LONG + ["status_territorial", "incompatibilidade_territorial"]
+_STATUS_TERRITORIAL_VALIDOS = {"existia_no_ano", "nao_existia_no_ano", "indeterminado"}
+
+
+def _validar_schema_long_persistida(df_long: pd.DataFrame) -> None:
+    """Validação estrutural única do contrato da long persistida (D2, seção
+    5), reutilizada tanto por `write_long_parquet` (antes de qualquer
+    `to_parquet`) quanto por `load_long_parquet` (no reload) — o que não
+    pode ser carregado como long válida também não pode ser gravado como
+    long válida. Nunca corrige silenciosamente: levanta `ValueError`
+    explícito no primeiro contrato violado.
+
+    Reflete exatamente o artefato real produzido por `normalize_long` +
+    `reconcile_territorial` (não inventa política de nullable boolean:
+    `incompatibilidade_territorial` já sai sempre booleana e sem nulos do
+    pipeline, então aqui isso é exigido, não relaxado).
+    """
+    colunas_ausentes = sorted(set(_COLUNAS_LONG_PERSISTIDA) - set(df_long.columns))
+    if colunas_ausentes:
+        raise ValueError(f"long persistida sem coluna(s) obrigatória(s): {colunas_ausentes}")
+
+    chave_duplicada = df_long.duplicated(_CHAVE_CANONICA, keep=False)
+    if bool(chave_duplicada.any()):
+        exemplos = df_long.loc[chave_duplicada, _CHAVE_CANONICA].head().to_dict("records")
+        raise ValueError(f"chave canônica duplicada na long persistida: {exemplos}")
+
+    if not pd.api.types.is_integer_dtype(df_long["ano"]):
+        raise ValueError("coluna 'ano' inválida na long persistida: deve ser inteiro")
+    anos_invalidos = sorted(set(df_long.loc[~df_long["ano"].between(ANO_MIN, ANO_MAX), "ano"].tolist()))
+    if anos_invalidos:
+        raise ValueError(f"ano fora da janela {ANO_MIN}-{ANO_MAX} na long persistida: {anos_invalidos[:5]}")
+
+    codigos_validos = df_long["codigo_municipio_ibge"].astype(str).str.fullmatch(_RE_CODIGO_MUNICIPIO)
+    if not bool(codigos_validos.all()):
+        codigos_invalidos = sorted(set(df_long.loc[~codigos_validos, "codigo_municipio_ibge"].tolist()))
+        raise ValueError(f"código municipal inválido na long persistida: {codigos_invalidos[:5]}")
+
+    variaveis_invalidas = sorted(set(df_long["codigo_variavel_sidra"].tolist()) - VARIAVEIS_ESPERADAS)
+    if variaveis_invalidas:
+        raise ValueError(f"código de variável fora do contrato CEMPRE na long persistida: {variaveis_invalidas}")
+
+    if df_long["status_territorial"].isna().any():
+        raise ValueError("status_territorial ausente (nulo) em uma ou mais linhas da long persistida")
+    status_territorial_invalidos = sorted(set(df_long["status_territorial"].tolist()) - _STATUS_TERRITORIAL_VALIDOS)
+    if status_territorial_invalidos:
+        raise ValueError(f"status_territorial fora do contrato na long persistida: {status_territorial_invalidos}")
+
+    if df_long["incompatibilidade_territorial"].isna().any():
+        raise ValueError("incompatibilidade_territorial ausente (nulo) em uma ou mais linhas da long persistida")
+    if not pd.api.types.is_bool_dtype(df_long["incompatibilidade_territorial"]):
+        raise ValueError(
+            "incompatibilidade_territorial deve ser booleana na long persistida "
+            f"(dtype recebido: {df_long['incompatibilidade_territorial'].dtype})"
+        )
+
+
+def write_long_parquet(
+    df_long: pd.DataFrame,
+    caminho: str | Path,
+    overwrite: bool = False,
+) -> Path:
+    """Persiste a long CEMPRE reconciliada em Parquet (D2, seção 6).
+
+    Valida estruturalmente a long via `_validar_schema_long_persistida`
+    (mesmo contrato usado por `load_long_parquet` — o que não pode ser
+    recarregado como long válida também não pode ser gravado como long
+    válida) ANTES de qualquer `to_parquet`; falha explicitamente
+    (`ValueError`) e não cria o arquivo de saída se a long for
+    estruturalmente inválida (schema incompleto, chave canônica
+    duplicada, ano fora de 2007-2019, código municipal/variável fora do
+    contrato, `status_territorial`/`incompatibilidade_territorial`
+    ausente ou fora do tipo/contrato). Por padrão (`overwrite=False`)
+    falha explicitamente (`FileExistsError`) se `caminho` já existir —
+    nunca sobrescreve silenciosamente. Cria o diretório pai quando
+    necessário e escreve a long já ordenada deterministicamente (seção
+    4), sem alterar conteúdo substantivo.
+    """
+    caminho = Path(caminho)
+    if caminho.suffix.lower() != ".parquet":
+        raise ValueError(f"caminho de persistência deve terminar em '.parquet': {caminho}")
+
+    _validar_schema_long_persistida(df_long)
+
+    if caminho.exists() and not overwrite:
+        raise FileExistsError(
+            f"arquivo já existe e overwrite=False (padrão) — persistência não sobrescreve "
+            f"silenciosamente: {caminho}"
+        )
+
+    caminho.parent.mkdir(parents=True, exist_ok=True)
+    df_ordenado = _ordenar_long_deterministicamente(df_long)
+    df_ordenado.to_parquet(caminho, index=False)
+    return caminho
+
+
+def load_long_parquet(caminho: str | Path) -> pd.DataFrame:
+    """Carrega e valida a long CEMPRE persistida em Parquet (D2, seção 7).
+
+    Nunca "corrige" silenciosamente um artefato inválido: falha
+    explicitamente (`FileNotFoundError`/`ValueError`) para arquivo
+    ausente, formato não suportado, ou qualquer violação do contrato
+    estrutural verificado por `_validar_schema_long_persistida` — o mesmo
+    validador reutilizado por `write_long_parquet`, incluindo schema
+    incompleto, duplicidade da chave canônica (`_CHAVE_CANONICA`, reaproveitada
+    de `validate_long`), ano fora de 2007-2019, código municipal ou
+    variável fora do contrato, `status_territorial` ausente/fora do
+    contrato e `incompatibilidade_territorial` ausente ou não booleana.
+    """
+    caminho = Path(caminho)
+    if not caminho.exists():
+        raise FileNotFoundError(f"long persistida não encontrada: {caminho}")
+    if caminho.suffix.lower() != ".parquet":
+        raise ValueError(
+            f"formato não suportado para long persistida: {caminho.suffix!r}; esperado '.parquet'"
+        )
+
+    try:
+        df_long = pd.read_parquet(caminho)
+    except Exception as exc:  # noqa: BLE001 — arquivo corrompido/não-Parquet deve falhar explicitamente
+        raise ValueError(f"long persistida não está em formato Parquet válido ({caminho}): {exc}") from exc
+
+    _validar_schema_long_persistida(df_long)
+
+    return df_long
+
+
+# Campos mínimos comparados na equivalência lógica de round-trip (seção 8):
+# chave canônica, proveniência, valores e os dois status de reconciliação.
+_COLUNAS_EQUIVALENCIA_ROUND_TRIP = [
+    "codigo_municipio_ibge", "ano", "codigo_variavel_sidra",
+    "valor_bruto", "valor_numerico", "status_valor_api",
+    "request_id", "hash_resposta_raw",
+    "status_territorial", "incompatibilidade_territorial",
+]
+
+
+def validate_round_trip_equivalencia(
+    long_antes: pd.DataFrame,
+    long_depois: pd.DataFrame,
+) -> dict[str, Any]:
+    """Checa equivalência LÓGICA (não bytes físicos) entre a long antes de
+    persistir e a long recarregada do Parquet (D2, seção 8).
+
+    Normaliza a ordem de ambos os lados antes de comparar (a ordem não
+    deve importar para a equivalência). Falha explicitamente
+    (`ValueError`) se colunas contratadas estiverem ausentes, a
+    quantidade de linhas divergir, ou o conteúdo lógico divergir —
+    incluindo NA em `valor_numerico`.
+    """
+    colunas_ausentes_antes = sorted(set(_COLUNAS_EQUIVALENCIA_ROUND_TRIP) - set(long_antes.columns))
+    colunas_ausentes_depois = sorted(set(_COLUNAS_EQUIVALENCIA_ROUND_TRIP) - set(long_depois.columns))
+    if colunas_ausentes_antes or colunas_ausentes_depois:
+        raise ValueError(
+            "round-trip: coluna(s) contratada(s) ausente(s) — "
+            f"antes={colunas_ausentes_antes}, depois={colunas_ausentes_depois}"
+        )
+
+    if len(long_antes) != len(long_depois):
+        raise ValueError(
+            f"round-trip: quantidade de linhas divergente (antes={len(long_antes)}, "
+            f"depois={len(long_depois)})"
+        )
+
+    a = _ordenar_long_deterministicamente(long_antes)[_COLUNAS_EQUIVALENCIA_ROUND_TRIP].reset_index(drop=True)
+    b = _ordenar_long_deterministicamente(long_depois)[_COLUNAS_EQUIVALENCIA_ROUND_TRIP].reset_index(drop=True)
+
+    try:
+        pd.testing.assert_frame_equal(a, b, check_dtype=False, check_like=False)
+    except AssertionError as exc:
+        raise ValueError(
+            f"round-trip: conteúdo lógico divergente entre a long original e a recarregada: {exc}"
+        ) from exc
+
+    return {
+        "equivalente": True,
+        "n_linhas": len(long_antes),
+        "colunas_comparadas": list(_COLUNAS_EQUIVALENCIA_ROUND_TRIP),
+    }
+
+
+def rebuild_long_from_cache(
+    plano: list[dict[str, Any]],
+    cache_dir: str | Path,
+    calendario: pd.DataFrame,
+    data_extracao: str | None = None,
+    versao_metadados: str | None = None,
+    caminho_persistencia: str | Path | None = None,
+    overwrite: bool = False,
+) -> pd.DataFrame:
+    """Reconstrução offline de alto nível (D2, seção 9): plano + cache_dir +
+    calendário → long validada/reconciliada e, opcionalmente, persistida.
+
+    NUNCA chama `fetch_request` nem rede — lê exclusivamente o cache já
+    existente via `load_results_from_cache`. Isso NÃO é o orquestrador
+    nacional (D4): não decide política de execução, não faz retry e não
+    extrai nada da API.
+    """
+    resultados = load_results_from_cache(plano, cache_dir)
+    long_reconciliada = build_long_from_results(
+        plano=plano,
+        resultados=resultados,
+        calendario=calendario,
+        data_extracao=data_extracao,
+        versao_metadados=versao_metadados,
+    )
+    if caminho_persistencia is not None:
+        write_long_parquet(long_reconciliada, caminho_persistencia, overwrite=overwrite)
+    return long_reconciliada

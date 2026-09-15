@@ -1103,5 +1103,329 @@ class TestCompletudePlanoNacional(unittest.TestCase):
         self.assertEqual(len(relatorio["resultados_malformados"]), 1)
 
 
+# ---------------------------------------------------------------------------
+# D2 — persistência e reconstrução offline da long CEMPRE
+#
+# Deliberadamente NÃO usa o plano nacional de 351 requests: planos
+# pequenos e sintéticos são suficientes para exercitar o contrato de
+# `load_results_from_cache`/`build_long_from_results`/`rebuild_long_from_cache`,
+# que dependem apenas do plano recebido (seção 11 do pedido). Nenhum teste
+# desta seção chama rede.
+# ---------------------------------------------------------------------------
+
+
+def _linha_payload_d2(codigo: str, ano: int, variavel: int, valor: str) -> dict:
+    return {
+        "NC": "6", "NN": "Município", "MC": "45", "MN": "Pessoas", "V": valor,
+        "D1C": codigo, "D1N": "Município Teste", "D2C": variavel,
+        "D2N": "Variável Teste", "D3C": ano, "D3N": str(ano),
+    }
+
+
+def _plano_pequeno_d2() -> list[dict]:
+    return [
+        {
+            "request_id": "req_d2_zzz", "url": "https://apisidra.ibge.gov.br/values/fake_zzz",
+            "params": {}, "ano": 2010, "territorio": {"tipo": "municipio", "codigo": "3166600"},
+            "variaveis": [708], "fonte_tabela": cempre.FONTE_TABELA,
+        },
+        {
+            "request_id": "req_d2_aaa", "url": "https://apisidra.ibge.gov.br/values/fake_aaa",
+            "params": {}, "ano": 2007, "territorio": {"tipo": "municipio", "codigo": "1100015"},
+            "variaveis": [708], "fonte_tabela": cempre.FONTE_TABELA,
+        },
+    ]
+
+
+def _calendario_d2() -> pd.DataFrame:
+    linhas = [
+        {"codigo_municipio_ibge": codigo, "ano": ano, "municipio_existia_no_ano": True}
+        for codigo in ("3166600", "1100015")
+        for ano in range(2007, 2020)
+    ]
+    return pd.DataFrame(linhas)
+
+
+def _salva_cache_valido_d2(cache_dir: Path, request_id: str, payload: list[dict]) -> None:
+    texto = json.dumps(payload)
+    hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+    cempre.save_cached_request(request_id, texto_resposta_raw=texto, hash_resposta_raw=hash_resposta, cache_dir=cache_dir)
+
+
+class TestLoadResultsFromCache(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.cache_dir = Path(self._tmpdir.name)
+        self.plano = _plano_pequeno_d2()
+
+    def test_cache_valido_e_carregado_offline(self) -> None:
+        payload = [_linha_payload_d2("3166600", 2010, 708, "100")]
+        _salva_cache_valido_d2(self.cache_dir, "req_d2_zzz", payload)
+        resultados = cempre.load_results_from_cache([self.plano[0]], self.cache_dir)
+        self.assertEqual(len(resultados), 1)
+        resultado = resultados[0]
+        self.assertIsNone(resultado["erro"])
+        self.assertTrue(resultado["de_cache"])
+        self.assertEqual(resultado["resultado"], payload)
+        self.assertIsNotNone(resultado["hash_resposta_raw"])
+
+    def test_cache_ausente_e_falha_explicita_no_resultado(self) -> None:
+        resultados = cempre.load_results_from_cache([self.plano[0]], self.cache_dir)
+        resultado = resultados[0]
+        self.assertIsNone(resultado["resultado"])
+        self.assertIsNotNone(resultado["erro"])
+        self.assertTrue(resultado["de_cache"])
+
+    def test_cache_corrompido_e_falha_explicita(self) -> None:
+        cempre.cache_path_for_request("req_d2_zzz", self.cache_dir).parent.mkdir(parents=True, exist_ok=True)
+        cempre.cache_path_for_request("req_d2_zzz", self.cache_dir).write_text("{ isso não é json", encoding="utf-8")
+        resultados = cempre.load_results_from_cache([self.plano[0]], self.cache_dir)
+        resultado = resultados[0]
+        self.assertIsNone(resultado["resultado"])
+        self.assertIsNotNone(resultado["erro"])
+
+    def test_payload_em_cache_com_schema_invalido_nao_passa(self) -> None:
+        texto_lista_vazia = json.dumps([])
+        cempre.save_cached_request(
+            "req_d2_zzz",
+            texto_resposta_raw=texto_lista_vazia,
+            hash_resposta_raw=cempre.hashlib.sha256(texto_lista_vazia.encode("utf-8")).hexdigest(),
+            cache_dir=self.cache_dir,
+        )
+        resultados = cempre.load_results_from_cache([self.plano[0]], self.cache_dir)
+        resultado = resultados[0]
+        self.assertIsNone(resultado["resultado"])
+        self.assertIsNotNone(resultado["erro"])
+
+    def test_load_results_from_cache_nunca_chama_fetch_request(self) -> None:
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")):
+            cempre.load_results_from_cache(self.plano, self.cache_dir)
+
+
+class TestBuildLongFromResults(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.cache_dir = Path(self._tmpdir.name)
+        self.plano = _plano_pequeno_d2()
+        self.calendario = _calendario_d2()
+        _salva_cache_valido_d2(self.cache_dir, "req_d2_zzz", [_linha_payload_d2("3166600", 2010, 708, "100")])
+        _salva_cache_valido_d2(self.cache_dir, "req_d2_aaa", [_linha_payload_d2("1100015", 2007, 708, "150")])
+
+    def test_plano_completo_mais_caches_validos_constroi_long(self) -> None:
+        resultados = cempre.load_results_from_cache(self.plano, self.cache_dir)
+        long_construida = cempre.build_long_from_results(self.plano, resultados, self.calendario)
+        self.assertEqual(len(long_construida), 2)
+        self.assertTrue({"status_territorial", "incompatibilidade_territorial"} <= set(long_construida.columns))
+
+    def test_plano_incompleto_falha_ao_construir_long_completa(self) -> None:
+        resultados = cempre.load_results_from_cache([self.plano[0]], self.cache_dir)
+        with self.assertRaisesRegex(ValueError, "incompleto"):
+            cempre.build_long_from_results(self.plano, resultados, self.calendario)
+
+    def test_resultado_com_erro_falha_ao_construir_long_completa(self) -> None:
+        resultados = cempre.load_results_from_cache(self.plano, self.cache_dir)
+        resultados[0]["erro"] = "HTTP 500"
+        resultados[0]["resultado"] = None
+        with self.assertRaisesRegex(ValueError, "incompleto"):
+            cempre.build_long_from_results(self.plano, resultados, self.calendario)
+
+    def test_normalize_long_recebe_request_id_e_hash_corretos(self) -> None:
+        resultados = cempre.load_results_from_cache(self.plano, self.cache_dir)
+        long_construida = cempre.build_long_from_results(self.plano, resultados, self.calendario)
+        resultados_por_id = {r["request_id"]: r for r in resultados}
+        for _, linha in long_construida.iterrows():
+            resultado_esperado = resultados_por_id[linha["request_id"]]
+            self.assertEqual(linha["hash_resposta_raw"], resultado_esperado["hash_resposta_raw"])
+
+    def test_validate_long_continua_sendo_aplicado(self) -> None:
+        _salva_cache_valido_d2(self.cache_dir, "req_d2_zzz", [_linha_payload_d2("3166600", 2010, 708, "N/D")])
+        resultados = cempre.load_results_from_cache(self.plano, self.cache_dir)
+        with self.assertRaisesRegex(ValueError, "validate_long"):
+            cempre.build_long_from_results(self.plano, resultados, self.calendario)
+
+    def test_reconciliacao_territorial_esta_presente(self) -> None:
+        resultados = cempre.load_results_from_cache(self.plano, self.cache_dir)
+        long_construida = cempre.build_long_from_results(self.plano, resultados, self.calendario)
+        self.assertTrue((long_construida["status_territorial"] == "existia_no_ano").all())
+        self.assertFalse(long_construida["incompatibilidade_territorial"].any())
+
+    def test_ordem_da_long_e_deterministica(self) -> None:
+        resultados = cempre.load_results_from_cache(self.plano, self.cache_dir)
+        long_a = cempre.build_long_from_results(self.plano, resultados, self.calendario)
+        long_b = cempre.build_long_from_results(list(reversed(self.plano)), list(reversed(resultados)), self.calendario)
+        pd.testing.assert_frame_equal(
+            long_a.reset_index(drop=True), long_b.reset_index(drop=True), check_dtype=False,
+        )
+        self.assertEqual(long_a.iloc[0]["codigo_municipio_ibge"], "1100015")
+        self.assertEqual(long_a.iloc[1]["codigo_municipio_ibge"], "3166600")
+
+    def test_build_long_from_results_nunca_chama_fetch_request(self) -> None:
+        resultados = cempre.load_results_from_cache(self.plano, self.cache_dir)
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")):
+            cempre.build_long_from_results(self.plano, resultados, self.calendario)
+
+
+class TestPersistenciaLongParquet(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.diretorio = Path(self._tmpdir.name)
+        cache_dir = self.diretorio / "cache"
+        self.plano = _plano_pequeno_d2()
+        self.calendario = _calendario_d2()
+        _salva_cache_valido_d2(cache_dir, "req_d2_zzz", [_linha_payload_d2("3166600", 2010, 708, "100")])
+        _salva_cache_valido_d2(cache_dir, "req_d2_aaa", [_linha_payload_d2("1100015", 2007, 708, "150")])
+        resultados = cempre.load_results_from_cache(self.plano, cache_dir)
+        self.long_valida = cempre.build_long_from_results(self.plano, resultados, self.calendario)
+
+    def test_persistencia_cria_parquet(self) -> None:
+        caminho = self.diretorio / "long_teste.parquet"
+        caminho_retornado = cempre.write_long_parquet(self.long_valida, caminho)
+        self.assertTrue(caminho.exists())
+        self.assertEqual(caminho_retornado, caminho)
+
+    def test_persistencia_nao_sobrescreve_por_padrao(self) -> None:
+        caminho = self.diretorio / "long_teste_overwrite.parquet"
+        cempre.write_long_parquet(self.long_valida, caminho)
+        with self.assertRaises(FileExistsError):
+            cempre.write_long_parquet(self.long_valida, caminho)
+        # com overwrite=True explícito, deve funcionar
+        cempre.write_long_parquet(self.long_valida, caminho, overwrite=True)
+
+    # -- Correção focal do spot-check: write_long_parquet valida
+    # estruturalmente ANTES de escrever (não só presença de colunas) —
+    # simetria com load_long_parquet via _validar_schema_long_persistida.
+
+    def test_write_rejeita_ano_fora_da_janela_e_nao_cria_arquivo(self) -> None:
+        caminho = self.diretorio / "long_write_ano_invalido.parquet"
+        long_ano_invalido = self.long_valida.copy()
+        long_ano_invalido.loc[0, "ano"] = 2050
+        with self.assertRaisesRegex(ValueError, "ano"):
+            cempre.write_long_parquet(long_ano_invalido, caminho)
+        self.assertFalse(caminho.exists())
+
+    def test_write_rejeita_incompatibilidade_territorial_nao_booleana_e_nao_cria_arquivo(self) -> None:
+        caminho = self.diretorio / "long_write_bool_invalido.parquet"
+        long_bool_invalida = self.long_valida.copy()
+        long_bool_invalida["incompatibilidade_territorial"] = long_bool_invalida["incompatibilidade_territorial"].astype(str)
+        long_bool_invalida.loc[0, "incompatibilidade_territorial"] = "nao_booleano"
+        with self.assertRaisesRegex(ValueError, "incompatibilidade_territorial"):
+            cempre.write_long_parquet(long_bool_invalida, caminho)
+        self.assertFalse(caminho.exists())
+
+    def test_load_rejeita_parquet_com_incompatibilidade_territorial_nao_booleana(self) -> None:
+        caminho = self.diretorio / "long_load_bool_invalido.parquet"
+        long_bool_invalida = self.long_valida.copy()
+        long_bool_invalida["incompatibilidade_territorial"] = long_bool_invalida["incompatibilidade_territorial"].astype(str)
+        long_bool_invalida.loc[0, "incompatibilidade_territorial"] = "nao_booleano"
+        # Escreve diretamente (contornando write_long_parquet) para simular
+        # um artefato Parquet já existente/corrompido por fora do pipeline.
+        long_bool_invalida.to_parquet(caminho, index=False)
+        with self.assertRaisesRegex(ValueError, "incompatibilidade_territorial"):
+            cempre.load_long_parquet(caminho)
+
+    def test_long_valida_continua_sendo_persistida_e_recarregada_normalmente(self) -> None:
+        caminho = self.diretorio / "long_valida_ok.parquet"
+        cempre.write_long_parquet(self.long_valida, caminho)
+        long_recarregada = cempre.load_long_parquet(caminho)
+        self.assertEqual(len(long_recarregada), len(self.long_valida))
+        self.assertTrue(pd.api.types.is_bool_dtype(long_recarregada["incompatibilidade_territorial"]))
+
+    def test_reload_preserva_schema_contratado(self) -> None:
+        caminho = self.diretorio / "long_reload.parquet"
+        cempre.write_long_parquet(self.long_valida, caminho)
+        long_recarregada = cempre.load_long_parquet(caminho)
+        for coluna in [
+            "valor_bruto", "valor_numerico", "status_valor_api", "request_id",
+            "hash_resposta_raw", "fonte_tabela", "ano", "codigo_municipio_ibge",
+            "codigo_variavel_sidra", "status_territorial", "incompatibilidade_territorial",
+        ]:
+            self.assertIn(coluna, long_recarregada.columns)
+
+    def test_roundtrip_parquet_preserva_conteudo_logico(self) -> None:
+        caminho = self.diretorio / "long_roundtrip.parquet"
+        cempre.write_long_parquet(self.long_valida, caminho)
+        long_recarregada = cempre.load_long_parquet(caminho)
+        relatorio = cempre.validate_round_trip_equivalencia(self.long_valida, long_recarregada)
+        self.assertTrue(relatorio["equivalente"])
+        self.assertEqual(relatorio["n_linhas"], len(self.long_valida))
+
+    def test_arquivo_parquet_com_coluna_estrutural_ausente_e_rejeitado(self) -> None:
+        caminho = self.diretorio / "long_sem_coluna.parquet"
+        long_sem_coluna = self.long_valida.drop(columns=["status_territorial"])
+        long_sem_coluna.to_parquet(caminho, index=False)
+        with self.assertRaisesRegex(ValueError, "coluna"):
+            cempre.load_long_parquet(caminho)
+
+    def test_chave_canonica_duplicada_no_parquet_e_rejeitada(self) -> None:
+        caminho = self.diretorio / "long_duplicada.parquet"
+        long_duplicada = pd.concat([self.long_valida, self.long_valida.iloc[[0]]], ignore_index=True)
+        long_duplicada.to_parquet(caminho, index=False)
+        with self.assertRaisesRegex(ValueError, "duplicada"):
+            cempre.load_long_parquet(caminho)
+
+    def test_ano_invalido_no_parquet_e_rejeitado(self) -> None:
+        caminho = self.diretorio / "long_ano_invalido.parquet"
+        long_ano_invalido = self.long_valida.copy()
+        long_ano_invalido.loc[0, "ano"] = 2050
+        long_ano_invalido.to_parquet(caminho, index=False)
+        with self.assertRaisesRegex(ValueError, "ano"):
+            cempre.load_long_parquet(caminho)
+
+    def test_variavel_invalida_no_parquet_e_rejeitada(self) -> None:
+        caminho = self.diretorio / "long_variavel_invalida.parquet"
+        long_variavel_invalida = self.long_valida.copy()
+        long_variavel_invalida.loc[0, "codigo_variavel_sidra"] = 999999
+        long_variavel_invalida.to_parquet(caminho, index=False)
+        with self.assertRaisesRegex(ValueError, "variável"):
+            cempre.load_long_parquet(caminho)
+
+    def test_arquivo_ausente_falha_explicitamente(self) -> None:
+        with self.assertRaises(FileNotFoundError):
+            cempre.load_long_parquet(self.diretorio / "inexistente.parquet")
+
+    def test_formato_nao_parquet_falha_explicitamente(self) -> None:
+        caminho = self.diretorio / "long.csv"
+        caminho.write_text("codigo_municipio_ibge,ano\n3166600,2010\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "formato"):
+            cempre.load_long_parquet(caminho)
+
+
+class TestRebuildLongFromCache(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.diretorio = Path(self._tmpdir.name)
+        self.cache_dir = self.diretorio / "cache"
+        self.plano = _plano_pequeno_d2()
+        self.calendario = _calendario_d2()
+        _salva_cache_valido_d2(self.cache_dir, "req_d2_zzz", [_linha_payload_d2("3166600", 2010, 708, "100")])
+        _salva_cache_valido_d2(self.cache_dir, "req_d2_aaa", [_linha_payload_d2("1100015", 2007, 708, "150")])
+
+    def test_rebuild_offline_a_partir_de_cache_funciona_sem_rede(self) -> None:
+        long_reconstruida = cempre.rebuild_long_from_cache(self.plano, self.cache_dir, self.calendario)
+        self.assertEqual(len(long_reconstruida), 2)
+        self.assertTrue({"status_territorial", "incompatibilidade_territorial"} <= set(long_reconstruida.columns))
+
+    def test_rebuild_offline_pode_persistir_diretamente(self) -> None:
+        caminho = self.diretorio / "long_rebuild.parquet"
+        long_reconstruida = cempre.rebuild_long_from_cache(
+            self.plano, self.cache_dir, self.calendario, caminho_persistencia=caminho,
+        )
+        self.assertTrue(caminho.exists())
+        long_recarregada = cempre.load_long_parquet(caminho)
+        cempre.validate_round_trip_equivalencia(long_reconstruida, long_recarregada)
+
+    def test_rebuild_offline_nunca_chama_fetch_request(self) -> None:
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")):
+            cempre.rebuild_long_from_cache(self.plano, self.cache_dir, self.calendario)
+
+    def test_rebuild_offline_nunca_chama_requests_get(self) -> None:
+        with mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            cempre.rebuild_long_from_cache(self.plano, self.cache_dir, self.calendario)
+
+
 if __name__ == "__main__":
     unittest.main()
