@@ -85,7 +85,7 @@ metodológicas internas à série são tratadas na seção 8.
 | 2009 | Sim | SIDRA, Tabela 1685 (N6) | Primeiro ano sob apropriação individualizada de registros RAIS (seção 8) |
 | 2010 | Sim | SIDRA, Tabela 1685 (N6) | — |
 | 2011 | Sim | SIDRA, Tabela 1685 (N6) | — |
-| 2012 | Sim | SIDRA, Tabela 1685 (N6) | Último ano da malha municipal de 5.564 municípios (ver seção 7) |
+| 2012 | Sim | SIDRA, Tabela 1685 (N6) | Último ano da malha municipal de 5.565 municípios (ver seção 7) |
 | 2013 | Sim | SIDRA, Tabela 1685 (N6) | Primeiro ano da malha municipal de 5.570 municípios |
 | 2014 | Sim | SIDRA, Tabela 1685 (N6) | — |
 | 2015 | Sim | SIDRA, Tabela 1685 (N6) | — |
@@ -318,7 +318,7 @@ todos os 5.570 têm registro em **todos** os 13 anos de 2007–2019.
 
 **RESULTADO DA INSPEÇÃO**: a consulta oficial para Pescaria Brava/SC, código `4212650`, em 2007 retornou uma **linha** com `V="..."`, não simplesmente ausência de linha. Portanto, não se pode inferir automaticamente a inexistência histórica do município pela ausência física de registro em uma resposta da API, nem atribuir uma causa única a `...` apenas pelo valor. A construção futura deverá reconciliar os dados com calendário/malha territorial histórica; a implementação exata dessa reconciliação não é decidida nesta auditoria.
 
-**INFERÊNCIA, com apoio parcial em teste**: a passagem de 5.564 para 5.570 municípios torna a cobertura territorial município-ano uma questão a verificar, mas a disponibilidade dos anos e do nível N6 não equivale à observação numérica de cada célula.
+**INFERÊNCIA, com apoio parcial em teste**: as transições de 5.564 municípios em 2007–2008 para 5.565 em 2009–2012 e 5.570 desde 2013 tornam a cobertura territorial município-ano uma questão a verificar, mas a disponibilidade dos anos e do nível N6 não equivale à observação numérica de cada célula.
 **NÃO COMPROVADO NESTA INSPEÇÃO**: a contagem exata de municípios com
 registro no CEMPRE por ano (2007 vs. 2012 vs. 2013 vs. 2019) não foi
 verificada nesta sessão, porque exigiria uma consulta de maior volume
@@ -487,7 +487,7 @@ Riscos identificados nesta inspeção, sem propor solução metodológica
    podem não aparecer integralmente no primeiro ano de tratamento,
    reforçando a relevância da discussão de antecipação/timing já
    registrada em `CONTRATO_CAUSAL.md`.
-5. **Cobertura territorial variável (5.564→5.570 municípios)** (seção
+5. **Cobertura territorial variável (5.564→5.565→5.570 municípios)** (seção
    7) — ainda não quantificada para o CEMPRE especificamente; a consulta
    de Pescaria Brava/SC em 2007 retornou uma linha com `V="..."`. Isso
    exige reconciliação com calendário/malha territorial e não permite

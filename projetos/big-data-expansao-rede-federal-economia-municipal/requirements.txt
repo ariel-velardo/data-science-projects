@@ -4,6 +4,7 @@ polars
 duckdb
 pyarrow
 openpyxl
+xlrd==2.0.2
 
 matplotlib
 plotly

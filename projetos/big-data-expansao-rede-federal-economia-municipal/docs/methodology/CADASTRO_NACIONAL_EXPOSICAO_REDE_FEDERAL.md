@@ -122,8 +122,8 @@ deduplica-se por `CO_MUNICIPIO` dentro de cada ano.
 
 **Não se presume uma grade fixa de 5.570 municípios × 13 anos.** O
 número de municípios por ano é preservado exatamente como observado no
-Censo daquele ano — o Brasil teve 5.564 municípios até 2012 e 5.570 a
-partir de 2013 (criação de Balneário Rincão/SC, Pescaria Brava/SC,
+Censo daquele ano — o Brasil teve 5.564 municípios em 2007–2008, 5.565
+em 2009–2012 e 5.570 a partir de 2013 (criação de Balneário Rincão/SC, Pescaria Brava/SC,
 Paraíso das Águas/MS e outros casos), e o próprio Censo Escolar pode não
 cobrir 100% do universo IBGE em todo ano. O painel nacional (Produto A)
 tem, portanto, um número de linhas por ano potencialmente diferente ano
@@ -280,8 +280,8 @@ territorial real do Brasil no período):
 - **Primeira exposição observada entre 2008 e 2019**: 454.
 - **Padrão intermitente de exposição observada**: 17.
 - **Presentes nos 13 anos do universo**: 5.564 / 5.570 (6 municípios têm
-  cobertura incompleta — consistente com a expansão territorial de 5.564
-  para 5.570 municípios ocorrida dentro da própria janela 2007–2019).
+  cobertura incompleta — consistente com uma entrada territorial em 2009 e
+  cinco em 2013, dentro da própria janela 2007–2019).
 - **Reconciliação exata do subconjunto Fase II** (147 municípios × 13
   anos, todas as colunas comparáveis contra
   `painel_presenca_federal_ept_fase_ii_2007_2019.parquet`): **OK**, sem

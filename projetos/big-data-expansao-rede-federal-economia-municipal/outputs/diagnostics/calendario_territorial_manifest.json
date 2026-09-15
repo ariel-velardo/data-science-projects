@@ -1,0 +1,761 @@
+{
+  "orgao": "Instituto Brasileiro de Geografia e Estatística (IBGE)",
+  "produto": "IBGE - Divisão Territorial Brasileira (DTB)",
+  "pagina_produto": "https://www.ibge.gov.br/geociencias/organizacao-do-territorio/estrutura-territorial/23701-divisao-territorial-brasileira.html",
+  "diretorio_ftp_oficial": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/",
+  "janela": [
+    2007,
+    2019
+  ],
+  "regra_derivacao": "municipio_existia_no_ano = código presente na lista de municípios da edição DTB do próprio ano",
+  "data_execucao_utc": "2026-09-15T12:52:06Z",
+  "script": "src/constroi_calendario_territorial_ibge.py",
+  "sha256_script": "362c893ab0d318480c20e524a605807eb4ddbef00be174e9ca75f344c0bcc217",
+  "git_commit_head": "1316709788de4af44b4aba20d28de176d1266396",
+  "ambiente": {
+    "python": "3.11.9",
+    "pandas": "3.0.5",
+    "xlrd": "2.0.2"
+  },
+  "raw_versionado_no_git": false,
+  "nota_raw": "arquivos .zip originais mantidos em data/raw/ibge/territorio/dtb/ (ignorados por *.zip); lidos em memória, sem extração de .xls em disco",
+  "fontes_por_ano": [
+    {
+      "ano_referencia": 2007,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2007/dtb_2007.zip",
+      "arquivo_original": "dtb_2007.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/dtb_2007.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 461511,
+      "sha256": "dab746c294e13db3892b959258d84d4cc8dd5e2d0cb5e9cbc6e02a03ff58c3c9",
+      "membro_xls": "DTB_2007.xls",
+      "sha256_membro_xls": "fef38d25f5d04f11db0edcdbccd22862154a936f5d0c82f116573acd3d35f365",
+      "tamanho_membro_xls_bytes": 1940992,
+      "aba": "DTB_Nome_Comum",
+      "abas_disponiveis": [
+        "DTB_Nome_Comum"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Mesorregião Geográfica",
+        "Nome_Mesorregião Geográfica",
+        "Microrregião Geográfica",
+        "Nome_Microrregião Geográfica",
+        "Município",
+        "Nome_Município",
+        "Distrito",
+        "Nome_Distrito",
+        "Subdistrito",
+        "Nome_Subdistrito"
+      ],
+      "n_linhas_brutas": 10561,
+      "nivel_planilha": "distrito",
+      "formato_codigo": "uf+5",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Município",
+        "Nome_Município"
+      ],
+      "transformacao": "planilha com uma linha por distrito/subdistrito: linhas colapsadas para uma por código municipal após verificar que nome do município e UF são únicos por código; código de 7 dígitos = 'UF' (2 dígitos) + 'Município' (5 dígitos); nome de 'Nome_Município' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5564
+    },
+    {
+      "ano_referencia": 2008,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2008/dtb_2008.zip",
+      "arquivo_original": "dtb_2008.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/dtb_2008.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 483339,
+      "sha256": "562e92c558a7180165032b352d2da9daf06b5fe7930e499b6f5bc365c832914a",
+      "membro_xls": "DTB_2008.xls",
+      "sha256_membro_xls": "ef5a03c657463c4bcfa3fd00ab2dee3a13b5c9460eae3f69849b08431a7395e9",
+      "tamanho_membro_xls_bytes": 1943040,
+      "aba": "DTB_Nome_Comum",
+      "abas_disponiveis": [
+        "DTB_Nome_Comum"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Mesorregião",
+        "Nome_Mesorregião",
+        "Microrregião",
+        "Nome_Microrregião",
+        "Município",
+        "Nome_Município",
+        "Distrito",
+        "Nome_Distrito",
+        "SubDistrito",
+        "Nome_SubDistrito"
+      ],
+      "n_linhas_brutas": 10575,
+      "nivel_planilha": "distrito",
+      "formato_codigo": "uf+5",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Município",
+        "Nome_Município"
+      ],
+      "transformacao": "planilha com uma linha por distrito/subdistrito: linhas colapsadas para uma por código municipal após verificar que nome do município e UF são únicos por código; código de 7 dígitos = 'UF' (2 dígitos) + 'Município' (5 dígitos); nome de 'Nome_Município' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5564
+    },
+    {
+      "ano_referencia": 2009,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2009/dtb_05_05_2009.zip",
+      "arquivo_original": "dtb_05_05_2009.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/dtb_05_05_2009.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 482249,
+      "sha256": "40771908994960ed0037d8e925998e078263f91559956ac251d48ce7dcbdbea6",
+      "membro_xls": "DTB_05_05_2009.xls",
+      "sha256_membro_xls": "1c6fd5ec750cc0fae4ee65cfc91e29dcce9c1ea32c4dc52aafde7789311d1cde",
+      "tamanho_membro_xls_bytes": 1977344,
+      "aba": "DTB_05_05_2009n",
+      "abas_disponiveis": [
+        "DTB_05_05_2009n"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "MesorregiãoGeográfica",
+        "MesorregiãoGeográfica_Nome",
+        "MicrorregiãoGeográfica",
+        "MicrorregiãoGeográfica_Nome",
+        "Município",
+        "Município_Nome",
+        "Distrito",
+        "Distrito_Nome",
+        "Subdistrito",
+        "Subdistrito_Nome"
+      ],
+      "n_linhas_brutas": 10644,
+      "nivel_planilha": "distrito",
+      "formato_codigo": "completo7",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Município",
+        "Município_Nome"
+      ],
+      "transformacao": "planilha com uma linha por distrito/subdistrito: linhas colapsadas para uma por código municipal após verificar que nome do município e UF são únicos por código; código de 7 dígitos lido de 'Município' e conferido contra 'UF'; nome de 'Município_Nome' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5565
+    },
+    {
+      "ano_referencia": 2010,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2010/dtb_2010.zip",
+      "arquivo_original": "dtb_2010.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/dtb_2010.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 206919,
+      "sha256": "4cfbe9ae50b6e5d67179050a9041993940a2548abdba0057e6b9677f49fa95e1",
+      "membro_xls": "dtb_2010.xls",
+      "sha256_membro_xls": "c43f31814462fcdc2a7eed984be0ce9debe698b208ae4cd4df59d23ee85b5f3e",
+      "tamanho_membro_xls_bytes": 912384,
+      "aba": "Município",
+      "abas_disponiveis": [
+        "Município"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Mesorregião",
+        "Nome_Meso",
+        "Microrregião",
+        "Nome_Micro",
+        "Município",
+        "Nome_Munic"
+      ],
+      "n_linhas_brutas": 5565,
+      "nivel_planilha": "municipio",
+      "formato_codigo": "completo7",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Município",
+        "Nome_Munic"
+      ],
+      "transformacao": "planilha com uma linha por município: código duplicado é erro; código de 7 dígitos lido de 'Município' e conferido contra 'UF'; nome de 'Nome_Munic' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5565
+    },
+    {
+      "ano_referencia": 2011,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2011/dtb_2011.zip",
+      "arquivo_original": "dtb_2011.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/dtb_2011.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 194667,
+      "sha256": "1981ccf854e78be8206f9cc6ac90c16ae5206d4bf2650e725750bf56b9e60f16",
+      "membro_xls": "dtb_2011.xls",
+      "sha256_membro_xls": "96860f6c3f15e4f7975fd8f697ccdbdbfd31f88b0b54324ae44eaf0ae65dc613",
+      "tamanho_membro_xls_bytes": 886784,
+      "aba": "DTB_2011",
+      "abas_disponiveis": [
+        "DTB_2011"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Mesorregião",
+        "Nome_Meso",
+        "Microrregião",
+        "Nome_Micro",
+        "Munic",
+        "Nome_Munic"
+      ],
+      "n_linhas_brutas": 5565,
+      "nivel_planilha": "municipio",
+      "formato_codigo": "uf+5",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Munic",
+        "Nome_Munic"
+      ],
+      "transformacao": "planilha com uma linha por município: código duplicado é erro; código de 7 dígitos = 'UF' (2 dígitos) + 'Munic' (5 dígitos); nome de 'Nome_Munic' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5565
+    },
+    {
+      "ano_referencia": 2012,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2012/dtb_2012.zip",
+      "arquivo_original": "dtb_2012.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/dtb_2012.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 178326,
+      "sha256": "4c13cebe5116bc9f8a76f6074ae40e757d45afb1c7147ff04ed261d69369aca0",
+      "membro_xls": "dtb_2012.xls",
+      "sha256_membro_xls": "c8a8ef8a26241a197aea411ab027b4760696752b16e9c63c8ebb14f77411c245",
+      "tamanho_membro_xls_bytes": 893440,
+      "aba": "Estrutura_2012___Município",
+      "abas_disponiveis": [
+        "Estrutura_2012___Município"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Mesorregião",
+        "Nome_Meso",
+        "Microrregião",
+        "Nome_Micro",
+        "Munic",
+        "Nome_Munic"
+      ],
+      "n_linhas_brutas": 5565,
+      "nivel_planilha": "municipio",
+      "formato_codigo": "uf+5",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Munic",
+        "Nome_Munic"
+      ],
+      "transformacao": "planilha com uma linha por município: código duplicado é erro; código de 7 dígitos = 'UF' (2 dígitos) + 'Munic' (5 dígitos); nome de 'Nome_Munic' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5565
+    },
+    {
+      "ano_referencia": 2013,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2013/dtb_2013.zip",
+      "arquivo_original": "dtb_2013.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/dtb_2013.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 469155,
+      "sha256": "eeec2bde37b901a363f4a3973fb65ca028edaa481212253cc8b821db5f3d2c54",
+      "membro_xls": "dtb_2013.xls",
+      "sha256_membro_xls": "b3dbf5881dfc9cf7b9cfb3d4f543a85580178d9c2564ddf1f658618393171119",
+      "tamanho_membro_xls_bytes": 2158080,
+      "aba": "dtb_2013",
+      "abas_disponiveis": [
+        "dtb_2013"
+      ],
+      "colunas_originais": [
+        "Uf",
+        "Nome_UF",
+        "Mesorregião Geográfica",
+        "Nome_Mesorregião",
+        "Microrregião Geográfica",
+        "Nome_Microrregião",
+        "Município",
+        "Nome_Município",
+        "Distrito",
+        "Nome_Distrito",
+        "Subdistrito",
+        "Nome_Subdistrito"
+      ],
+      "n_linhas_brutas": 10964,
+      "nivel_planilha": "distrito",
+      "formato_codigo": "uf+5",
+      "colunas_usadas": [
+        "Uf",
+        "Nome_UF",
+        "Município",
+        "Nome_Município"
+      ],
+      "transformacao": "planilha com uma linha por distrito/subdistrito: linhas colapsadas para uma por código municipal após verificar que nome do município e UF são únicos por código; código de 7 dígitos = 'Uf' (2 dígitos) + 'Município' (5 dígitos); nome de 'Nome_Município' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5570
+    },
+    {
+      "ano_referencia": 2014,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2014/dtb_2014_v2.zip",
+      "arquivo_original": "dtb_2014_v2.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/dtb_2014_v2.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 2229161,
+      "sha256": "ceed87ef11e1477eaf3ad4f5f948746ca699187f6558e98e91589210af0a48d1",
+      "membro_xls": "DTB_2014_v2/DTB_2014_Municipio.xls",
+      "sha256_membro_xls": "17268b84aa498fe34e398329ca1ff29b41ad62b8576be9336f35175de3145329",
+      "tamanho_membro_xls_bytes": 1021952,
+      "aba": "Plan1",
+      "abas_disponiveis": [
+        "Plan1",
+        "Plan2",
+        "Plan3"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Mesorregião Geográfica",
+        "Nome_Mesorregião",
+        "Microrregião Geográfica",
+        "Nome_Microrregião",
+        "Município",
+        "Cod Municipio Completo",
+        "Nome_Município"
+      ],
+      "n_linhas_brutas": 5570,
+      "nivel_planilha": "municipio",
+      "formato_codigo": "completo7",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Cod Municipio Completo",
+        "Nome_Município",
+        "Município"
+      ],
+      "transformacao": "planilha com uma linha por município: código duplicado é erro; código de 7 dígitos lido de 'Cod Municipio Completo' e conferido contra 'UF' e 'Município'; nome de 'Nome_Município' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5570
+    },
+    {
+      "ano_referencia": 2015,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2015/dtb_2015_v2.zip",
+      "arquivo_original": "dtb_2015_v2.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/dtb_2015_v2.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 1494824,
+      "sha256": "d101cffe61a81c8a4b8dedae29ee0dea429fd07e7816225d88d5c51b98ab5fd3",
+      "membro_xls": "dtb_2015/RELATORIO_DTB_BRASIL_MUNICIPIO.xls",
+      "sha256_membro_xls": "8519ba92f9d8f4106e3dbd47c4eb06db5c5bbda0723c6b910e7de85fd5759c44",
+      "tamanho_membro_xls_bytes": 1002496,
+      "aba": "DTB_2015_Municipio",
+      "abas_disponiveis": [
+        "DTB_2015_Municipio"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Mesorregião Geográfica",
+        "Nome_Mesorregião",
+        "Microrregião Geográfica",
+        "Nome_Microrregião",
+        "Município",
+        "Código Município Completo",
+        "Nome_Município"
+      ],
+      "n_linhas_brutas": 5570,
+      "nivel_planilha": "municipio",
+      "formato_codigo": "completo7",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Código Município Completo",
+        "Nome_Município",
+        "Município"
+      ],
+      "transformacao": "planilha com uma linha por município: código duplicado é erro; código de 7 dígitos lido de 'Código Município Completo' e conferido contra 'UF' e 'Município'; nome de 'Nome_Município' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5570
+    },
+    {
+      "ano_referencia": 2016,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2016/DTB_2016_v2.zip",
+      "arquivo_original": "DTB_2016_v2.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/DTB_2016_v2.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 1514388,
+      "sha256": "d5ce045b0fe4a9f5316625c9922bb95013b0ed8113b39efe76340fce89fabdac",
+      "membro_xls": "DTB_2016_v2/DTB_2016/DTB_BRASIL_MUNICIPIO.xls",
+      "sha256_membro_xls": "bf7584d922c612d48669cc90f8d37c3b72a9b619a001291f093f72b70f759232",
+      "tamanho_membro_xls_bytes": 1002496,
+      "aba": "DTB_2016_Municipio",
+      "abas_disponiveis": [
+        "DTB_2016_Municipio"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Mesorregião Geográfica",
+        "Nome_Mesorregião",
+        "Microrregião Geográfica",
+        "Nome_Microrregião",
+        "Município",
+        "Código Município Completo",
+        "Nome_Município"
+      ],
+      "n_linhas_brutas": 5570,
+      "nivel_planilha": "municipio",
+      "formato_codigo": "completo7",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Código Município Completo",
+        "Nome_Município",
+        "Município"
+      ],
+      "transformacao": "planilha com uma linha por município: código duplicado é erro; código de 7 dígitos lido de 'Código Município Completo' e conferido contra 'UF' e 'Município'; nome de 'Nome_Município' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5570
+    },
+    {
+      "ano_referencia": 2017,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2017/DTB_2017.zip",
+      "arquivo_original": "DTB_2017.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/DTB_2017.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 1492911,
+      "sha256": "9788c2192465bc2f09c9163aa456332db5a489b9be7fe7e15ff076206b00e983",
+      "membro_xls": "DTB_BRASIL_MUNICIPIO.xls",
+      "sha256_membro_xls": "0619a1156abb55d0ba934dfadcadda4135113b3e3786a6e311cbff17924f8490",
+      "tamanho_membro_xls_bytes": 1002496,
+      "aba": "DTB_2017_Municipio",
+      "abas_disponiveis": [
+        "DTB_2017_Municipio"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Mesorregião Geográfica",
+        "Nome_Mesorregião",
+        "Microrregião Geográfica",
+        "Nome_Microrregião",
+        "Município",
+        "Código Município Completo",
+        "Nome_Município"
+      ],
+      "n_linhas_brutas": 5570,
+      "nivel_planilha": "municipio",
+      "formato_codigo": "completo7",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Código Município Completo",
+        "Nome_Município",
+        "Município"
+      ],
+      "transformacao": "planilha com uma linha por município: código duplicado é erro; código de 7 dígitos lido de 'Código Município Completo' e conferido contra 'UF' e 'Município'; nome de 'Nome_Município' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5570
+    },
+    {
+      "ano_referencia": 2018,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2018/DTB_2018.zip",
+      "arquivo_original": "DTB_2018.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/DTB_2018.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 1482231,
+      "sha256": "7e6237235cbf2a04b245f6e4d085f608de10ce674f64c93ba5b523b57c0cdb0d",
+      "membro_xls": "RELATORIO_DTB_BRASIL_MUNICIPIO.xls",
+      "sha256_membro_xls": "dcc12116facd6d0bcc6c23c979fe7553e5299fb8750e78e3f97384a615994891",
+      "tamanho_membro_xls_bytes": 1000960,
+      "aba": "DTB_2018_Municipio",
+      "abas_disponiveis": [
+        "DTB_2018_Municipio"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Mesorregião Geográfica",
+        "Nome_Mesorregião",
+        "Microrregião Geográfica",
+        "Nome_Microrregião",
+        "Município",
+        "Código Município Completo",
+        "Nome_Município"
+      ],
+      "n_linhas_brutas": 5570,
+      "nivel_planilha": "municipio",
+      "formato_codigo": "completo7",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Código Município Completo",
+        "Nome_Município",
+        "Município"
+      ],
+      "transformacao": "planilha com uma linha por município: código duplicado é erro; código de 7 dígitos lido de 'Código Município Completo' e conferido contra 'UF' e 'Município'; nome de 'Nome_Município' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5570
+    },
+    {
+      "ano_referencia": 2019,
+      "url": "https://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/divisao_territorial/2019/DTB_2019_v2.zip",
+      "arquivo_original": "DTB_2019_v2.zip",
+      "caminho_local": "data/raw/ibge/territorio/dtb/DTB_2019_v2.zip",
+      "data_acesso": "2026-09-15T03:08:26Z",
+      "origem_local": "arquivo_preexistente_validado_por_sha256",
+      "tamanho_bytes": 1928272,
+      "sha256": "2aee1cfc43471245903aa2d27f4e42da4f465089a52c8c0f12a4221e32572fd3",
+      "membro_xls": "RELATORIO_DTB_BRASIL_MUNICIPIO.xls",
+      "sha256_membro_xls": "a1af884eea66979af6719fb5571a699b123069b021c9f0531341593f52ebada3",
+      "tamanho_membro_xls_bytes": 1323520,
+      "aba": "DTB_2019_Municipio",
+      "abas_disponiveis": [
+        "DTB_2019_Municipio"
+      ],
+      "colunas_originais": [
+        "UF",
+        "Nome_UF",
+        "Região Geográfica Intermediária",
+        "Nome Região Geográfica Intermediária",
+        "Região Geográfica Imediata",
+        "Nome Região Geográfica Imediata",
+        "Mesorregião Geográfica",
+        "Nome_Mesorregião",
+        "Microrregião Geográfica",
+        "Nome_Microrregião",
+        "Município",
+        "Código Município Completo",
+        "Nome_Município"
+      ],
+      "n_linhas_brutas": 5570,
+      "nivel_planilha": "municipio",
+      "formato_codigo": "completo7",
+      "colunas_usadas": [
+        "UF",
+        "Nome_UF",
+        "Código Município Completo",
+        "Nome_Município",
+        "Município"
+      ],
+      "transformacao": "planilha com uma linha por município: código duplicado é erro; código de 7 dígitos lido de 'Código Município Completo' e conferido contra 'UF' e 'Município'; nome de 'Nome_Município' com remoção apenas de espaços externos; Nome_UF conferido contra tabela estática de UFs; sigla derivada do código de UF",
+      "n_municipios": 5570
+    }
+  ],
+  "resultado": {
+    "n_codigos_uniao": 5570,
+    "n_linhas_calendario": 72410,
+    "contagem_por_ano": {
+      "2007": 5564,
+      "2008": 5564,
+      "2009": 5565,
+      "2010": 5565,
+      "2011": 5565,
+      "2012": 5565,
+      "2013": 5570,
+      "2014": 5570,
+      "2015": 5570,
+      "2016": 5570,
+      "2017": 5570,
+      "2018": 5570,
+      "2019": 5570
+    },
+    "eventos_por_classe": {
+      "entrada": 6,
+      "saida": 0,
+      "mudanca_nome": 42,
+      "mudanca_uf": 0,
+      "possivel_mudanca_codigo": 0,
+      "lacuna_intermediaria": 0
+    }
+  },
+  "caso_auditoria_pescaria_brava": {
+    "codigo_municipio_ibge": "4212650",
+    "nota": "derivado do calendário construído; não participa da construção",
+    "linhas": [
+      {
+        "ano": 2007,
+        "municipio_existia_no_ano": false,
+        "nome_municipio_ano": null,
+        "observacao_territorial": "código ausente da DTB 2007; primeira presença na janela: DTB 2013"
+      },
+      {
+        "ano": 2008,
+        "municipio_existia_no_ano": false,
+        "nome_municipio_ano": null,
+        "observacao_territorial": "código ausente da DTB 2008; primeira presença na janela: DTB 2013"
+      },
+      {
+        "ano": 2009,
+        "municipio_existia_no_ano": false,
+        "nome_municipio_ano": null,
+        "observacao_territorial": "código ausente da DTB 2009; primeira presença na janela: DTB 2013"
+      },
+      {
+        "ano": 2010,
+        "municipio_existia_no_ano": false,
+        "nome_municipio_ano": null,
+        "observacao_territorial": "código ausente da DTB 2010; primeira presença na janela: DTB 2013"
+      },
+      {
+        "ano": 2011,
+        "municipio_existia_no_ano": false,
+        "nome_municipio_ano": null,
+        "observacao_territorial": "código ausente da DTB 2011; primeira presença na janela: DTB 2013"
+      },
+      {
+        "ano": 2012,
+        "municipio_existia_no_ano": false,
+        "nome_municipio_ano": null,
+        "observacao_territorial": "código ausente da DTB 2012; primeira presença na janela: DTB 2013"
+      },
+      {
+        "ano": 2013,
+        "municipio_existia_no_ano": true,
+        "nome_municipio_ano": "Pescaria Brava",
+        "observacao_territorial": "entrada no calendário: código ausente da DTB 2012"
+      },
+      {
+        "ano": 2014,
+        "municipio_existia_no_ano": true,
+        "nome_municipio_ano": "Pescaria Brava",
+        "observacao_territorial": null
+      },
+      {
+        "ano": 2015,
+        "municipio_existia_no_ano": true,
+        "nome_municipio_ano": "Pescaria Brava",
+        "observacao_territorial": null
+      },
+      {
+        "ano": 2016,
+        "municipio_existia_no_ano": true,
+        "nome_municipio_ano": "Pescaria Brava",
+        "observacao_territorial": null
+      },
+      {
+        "ano": 2017,
+        "municipio_existia_no_ano": true,
+        "nome_municipio_ano": "Pescaria Brava",
+        "observacao_territorial": null
+      },
+      {
+        "ano": 2018,
+        "municipio_existia_no_ano": true,
+        "nome_municipio_ano": "Pescaria Brava",
+        "observacao_territorial": null
+      },
+      {
+        "ano": 2019,
+        "municipio_existia_no_ano": true,
+        "nome_municipio_ano": "Pescaria Brava",
+        "observacao_territorial": null
+      }
+    ]
+  },
+  "reconciliacao_projeto": {
+    "natureza": "estrutural, somente leitura e somente diagnóstica; nenhum município excluído ou selecionado",
+    "metricas": [
+      {
+        "grupo": "fase_ii_147_municipios",
+        "metrica": "n_codigos_unicos",
+        "valor": 147
+      },
+      {
+        "grupo": "fase_ii_147_municipios",
+        "metrica": "n_codigos_formato_invalido",
+        "valor": 0
+      },
+      {
+        "grupo": "fase_ii_147_municipios",
+        "metrica": "n_codigos_fora_da_uniao_do_calendario",
+        "valor": 0
+      },
+      {
+        "grupo": "fase_ii_147_municipios",
+        "metrica": "n_codigos_existentes_nos_13_anos",
+        "valor": 147
+      },
+      {
+        "grupo": "fase_ii_147_municipios",
+        "metrica": "n_codigos_inexistentes_em_algum_ano",
+        "valor": 0
+      },
+      {
+        "grupo": "pool_candidato_controles_4964",
+        "metrica": "n_codigos_unicos",
+        "valor": 4964
+      },
+      {
+        "grupo": "pool_candidato_controles_4964",
+        "metrica": "n_codigos_formato_invalido",
+        "valor": 0
+      },
+      {
+        "grupo": "pool_candidato_controles_4964",
+        "metrica": "n_codigos_fora_da_uniao_do_calendario",
+        "valor": 0
+      },
+      {
+        "grupo": "pool_candidato_controles_4964",
+        "metrica": "n_codigos_existentes_nos_13_anos",
+        "valor": 4964
+      },
+      {
+        "grupo": "pool_candidato_controles_4964",
+        "metrica": "n_codigos_inexistentes_em_algum_ano",
+        "valor": 0
+      },
+      {
+        "grupo": "cadastro_elegibilidade_controles_anos_ausentes_universo_inep",
+        "metrica": "n_codigos_unicos",
+        "valor": 5570
+      },
+      {
+        "grupo": "cadastro_elegibilidade_controles_anos_ausentes_universo_inep",
+        "metrica": "n_codigos_anos_ausentes_inep_iguais_anos_inexistentes_calendario",
+        "valor": 5570
+      },
+      {
+        "grupo": "cadastro_elegibilidade_controles_anos_ausentes_universo_inep",
+        "metrica": "n_codigos_divergentes",
+        "valor": 0
+      },
+      {
+        "grupo": "cadastro_elegibilidade_controles_anos_ausentes_universo_inep",
+        "metrica": "n_codigos_do_calendario_ausentes_do_cadastro",
+        "valor": 0
+      }
+    ],
+    "notas": []
+  },
+  "artefatos": [
+    {
+      "caminho": "data/processed/calendario_territorial_municipios_2007_2019.parquet",
+      "tamanho_bytes": 133101,
+      "sha256": "9ff046874d3dec2310911a641c4b05349aa36e0fb4a9b223389243836406aeec"
+    },
+    {
+      "caminho": "outputs/diagnostics/calendario_territorial_contagem_por_ano.csv",
+      "tamanho_bytes": 1696,
+      "sha256": "75d5b1dda114113b78911db2cc1043d9af9582332bd69c83fbe74619679f8b1d"
+    },
+    {
+      "caminho": "outputs/diagnostics/calendario_territorial_transicoes.csv",
+      "tamanho_bytes": 6940,
+      "sha256": "aaf948231f50d4e331bd5a431178e2a3fa909ec6cf0223623854e5f490bfcf98"
+    },
+    {
+      "caminho": "outputs/diagnostics/calendario_territorial_reconciliacao_projeto.csv",
+      "tamanho_bytes": 1061,
+      "sha256": "45604e760652da05029a0d3c7fa2fd3c6f0efe851e546d1a65879bb71c865694"
+    }
+  ]
+}

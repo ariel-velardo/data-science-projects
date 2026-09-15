@@ -217,15 +217,17 @@ nao_existia_no_ano`, é o comportamento esperado — **não** é
 
 ## 7. Calendário territorial
 
-Será necessária tabela oficial IBGE município-ano, com fonte, versão e
-hash no manifesto. Recomenda-se série histórica oficial de malhas/códigos
-com vigência explícita; se indisponível, consolidar arquivos anuais
-oficiais em uma tabela auditável.
+Fonte territorial definida: **IBGE — Divisão Territorial Brasileira (DTB)**,
+com edições anuais 2007–2019. O calendário oficial município-ano já foi
+construído e auditado; sua fonte, versão e hash constam no manifesto.
 
-Schema: `codigo_municipio_ibge` (string[7]), `ano` (inteiro),
-`municipio_existia_no_ano` (boolean), `fonte_territorial`,
-`versao_fonte`, `data_vigencia_inicio`, `data_vigencia_fim` e
-`observacao_territorial`. Esta tabela alimenta exclusivamente
+Schema obrigatório: `codigo_municipio_ibge` (string[7]), `ano` (inteiro),
+`municipio_existia_no_ano` (boolean), `fonte_territorial`, `versao_fonte` e
+`observacao_territorial`. `municipio_existia_no_ano` é o requisito territorial
+obrigatório. `data_vigencia_inicio` e `data_vigencia_fim` são opcionais e só
+devem ser preenchidos quando uma fonte oficial adequada as fornecer. A DTB
+anual não fornece essas datas município a município; elas não devem ser
+inventadas, e sua ausência não invalida o calendário territorial. Esta tabela alimenta exclusivamente
 `status_territorial` (seção 6.2); não é escrita nem inferida a partir de
 `valor_bruto` ou `status_valor_api`.
 
@@ -448,9 +450,12 @@ Exige adicionalmente decisão humana sobre sigilo, território, transições
 salários/deflator. Nenhum desses gates é declarado aprovado por esta
 especificação.
 
-Permanecem abertas: fonte/política territorial, sigilo, deflator,
-interpretação das quebras, população causal, comparação, antecipação e
-spillover. Depois do painel técnico, a cobertura será avaliada nos 147
+Fonte territorial definida: **IBGE — Divisão Territorial Brasileira (DTB)**,
+com edições anuais 2007–2019; o calendário de existência municipal foi
+construído e auditado. Permanecem abertas a política analítica para mudanças
+de limites territoriais e suas implicações sobre comparabilidade econômica,
+além de sigilo, deflator, interpretação das quebras, população causal,
+comparação, antecipação e spillover. Depois do painel técnico, a cobertura será avaliada nos 147
 Fase II, 129 candidatos e 4.964 candidatos estruturais, sem alterar
 retroativamente o cadastro causal. O primeiro notebook futuro sugerido é
 `notebooks/XX_eda_cempre_cobertura_e_outcomes.ipynb`, restrito a
