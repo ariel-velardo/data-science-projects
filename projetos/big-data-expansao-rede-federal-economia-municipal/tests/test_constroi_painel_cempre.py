@@ -23,6 +23,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+import pandas as pd
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 import constroi_painel_cempre as cempre  # noqa: E402
@@ -33,6 +35,10 @@ FIXTURES_DIR = Path(__file__).resolve().parents[1] / "data" / "raw" / "ibge" / "
 def _carrega_fixture(nome: str) -> list[dict]:
     with open(FIXTURES_DIR / nome, encoding="utf-8") as f:
         return json.load(f)
+
+
+def _escreve_calendario_sintetico(caminho: Path, linhas: list[dict]) -> None:
+    pd.DataFrame(linhas).to_parquet(caminho, index=False)
 
 
 # ---------------------------------------------------------------------------
@@ -310,9 +316,117 @@ class TestNormalizeLong(unittest.TestCase):
 # ---------------------------------------------------------------------------
 
 
+class TestLoadCalendarTerritorial(unittest.TestCase):
+    def _linhas_validas(self) -> list[dict]:
+        return [
+            {
+                "codigo_municipio_ibge": "3166600",
+                "ano": 2007,
+                "municipio_existia_no_ano": True,
+                "fonte_territorial": "DTB sintÃ©tica",
+            },
+            {
+                "codigo_municipio_ibge": "4212650",
+                "ano": 2007,
+                "municipio_existia_no_ano": False,
+                "fonte_territorial": "DTB sintÃ©tica",
+            },
+        ]
+
+    def test_carrega_calendario_parquet_sintetico_valido(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho = Path(diretorio) / "calendario.parquet"
+            _escreve_calendario_sintetico(caminho, self._linhas_validas())
+
+            calendario = cempre.load_calendar_territorial(caminho)
+
+        self.assertEqual(list(calendario["codigo_municipio_ibge"]), ["3166600", "4212650"])
+        self.assertTrue(pd.api.types.is_string_dtype(calendario["codigo_municipio_ibge"]))
+        self.assertTrue(pd.api.types.is_integer_dtype(calendario["ano"]))
+        self.assertTrue(pd.api.types.is_bool_dtype(calendario["municipio_existia_no_ano"]))
+
+    def test_arquivo_ausente_falha_explicitamente(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho = Path(diretorio) / "inexistente.parquet"
+            with self.assertRaisesRegex(FileNotFoundError, "encontrado"):
+                cempre.load_calendar_territorial(caminho)
+
+    def test_formato_nao_suportado_falha_explicitamente(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho = Path(diretorio) / "calendario.csv"
+            caminho.write_text("codigo_municipio_ibge,ano,municipio_existia_no_ano\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "formato"):
+                cempre.load_calendar_territorial(caminho)
+
+    def test_coluna_estrutural_ausente_falha_explicitamente(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho = Path(diretorio) / "calendario.parquet"
+            linhas = self._linhas_validas()
+            for linha in linhas:
+                del linha["municipio_existia_no_ano"]
+            _escreve_calendario_sintetico(caminho, linhas)
+            with self.assertRaisesRegex(ValueError, "coluna"):
+                cempre.load_calendar_territorial(caminho)
+
+    def test_codigo_municipal_invalido_falha_explicitamente(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho = Path(diretorio) / "calendario.parquet"
+            linhas = self._linhas_validas()
+            linhas[0]["codigo_municipio_ibge"] = "316660"
+            _escreve_calendario_sintetico(caminho, linhas)
+            with self.assertRaisesRegex(ValueError, "municipal"):
+                cempre.load_calendar_territorial(caminho)
+
+    def test_ano_fora_da_janela_falha_explicitamente(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho = Path(diretorio) / "calendario.parquet"
+            linhas = self._linhas_validas()
+            linhas[0]["ano"] = 2006
+            _escreve_calendario_sintetico(caminho, linhas)
+            with self.assertRaisesRegex(ValueError, "ano"):
+                cempre.load_calendar_territorial(caminho)
+
+    def test_booleano_territorial_invalido_falha_explicitamente(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho = Path(diretorio) / "calendario.parquet"
+            linhas = self._linhas_validas()
+            linhas[0]["municipio_existia_no_ano"] = "sim"
+            linhas[1]["municipio_existia_no_ano"] = "nao"
+            _escreve_calendario_sintetico(caminho, linhas)
+            with self.assertRaisesRegex(ValueError, "booleano"):
+                cempre.load_calendar_territorial(caminho)
+
+    def test_chave_duplicada_falha_explicitamente(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho = Path(diretorio) / "calendario.parquet"
+            linhas = self._linhas_validas()
+            linhas.append(linhas[0].copy())
+            _escreve_calendario_sintetico(caminho, linhas)
+            with self.assertRaisesRegex(ValueError, "chave duplicada"):
+                cempre.load_calendar_territorial(caminho)
+
+    def test_nulo_estrutural_falha_explicitamente(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho = Path(diretorio) / "calendario.parquet"
+            linhas = self._linhas_validas()
+            linhas[0]["municipio_existia_no_ano"] = None
+            _escreve_calendario_sintetico(caminho, linhas)
+            with self.assertRaisesRegex(ValueError, "nulo"):
+                cempre.load_calendar_territorial(caminho)
+
+
 class TestReconcileTerritorial(unittest.TestCase):
     def setUp(self) -> None:
-        self.calendario = cempre.load_calendar_territorial()
+        self._diretorio_temporario = tempfile.TemporaryDirectory()
+        self.addCleanup(self._diretorio_temporario.cleanup)
+        caminho = Path(self._diretorio_temporario.name) / "calendario_reconciliacao.parquet"
+        _escreve_calendario_sintetico(caminho, [
+            {"codigo_municipio_ibge": "3166600", "ano": 2007, "municipio_existia_no_ano": True},
+            {"codigo_municipio_ibge": "4212650", "ano": 2007, "municipio_existia_no_ano": False},
+            {"codigo_municipio_ibge": "4212650", "ano": 2013, "municipio_existia_no_ano": True},
+            {"codigo_municipio_ibge": "3550308", "ano": 2007, "municipio_existia_no_ano": True},
+        ])
+        self.calendario = cempre.load_calendar_territorial(caminho)
 
     def test_municipio_existia_no_ano(self) -> None:
         linhas = [
@@ -375,7 +489,10 @@ class TestReconcileTerritorial(unittest.TestCase):
             }
         ]
         df = cempre.normalize_long(linhas, request_id="req_teste_014")
-        df = cempre.reconcile_territorial(df, self.calendario)
+        calendario_sem_cobertura = self.calendario[
+            self.calendario["codigo_municipio_ibge"] != "3550308"
+        ]
+        df = cempre.reconcile_territorial(df, calendario_sem_cobertura)
         self.assertEqual(df.iloc[0]["status_territorial"], "indeterminado")
 
 

@@ -39,6 +39,9 @@ DIAGNOSTICS_DIR = ROOT / "outputs" / "diagnostics"
 # Cache operacional de requests (seção 9) — NÃO é a fixture versionada.
 # Conteúdo nacional futuro deste diretório não será versionado (.gitignore).
 CACHE_DIR = ROOT / "data" / "raw" / "ibge" / "cempre" / "requests"
+CALENDARIO_TERRITORIAL_PATH = (
+    ROOT / "data" / "processed" / "calendario_territorial_municipios_2007_2019.parquet"
+)
 
 FONTE_TABELA = 1685
 ANO_MIN, ANO_MAX = 2007, 2019
@@ -254,59 +257,58 @@ def normalize_long(
     return pd.DataFrame(linhas, columns=_COLUNAS_LONG)
 
 
-# ---------------------------------------------------------------------------
-# Calendário territorial mínimo do piloto (seção 7/12.1)
-#
-# Esta NÃO é a fonte definitiva do calendário histórico municipal (decisão
-# aberta, seção 7 da especificação). É uma fixture mínima e explicitamente
-# documentada, suficiente para validar a MECÂNICA de reconciliação nos
-# casos do piloto (seção 12.1), baseada em fatos oficiais já registrados em
-# `docs/data/AUDITORIA_DISPONIBILIDADE_CEMPRE.md` (seção 7): a malha
-# municipal vigente desde 2013 tem 5.570 municípios; Pescaria Brava/SC
-# (4212650) é um dos municípios incorporados nessa transição (criado por
-# lei complementar em 2010, instalado/vigente a partir de 2013).
-# ---------------------------------------------------------------------------
-
-_RORAIMA_CODIGOS = [
-    "1400027", "1400050", "1400100", "1400159", "1400175", "1400209",
-    "1400233", "1400282", "1400308", "1400407", "1400456", "1400472",
-    "1400506", "1400605", "1400704",
-]
-
-# codigo_municipio_ibge -> primeiro ano em que o município passa a existir
-# na malha, dentro da janela 2007-2019. Ausência de entrada == existia em
-# toda a janela (sem alteração de malha conhecida no período, seção 12.1).
-_PILOTO_ANO_CRIACAO: dict[str, int] = {
-    "4212650": 2013,  # Pescaria Brava/SC — ver AUDITORIA_DISPONIBILIDADE_CEMPRE.md, seção 7
+_COLUNAS_CALENDARIO_OBRIGATORIAS = {
+    "codigo_municipio_ibge", "ano", "municipio_existia_no_ano",
 }
+_CHAVE_CALENDARIO = ["codigo_municipio_ibge", "ano"]
 
-_PILOTO_CODIGOS_COBERTOS = {"3166600", "4212650", *_RORAIMA_CODIGOS}
 
+def load_calendar_territorial(caminho: str | Path | None = None) -> pd.DataFrame:
+    """Carrega e valida o calendário territorial oficial município-ano.
 
-def load_calendar_territorial() -> pd.DataFrame:
-    """Retorna o calendário território município-ano mínimo do piloto
-    (seção 7), cobrindo apenas os municípios usados nos contextos de teste
-    da seção 12.1. Município fora dessa cobertura resulta em
-    `status_territorial = indeterminado` na reconciliação, não em erro.
+    O caminho padrão é o Parquet nacional produzido pela frente territorial.
+    Um caminho explícito permite testes com calendários sintéticos pequenos.
     """
-    linhas = []
-    for codigo in _PILOTO_CODIGOS_COBERTOS:
-        ano_criacao = _PILOTO_ANO_CRIACAO.get(codigo, ANO_MIN)
-        for ano in range(ANO_MIN, ANO_MAX + 1):
-            linhas.append({
-                "codigo_municipio_ibge": codigo,
-                "ano": ano,
-                "municipio_existia_no_ano": ano >= ano_criacao,
-                "fonte_territorial": "AUDITORIA_DISPONIBILIDADE_CEMPRE.md, seção 7 (fixture mínima do piloto)",
-                "versao_fonte": "piloto_fase_0",
-                "data_vigencia_inicio": None,
-                "data_vigencia_fim": None,
-                "observacao_territorial": (
-                    "criação/instalação em 2013, conforme malha municipal vigente desde 2013"
-                    if codigo in _PILOTO_ANO_CRIACAO else None
-                ),
-            })
-    return pd.DataFrame(linhas)
+    caminho_calendario = Path(caminho) if caminho is not None else CALENDARIO_TERRITORIAL_PATH
+    if not caminho_calendario.exists():
+        raise FileNotFoundError(f"calendário territorial não encontrado: {caminho_calendario}")
+    if caminho_calendario.suffix.lower() != ".parquet":
+        raise ValueError(
+            f"formato não suportado para calendário territorial: {caminho_calendario.suffix!r}; "
+            "esperado '.parquet'"
+        )
+
+    calendario = pd.read_parquet(caminho_calendario)
+    colunas_ausentes = sorted(_COLUNAS_CALENDARIO_OBRIGATORIAS - set(calendario.columns))
+    if colunas_ausentes:
+        raise ValueError(f"coluna(s) obrigatória(s) ausente(s) no calendário territorial: {colunas_ausentes}")
+
+    if calendario[list(_COLUNAS_CALENDARIO_OBRIGATORIAS)].isna().any().any():
+        raise ValueError("calendário territorial tem nulo em coluna estrutural obrigatória")
+
+    calendario = calendario.copy()
+    calendario["codigo_municipio_ibge"] = calendario["codigo_municipio_ibge"].astype("string").str.strip()
+    codigos_validos = calendario["codigo_municipio_ibge"].str.fullmatch(_RE_CODIGO_MUNICIPIO)
+    if not bool(codigos_validos.all()):
+        codigos_invalidos = calendario.loc[~codigos_validos, "codigo_municipio_ibge"].tolist()
+        raise ValueError(f"código municipal inválido no calendário territorial: {codigos_invalidos[:5]}")
+
+    if not pd.api.types.is_integer_dtype(calendario["ano"]):
+        raise ValueError("ano inválido no calendário territorial: deve ser inteiro")
+    anos_validos = calendario["ano"].between(ANO_MIN, ANO_MAX)
+    if not bool(anos_validos.all()):
+        anos_invalidos = calendario.loc[~anos_validos, "ano"].tolist()
+        raise ValueError(f"ano inválido no calendário territorial: {anos_invalidos[:5]}")
+
+    if not pd.api.types.is_bool_dtype(calendario["municipio_existia_no_ano"]):
+        raise ValueError("municipio_existia_no_ano deve ser booleano no calendário territorial")
+
+    duplicadas = calendario.duplicated(_CHAVE_CALENDARIO, keep=False)
+    if bool(duplicadas.any()):
+        chaves_duplicadas = calendario.loc[duplicadas, _CHAVE_CALENDARIO].head().to_dict("records")
+        raise ValueError(f"chave duplicada no calendário territorial: {chaves_duplicadas}")
+
+    return calendario
 
 
 def reconcile_territorial(df_long: pd.DataFrame, calendario: pd.DataFrame) -> pd.DataFrame:
