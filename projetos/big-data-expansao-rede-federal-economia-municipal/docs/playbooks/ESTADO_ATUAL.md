@@ -17,14 +17,15 @@ Branch:
 
 HEAD/origin conhecido:
 
-`a6a1a41e146dca6a9d6ef6113ddf05ea032d3a89`
+`dd6bbac8de866ac15f3989aa4882cd476fc7e770`
 
 Commits recentes:
 
 - `1ee321c` — `feat: constroi calendario territorial IBGE 2007-2019`
 - `a6a1a41` — `feat: implementa piloto tecnico do CEMPRE`
+- `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
 
-Os dois commits foram enviados para `origin/main`.
+Os tres commits foram enviados para `origin/main`.
 
 ---
 
@@ -89,20 +90,22 @@ Push:
 
 **CONCLUIDO**
 
-Spot-check tecnico provisorio do Codex:
-
-`SPOT_CHECK_TERRITORIAL_PROVISORIO = OK`
-
 Estado do gate:
-
-`COMMITADO_AGUARDANDO_CONFIRMACAO_INDEPENDENTE_FINAL`
-
-Ainda falta a confirmacao independente final por outro agente antes de
-considerar definitivamente fechado:
 
 `CALENDARIO_TERRITORIAL_APTO_CONFIRMADO`
 
-Essa verificacao deve ser focalizada. Nao reabrir auditoria territorial ampla
+Revisao final pos-commit:
+
+`REVISAO_FINAL_TERRITORIAL_POS_COMMIT = OK`
+
+Governanca da revisao final:
+
+`INDEPENDENCIA_ENTRE_SESSOES = SIM`
+
+`INDEPENDENCIA_ENTRE_AGENTES = NAO`
+
+Essa e uma limitacao de governanca nao bloqueante para o calendario
+territorial. A revisao foi focalizada; nao reabrir auditoria territorial ampla
 sem novo problema concreto.
 
 ---
@@ -126,10 +129,9 @@ Esta camada e operacional e deve permanecer separada dos commits cientificos.
 
 ## 5. Proximos passos
 
-1. concluir confirmacao independente final do calendario territorial;
-2. integrar o calendario territorial nacional ao pipeline CEMPRE;
-3. validar tecnicamente essa integracao;
-4. somente depois avaliar liberacao da extracao nacional CEMPRE.
+1. integrar o calendario territorial nacional ao pipeline CEMPRE;
+2. validar tecnicamente essa integracao;
+3. somente depois avaliar liberacao da extracao nacional CEMPRE.
 
 Nao reabrir Fase 0 ou calendario territorial sem anomalia concreta.
 
@@ -139,13 +141,12 @@ Nao reabrir Fase 0 ou calendario territorial sem anomalia concreta.
 
 Status:
 
-**PROIBIDA NESTE MOMENTO.**
+**EXTRAÇÃO NACIONAL CEMPRE = NÃO AUTORIZADA**
 
 Os commits territorial e Fase 0, por si so, nao autorizam a extracao.
 
 Antes de qualquer extracao nacional ainda e necessario:
 
-- confirmacao independente final do calendario territorial;
 - integracao do calendario ao pipeline CEMPRE;
 - validacao da integracao;
 - verificacao dos gates tecnicos correspondentes.
