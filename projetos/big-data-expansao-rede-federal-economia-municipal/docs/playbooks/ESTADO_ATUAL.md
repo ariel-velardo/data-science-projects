@@ -17,10 +17,11 @@ Branch:
 
 HEAD/origin conhecido:
 
-`acd3d8a646d94a01bb6fb3275ef536d6b8bead24`
+`d9ba6ce296762ba39189d1856ba1bf0b122296c1`
 
 Commits recentes:
 
+- `d9ba6ce` — `feat: implementa plano nacional e completude CEMPRE`
 - `acd3d8a` — `feat: integra calendario territorial ao pipeline CEMPRE`
 - `d17e621` — `docs: atualiza estado apos fechamento territorial`
 - `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
@@ -143,9 +144,39 @@ Os gates ja fechados permanecem inalterados:
 
 `CALENDARIO_TERRITORIAL_APTO_CONFIRMADO`
 
+## 5. D1 — Plano nacional e completude CEMPRE
+
+Status tecnico:
+
+`D1_PLANO_NACIONAL_REQUESTS = CONCLUIDO`
+
+`D1_SPOT_CHECK = APROVADO`
+
+`PLANO_NACIONAL_REQUESTS_APROVADO = SIM`
+
+`CONTRATO_COMPLETUDE_APROVADO = SIM`
+
+Commit:
+
+`d9ba6ce296762ba39189d1856ba1bf0b122296c1` — `feat: implementa plano nacional e completude CEMPRE`
+
+Fechamento registrado:
+
+- plano padrão nacional: 27 UFs × 13 anos × 1 grupo de variáveis;
+- 351 requests esperados derivados, não hardcoded;
+- referência externa de 27 UFs;
+- cobertura do produto cartesiano validada;
+- completude offline implementada;
+- 104/104 testes CEMPRE passando;
+- 44/44 testes territoriais passando;
+- zero rede no desenvolvimento/auditoria D1.
+
+O D1 fecha o plano e o contrato de completude. Não declara
+`PAINEL_TECNICO_CONSTRUIDO` e não autoriza a extração nacional CEMPRE.
+
 ---
 
-## 5. Camada operacional
+## 6. Camada operacional
 
 Arquivos operacionais:
 
@@ -162,18 +193,19 @@ Esta camada e operacional e deve permanecer separada dos commits cientificos.
 
 ---
 
-## 6. Proximos passos
+## 7. Proximos passos
 
-1. executar gate independente pré-extração nacional CEMPRE;
-2. somente se esse gate for aprovado, autorizar explicitamente a extração nacional;
-3. depois iniciar a construção do painel técnico nacional CEMPRE;
-4. após a construção, validar cobertura, status, território, transições e diagnósticos antes de qualquer análise causal.
+1. D2 — implementar persistência e reconstrução offline da long nacional;
+2. D3 — implementar manifesto/proveniência;
+3. D4 — implementar orquestrador nacional e dry-run;
+4. auditar o pipeline completo;
+5. somente então decidir sobre autorização da extração nacional.
 
 Nao reabrir Fase 0 ou calendario territorial sem anomalia concreta.
 
 ---
 
-## 7. Extracao nacional CEMPRE
+## 8. Extracao nacional CEMPRE
 
 Status:
 
@@ -188,7 +220,7 @@ Antes de qualquer extracao nacional ainda e necessario:
 
 ---
 
-## 8. Regra para agentes
+## 9. Regra para agentes
 
 Antes de trabalhar:
 
