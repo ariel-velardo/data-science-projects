@@ -17,16 +17,19 @@ Branch:
 
 HEAD/origin conhecido:
 
-`d9ba6ce296762ba39189d1856ba1bf0b122296c1`
+`214c660412d43312125eb5fd69dcbb4e88dce166`
 
 Commits recentes:
 
+- `214c660` — `feat: implementa persistencia offline da long CEMPRE`
+- `7db9950` — `docs: registra fechamento do D1 CEMPRE`
 - `d9ba6ce` — `feat: implementa plano nacional e completude CEMPRE`
 - `acd3d8a` — `feat: integra calendario territorial ao pipeline CEMPRE`
 - `d17e621` — `docs: atualiza estado apos fechamento territorial`
 - `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
 
-Os tres commits foram enviados para `origin/main`.
+Os commits foram enviados para `origin/main`. Checkpoint substantivo mais
+recente: `214c660412d43312125eb5fd69dcbb4e88dce166` (D2).
 
 ---
 
@@ -176,7 +179,82 @@ O D1 fecha o plano e o contrato de completude. Não declara
 
 ---
 
-## 6. Camada operacional
+## 6. D2 — Persistência e reconstrução offline da long CEMPRE
+
+Status técnico:
+
+`D2_PERSISTENCIA_LONG = CONCLUIDO`
+
+`D2_RECONSTRUCAO_OFFLINE = CONCLUIDO`
+
+`D2_SPOT_CHECK = APROVADO`
+
+`PERSISTENCIA_LONG_APROVADA = SIM`
+
+`RECONSTRUCAO_OFFLINE_APROVADA = SIM`
+
+`ROUNDTRIP_PARQUET_APROVADO = SIM`
+
+`PODE_COMMITAR_D2 = SIM` (já commitado)
+
+Commit substantivo:
+
+`214c660412d43312125eb5fd69dcbb4e88dce166` — `feat: implementa persistencia offline da long CEMPRE`
+
+Push:
+
+**CONCLUIDO**
+
+O D2 passou por spot-check independente no Codex, que apontou dois
+bloqueadores focais (validação estrutural fraca em `write_long_parquet` e
+`load_long_parquet` aceitando `incompatibilidade_territorial` não
+booleana). Ambos foram corrigidos centralizando a validação em
+`_validar_schema_long_persistida()`, reutilizada nos dois sentidos
+(escrita e leitura), e o recheck independente final aprovou o fechamento.
+
+Fechamento registrado:
+
+- reconstrução da long CEMPRE inteiramente offline, a partir do cache já
+  existente em disco — nenhuma função do D2 chama `fetch_request` ou rede;
+- cache válido, ausente e corrompido tratados explicitamente (nunca cai
+  para rede, nunca converte silenciosamente em sucesso);
+- completude do plano (`avalia_completude_plano`) obrigatória e verificada
+  antes de qualquer construção da long — plano incompleto falha
+  explicitamente e não produz long considerada completa;
+- `normalize_long` reutilizado sem duplicar lógica de parsing;
+- `validate_long` reutilizado — long reprovada (ex.: símbolo
+  `desconhecido`) bloqueia a persistência;
+- reconciliação territorial (`reconcile_territorial`) aplicada antes da
+  persistência;
+- ordem determinística da long persistida por `codigo_municipio_ibge`,
+  `ano`, `codigo_variavel_sidra`, `request_id` — independente da ordem do
+  plano/resultados de entrada;
+- persistência em Parquet com `overwrite=False` como padrão — nunca
+  sobrescreve silenciosamente;
+- `write_long_parquet` e `load_long_parquet` usam o MESMO contrato
+  estrutural (`_validar_schema_long_persistida`): o que não pode ser
+  recarregado como long válida também não pode ser gravado como long
+  válida;
+- ano fora da janela 2007–2019 é rejeitado tanto na escrita quanto no
+  reload, sem criar/aceitar arquivo;
+- `incompatibilidade_territorial` não booleana é rejeitada tanto na
+  escrita quanto no reload — sem conversão silenciosa de string
+  (`"True"`/`"False"`/`"sim"`/`"nao"`);
+- equivalência lógica de round-trip Parquet validada
+  (`validate_round_trip_equivalencia`) — chave canônica, valores brutos e
+  numéricos (inclusive NA), status API, request_id, hash e os dois status
+  territoriais comparados após normalizar a ordem;
+- 135/135 testes CEMPRE passando (104 anteriores ao D2 + 27 do D2 + 4 da
+  correção focal);
+- 44/44 testes territoriais passando;
+- zero rede no desenvolvimento/auditoria/correção do D2.
+
+O D2 fecha a persistência e a reconstrução offline da long. Não declara
+`PAINEL_TECNICO_CONSTRUIDO` e não autoriza a extração nacional CEMPRE.
+
+---
+
+## 7. Camada operacional
 
 Arquivos operacionais:
 
@@ -193,25 +271,26 @@ Esta camada e operacional e deve permanecer separada dos commits cientificos.
 
 ---
 
-## 7. Proximos passos
+## 8. Proximos passos
 
-1. D2 — implementar persistência e reconstrução offline da long nacional;
-2. D3 — implementar manifesto/proveniência;
-3. D4 — implementar orquestrador nacional e dry-run;
-4. auditar o pipeline completo;
-5. somente então decidir sobre autorização da extração nacional.
+1. D3 — implementar manifesto e proveniência da extração/reconstrução;
+2. D4 — implementar orquestrador nacional e dry-run;
+3. auditar o pipeline nacional completo;
+4. somente então decidir sobre autorização da extração nacional;
+5. após autorização explícita, realizar a primeira execução real.
 
-Nao reabrir Fase 0 ou calendario territorial sem anomalia concreta.
+Nao reabrir Fase 0, calendario territorial ou D2 sem anomalia concreta.
 
 ---
 
-## 8. Extracao nacional CEMPRE
+## 9. Extracao nacional CEMPRE
 
 Status:
 
 **EXTRAÇÃO NACIONAL CEMPRE = NÃO AUTORIZADA**
 
-Os commits territorial e Fase 0, por si so, nao autorizam a extracao.
+Os commits territorial, Fase 0, D1 e D2, por si so, nao autorizam a
+extracao.
 
 Antes de qualquer extracao nacional ainda e necessario:
 
@@ -220,7 +299,7 @@ Antes de qualquer extracao nacional ainda e necessario:
 
 ---
 
-## 9. Regra para agentes
+## 10. Regra para agentes
 
 Antes de trabalhar:
 
