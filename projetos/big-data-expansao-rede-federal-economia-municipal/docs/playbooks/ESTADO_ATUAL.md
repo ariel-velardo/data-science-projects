@@ -17,10 +17,12 @@ Branch:
 
 HEAD/origin conhecido:
 
-`cb853ecbd5390892d16b63d6746e2363bd3185fb`
+`5dd529240162dc169b27c532abb99f552735bc62`
 
 Commits recentes:
 
+- `5dd5292` — `feat: implementa dry run nacional CEMPRE`
+- `a605530` — `docs: registra fechamento do D3 CEMPRE`
 - `cb853ec` — `feat: implementa manifesto e proveniencia CEMPRE`
 - `a228c6a` — `docs: registra fechamento do D2 CEMPRE`
 - `214c660` — `feat: implementa persistencia offline da long CEMPRE`
@@ -31,7 +33,7 @@ Commits recentes:
 - `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
 
 Os commits foram enviados para `origin/main`. Checkpoint substantivo mais
-recente: `cb853ecbd5390892d16b63d6746e2363bd3185fb` (D3).
+recente: `5dd529240162dc169b27c532abb99f552735bc62` (D4).
 
 ---
 
@@ -343,7 +345,96 @@ O D3 fecha o manifesto e a proveniência do pipeline. Não declara
 
 ---
 
-## 8. Camada operacional
+## 8. D4 — Orquestração nacional (dry run offline)
+
+Status técnico:
+
+`D4_ORQUESTRADOR_DRY_RUN = CONCLUIDO`
+
+`D4_GUARDA_AUTORIZACAO = CONCLUIDA`
+
+`D4_SPOT_CHECK = APROVADO`
+
+`ORQUESTRADOR_DRY_RUN_APROVADO = SIM`
+
+`GUARDA_AUTORIZACAO_APROVADA = SIM`
+
+`CLASSIFICACAO_CACHE_APROVADA = SIM`
+
+`DRY_RUN_ZERO_EFEITOS_COLATERAIS = SIM`
+
+`SMOKE_CHECK_NACIONAL_OFFLINE = APROVADO`
+
+`PODE_COMMITAR_D4 = SIM` (já commitado)
+
+Commit substantivo:
+
+`5dd529240162dc169b27c532abb99f552735bc62` — `feat: implementa dry run nacional CEMPRE`
+
+Push:
+
+**CONCLUIDO**
+
+O D4 passou por spot-check independente no Codex, aprovado sem
+bloqueadores. Achado não bloqueante registrado: `NationalRunConfig.modo`
+é redundante em relação ao parâmetro `modo` de `run_national_pipeline()`
+— sem impacto de segurança ou de comportamento, sem necessidade de
+correção antes da auditoria integrada.
+
+Fechamento registrado:
+
+- `dry_run_national_pipeline()` compõe D1 (`build_national_request_plan`,
+  já validado internamente), D2 (`load_results_from_cache`) e D3
+  (`hash_plano_canonico`, `get_git_head`) sem duplicar nenhum desses
+  contratos;
+- `dry_run` é o modo padrão de `NationalRunConfig`/`run_national_pipeline`
+  — nunca chama rede por padrão;
+- execução real (`modo="execute"`) sem `autorizacao_extracao=True`
+  explícito falha imediatamente com `PermissionError`, antes de qualquer
+  request; a autorização é sempre parâmetro explícito, nunca variável
+  global;
+- mesmo com `autorizacao_extracao=True`, a execução real ainda não está
+  implementada nesta etapa — protegida por `NotImplementedError`
+  explícito, deixando claro que o branch real só será habilitado após
+  gate explícito de autorização de extração nacional;
+- classificação de cache reaproveita o contrato de `load_results_from_cache`
+  (D2): cache válido não exige rede; cache ausente exigiria rede e NÃO é
+  bloqueador (é exatamente o que uma execução real futura preencheria);
+  cache inválido/corrompido É bloqueador operacional, nunca convertido
+  automaticamente em cache miss, nunca apagado;
+- arquivo(s) residual(is) de cache fora do plano nacional avaliado são
+  ignorados pela classificação (não pertencem a nenhum `request_id`
+  esperado);
+- conflito de artefato existente com `overwrite=False` (long ou
+  manifesto) vira bloqueador explícito; `overwrite=True` remove apenas o
+  conflito LÓGICO do relatório do dry run — nenhum arquivo é escrito,
+  sobrescrito ou apagado em nenhum dos dois casos;
+- dry run não cria cache, não cria long, não escreve manifesto — é
+  simulação pura;
+- `pronto_para_execucao_real` é diagnóstico técnico do relatório —
+  explicitamente NÃO equivale a `EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA`;
+- 204/204 testes CEMPRE passando (180 anteriores ao D4 + 24 do D4);
+- 44/44 testes territoriais passando;
+- zero rede no desenvolvimento/auditoria do D4.
+
+Smoke-check nacional offline (calendário territorial real + `CACHE_DIR`
+real em modo somente leitura, nenhum arquivo criado):
+
+- `n_requests_esperados = 351`;
+- `n_cache_validos = 0`;
+- `n_cache_ausentes = 351`;
+- `n_cache_invalidos = 0`;
+- `n_requests_que_exigiriam_rede = 351`;
+- `bloqueadores = 0`;
+- `pronto_para_execucao_real = True` (diagnóstico técnico apenas — não
+  autoriza extração).
+
+O D4 fecha a orquestração nacional em modo dry run. Não declara
+`PAINEL_TECNICO_CONSTRUIDO` e não autoriza a extração nacional CEMPRE.
+
+---
+
+## 9. Camada operacional
 
 Arquivos operacionais:
 
@@ -360,28 +451,34 @@ Esta camada e operacional e deve permanecer separada dos commits cientificos.
 
 ---
 
-## 9. Proximos passos
+## 10. Proximos passos
 
-1. D4 — implementar orquestrador nacional e dry-run offline;
-2. auditar o pipeline nacional completo;
-3. somente se a auditoria for aprovada, decidir sobre autorização explícita
-   da extração nacional;
-4. após autorização explícita, realizar a primeira execução real;
-5. após a execução, validar cobertura/completude e só então avançar para a
-   construção técnica final do painel.
+1. realizar auditoria integrada final do pipeline nacional CEMPRE
+   (D1 + D2 + D3 + D4);
+2. verificar sistemicamente: plano; cache; completude; persistência;
+   manifesto; dry run; guardas; retomabilidade; riscos de artefatos
+   parciais ou inconsistentes;
+3. somente se essa auditoria for aprovada, decidir explicitamente sobre a
+   autorização da primeira extração nacional real;
+4. após autorização explícita, implementar/habilitar o ramo de execução
+   real de forma controlada;
+5. realizar a primeira extração nacional;
+6. validar cobertura/completude do material coletado antes de qualquer
+   construção analítica ou causal.
 
-Nao reabrir Fase 0, calendario territorial, D2 ou D3 sem anomalia concreta.
+Nao reabrir Fase 0, calendario territorial, D2, D3 ou D4 sem anomalia
+concreta.
 
 ---
 
-## 10. Extracao nacional CEMPRE
+## 11. Extracao nacional CEMPRE
 
 Status:
 
 **EXTRAÇÃO NACIONAL CEMPRE = NÃO AUTORIZADA**
 
-Os commits territorial, Fase 0, D1, D2 e D3, por si so, nao autorizam a
-extracao.
+Os commits territorial, Fase 0, D1, D2, D3 e D4, por si so, nao autorizam
+a extracao.
 
 Antes de qualquer extracao nacional ainda e necessario:
 
@@ -390,7 +487,7 @@ Antes de qualquer extracao nacional ainda e necessario:
 
 ---
 
-## 11. Regra para agentes
+## 12. Regra para agentes
 
 Antes de trabalhar:
 
