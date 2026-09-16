@@ -27,6 +27,7 @@ import logging
 import re
 import subprocess
 import time
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -1975,3 +1976,225 @@ def load_manifest(caminho: str | Path) -> dict[str, Any]:
 
     validate_manifest(manifesto)
     return manifesto
+
+
+# ---------------------------------------------------------------------------
+# D4 — orquestração nacional (dry run offline)
+#
+# COMPÕE D1 (build_national_request_plan/validate_national_request_plan),
+# D2 (load_results_from_cache) e D3 (hash_plano_canonico/get_git_head) —
+# nenhuma lógica de parsing, cache, long ou manifesto é duplicada aqui.
+#
+# `dry_run_national_pipeline` é inteiramente offline: NUNCA chama
+# `fetch_request`, NUNCA chama `requests`, NUNCA escreve cache, long ou
+# manifesto. É só uma simulação/diagnóstico. `run_national_pipeline` é o
+# único ponto de entrada e recusa qualquer tentativa de execução real sem
+# `autorizacao_extracao=True` explícito — ANTES de qualquer rede. Mesmo
+# autorizado, a execução real ainda não está implementada nesta etapa
+# (ver `run_national_pipeline`): a infraestrutura foi orquestrada e
+# validada via dry run; o branch de execução real será habilitado somente
+# após gate explícito de autorização de extração nacional
+# (`docs/playbooks/ESTADO_ATUAL.md`).
+# ---------------------------------------------------------------------------
+
+MODO_DRY_RUN = "dry_run"
+MODO_EXECUCAO_REAL = "execute"
+
+_CAMINHO_LONG_NACIONAL_PADRAO = ROOT / "data" / "interim" / "cempre_long_2007_2019.parquet"
+_CAMINHO_MANIFESTO_NACIONAL_PADRAO = ROOT / "data" / "raw" / "ibge" / "cempre" / "source_manifest.json"
+
+
+@dataclass(frozen=True)
+class NationalRunConfig:
+    """Configuração explícita de um run nacional do pipeline CEMPRE (D4).
+
+    Contrato específico do CEMPRE — não é um framework de configuração
+    genérico. `modo` distingue `MODO_DRY_RUN` (padrão, seguro por
+    construção) de `MODO_EXECUCAO_REAL` (guardado por
+    `autorizacao_extracao`, ver `run_national_pipeline`). `anos`/
+    `variaveis`/`fonte_tabela` são repassados diretamente para
+    `build_national_request_plan` (D1) — `None` usa o contrato padrão
+    (janela 2007-2019 completa e `VARIAVEIS_ESPERADAS`).
+    """
+
+    cache_dir: Path = CACHE_DIR
+    calendario_path: Path | None = None
+    caminho_long: Path = _CAMINHO_LONG_NACIONAL_PADRAO
+    caminho_manifesto: Path = _CAMINHO_MANIFESTO_NACIONAL_PADRAO
+    modo: str = MODO_DRY_RUN
+    overwrite: bool = False
+    anos: list[int] | None = None
+    variaveis: set[int] | list[int] | None = None
+    fonte_tabela: int = FONTE_TABELA
+
+
+def _garantir_autorizacao_execucao_real(modo: str, autorizacao_extracao: bool) -> None:
+    """Guarda explícita (D4, seção 4): nenhuma execução real prossegue sem
+    `autorizacao_extracao=True` passado como parâmetro explícito da
+    operação — nunca uma variável global escondida. Falha ANTES de
+    qualquer chamada a `fetch_request`/rede.
+    """
+    if modo == MODO_EXECUCAO_REAL and not autorizacao_extracao:
+        raise PermissionError(
+            "execução real do pipeline nacional CEMPRE requer autorizacao_extracao=True "
+            "explícito. Isso NÃO ocorreu automaticamente — extração nacional CEMPRE "
+            "permanece NÃO AUTORIZADA (ver docs/playbooks/ESTADO_ATUAL.md)."
+        )
+
+
+def _classificar_resultado_cache(resultado: dict[str, Any]) -> str:
+    """Classifica um resultado de `load_results_from_cache` (D2) em
+    `'valido'` / `'ausente'` / `'invalido'` para o dry run (D4).
+
+    NÃO duplica leitura/parsing de cache — só interpreta o contrato já
+    produzido por `load_results_from_cache`/`_resultado_a_partir_do_cache`.
+    Cache corrompido e payload com schema inválido caem ambos em
+    `'invalido'` (comportamento conservador — seção 7: bloqueador
+    operacional, nunca tratado automaticamente como cache miss).
+    """
+    if resultado.get("erro") is None and resultado.get("resultado") is not None:
+        return "valido"
+    erro = resultado.get("erro") or ""
+    if erro.startswith("cache ausente"):
+        return "ausente"
+    return "invalido"
+
+
+def dry_run_national_pipeline(config: NationalRunConfig) -> dict[str, Any]:
+    """Simula, inteiramente OFFLINE, uma execução nacional do pipeline
+    CEMPRE (D4, seção 5): responde "se a extração nacional fosse
+    executada agora, exatamente o que aconteceria?" sem nunca chamar rede.
+
+    Compõe (não duplica): `load_calendar_territorial` + `uf_list_from_calendario`,
+    `build_national_request_plan` (que já chama `validate_national_request_plan`
+    internamente, D1), `load_results_from_cache` (D2) e `hash_plano_canonico`/
+    `get_git_head` (D3). NUNCA chama `fetch_request`, `requests.get`, nem
+    escreve cache, long ou manifesto.
+
+    `n_requests_que_exigiriam_rede` conta APENAS cache ausente — cache
+    inválido/corrompido é um bloqueador operacional distinto (requer
+    intervenção manual antes de qualquer execução real, seção 7), não uma
+    simples falta de dado que uma execução real resolveria sozinha.
+    Cache ausente, por si só, NUNCA é bloqueador: é exatamente o que uma
+    futura execução real buscaria preencher (seção 9).
+    """
+    calendario = load_calendar_territorial(config.calendario_path)
+    plano = build_national_request_plan(
+        calendario=calendario,
+        anos=config.anos,
+        variaveis=config.variaveis,
+        fonte_tabela=config.fonte_tabela,
+    )
+
+    resultados_cache = load_results_from_cache(plano, config.cache_dir)
+    ids_validos: list[str] = []
+    ids_ausentes: list[str] = []
+    ids_invalidos: list[str] = []
+    for resultado in resultados_cache:
+        categoria = _classificar_resultado_cache(resultado)
+        if categoria == "valido":
+            ids_validos.append(resultado["request_id"])
+        elif categoria == "ausente":
+            ids_ausentes.append(resultado["request_id"])
+        else:
+            ids_invalidos.append(resultado["request_id"])
+
+    caminho_long = Path(config.caminho_long)
+    caminho_manifesto = Path(config.caminho_manifesto)
+    conflito_long_existente = caminho_long.exists() and not config.overwrite
+    conflito_manifesto_existente = caminho_manifesto.exists() and not config.overwrite
+
+    bloqueadores: list[str] = []
+    if ids_invalidos:
+        bloqueadores.append(
+            f"{len(ids_invalidos)} cache(s) inválido(s)/corrompido(s) — requer intervenção "
+            f"manual antes de qualquer execução real: {sorted(ids_invalidos)}"
+        )
+    if conflito_long_existente:
+        bloqueadores.append(f"long já existe e overwrite=False: {caminho_long}")
+    if conflito_manifesto_existente:
+        bloqueadores.append(f"manifesto já existe e overwrite=False: {caminho_manifesto}")
+
+    anos_plano = sorted({item["ano"] for item in plano})
+    variaveis_plano = sorted({variavel for item in plano for variavel in (item.get("variaveis") or [])})
+
+    return {
+        "modo": MODO_DRY_RUN,
+        "fonte_tabela": config.fonte_tabela,
+        "anos": anos_plano,
+        "variaveis": variaveis_plano,
+        "n_requests_esperados": len(plano),
+        "hash_plano": hash_plano_canonico(plano),
+        "n_cache_validos": len(ids_validos),
+        "n_cache_ausentes": len(ids_ausentes),
+        "n_cache_invalidos": len(ids_invalidos),
+        "request_ids_cache_validos": sorted(ids_validos),
+        "request_ids_cache_ausentes": sorted(ids_ausentes),
+        "request_ids_cache_invalidos": sorted(ids_invalidos),
+        "n_requests_que_exigiriam_rede": len(ids_ausentes),
+        "request_ids_que_exigiriam_rede": sorted(ids_ausentes),
+        "caminho_long_previsto": str(caminho_long),
+        "caminho_manifesto_previsto": str(caminho_manifesto),
+        "conflito_long_existente": conflito_long_existente,
+        "conflito_manifesto_existente": conflito_manifesto_existente,
+        "git_commit": get_git_head(),
+        "pronto_para_execucao_real": not bloqueadores,
+        "bloqueadores": bloqueadores,
+    }
+
+
+def format_dry_run_summary(relatorio: dict[str, Any]) -> str:
+    """Resumo humano curto do relatório de dry run (D4, seção 10).
+
+    Apenas formata campos já calculados por `dry_run_national_pipeline` —
+    não decide nenhum gate (`pronto_para_execucao_real` é diagnóstico
+    técnico, não `EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA`).
+    """
+    linhas = [
+        f"Modo: {relatorio['modo']}",
+        f"Requests esperados: {relatorio['n_requests_esperados']}",
+        f"Caches válidos: {relatorio['n_cache_validos']}",
+        f"Caches ausentes: {relatorio['n_cache_ausentes']}",
+        f"Caches inválidos: {relatorio['n_cache_invalidos']}",
+        f"Requests que exigiriam rede: {relatorio['n_requests_que_exigiriam_rede']}",
+        f"Long prevista: {relatorio['caminho_long_previsto']}",
+        f"Manifesto previsto: {relatorio['caminho_manifesto_previsto']}",
+        f"Bloqueadores: {len(relatorio['bloqueadores'])}",
+        f"Pronto tecnicamente para execução: {'SIM' if relatorio['pronto_para_execucao_real'] else 'NÃO'}",
+    ]
+    return "\n".join(linhas)
+
+
+def run_national_pipeline(
+    config: NationalRunConfig,
+    modo: str = MODO_DRY_RUN,
+    autorizacao_extracao: bool = False,
+) -> dict[str, Any]:
+    """Ponto de entrada único do orquestrador nacional CEMPRE (D4, seção 11).
+
+    `dry_run=True` (via `modo=MODO_DRY_RUN`) é o padrão e nunca chama
+    rede. Qualquer tentativa de `modo=MODO_EXECUCAO_REAL` sem
+    `autorizacao_extracao=True` explícito falha imediatamente
+    (`PermissionError`), ANTES de qualquer request — ver
+    `_garantir_autorizacao_execucao_real`.
+
+    A execução real ainda NÃO está implementada nesta etapa: mesmo
+    autorizada, levanta `NotImplementedError` explícito. A infraestrutura
+    (D1-D3) já foi orquestrada e validada via dry run; o branch de
+    execução real será habilitado somente após gate explícito de
+    autorização de extração nacional — isto NÃO é esse gate.
+    """
+    _garantir_autorizacao_execucao_real(modo, autorizacao_extracao)
+
+    if modo == MODO_DRY_RUN:
+        return dry_run_national_pipeline(config)
+
+    if modo == MODO_EXECUCAO_REAL:
+        raise NotImplementedError(
+            "execução real do pipeline nacional CEMPRE ainda não está implementada (D4). "
+            "A infraestrutura foi orquestrada e validada via dry run; o branch de execução "
+            "real será habilitado somente após gate explícito de autorização de extração "
+            "nacional (ver docs/playbooks/ESTADO_ATUAL.md)."
+        )
+
+    raise ValueError(f"modo de execução desconhecido: {modo!r} (esperado {MODO_DRY_RUN!r} ou {MODO_EXECUCAO_REAL!r})")

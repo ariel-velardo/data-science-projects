@@ -1857,5 +1857,277 @@ class TestGetGitHead(unittest.TestCase):
                 cempre.get_git_head()
 
 
+# ---------------------------------------------------------------------------
+# D4 — orquestração nacional (dry run offline)
+#
+# Usa um calendário sintético com 1 linha por UF (27 UFs, ano fixo) e
+# `anos=[2010]` no plano — 27 requests, o suficiente para testar
+# classificação de cache, conflitos e o contrato do relatório, sem gerar
+# o plano nacional completo (351) nos testes unitários. Nenhum teste
+# desta seção chama rede.
+# ---------------------------------------------------------------------------
+
+
+def _escreve_calendario_nacional_sintetico(caminho: Path) -> None:
+    linhas = [
+        {
+            "codigo_municipio_ibge": f"{codigo_uf}00001",
+            "ano": 2010,
+            "municipio_existia_no_ano": True,
+            "uf_codigo": codigo_uf,
+            "uf_sigla": sigla,
+        }
+        for codigo_uf, sigla in _UFS_CONTRATADAS_SINTETICAS
+    ]
+    pd.DataFrame(linhas).to_parquet(caminho, index=False)
+
+
+class TestDryRunNationalPipeline(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.diretorio = Path(self._tmpdir.name)
+        self.calendario_path = self.diretorio / "calendario.parquet"
+        _escreve_calendario_nacional_sintetico(self.calendario_path)
+        self.cache_dir = self.diretorio / "cache"
+        self.caminho_long = self.diretorio / "interim" / "long.parquet"
+        self.caminho_manifesto = self.diretorio / "raw" / "manifesto.json"
+
+        calendario = cempre.load_calendar_territorial(self.calendario_path)
+        self.plano = cempre.build_national_request_plan(calendario=calendario, anos=[2010])
+
+    def _config(self, **overrides: Any) -> "cempre.NationalRunConfig":
+        base = dict(
+            cache_dir=self.cache_dir,
+            calendario_path=self.calendario_path,
+            caminho_long=self.caminho_long,
+            caminho_manifesto=self.caminho_manifesto,
+            anos=[2010],
+        )
+        base.update(overrides)
+        return cempre.NationalRunConfig(**base)
+
+    # -- A/G: todos ausentes --
+
+    def test_dry_run_todos_caches_ausentes(self) -> None:
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_requests_esperados"], 27)
+        self.assertEqual(relatorio["n_cache_ausentes"], 27)
+        self.assertEqual(relatorio["n_cache_validos"], 0)
+        self.assertEqual(relatorio["n_cache_invalidos"], 0)
+        self.assertEqual(relatorio["n_requests_que_exigiriam_rede"], 27)
+        self.assertEqual(relatorio["bloqueadores"], [])
+        self.assertTrue(relatorio["pronto_para_execucao_real"])
+
+    # -- B: alguns válidos --
+
+    def test_dry_run_alguns_caches_validos(self) -> None:
+        for item in self.plano[:5]:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], [_linha_payload_d2("3166600", 2010, 708, "100")])
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_cache_validos"], 5)
+        self.assertEqual(relatorio["n_cache_ausentes"], 22)
+        self.assertEqual(relatorio["n_requests_que_exigiriam_rede"], 22)
+
+    # -- C: todos válidos --
+
+    def test_dry_run_todos_caches_validos(self) -> None:
+        for item in self.plano:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], [_linha_payload_d2("3166600", 2010, 708, "100")])
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_cache_validos"], 27)
+        self.assertEqual(relatorio["n_requests_que_exigiriam_rede"], 0)
+        self.assertTrue(relatorio["pronto_para_execucao_real"])
+
+    # -- D: cache corrompido --
+
+    def test_cache_corrompido_e_classificado_invalido(self) -> None:
+        request_id = self.plano[0]["request_id"]
+        caminho_cache = cempre.cache_path_for_request(request_id, self.cache_dir)
+        caminho_cache.parent.mkdir(parents=True, exist_ok=True)
+        caminho_cache.write_text("{ isso não é json", encoding="utf-8")
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_cache_invalidos"], 1)
+        self.assertIn(request_id, relatorio["request_ids_cache_invalidos"])
+
+    # -- E: schema inválido --
+
+    def test_cache_schema_invalido_e_classificado_invalido(self) -> None:
+        request_id = self.plano[0]["request_id"]
+        texto_lista_vazia = json.dumps([])
+        cempre.save_cached_request(
+            request_id,
+            texto_resposta_raw=texto_lista_vazia,
+            hash_resposta_raw=cempre.hashlib.sha256(texto_lista_vazia.encode("utf-8")).hexdigest(),
+            cache_dir=self.cache_dir,
+        )
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_cache_invalidos"], 1)
+        self.assertIn(request_id, relatorio["request_ids_cache_invalidos"])
+
+    # -- F: cache inválido vira bloqueador --
+
+    def test_cache_invalido_vira_bloqueador(self) -> None:
+        request_id = self.plano[0]["request_id"]
+        caminho_cache = cempre.cache_path_for_request(request_id, self.cache_dir)
+        caminho_cache.parent.mkdir(parents=True, exist_ok=True)
+        caminho_cache.write_text("{ nao e json", encoding="utf-8")
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertFalse(relatorio["pronto_para_execucao_real"])
+        self.assertTrue(any("inválido" in bloqueador for bloqueador in relatorio["bloqueadores"]))
+
+    # -- G/H: ausente exige rede; válido não exige --
+
+    def test_cache_ausente_conta_como_exigiria_rede(self) -> None:
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(set(relatorio["request_ids_que_exigiriam_rede"]), set(relatorio["request_ids_cache_ausentes"]))
+
+    def test_cache_valido_nao_conta_como_exigiria_rede(self) -> None:
+        item = self.plano[0]
+        _salva_cache_valido_d2(self.cache_dir, item["request_id"], [_linha_payload_d2("3166600", 2010, 708, "100")])
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertNotIn(item["request_id"], relatorio["request_ids_que_exigiriam_rede"])
+
+    # -- I/J/K: n_requests_esperados/hash_plano/git_commit --
+
+    def test_n_requests_esperados_vem_do_plano(self) -> None:
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_requests_esperados"], len(self.plano))
+
+    def test_hash_plano_vem_do_d3(self) -> None:
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["hash_plano"], cempre.hash_plano_canonico(self.plano))
+
+    def test_git_commit_completo_presente(self) -> None:
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertRegex(relatorio["git_commit"], r"^[0-9a-f]{40}$")
+
+    # -- L/M: conflitos de artefatos --
+
+    def test_conflito_long_existente_vira_bloqueador(self) -> None:
+        self.caminho_long.parent.mkdir(parents=True, exist_ok=True)
+        self.caminho_long.write_bytes(b"conteudo qualquer")
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertTrue(relatorio["conflito_long_existente"])
+        self.assertFalse(relatorio["pronto_para_execucao_real"])
+
+    def test_conflito_manifesto_existente_vira_bloqueador(self) -> None:
+        self.caminho_manifesto.parent.mkdir(parents=True, exist_ok=True)
+        self.caminho_manifesto.write_text("{}", encoding="utf-8")
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertTrue(relatorio["conflito_manifesto_existente"])
+        self.assertFalse(relatorio["pronto_para_execucao_real"])
+
+    # -- N: overwrite=True remove conflito lógico, mas não sobrescreve nada --
+
+    def test_overwrite_true_remove_conflito_mas_nao_sobrescreve_arquivo(self) -> None:
+        self.caminho_long.parent.mkdir(parents=True, exist_ok=True)
+        self.caminho_long.write_bytes(b"conteudo original")
+        conteudo_antes = self.caminho_long.read_bytes()
+        mtime_antes = self.caminho_long.stat().st_mtime
+
+        relatorio = cempre.dry_run_national_pipeline(self._config(overwrite=True))
+
+        self.assertFalse(relatorio["conflito_long_existente"])
+        self.assertEqual(self.caminho_long.read_bytes(), conteudo_antes)
+        self.assertEqual(self.caminho_long.stat().st_mtime, mtime_antes)
+
+    # -- O/P/Q: dry run não cria nada --
+
+    def test_dry_run_nao_cria_long_nem_manifesto_nem_cache(self) -> None:
+        self.assertFalse(self.caminho_long.exists())
+        self.assertFalse(self.caminho_manifesto.exists())
+        cempre.dry_run_national_pipeline(self._config())
+        self.assertFalse(self.caminho_long.exists())
+        self.assertFalse(self.caminho_manifesto.exists())
+        self.assertFalse(self.cache_dir.exists() and any(self.cache_dir.iterdir()))
+
+    # -- R/S: zero rede --
+
+    def test_dry_run_nunca_chama_fetch_request(self) -> None:
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")):
+            cempre.dry_run_national_pipeline(self._config())
+
+    def test_dry_run_nunca_chama_requests_get(self) -> None:
+        with mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            cempre.dry_run_national_pipeline(self._config())
+
+    # -- T: execução real sem autorização falha antes da rede --
+
+    def test_execucao_real_sem_autorizacao_falha_antes_da_rede(self) -> None:
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            with self.assertRaises(PermissionError):
+                cempre.run_national_pipeline(
+                    self._config(), modo=cempre.MODO_EXECUCAO_REAL, autorizacao_extracao=False,
+                )
+
+    def test_execucao_real_autorizada_ainda_nao_implementada(self) -> None:
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            with self.assertRaises(NotImplementedError):
+                cempre.run_national_pipeline(
+                    self._config(), modo=cempre.MODO_EXECUCAO_REAL, autorizacao_extracao=True,
+                )
+
+    def test_modo_desconhecido_falha_explicitamente(self) -> None:
+        with self.assertRaises(ValueError):
+            cempre.run_national_pipeline(self._config(), modo="modo_invalido", autorizacao_extracao=False)
+
+    # -- U: dry_run é o modo padrão --
+
+    def test_dry_run_e_modo_padrao(self) -> None:
+        config = self._config()
+        self.assertEqual(config.modo, cempre.MODO_DRY_RUN)
+        relatorio = cempre.run_national_pipeline(config)
+        self.assertEqual(relatorio["modo"], "dry_run")
+
+    # -- V: relatório determinístico --
+
+    def test_relatorio_e_deterministico(self) -> None:
+        relatorio_1 = cempre.dry_run_national_pipeline(self._config())
+        relatorio_2 = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio_1, relatorio_2)
+
+    # -- W: resumo humano reflete as contagens reais --
+
+    def test_resumo_humano_reflete_contagens(self) -> None:
+        for item in self.plano[:3]:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], [_linha_payload_d2("3166600", 2010, 708, "100")])
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        resumo = cempre.format_dry_run_summary(relatorio)
+        self.assertIn(f"Requests esperados: {relatorio['n_requests_esperados']}", resumo)
+        self.assertIn(f"Caches válidos: {relatorio['n_cache_validos']}", resumo)
+        self.assertIn(f"Caches ausentes: {relatorio['n_cache_ausentes']}", resumo)
+        self.assertIn(f"Requests que exigiriam rede: {relatorio['n_requests_que_exigiriam_rede']}", resumo)
+        self.assertIn("Pronto tecnicamente para execução: SIM", resumo)
+
+
+class TestDryRunNacionalSmokeCheckOffline(unittest.TestCase):
+    """Seção 13: smoke-check OFFLINE com calendário territorial real e
+    plano nacional padrão (351 requests), usando `CACHE_DIR` real em modo
+    somente leitura. Não cria nenhum arquivo; não autoriza extração."""
+
+    def test_smoke_check_offline_plano_nacional_real(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            config = cempre.NationalRunConfig(
+                cache_dir=cempre.CACHE_DIR,
+                calendario_path=None,
+                caminho_long=Path(diretorio) / "long_inexistente.parquet",
+                caminho_manifesto=Path(diretorio) / "manifesto_inexistente.json",
+            )
+            with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")), \
+                 mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+                relatorio = cempre.dry_run_national_pipeline(config)
+
+        self.assertEqual(relatorio["n_requests_esperados"], 351)
+        self.assertEqual(
+            relatorio["n_cache_validos"] + relatorio["n_cache_ausentes"] + relatorio["n_cache_invalidos"],
+            351,
+        )
+        self.assertFalse(relatorio["conflito_long_existente"])
+        self.assertFalse(relatorio["conflito_manifesto_existente"])
+
+
 if __name__ == "__main__":
     unittest.main()
