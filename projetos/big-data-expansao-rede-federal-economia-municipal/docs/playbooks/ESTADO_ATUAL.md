@@ -17,10 +17,12 @@ Branch:
 
 HEAD/origin conhecido:
 
-`7218c56b36f0ef665d6e1a4daf55ce0dfa12b86f`
+`4a4355eb94305a5bb7055fa99e23f078f319f814`
 
 Commits recentes:
 
+- `4a4355e` — `feat: adiciona adaptador CEMPRE para API de agregados`
+- `dc995e7` — `docs: registra fechamento do D5 CEMPRE`
 - `7218c56` — `feat: implementa executor controlado CEMPRE`
 - `7277798` — `docs: fecha auditoria pre-extracao CEMPRE`
 - `1b59058` — `fix: vincula cache ao request CEMPRE`
@@ -37,8 +39,8 @@ Commits recentes:
 - `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
 
 Os commits foram enviados para `origin/main`. Checkpoint substantivo mais
-recente: `7218c56b36f0ef665d6e1a4daf55ce0dfa12b86f` (D5 — executor
-controlado nacional CEMPRE — ver seção 10).
+recente: `4a4355eb94305a5bb7055fa99e23f078f319f814` (D6 — adaptador CEMPRE
+para a API de Dados Agregados do IBGE — ver seção 11).
 
 ---
 
@@ -804,7 +806,169 @@ O D5 fecha o executor controlado nacional. Não declara
 
 ---
 
-## 11. Camada operacional
+## 11. D6 — Adaptador CEMPRE para a API de Dados Agregados do IBGE
+
+Status técnico:
+
+`D6_ADAPTADOR_AGREGADOS = IMPLEMENTADO`
+
+`VALIDACAO_PAYLOAD_AGREGADOS = APROVADA`
+
+`NORMALIZACAO_AGREGADOS = APROVADA`
+
+`EQUIVALENCIA_LONG_CANONICA = APROVADA`
+
+`PROVENIENCIA_FONTE_API = APROVADA`
+
+`CACHE_ENTRE_FONTES_NAO_COLIDE = CONFIRMADO`
+
+`BINDING_AGREGADOS = APROVADO`
+
+`COLETA_NACIONAL = PAUSADA`
+
+`EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = NÃO`
+
+Commit substantivo:
+
+`4a4355eb94305a5bb7055fa99e23f078f319f814` — `feat: adiciona adaptador
+CEMPRE para API de agregados`
+
+Push: **CONCLUIDO**
+
+### Motivação
+
+A coleta nacional real via `apisidra.ibge.gov.br` foi pausada porque o
+primeiro request em produção recebeu `HTTP 403` com
+`Server: cloudflare` / `Cf-Mitigated: challenge` — bloqueio operacional
+neste ambiente, causa raiz inconclusiva. Uma auditoria focal de
+equivalência (probes reais, zero coleta nacional) comparou a apisidra
+legada com a API oficial de Dados Agregados do IBGE
+(`servicodados.ibge.gov.br/api/v3/agregados`) para o agregado 1685 e
+concluiu `API_AGREGADOS_EQUIVALENCIA = APROVADA_PARA_IMPLEMENTAR_ADAPTADOR`
+— equivalência semântica confirmada para município, ano, variável, valor
+(incluindo o caso especial real `"..."` de Pescaria Brava/SC, 2007,
+preservado literalmente), unidade e cobertura territorial (Amajari/RR e
+Roraima completa, 2019).
+
+### Arquitetura implementada
+
+Fonte **paralela e explicitamente distinta** da apisidra legada — nada do
+legado foi reescrito (`validate_sidra_payload`, `normalize_long`,
+`parse_sidra_value`, fixtures apisidra e contratos D1-D5 permanecem
+intactos):
+
+- `build_requests_agregados` — mesma granularidade lógica nacional (ano ×
+  UF × grupo de variáveis) já aprovada em D1, URL/schema da API de Dados
+  Agregados; `request_id` derivado de um texto canônico DIFERENTE do de
+  `build_requests` (prefixado por `FONTE_API_AGREGADOS`), garantindo que
+  o mesmo lote lógico nunca colida no mesmo arquivo de cache que a
+  apisidra;
+- `validate_agregados_payload` — validação estrutural do schema real
+  observado (`bloco.id/variavel/unidade/resultados[].series[].localidade/serie`),
+  falha explícita para forma inesperada;
+- `normalize_long_agregados` — mapeia o schema novo DIRETAMENTE para a
+  mesma long canônica (`_COLUNAS_LONG`) de `normalize_long`, sem fabricar
+  campos apisidra artificiais; reutiliza `parse_sidra_value` sem duplicar
+  parser de símbolos/valores;
+- `fetch_request_agregados` — espelha `fetch_request` (mesmo
+  retry/timeout/backoff/SHA-256/contrato de resultado), valida com
+  `validate_agregados_payload` e aplica a MESMA vinculação semântica
+  (`_validar_resultado_corresponde_request`, via despacho por
+  `fonte_api`) antes de `save_cached_request`;
+- `FONTE_API_SIDRA`/`FONTE_API_AGREGADOS` — identidade explícita da fonte,
+  gravada no envelope de cache (`save_cached_request`) e verificada no
+  carregamento (`load_cached_request(..., fonte_api_esperada=...)`).
+
+### Proveniência entre fontes (requisito crítico)
+
+Duas barreiras independentes, nenhuma delas dependendo só da URL ser
+diferente:
+
+1. **`request_id` fisicamente distinto** — o mesmo lote lógico
+   (ano/UF/variáveis) produz `request_id`/caminho de cache diferentes
+   para `apisidra` e `agregados_v3`, então as duas fontes nunca escrevem
+   no mesmo arquivo;
+2. **`fonte_api` no envelope** — cache de uma fonte é rejeitado
+   explicitamente (erro citando `fonte_api`) se apresentado para um
+   request da outra fonte, mesmo com hash/schema internamente
+   consistentes. Cache legado gravado antes do D6 (sem o campo
+   `fonte_api`) continua sendo tratado como `apisidra` — retrocompatível,
+   nunca destruído.
+
+### Verificação focal pré-commit
+
+Confirmado por teste e/ou inspeção de código, sem necessidade de
+refatoração adicional:
+
+- apisidra legado continua retrocompatível (fixtures/testes antigos
+  passam sem alteração);
+- cache legado sem `fonte_api` continua entendido como `apisidra`;
+- cache `apisidra` não é aceito como `agregados_v3`, e vice-versa;
+- `request_id` das duas fontes não colide para o mesmo lote lógico;
+- `normalize_long_agregados` produz exatamente `_COLUNAS_LONG`;
+- `parse_sidra_value` é reutilizado sem duplicação;
+- Pescaria Brava/SC, 2007, `"..."` continua `indisponivel` também via
+  `agregados_v3`;
+- nenhuma função `agregados_v3` está referenciada em
+  `dry_run_national_pipeline`, `execute_national_pipeline`,
+  `execute_missing_requests`, `run_national_pipeline` ou
+  `NationalRunConfig` — confirmado por busca textual, resultado vazio;
+  a fonte padrão nacional continua sendo exclusivamente `apisidra`.
+
+### Fixtures reais versionadas
+
+Três respostas REAIS da API de Dados Agregados (mesmos probes da
+auditoria de equivalência, zero chamada HTTP nova nesta etapa),
+adicionadas explicitamente ao Git com `git add -f` (o diretório
+`data/raw/ibge/cempre/fixtures/` é ignorado por padrão; estas fixtures
+são exceções pequenas e deliberadas, mesma política já aplicada às
+fixtures apisidra existentes):
+
+- `agregados_v3_1685_n6_1400027_amajari_rr_2019.json` — Amajari/RR, 2019,
+  6 variáveis obrigatórias;
+- `agregados_v3_1685_n6_4212650_pescaria_brava_2007.json` — Pescaria
+  Brava/SC, 2007, 6 obrigatórias com `"..."`;
+- `agregados_v3_1685_n6_3166600_serra_da_saudade_2018_var708.json` —
+  Serra da Saudade/MG, 2018, variável 708.
+
+Necessárias para reprodutibilidade: os testes do D6 dependem delas
+diretamente (`_carrega_fixture`) e falhariam em um clone limpo sem essas
+fixtures versionadas.
+
+### Testes
+
+- 289/289 testes CEMPRE passando (`tests.test_constroi_painel_cempre`),
+  incluindo os 36 novos do D6: schema válido/inválido do payload
+  Agregados, normalização numérica, `"..."` → `indisponivel`,
+  equivalência linha a linha com as fixtures apisidra reais (Amajari via
+  Roraima, Pescaria Brava), unidade e labels, binding completo (1606
+  opcional, variável obrigatória ausente/extra rejeitadas, UF/ano
+  errados rejeitados), identidade de fonte (cache cruzado rejeitado nos
+  dois sentidos, cache legado retrocompatível, `request_id` distinto),
+  `fetch_request_agregados` com sessão mockada (payload parcial não cria
+  cache, schema inválido não é sucesso, zero rede real);
+- 44/44 testes territoriais passando, inalterado;
+- zero chamada HTTP real em toda a implementação e nos testes do D6 —
+  todas as fixtures reaproveitam respostas já obtidas na auditoria de
+  equivalência.
+
+### Próximo passo
+
+`agregados_v3` ainda NÃO está integrado ao executor nacional (D5) — a
+fonte padrão nacional continua exclusivamente `apisidra`. O próximo
+passo é **integrar D6 ao D5 de forma explícita e selecionável** (ex.:
+campo de configuração explícito em `NationalRunConfig` para escolher a
+fonte, nunca uma troca silenciosa de padrão), preservando a guarda de
+autorização e a política de não misturar cache entre fontes também no
+nível do orquestrador nacional.
+
+O D6 fecha o adaptador isolado da API de Dados Agregados. Não declara
+`PAINEL_TECNICO_CONSTRUIDO`, não integra `agregados_v3` ao D5 e não
+autoriza a extração nacional CEMPRE.
+
+---
+
+## 12. Camada operacional
 
 Arquivos operacionais:
 
@@ -821,46 +985,55 @@ Esta camada e operacional e deve permanecer separada dos commits cientificos.
 
 ---
 
-## 12. Proximos passos
+## 13. Proximos passos
 
-1. definir o gate operacional da PRIMEIRA execução real (critérios
+1. **integrar D6 ao D5 de forma explícita e selecionável** — expor a
+   escolha de fonte (`apisidra`/`agregados_v3`) como configuração
+   explícita (ex.: campo dedicado em `NationalRunConfig`), nunca como
+   troca silenciosa do padrão nacional (que continua `apisidra` até essa
+   integração ser feita e revisada);
+2. definir o gate operacional da PRIMEIRA execução real (critérios
    explícitos de entrada/saída — distinto do gate de infraestrutura já
-   aprovado no D5);
-2. decidir explicitamente os parâmetros iniciais conservadores da
+   aprovado no D5, e agora também considerando qual fonte será usada);
+3. decidir explicitamente os parâmetros iniciais conservadores da
    primeira coleta: `timeout`; `max_retries`; `backoff_base`; execução
-   sequencial (sem paralelismo); critérios de interrupção manual;
-3. realizar um dry run final imediatamente antes da coleta (estado do
+   sequencial (sem paralelismo); critérios de interrupção manual; e, se
+   `agregados_v3` for a fonte escolhida, reavaliar se o bloqueio
+   Cloudflare da apisidra está resolvido ou se a migração é definitiva;
+4. realizar um dry run final imediatamente antes da coleta (estado do
    cache pode mudar entre esta atualização e a execução);
-4. somente após decisão humana explícita:
+5. somente após decisão humana explícita:
    `EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = SIM`;
-5. executar a primeira coleta nacional (`execute_national_pipeline`,
+6. executar a primeira coleta nacional (`execute_national_pipeline`,
    `modo=MODO_EXECUCAO_REAL`, `autorizacao_extracao=True`);
-6. acompanhar progresso e falhas durante a coleta real;
-7. ao final, verificar: 351 requests; caches válidos; zero caches
+7. acompanhar progresso e falhas durante a coleta real;
+8. ao final, verificar: 351 requests; caches válidos; zero caches
    inválidos; completude;
-8. construir/validar long e manifesto (já automático em
+9. construir/validar long e manifesto (já automático em
    `execute_national_pipeline` quando `completo=True`);
-9. auditar cobertura e qualidade dos dados efetivamente coletados;
-10. somente depois decidir explicitamente sobre eventual
+10. auditar cobertura e qualidade dos dados efetivamente coletados;
+11. somente depois decidir explicitamente sobre eventual
     `PAINEL_TECNICO_CONSTRUIDO`.
 
-Nao reabrir Fase 0, calendario territorial, D2, D3, D4 ou D5 sem anomalia
-concreta. `PODE_PROSSEGUIR_PARA_GATE_DA_PRIMEIRA_EXECUCAO = SIM` (seção
-10) autoriza prosseguir para o DESENHO do gate da primeira execução —
-NÃO equivale a `EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = SIM` e não
-autoriza, por si só, executar a primeira coleta.
+Nao reabrir Fase 0, calendario territorial, D2, D3, D4, D5 ou D6 sem
+anomalia concreta. `PODE_PROSSEGUIR_PARA_GATE_DA_PRIMEIRA_EXECUCAO = SIM`
+(seção 10) autoriza prosseguir para o DESENHO do gate da primeira
+execução — NÃO equivale a `EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = SIM` e
+não autoriza, por si só, executar a primeira coleta nem integrar
+`agregados_v3` ao executor sem revisão explícita.
 
 ---
 
-## 13. Extracao nacional CEMPRE
+## 14. Extracao nacional CEMPRE
 
 Status:
 
 **EXTRAÇÃO NACIONAL CEMPRE = NÃO AUTORIZADA**
 
 Os commits territorial, Fase 0, D1, D2, D3, D4, a correção do binding
-cache/request (seção 9) e o executor controlado D5 (seção 10), por si
-só, não autorizam a extração — inclusive com
+cache/request (seção 9), o executor controlado D5 (seção 10) e o
+adaptador CEMPRE para Dados Agregados D6 (seção 11), por si só, não
+autorizam a extração — inclusive com
 `PIPELINE_PRE_EXECUCAO_CEMPRE = APROVADO`,
 `PODE_PROSSEGUIR_PARA_GATE_DE_EXECUCAO_REAL = SIM` e
 `PODE_PROSSEGUIR_PARA_GATE_DA_PRIMEIRA_EXECUCAO = SIM`.
@@ -868,11 +1041,18 @@ só, não autorizam a extração — inclusive com
 O ramo real do orquestrador (`execute_national_pipeline`) já está
 implementado e aprovado em spot-check (D5) — a lacuna que falta não é
 mais de implementação, é de validação sob condições reais e de decisão
-humana explícita.
+humana explícita. O adaptador `agregados_v3` (D6) existe de forma isolada
+e testada, mas AINDA NÃO está ligado a `execute_national_pipeline`/
+`run_national_pipeline` — a fonte nacional padrão continua sendo
+exclusivamente `apisidra`.
 
 Antes de qualquer extração nacional ainda é necessário:
 
-- definição do gate operacional da primeira execução (seção 12);
+- definição do gate operacional da primeira execução (seção 13);
+- decisão explícita de qual fonte usar (`apisidra`, ainda bloqueada por
+  Cloudflare neste ambiente, ou `agregados_v3`, equivalente mas ainda
+  não integrada ao D5) e integração explícita e selecionável dessa fonte
+  ao executor (seção 13, item 1);
 - decisão explícita dos parâmetros conservadores iniciais (timeout,
   max_retries, backoff, critérios de interrupção);
 - validação do executor real sob rede real (retries, backoff, rate
@@ -882,7 +1062,7 @@ Antes de qualquer extração nacional ainda é necessário:
 
 ---
 
-## 14. Regra para agentes
+## 15. Regra para agentes
 
 Antes de trabalhar:
 

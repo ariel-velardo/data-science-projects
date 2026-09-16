@@ -34,9 +34,35 @@ Janela:
 
 **2007–2019**
 
-A API SIDRA é a via principal.
+O campo `V`/valor bruto deve ser preservado como texto, qualquer que seja
+a interface.
 
-O campo `V` deve ser preservado como texto bruto.
+### 1.1 Interfaces conhecidas
+
+Duas interfaces de acesso a essa mesma fonte estatística (CEMPRE/IBGE,
+agregado 1685), com contratos de schema distintos:
+
+**`apisidra`** (`apisidra.ibge.gov.br`)
+- contrato legado, via principal histórica do projeto;
+- fixtures históricas já congeladas (D0/Fase 0);
+- bloqueada operacionalmente neste ambiente por Cloudflare Challenge
+  (`HTTP 403` / `Cf-Mitigated: challenge`) — ver `ESTADO_ATUAL.md`.
+
+**`agregados_v3`** (`servicodados.ibge.gov.br/api/v3/agregados`)
+- API oficial de Dados Agregados do IBGE;
+- adaptador dedicado (D6), schema próprio, normaliza diretamente para a
+  long canônica (não finge ser payload apisidra);
+- `fonte_api` explícita na proveniência do cache;
+- cache nunca compartilhado entre as duas fontes, mesmo para o mesmo
+  lote lógico (ano/UF/variáveis) — ver `ESTADO_ATUAL.md` para o estado
+  de implementação e os gates do D6.
+
+Regra arquitetural válida para qualquer interface futura: **nunca
+converter silenciosamente o payload de uma fonte em payload de outra**
+(ex.: tratar resposta de `agregados_v3` como se fosse `apisidra`). Cada
+fonte tem seu próprio normalizador; ambas convergem para a MESMA long
+canônica (seção 5). `agregados_v3` ainda não é a fonte nacional ativa —
+consultar `ESTADO_ATUAL.md` antes de presumir qual interface está em uso.
 
 ---
 
