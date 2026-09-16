@@ -17,10 +17,12 @@ Branch:
 
 HEAD/origin conhecido:
 
-`214c660412d43312125eb5fd69dcbb4e88dce166`
+`cb853ecbd5390892d16b63d6746e2363bd3185fb`
 
 Commits recentes:
 
+- `cb853ec` — `feat: implementa manifesto e proveniencia CEMPRE`
+- `a228c6a` — `docs: registra fechamento do D2 CEMPRE`
 - `214c660` — `feat: implementa persistencia offline da long CEMPRE`
 - `7db9950` — `docs: registra fechamento do D1 CEMPRE`
 - `d9ba6ce` — `feat: implementa plano nacional e completude CEMPRE`
@@ -29,7 +31,7 @@ Commits recentes:
 - `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
 
 Os commits foram enviados para `origin/main`. Checkpoint substantivo mais
-recente: `214c660412d43312125eb5fd69dcbb4e88dce166` (D2).
+recente: `cb853ecbd5390892d16b63d6746e2363bd3185fb` (D3).
 
 ---
 
@@ -254,7 +256,94 @@ O D2 fecha a persistência e a reconstrução offline da long. Não declara
 
 ---
 
-## 7. Camada operacional
+## 7. D3 — Manifesto e proveniência do pipeline CEMPRE
+
+Status técnico:
+
+`D3_MANIFESTO = CONCLUIDO`
+
+`D3_PROVENIENCIA = CONCLUIDA`
+
+`D3_SPOT_CHECK = APROVADO`
+
+`MANIFESTO_APROVADO = SIM`
+
+`PROVENIENCIA_APROVADA = SIM`
+
+`MANIFESTO_COMPLETO_VALIDO = SIM`
+
+`MANIFESTO_INCOMPLETO_VALIDO = SIM`
+
+`PODE_COMMITAR_D3 = SIM` (já commitado)
+
+Commit substantivo:
+
+`cb853ecbd5390892d16b63d6746e2363bd3185fb` — `feat: implementa manifesto e proveniencia CEMPRE`
+
+Push:
+
+**CONCLUIDO**
+
+O D3 passou por spot-check independente no Codex, que apontou dois
+bloqueadores focais: (1) `validate_manifest()` aceitava contradições
+entre `execucao` e a proveniência por request (ex.: `n_sucessos`
+divergente, request marcado ausente/duplicado na execução mas com status
+diferente na proveniência); (2) `validate_manifest()` aceitava
+adulteração de `hash_plano`, `anos` e `variaveis` na seção `plano`. Ambos
+foram corrigidos com dois helpers focais —
+`_validar_consistencia_execucao_requests()` e
+`_validar_consistencia_plano_requests()` —, reutilizados por
+`validate_manifest()` sem duplicar a lógica de `avalia_completude_plano()`,
+e o recheck independente final aprovou o fechamento.
+
+Fechamento registrado:
+
+- SHA-256 de artefatos implementado (`sha256_file`), leitura em chunks,
+  falha explícita para arquivo ausente, zero rede;
+- hash canônico do plano implementado (`hash_plano_canonico`) —
+  independente de ordem de lista e de chaves de dicionário, sensível a
+  qualquer mudança real de conteúdo;
+- proveniência por request implementada (`build_request_provenance`) —
+  uma entrada por request esperado, nunca o payload bruto nem a long
+  inteira;
+- commit Git completo registrado (`get_git_head`, via `subprocess`,
+  somente leitura, hash de 40 hex nunca abreviado, falha explícita se
+  indeterminável);
+- timestamp UTC ISO-8601 (`timestamp_utc_iso`), injetável para testes
+  determinísticos;
+- completude reutiliza `avalia_completude_plano()` — nenhuma lógica
+  paralela de contagem;
+- execução completa e incompleta ambas suportadas — `write_manifest`
+  rejeita apenas inconsistência lógica, nunca a incompletude em si;
+- consistência execução × proveniência validada
+  (`_validar_consistencia_execucao_requests`): `n_sucessos`/`n_falhas`
+  e os conjuntos de ausentes/duplicados da seção `execucao` precisam
+  bater exatamente com os `status_execucao` registrados em `requests`;
+  `completo=True` exige que todo request esperado esteja como "sucesso";
+- `hash_plano` validado como SHA-256 hex completo (64 caracteres), nunca
+  recomputado no reload;
+- anos, variáveis e UFs do manifesto validados
+  (`_validar_consistencia_plano_requests`) — anos dentro de 2007–2019 e
+  coerentes com a proveniência (plano parcial deliberado continua
+  válido); variáveis exatamente iguais a `VARIAVEIS_ESPERADAS` (ordem
+  irrelevante); UFs do plano coerentes com as UFs presentes na
+  proveniência;
+- persistência/reload em JSON (`write_manifest`/`load_manifest`) com
+  `overwrite=False` por padrão — nunca sobrescreve silenciosamente;
+- round-trip JSON validado — manifesto escrito e recarregado preserva
+  conteúdo lógico integral;
+- 180/180 testes CEMPRE passando (169 anteriores ao D3 + 34 do D3 + 11
+  da correção focal, com 3 testes pré-existentes ajustados apenas no
+  texto do `assertRaisesRegex` devido à checagem unificada);
+- 44/44 testes territoriais passando;
+- zero rede no desenvolvimento/auditoria/correção do D3.
+
+O D3 fecha o manifesto e a proveniência do pipeline. Não declara
+`PAINEL_TECNICO_CONSTRUIDO` e não autoriza a extração nacional CEMPRE.
+
+---
+
+## 8. Camada operacional
 
 Arquivos operacionais:
 
@@ -271,25 +360,27 @@ Esta camada e operacional e deve permanecer separada dos commits cientificos.
 
 ---
 
-## 8. Proximos passos
+## 9. Proximos passos
 
-1. D3 — implementar manifesto e proveniência da extração/reconstrução;
-2. D4 — implementar orquestrador nacional e dry-run;
-3. auditar o pipeline nacional completo;
-4. somente então decidir sobre autorização da extração nacional;
-5. após autorização explícita, realizar a primeira execução real.
+1. D4 — implementar orquestrador nacional e dry-run offline;
+2. auditar o pipeline nacional completo;
+3. somente se a auditoria for aprovada, decidir sobre autorização explícita
+   da extração nacional;
+4. após autorização explícita, realizar a primeira execução real;
+5. após a execução, validar cobertura/completude e só então avançar para a
+   construção técnica final do painel.
 
-Nao reabrir Fase 0, calendario territorial ou D2 sem anomalia concreta.
+Nao reabrir Fase 0, calendario territorial, D2 ou D3 sem anomalia concreta.
 
 ---
 
-## 9. Extracao nacional CEMPRE
+## 10. Extracao nacional CEMPRE
 
 Status:
 
 **EXTRAÇÃO NACIONAL CEMPRE = NÃO AUTORIZADA**
 
-Os commits territorial, Fase 0, D1 e D2, por si so, nao autorizam a
+Os commits territorial, Fase 0, D1, D2 e D3, por si so, nao autorizam a
 extracao.
 
 Antes de qualquer extracao nacional ainda e necessario:
@@ -299,7 +390,7 @@ Antes de qualquer extracao nacional ainda e necessario:
 
 ---
 
-## 10. Regra para agentes
+## 11. Regra para agentes
 
 Antes de trabalhar:
 
