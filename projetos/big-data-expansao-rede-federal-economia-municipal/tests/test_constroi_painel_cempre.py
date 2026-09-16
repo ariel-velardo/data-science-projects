@@ -778,6 +778,80 @@ class TestFetchRequestSchemaInvalido(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# Correção focal pós-recheck do binding: variáveis básicas obrigatórias.
+#
+# A vinculação semântica anterior exigia só `variaveis_payload ⊆
+# variaveis_esperadas` — um payload contendo SOMENTE 708 de um grupo de 7
+# passava. Estes testes cobrem a regra corrigida (item 6 do pedido): a
+# MESMA barreira semântica também precisa ser aplicada em `fetch_request`,
+# sobre uma resposta NOVA de rede, ANTES de `save_cached_request`.
+# ---------------------------------------------------------------------------
+
+
+def _linha_payload_binding(codigo: str, ano: int, variavel: int, valor: str = "100") -> dict:
+    return {
+        "NC": "6", "NN": "Município", "MC": "45", "MN": "Pessoas", "V": valor,
+        "D1C": codigo, "D1N": "Município Teste", "D2C": variavel,
+        "D2N": "Variável Teste", "D3C": ano, "D3N": str(ano),
+    }
+
+
+class TestFetchRequestVinculacaoSemanticaVariaveis(unittest.TestCase):
+    def _spec_nacional(self, variaveis: set[int] | list[int] | None = None) -> dict:
+        variaveis_ordenadas = sorted(cempre.VARIAVEIS_ESPERADAS if variaveis is None else variaveis)
+        return {
+            "request_id": "req_binding_var",
+            "url": "https://apisidra.ibge.gov.br/values/fake",
+            "params": {},
+            "ano": 2010,
+            "territorio": {"tipo": "municipio", "codigo": "3166600"},
+            "variaveis": variaveis_ordenadas,
+            "fonte_tabela": cempre.FONTE_TABELA,
+        }
+
+    def _mock_sessao(self, payload: list[dict]) -> mock.Mock:
+        resposta = mock.Mock()
+        resposta.status_code = 200
+        resposta.text = json.dumps(payload)
+        resposta.json.return_value = payload
+        sessao_mock = mock.Mock()
+        sessao_mock.get.return_value = resposta
+        return sessao_mock
+
+    def test_resposta_nova_com_payload_parcial_nao_e_sucesso_e_nao_cria_cache(self) -> None:
+        spec = self._spec_nacional()
+        payload_parcial = [_linha_payload_binding("3166600", 2010, 708, "100")]
+        sessao_mock = self._mock_sessao(payload_parcial)
+        with tempfile.TemporaryDirectory() as diretorio:
+            cache_dir = Path(diretorio)
+            resultado = cempre.fetch_request(
+                spec, session=sessao_mock, cache_dir=cache_dir, max_retries=3, backoff_base=0.0,
+            )
+            self.assertIsNone(resultado["resultado"])
+            self.assertIsNotNone(resultado["erro"])
+            self.assertIn("obrigat", resultado["erro"])
+            self.assertFalse(cempre.cache_path_for_request(spec["request_id"], cache_dir).exists())
+        self.assertEqual(sessao_mock.get.call_count, 1)
+
+    def test_resposta_nova_valida_sem_1606_e_sucesso_e_pode_persistir_cache(self) -> None:
+        spec = self._spec_nacional()
+        payload_sem_1606 = [
+            _linha_payload_binding("3166600", 2010, variavel, "100")
+            for variavel in sorted(cempre.VARIAVEIS_OBRIGATORIAS)
+        ]
+        sessao_mock = self._mock_sessao(payload_sem_1606)
+        with tempfile.TemporaryDirectory() as diretorio:
+            cache_dir = Path(diretorio)
+            resultado = cempre.fetch_request(
+                spec, session=sessao_mock, cache_dir=cache_dir, max_retries=3, backoff_base=0.0,
+            )
+            self.assertIsNone(resultado["erro"])
+            self.assertIsNotNone(resultado["resultado"])
+            self.assertTrue(cempre.cache_path_for_request(spec["request_id"], cache_dir).exists())
+        self.assertEqual(sessao_mock.get.call_count, 1)
+
+
+# ---------------------------------------------------------------------------
 # Cache/reprocessamento — Bloqueador 3
 # ---------------------------------------------------------------------------
 
@@ -1428,6 +1502,314 @@ class TestRebuildLongFromCache(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# Correção focal pós-auditoria integrada D1-D4 (bloqueador pré-extração
+# nacional): vinculação semântica RESULTADO/CACHE ↔ REQUEST ESPERADO.
+#
+# A auditoria reproduziu offline que um único cache válido, copiado para os
+# nomes de vários request_ids esperados, era classificado como válido em
+# todos eles (integridade/hash e schema não bastam). Estes testes cobrem as
+# duas barreiras da correção: (1) envelope.request_id divergente do
+# request_id esperado; (2) payload estruturalmente válido mas semanticamente
+# de outro lote (ano, UF/território ou grupo de variáveis diferentes).
+# ---------------------------------------------------------------------------
+
+
+class TestVinculacaoSemanticaCacheRequest(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.cache_dir = Path(self._tmpdir.name)
+        self.plano = _plano_pequeno_d2()
+        self.calendario = _calendario_d2()
+
+    def _payload_correto(self, item: dict, valor: str = "100") -> list[dict]:
+        return [_linha_payload_d2(item["territorio"]["codigo"], item["ano"], item["variaveis"][0], valor)]
+
+    def _plano_abc(self) -> list[dict]:
+        base = _plano_pequeno_d2()[0]
+        return [
+            {**base, "request_id": "req_abc_a", "territorio": {"tipo": "municipio", "codigo": "3166600"}, "ano": 2010},
+            {**base, "request_id": "req_abc_b", "territorio": {"tipo": "municipio", "codigo": "1100015"}, "ano": 2010},
+            {**base, "request_id": "req_abc_c", "territorio": {"tipo": "municipio", "codigo": "4212650"}, "ano": 2010},
+        ]
+
+    # -- A: envelope.request_id diferente do request_id esperado --
+
+    def test_envelope_request_id_diferente_do_esperado_e_rejeitado(self) -> None:
+        item_a, item_b = self.plano
+        _salva_cache_valido_d2(self.cache_dir, item_a["request_id"], self._payload_correto(item_a))
+        bytes_a = cempre.cache_path_for_request(item_a["request_id"], self.cache_dir).read_bytes()
+        cempre.cache_path_for_request(item_b["request_id"], self.cache_dir).write_bytes(bytes_a)
+
+        with self.assertRaisesRegex(ValueError, "request_id do envelope"):
+            cempre.load_cached_request(item_b["request_id"], self.cache_dir)
+
+    # -- F: cache copiado A->B vira inválido no fluxo de reconstrução offline --
+
+    def test_cache_copiado_de_outro_request_e_invalido_no_load_results_from_cache(self) -> None:
+        item_a, item_b = self.plano
+        _salva_cache_valido_d2(self.cache_dir, item_a["request_id"], self._payload_correto(item_a))
+        bytes_a = cempre.cache_path_for_request(item_a["request_id"], self.cache_dir).read_bytes()
+        cempre.cache_path_for_request(item_b["request_id"], self.cache_dir).write_bytes(bytes_a)
+
+        resultados = cempre.load_results_from_cache(self.plano, self.cache_dir)
+        resultados_por_id = {r["request_id"]: r for r in resultados}
+        self.assertIsNone(resultados_por_id[item_a["request_id"]]["erro"])
+        self.assertIsNotNone(resultados_por_id[item_b["request_id"]]["erro"])
+        self.assertIsNone(resultados_por_id[item_b["request_id"]]["resultado"])
+
+    # -- B: envelope correto + payload de ano errado --
+
+    def test_payload_ano_errado_e_rejeitado(self) -> None:
+        item = self.plano[0]
+        payload_ano_errado = [
+            _linha_payload_d2(item["territorio"]["codigo"], item["ano"] + 1, item["variaveis"][0], "100")
+        ]
+        _salva_cache_valido_d2(self.cache_dir, item["request_id"], payload_ano_errado)
+        resultados = cempre.load_results_from_cache([item], self.cache_dir)
+        self.assertIsNone(resultados[0]["resultado"])
+        self.assertIn("ano", resultados[0]["erro"])
+
+    # -- C: envelope correto + payload de UF/município errado --
+
+    def test_payload_territorio_errado_e_rejeitado(self) -> None:
+        item = self.plano[0]  # município 3166600
+        outro_municipio = self.plano[1]["territorio"]["codigo"]  # 1100015
+        payload_territorio_errado = [
+            _linha_payload_d2(outro_municipio, item["ano"], item["variaveis"][0], "100")
+        ]
+        _salva_cache_valido_d2(self.cache_dir, item["request_id"], payload_territorio_errado)
+        resultados = cempre.load_results_from_cache([item], self.cache_dir)
+        self.assertIsNone(resultados[0]["resultado"])
+        self.assertIn("município", resultados[0]["erro"])
+
+    def test_payload_uf_errada_e_rejeitado_para_request_de_uf(self) -> None:
+        item_uf = {
+            "request_id": "req_uf_11", "url": "https://apisidra.ibge.gov.br/values/fake_uf_11",
+            "params": {}, "ano": 2010, "territorio": {"tipo": "uf", "codigo": "11", "sigla": "RO"},
+            "variaveis": [708], "fonte_tabela": cempre.FONTE_TABELA,
+        }
+        # Município real de outra UF (31 = MG), não da UF 11 esperada.
+        payload_uf_errada = [_linha_payload_d2("3166600", 2010, 708, "100")]
+        _salva_cache_valido_d2(self.cache_dir, item_uf["request_id"], payload_uf_errada)
+        resultados = cempre.load_results_from_cache([item_uf], self.cache_dir)
+        self.assertIsNone(resultados[0]["resultado"])
+        self.assertIn("UF", resultados[0]["erro"])
+
+    # -- D: envelope correto + payload de variáveis erradas --
+
+    def test_payload_variaveis_erradas_e_rejeitado(self) -> None:
+        item = dict(self.plano[0])
+        item["variaveis"] = [708]
+        payload_variavel_errada = [_linha_payload_d2(item["territorio"]["codigo"], item["ano"], 707, "100")]
+        _salva_cache_valido_d2(self.cache_dir, item["request_id"], payload_variavel_errada)
+        resultados = cempre.load_results_from_cache([item], self.cache_dir)
+        self.assertIsNone(resultados[0]["resultado"])
+        self.assertIn("variável", resultados[0]["erro"])
+
+    # -- E: cache genuinamente correto continua sendo aceito --
+
+    def test_cache_genuino_correto_continua_aceito(self) -> None:
+        item = self.plano[0]
+        _salva_cache_valido_d2(self.cache_dir, item["request_id"], self._payload_correto(item))
+        resultados = cempre.load_results_from_cache([item], self.cache_dir)
+        self.assertIsNone(resultados[0]["erro"])
+        self.assertIsNotNone(resultados[0]["resultado"])
+
+    # -- G: plano sintético A/B/C com payload de A copiado para todos --
+
+    def test_plano_sintetico_abc_payload_de_a_copiado_para_todos(self) -> None:
+        plano_abc = self._plano_abc()
+        payload_a = self._payload_correto(plano_abc[0])
+        for item in plano_abc:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], payload_a)
+
+        resultados = cempre.load_results_from_cache(plano_abc, self.cache_dir)
+        resultados_por_id = {r["request_id"]: r for r in resultados}
+        self.assertIsNotNone(resultados_por_id["req_abc_a"]["resultado"])
+        self.assertIsNone(resultados_por_id["req_abc_a"]["erro"])
+        for request_id in ("req_abc_b", "req_abc_c"):
+            self.assertIsNone(resultados_por_id[request_id]["resultado"])
+            self.assertIsNotNone(resultados_por_id[request_id]["erro"])
+
+    # -- H: resultado semanticamente inválido não conta como sucesso na completude --
+
+    def test_resultado_semanticamente_invalido_nao_conta_como_sucesso_na_completude(self) -> None:
+        plano_abc = self._plano_abc()
+        payload_a = self._payload_correto(plano_abc[0])
+        for item in plano_abc:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], payload_a)
+        resultados = cempre.load_results_from_cache(plano_abc, self.cache_dir)
+        relatorio = cempre.avalia_completude_plano(plano_abc, resultados)
+        self.assertFalse(relatorio["completo"])
+        self.assertEqual(relatorio["n_sucessos"], 1)
+        self.assertEqual(relatorio["n_falhas"], 2)
+
+    # -- I: long não é construída como completa com resultado trocado --
+
+    def test_long_nao_e_construida_como_completa_com_resultado_trocado(self) -> None:
+        plano_abc = self._plano_abc()
+        payload_a = self._payload_correto(plano_abc[0])
+        for item in plano_abc:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], payload_a)
+        resultados = cempre.load_results_from_cache(plano_abc, self.cache_dir)
+        calendario_abc = pd.DataFrame([
+            {"codigo_municipio_ibge": codigo, "ano": 2010, "municipio_existia_no_ano": True}
+            for codigo in ("3166600", "1100015", "4212650")
+        ])
+        with self.assertRaisesRegex(ValueError, "incompleto"):
+            cempre.build_long_from_results(plano_abc, resultados, calendario_abc)
+
+    # -- Defesa contra bypass de load_results_from_cache (seção 8 do pedido) --
+
+    def test_build_long_from_results_bloqueia_resultado_construido_manualmente(self) -> None:
+        item_a, item_b = self.plano
+        payload_a = self._payload_correto(item_a)
+        resultados_manuais = [
+            {"request_id": item_a["request_id"], "erro": None, "resultado": payload_a, "de_cache": False, "hash_resposta_raw": "x"},
+            # Bypass deliberado de load_results_from_cache: usa o payload de A
+            # também para B, sem nunca passar pelo cache.
+            {"request_id": item_b["request_id"], "erro": None, "resultado": payload_a, "de_cache": False, "hash_resposta_raw": "y"},
+        ]
+        with self.assertRaisesRegex(ValueError, "incompleto"):
+            cempre.build_long_from_results(self.plano, resultados_manuais, self.calendario)
+
+    # -- N: nenhuma chamada de rede durante a vinculação semântica --
+
+    def test_validacao_semantica_nunca_chama_rede(self) -> None:
+        item_a, item_b = self.plano
+        payload_a = self._payload_correto(item_a)
+        for item in self.plano:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], payload_a)
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            resultados = cempre.load_results_from_cache(self.plano, self.cache_dir)
+        self.assertIsNotNone(resultados[0]["resultado"])
+        self.assertIsNone(resultados[1]["resultado"])
+
+
+class TestBindingVariaveisObrigatorias(unittest.TestCase):
+    """Correção focal pós-recheck: `variaveis_payload ⊆ variaveis_esperadas`
+    sozinho aceitava payload parcial (ex.: só 708 de um grupo de 7). A
+    regra corrigida exige também `obrigatorias_solicitadas ⊆
+    variaveis_payload`, onde `obrigatorias_solicitadas = variaveis_esperadas
+    ∩ VARIAVEIS_OBRIGATORIAS` — preservando 1606 como sempre opcional."""
+
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.cache_dir = Path(self._tmpdir.name)
+        self.item = {
+            "request_id": "req_nacional_binding",
+            "url": "https://apisidra.ibge.gov.br/values/fake_nacional",
+            "params": {}, "ano": 2010, "territorio": {"tipo": "municipio", "codigo": "3166600"},
+            "variaveis": sorted(cempre.VARIAVEIS_ESPERADAS), "fonte_tabela": cempre.FONTE_TABELA,
+        }
+
+    def _payload(self, variaveis: list[int], valor: str = "100") -> list[dict]:
+        return [_linha_payload_d2("3166600", 2010, variavel, valor) for variavel in variaveis]
+
+    def _resultado_para(self, payload: list[dict]) -> dict:
+        _salva_cache_valido_d2(self.cache_dir, self.item["request_id"], payload)
+        resultados = cempre.load_results_from_cache([self.item], self.cache_dir)
+        return resultados[0]
+
+    # -- A: apenas uma obrigatória (708) --
+
+    def test_apenas_708_e_rejeitado(self) -> None:
+        resultado = self._resultado_para(self._payload([708]))
+        self.assertIsNone(resultado["resultado"])
+        self.assertIn("obrigat", resultado["erro"])
+
+    # -- B: cinco das seis obrigatórias (falta 662) --
+
+    def test_cinco_das_seis_obrigatorias_e_rejeitado(self) -> None:
+        variaveis_presentes = sorted(cempre.VARIAVEIS_OBRIGATORIAS - {662})
+        resultado = self._resultado_para(self._payload(variaveis_presentes))
+        self.assertIsNone(resultado["resultado"])
+        self.assertIn("obrigat", resultado["erro"])
+        self.assertIn("662", resultado["erro"])
+
+    # -- C: as seis obrigatórias, sem 1606 --
+
+    def test_seis_obrigatorias_sem_1606_e_aceito(self) -> None:
+        resultado = self._resultado_para(self._payload(sorted(cempre.VARIAVEIS_OBRIGATORIAS)))
+        self.assertIsNone(resultado["erro"])
+        self.assertIsNotNone(resultado["resultado"])
+
+    # -- D: as seis obrigatórias + 1606 --
+
+    def test_seis_obrigatorias_mais_1606_e_aceito(self) -> None:
+        variaveis_presentes = sorted(cempre.VARIAVEIS_OBRIGATORIAS | {1606})
+        resultado = self._resultado_para(self._payload(variaveis_presentes))
+        self.assertIsNone(resultado["erro"])
+        self.assertIsNotNone(resultado["resultado"])
+
+    # -- E: seis obrigatórias + variável fora do grupo --
+
+    def test_seis_obrigatorias_mais_variavel_fora_do_grupo_e_rejeitado(self) -> None:
+        variaveis_presentes = sorted(cempre.VARIAVEIS_OBRIGATORIAS) + [999999]
+        resultado = self._resultado_para(self._payload(variaveis_presentes))
+        self.assertIsNone(resultado["resultado"])
+        self.assertIn("fora do grupo", resultado["erro"])
+
+    # -- remoção individual de cada obrigatória faz o binding falhar --
+
+    def test_remocao_individual_de_cada_obrigatoria_falha(self) -> None:
+        for variavel_removida in sorted(cempre.VARIAVEIS_OBRIGATORIAS):
+            with self.subTest(variavel_removida=variavel_removida):
+                cache_dir = Path(tempfile.mkdtemp(dir=self.cache_dir))
+                variaveis_presentes = sorted(cempre.VARIAVEIS_OBRIGATORIAS - {variavel_removida})
+                payload = self._payload(variaveis_presentes)
+                _salva_cache_valido_d2(cache_dir, self.item["request_id"], payload)
+                resultado = cempre.load_results_from_cache([self.item], cache_dir)[0]
+                self.assertIsNone(resultado["resultado"])
+                self.assertIn("obrigat", resultado["erro"])
+                self.assertIn(str(variavel_removida), resultado["erro"])
+
+    # -- impacto na completude: N-1 completos + 1 payload parcial --
+
+    def test_payload_parcial_nao_conta_como_sucesso_na_completude(self) -> None:
+        item_completo = dict(self.item, request_id="req_binding_completo")
+        item_parcial = dict(self.item, request_id="req_binding_parcial")
+        plano = [item_completo, item_parcial]
+        _salva_cache_valido_d2(
+            self.cache_dir, item_completo["request_id"], self._payload(sorted(cempre.VARIAVEIS_OBRIGATORIAS)),
+        )
+        _salva_cache_valido_d2(self.cache_dir, item_parcial["request_id"], self._payload([708]))
+
+        resultados = cempre.load_results_from_cache(plano, self.cache_dir)
+        relatorio = cempre.avalia_completude_plano(plano, resultados)
+        self.assertFalse(relatorio["completo"])
+        self.assertEqual(relatorio["n_sucessos"], 1)
+        self.assertEqual(relatorio["n_falhas"], 1)
+
+    # -- impacto na long: resultado com payload parcial nunca produz long completa --
+
+    def test_long_nao_e_construida_como_completa_com_payload_parcial(self) -> None:
+        item_completo = dict(self.item, request_id="req_binding_completo_long")
+        item_parcial = dict(self.item, request_id="req_binding_parcial_long")
+        plano = [item_completo, item_parcial]
+        _salva_cache_valido_d2(
+            self.cache_dir, item_completo["request_id"], self._payload(sorted(cempre.VARIAVEIS_OBRIGATORIAS)),
+        )
+        _salva_cache_valido_d2(self.cache_dir, item_parcial["request_id"], self._payload([708]))
+        resultados = cempre.load_results_from_cache(plano, self.cache_dir)
+        calendario = pd.DataFrame([
+            {"codigo_municipio_ibge": "3166600", "ano": 2010, "municipio_existia_no_ano": True},
+        ])
+        with self.assertRaisesRegex(ValueError, "incompleto"):
+            cempre.build_long_from_results(plano, resultados, calendario)
+
+    # -- zero rede --
+
+    def test_binding_variaveis_nunca_chama_rede(self) -> None:
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            self._resultado_para(self._payload([708]))
+
+
+# ---------------------------------------------------------------------------
 # D3 — manifesto e proveniência do pipeline CEMPRE
 #
 # Usa um plano pequeno (1 ano × 27 UFs, via build_national_request_plan
@@ -1868,6 +2250,27 @@ class TestGetGitHead(unittest.TestCase):
 # ---------------------------------------------------------------------------
 
 
+def _payload_valido_para_item(item: dict, valor: str = "100") -> list[dict]:
+    """Payload sintético genuinamente compatível com `item` (mesma UF/
+    município e ano do request, TODAS as variáveis básicas obrigatórias do
+    grupo solicitado presentes) — para distinguir de um payload copiado de
+    outro request (mesmo conteúdo, request_id diferente) ou de um payload
+    parcial (faltando variável obrigatória), que a vinculação semântica
+    deve rejeitar em ambos os casos.
+    """
+    territorio = item["territorio"]
+    if territorio["tipo"] == "uf":
+        codigo_municipio = f"{territorio['codigo']}00001"
+    else:
+        codigo_municipio = territorio["codigo"]
+    variaveis_obrigatorias_do_item = sorted(set(item["variaveis"]) & cempre.VARIAVEIS_OBRIGATORIAS)
+    variaveis_a_incluir = variaveis_obrigatorias_do_item or sorted(item["variaveis"])[:1]
+    return [
+        _linha_payload_d2(codigo_municipio, item["ano"], variavel, valor)
+        for variavel in variaveis_a_incluir
+    ]
+
+
 def _escreve_calendario_nacional_sintetico(caminho: Path) -> None:
     linhas = [
         {
@@ -1923,7 +2326,7 @@ class TestDryRunNationalPipeline(unittest.TestCase):
 
     def test_dry_run_alguns_caches_validos(self) -> None:
         for item in self.plano[:5]:
-            _salva_cache_valido_d2(self.cache_dir, item["request_id"], [_linha_payload_d2("3166600", 2010, 708, "100")])
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], _payload_valido_para_item(item))
         relatorio = cempre.dry_run_national_pipeline(self._config())
         self.assertEqual(relatorio["n_cache_validos"], 5)
         self.assertEqual(relatorio["n_cache_ausentes"], 22)
@@ -1933,7 +2336,7 @@ class TestDryRunNationalPipeline(unittest.TestCase):
 
     def test_dry_run_todos_caches_validos(self) -> None:
         for item in self.plano:
-            _salva_cache_valido_d2(self.cache_dir, item["request_id"], [_linha_payload_d2("3166600", 2010, 708, "100")])
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], _payload_valido_para_item(item))
         relatorio = cempre.dry_run_national_pipeline(self._config())
         self.assertEqual(relatorio["n_cache_validos"], 27)
         self.assertEqual(relatorio["n_requests_que_exigiriam_rede"], 0)
@@ -1984,7 +2387,7 @@ class TestDryRunNationalPipeline(unittest.TestCase):
 
     def test_cache_valido_nao_conta_como_exigiria_rede(self) -> None:
         item = self.plano[0]
-        _salva_cache_valido_d2(self.cache_dir, item["request_id"], [_linha_payload_d2("3166600", 2010, 708, "100")])
+        _salva_cache_valido_d2(self.cache_dir, item["request_id"], _payload_valido_para_item(item))
         relatorio = cempre.dry_run_national_pipeline(self._config())
         self.assertNotIn(item["request_id"], relatorio["request_ids_que_exigiriam_rede"])
 
@@ -2093,7 +2496,7 @@ class TestDryRunNationalPipeline(unittest.TestCase):
 
     def test_resumo_humano_reflete_contagens(self) -> None:
         for item in self.plano[:3]:
-            _salva_cache_valido_d2(self.cache_dir, item["request_id"], [_linha_payload_d2("3166600", 2010, 708, "100")])
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], _payload_valido_para_item(item))
         relatorio = cempre.dry_run_national_pipeline(self._config())
         resumo = cempre.format_dry_run_summary(relatorio)
         self.assertIn(f"Requests esperados: {relatorio['n_requests_esperados']}", resumo)
@@ -2101,6 +2504,84 @@ class TestDryRunNationalPipeline(unittest.TestCase):
         self.assertIn(f"Caches ausentes: {relatorio['n_cache_ausentes']}", resumo)
         self.assertIn(f"Requests que exigiriam rede: {relatorio['n_requests_que_exigiriam_rede']}", resumo)
         self.assertIn("Pronto tecnicamente para execução: SIM", resumo)
+
+    # -- Correção focal pós-auditoria integrada D1-D4: cache semanticamente
+    # incompatível (payload de outro request) precisa ser classificado como
+    # inválido/bloqueador no dry run, nunca tratado como cache ausente. --
+
+    def test_dry_run_cache_semanticamente_incompativel_e_classificado_invalido(self) -> None:
+        item_alvo, item_outro = self.plano[0], self.plano[1]
+        payload_de_outro = _payload_valido_para_item(item_outro)
+        _salva_cache_valido_d2(self.cache_dir, item_alvo["request_id"], payload_de_outro)
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_cache_invalidos"], 1)
+        self.assertIn(item_alvo["request_id"], relatorio["request_ids_cache_invalidos"])
+
+    def test_dry_run_cache_semanticamente_incompativel_vira_bloqueador(self) -> None:
+        item_alvo, item_outro = self.plano[0], self.plano[1]
+        payload_de_outro = _payload_valido_para_item(item_outro)
+        _salva_cache_valido_d2(self.cache_dir, item_alvo["request_id"], payload_de_outro)
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertTrue(any("inválido" in bloqueador for bloqueador in relatorio["bloqueadores"]))
+
+    def test_dry_run_nao_fica_pronto_com_cache_semanticamente_trocado(self) -> None:
+        item_alvo, item_outro = self.plano[0], self.plano[1]
+        payload_de_outro = _payload_valido_para_item(item_outro)
+        _salva_cache_valido_d2(self.cache_dir, item_alvo["request_id"], payload_de_outro)
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertFalse(relatorio["pronto_para_execucao_real"])
+
+    def test_dry_run_arquivo_residual_fora_do_plano_continua_ignorado(self) -> None:
+        request_id_residual = "request_fora_do_plano_nacional"
+        _salva_cache_valido_d2(
+            self.cache_dir, request_id_residual, [_linha_payload_d2("9999999", 2010, 708, "100")],
+        )
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_requests_esperados"], 27)
+        self.assertEqual(relatorio["n_cache_validos"], 0)
+        self.assertEqual(relatorio["n_cache_invalidos"], 0)
+        self.assertEqual(relatorio["n_cache_ausentes"], 27)
+        self.assertTrue(relatorio["pronto_para_execucao_real"])
+
+    def test_dry_run_reproducao_ataque_cache_unico_copiado_para_todos_os_requests(self) -> None:
+        # Reproduz o cenário crítico da auditoria (um único cache válido
+        # copiado para muitos request_ids esperados) na escala dos 27
+        # requests sintéticos desta classe de teste — suficiente para
+        # demonstrar a propriedade sem gerar o plano nacional de 351.
+        item_a = self.plano[0]
+        payload_a = _payload_valido_para_item(item_a)
+        for item in self.plano:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], payload_a)
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_cache_validos"], 1)
+        self.assertEqual(relatorio["n_cache_invalidos"], len(self.plano) - 1)
+        self.assertIn(item_a["request_id"], relatorio["request_ids_cache_validos"])
+        self.assertFalse(relatorio["pronto_para_execucao_real"])
+
+    # -- Correção focal pós-recheck: payload parcial (só 708) em escala --
+
+    def test_dry_run_payload_parcial_apenas_708_em_um_request_e_invalido_e_bloqueador(self) -> None:
+        item_alvo = self.plano[0]
+        codigo_municipio = f"{item_alvo['territorio']['codigo']}00001"
+        payload_parcial = [_linha_payload_d2(codigo_municipio, item_alvo["ano"], 708, "100")]
+        _salva_cache_valido_d2(self.cache_dir, item_alvo["request_id"], payload_parcial)
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_cache_invalidos"], 1)
+        self.assertIn(item_alvo["request_id"], relatorio["request_ids_cache_invalidos"])
+        self.assertFalse(relatorio["pronto_para_execucao_real"])
+
+    def test_dry_run_payload_parcial_apenas_708_em_todos_os_requests_e_completamente_invalido(self) -> None:
+        # Reproduz o ataque descrito no recheck (351 payloads contendo
+        # somente 708) na escala dos 27 requests sintéticos desta classe —
+        # NUNCA deve resultar em "todos válidos, pronto=True".
+        for item in self.plano:
+            codigo_municipio = f"{item['territorio']['codigo']}00001"
+            payload_parcial = [_linha_payload_d2(codigo_municipio, item["ano"], 708, "100")]
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], payload_parcial)
+        relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["n_cache_validos"], 0)
+        self.assertEqual(relatorio["n_cache_invalidos"], len(self.plano))
+        self.assertFalse(relatorio["pronto_para_execucao_real"])
 
 
 class TestDryRunNacionalSmokeCheckOffline(unittest.TestCase):

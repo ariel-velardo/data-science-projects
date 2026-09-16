@@ -55,7 +55,16 @@ ANO_MIN, ANO_MAX = 2007, 2019
 # Seção 2/8 da especificação — as sete variáveis confirmadas nos metadados
 # oficiais da Tabela 1685. 708 é o outcome primário; 1606 é opcional/
 # diagnóstica e sua ausência não bloqueia nenhum gate.
+# VARIAVEIS_ESPERADAS é o grupo CONTRATADO/PERMITIDO: nenhuma variável fora
+# dele pode aparecer em um payload (seção 5 do binding). VARIAVEIS_OBRIGATORIAS
+# é o núcleo mínimo dentro desse grupo cuja AUSÊNCIA invalida um resultado
+# quando essas variáveis foram solicitadas pelo request (bloqueador do
+# recheck: um payload contendo só uma fração das variáveis pedidas — ex.:
+# somente 708 — não pode ser aceito como resposta completa daquele lote).
+# 1606 é a única exceção: pode estar presente ou ausente sem afetar a
+# validade do resultado.
 VARIAVEIS_ESPERADAS: set[int] = {706, 707, 708, 5944, 662, 1606, 10143}
+VARIAVEIS_OBRIGATORIAS: set[int] = {706, 707, 708, 5944, 662, 10143}
 VARIAVEL_OUTCOME_PRIMARIO = 708
 
 STATUS_VALOR_API_COM_NUMERO = {
@@ -826,6 +835,21 @@ def load_cached_request(request_id: str, cache_dir: Path = CACHE_DIR) -> dict[st
     if not isinstance(envelope, dict) or not {"texto_resposta_raw", "hash_resposta_raw"} <= envelope.keys():
         raise ValueError(f"cache corrompido para request_id={request_id} ({caminho}): envelope malformado")
 
+    # Primeira barreira da vinculação semântica cache↔request (bloqueador da
+    # auditoria integrada D1-D4): o envelope PRECISA declarar o mesmo
+    # request_id que está sendo carregado. Isso impede que bytes de cache de
+    # um request sejam simplesmente copiados para o caminho de outro
+    # request_id — mesmo com hash/schema internamente consistentes, o
+    # envelope "confessa" pertencer a outro request e é tratado como
+    # corrompido para ESTE request_id, nunca aceito silenciosamente nem
+    # corrigido/inferido pelo nome do arquivo.
+    request_id_no_envelope = envelope.get("request_id")
+    if request_id_no_envelope != request_id:
+        raise ValueError(
+            f"cache corrompido para request_id={request_id} ({caminho}): request_id do envelope "
+            f"({request_id_no_envelope!r}) diverge do request_id esperado ({request_id!r})"
+        )
+
     texto_resposta = envelope["texto_resposta_raw"]
     hash_esperado = envelope["hash_resposta_raw"]
     hash_real = hashlib.sha256(texto_resposta.encode("utf-8")).hexdigest()
@@ -840,22 +864,187 @@ def load_cached_request(request_id: str, cache_dir: Path = CACHE_DIR) -> dict[st
     return {"resultado": dados, "hash_resposta_raw": hash_esperado, "tamanho": len(texto_resposta)}
 
 
+def _codigos_municipio_do_payload(payload: list[dict[str, Any]]) -> set[str]:
+    """Extrai o conjunto de códigos municipais (`D1C`) das observações reais
+    de um payload SIDRA (ignora a linha de cabeçalho), sem exigir que o
+    payload já tenha passado por `normalize_long`.
+    """
+    codigos: set[str] = set()
+    for row in payload:
+        if not isinstance(row, dict) or _e_linha_de_cabecalho(row):
+            continue
+        codigo = str(row.get("D1C", "")).strip()
+        if codigo:
+            codigos.add(codigo)
+    return codigos
+
+
+def _anos_do_payload(payload: list[dict[str, Any]]) -> set[int]:
+    """Extrai o conjunto de anos (`D3C`) das observações reais de um
+    payload SIDRA. Ignora silenciosamente uma observação cujo `D3C` não é
+    conversível para inteiro — isso é um problema de schema tratado em
+    outro lugar (`normalize_long`), não desta checagem de vinculação
+    semântica.
+    """
+    anos: set[int] = set()
+    for row in payload:
+        if not isinstance(row, dict) or _e_linha_de_cabecalho(row):
+            continue
+        try:
+            anos.add(int(row["D3C"]))
+        except (KeyError, TypeError, ValueError):
+            continue
+    return anos
+
+
+def _variaveis_do_payload(payload: list[dict[str, Any]]) -> set[int]:
+    """Extrai o conjunto de códigos de variável (`D2C`) das observações
+    reais de um payload SIDRA. Mesma tolerância de `_anos_do_payload` para
+    valores não conversíveis."""
+    variaveis: set[int] = set()
+    for row in payload:
+        if not isinstance(row, dict) or _e_linha_de_cabecalho(row):
+            continue
+        try:
+            variaveis.add(int(row["D2C"]))
+        except (KeyError, TypeError, ValueError):
+            continue
+    return variaveis
+
+
+def _validar_resultado_corresponde_request(
+    item_esperado: dict[str, Any],
+    payload: Any,
+) -> tuple[bool, str | None]:
+    """Vinculação semântica RESULTADO/CACHE ↔ REQUEST ESPERADO (bloqueador
+    da auditoria integrada D1-D4, pré-extração nacional).
+
+    Integridade/hash (`load_cached_request`) e schema (`validate_sidra_payload`)
+    sozinhos NÃO bastam: um payload estruturalmente válido de outro lote
+    (outro ano, outra UF/território ou outro grupo de variáveis) pode ser
+    estruturalmente idêntico a um payload válido e ainda assim pertencer a
+    um request diferente. Esta função confirma que o CONTEÚDO do payload é
+    semanticamente compatível com o `item_esperado` (plano/spec de
+    request: `ano`, `territorio`, `variaveis`) — não apenas que passou na
+    validação estrutural.
+
+    Não recebe request_id porque a barreira de request_id já é aplicada
+    separadamente em `load_cached_request` (envelope↔request_id). Esta
+    função cobre a SEGUNDA barreira: mesmo com envelope/request_id
+    corretos, o payload em si pode pertencer a outro lote.
+
+    Compara por CONJUNTO (a ordem nunca importa): todo ano presente no
+    payload deve ser exatamente o ano esperado; toda UF/município presente
+    deve ser exatamente o território esperado (UF derivada do código
+    municipal canônico IBGE — os dois primeiros dígitos —, a mesma
+    convenção já usada e validada em `constroi_calendario_territorial_ibge.py`,
+    não uma heurística nova); e a vinculação de variáveis exige as duas
+    pontas ao mesmo tempo (bloqueador do recheck focal: presença sozinha
+    não bastava — um payload contendo só `{708}` de um grupo de 7 passava):
+    `obrigatorias_solicitadas ⊆ variaveis_payload ⊆ variaveis_esperadas`,
+    onde `obrigatorias_solicitadas = variaveis_esperadas ∩ VARIAVEIS_OBRIGATORIAS`.
+    Ou seja, nenhuma variável de fora do grupo esperado é aceita, e todas
+    as variáveis BÁSICAS que o request pediu precisam estar presentes;
+    1606 nunca é exigida (opcional/diagnóstica), mesmo quando fizer parte
+    do grupo solicitado.
+
+    Retorna `(correspondente, motivo)`; `motivo` é `None` quando
+    correspondente. Quando `item_esperado` não traz alguma dessas
+    informações (specs mínimos usados em outras partes do pipeline, sem
+    `ano`/`territorio`/`variaveis`), a checagem correspondente é
+    simplesmente pulada — nunca inventa uma expectativa que o chamador não
+    declarou.
+    """
+    if not isinstance(payload, list):
+        return True, None
+
+    ano_esperado = item_esperado.get("ano")
+    if ano_esperado is not None:
+        anos_payload = _anos_do_payload(payload)
+        if anos_payload and anos_payload != {ano_esperado}:
+            return False, (
+                f"payload pertence a ano(s) {sorted(anos_payload)}, mas o request esperado é "
+                f"ano={ano_esperado}"
+            )
+
+    territorio_esperado = item_esperado.get("territorio") or {}
+    tipo_territorio = territorio_esperado.get("tipo")
+    codigos_municipio_payload = _codigos_municipio_do_payload(payload)
+    if tipo_territorio == "uf":
+        codigo_uf_esperado = str(territorio_esperado.get("codigo", ""))
+        ufs_payload = {codigo[:2] for codigo in codigos_municipio_payload if len(codigo) == 7}
+        if codigo_uf_esperado and ufs_payload and ufs_payload != {codigo_uf_esperado}:
+            return False, (
+                f"payload pertence à(s) UF(s) {sorted(ufs_payload)} (derivada do código municipal), "
+                f"mas o request esperado é UF={codigo_uf_esperado!r}"
+            )
+    elif tipo_territorio == "municipio":
+        codigo_municipio_esperado = str(territorio_esperado.get("codigo", ""))
+        if (
+            codigo_municipio_esperado
+            and codigos_municipio_payload
+            and codigos_municipio_payload != {codigo_municipio_esperado}
+        ):
+            return False, (
+                f"payload pertence a município(s) {sorted(codigos_municipio_payload)}, mas o "
+                f"request esperado é município={codigo_municipio_esperado!r}"
+            )
+
+    variaveis_esperadas = set(item_esperado.get("variaveis") or [])
+    if variaveis_esperadas:
+        variaveis_payload = _variaveis_do_payload(payload)
+
+        variaveis_fora_do_grupo = variaveis_payload - variaveis_esperadas
+        if variaveis_fora_do_grupo:
+            return False, (
+                f"payload contém variável(is) {sorted(variaveis_fora_do_grupo)} fora do grupo "
+                f"esperado {sorted(variaveis_esperadas)}"
+            )
+
+        # Bloqueador do recheck: presença (subconjunto do grupo esperado) NÃO
+        # basta — um payload contendo só uma fração das variáveis pedidas
+        # (ex.: só 708 de um grupo de 7) não pode ser aceito como resultado
+        # completo daquele lote. Só as variáveis BÁSICAS (VARIAVEIS_OBRIGATORIAS)
+        # que o request realmente solicitou são exigidas; 1606 nunca é
+        # exigida (é opcional/diagnóstica mesmo quando fizer parte do grupo
+        # solicitado). Ausência de linha nunca é tratada como o símbolo SIDRA
+        # "..." nem preenchida artificialmente — é rejeição explícita.
+        obrigatorias_solicitadas = variaveis_esperadas & VARIAVEIS_OBRIGATORIAS
+        obrigatorias_ausentes = obrigatorias_solicitadas - variaveis_payload
+        if obrigatorias_ausentes:
+            return False, (
+                f"payload não contém variável(is) obrigatória(s) solicitada(s): "
+                f"{sorted(obrigatorias_ausentes)}"
+            )
+
+    return True, None
+
+
 def _resultado_a_partir_do_cache(
-    request_id: str,
-    url: str | None,
+    item_esperado: dict[str, Any],
     cache_dir: Path,
 ) -> tuple[dict[str, Any] | None, bool]:
     """Monta um resultado no contrato de `fetch_request` (e do D2)
     exclusivamente a partir do cache, sem NUNCA chamar rede.
+
+    `item_esperado` é o request/spec completo do plano (contém pelo menos
+    `request_id`; `url`, `ano`, `territorio` e `variaveis` quando
+    disponíveis) — não apenas o `request_id`, porque a vinculação
+    semântica (`_validar_resultado_corresponde_request`) precisa desses
+    campos para confirmar que o payload em cache pertence de fato a este
+    request, e não a outro lote copiado para o mesmo caminho.
 
     Retorna `(resultado, ausente)`. `ausente=True` significa cache miss
     (arquivo não existe) — nesse caso `resultado` é `None` e cabe ao
     chamador decidir o que fazer (`fetch_request` cai para rede;
     `load_results_from_cache`/D2 nunca cai, e trata isso como falha
     explícita). Quando `ausente=False`, `resultado` já é o resultado final
-    (sucesso, cache corrompido ou payload com schema inválido), sempre com
+    (sucesso, cache corrompido, payload com schema inválido ou payload
+    semanticamente incompatível com o request esperado), sempre com
     `de_cache=True` e nunca decidido silenciosamente.
     """
+    request_id = item_esperado["request_id"]
+    url = item_esperado.get("url")
     try:
         em_cache = load_cached_request(request_id, cache_dir)
     except ValueError as exc:
@@ -879,6 +1068,23 @@ def _resultado_a_partir_do_cache(
             "resultado": None, "erro": f"payload em cache inválido: {motivo}", "de_cache": True,
         }, False
 
+    correspondente, motivo_incompatibilidade = _validar_resultado_corresponde_request(
+        item_esperado, em_cache["resultado"],
+    )
+    if not correspondente:
+        logger.error(
+            "request_id=%s cache semanticamente incompatível com o request esperado: %s",
+            request_id, motivo_incompatibilidade,
+        )
+        return {
+            "request_id": request_id, "url": url, "tentativas": 0,
+            "status_http": None, "tamanho": em_cache["tamanho"],
+            "hash_resposta_raw": em_cache["hash_resposta_raw"],
+            "resultado": None,
+            "erro": f"cache semanticamente incompatível com o request esperado: {motivo_incompatibilidade}",
+            "de_cache": True,
+        }, False
+
     logger.info("request_id=%s cache hit — nenhuma chamada de rede", request_id)
     return {
         "request_id": request_id, "url": url, "tentativas": 0,
@@ -899,21 +1105,28 @@ def fetch_request(
     """Executa uma requisição com retries limitados e backoff exponencial.
 
     Só é sucesso: HTTP 200 + JSON válido + payload estruturalmente válido
-    (`validate_sidra_payload`, seção 9). `[]` e payload com schema alterado
-    NUNCA são sucesso. Uma falha de schema (payload bem formado mas com
-    forma errada) é tratada como permanente e falha imediatamente, sem
-    gastar retries (retry não conserta uma mudança estrutural); já um erro
-    de decodificação JSON (resposta truncada/corrompida em trânsito) ainda
-    é tentado novamente, por ser potencialmente transitório. Falha
-    persistente retorna `resultado=None` — o chamador deve tratar isso como
-    lote obrigatório falho, nunca como extração completa.
+    (`validate_sidra_payload`, seção 9) + payload semanticamente vinculado
+    ao `spec` (`_validar_resultado_corresponde_request` — ano/território/
+    grupo de variáveis, incluindo as seis variáveis básicas obrigatórias
+    quando solicitadas). `[]`, payload com schema alterado e payload
+    semanticamente incompleto (ex.: só uma fração das variáveis pedidas)
+    NUNCA são sucesso. Tanto falha de schema quanto incompatibilidade
+    semântica são tratadas como permanentes e falham imediatamente, sem
+    gastar retries (retry não conserta mudança estrutural nem payload de
+    outro lote); já um erro de decodificação JSON (resposta truncada/
+    corrompida em trânsito) ainda é tentado novamente, por ser
+    potencialmente transitório. Falha persistente retorna `resultado=None`
+    — o chamador deve tratar isso como lote obrigatório falho, nunca como
+    extração completa. `save_cached_request` só é chamado DEPOIS da
+    vinculação semântica passar — uma resposta nova semanticamente
+    incompatível nunca é persistida como cache válido.
 
     Se `cache_dir` for informado: cache hit não chama rede nenhuma (nem
     para validar) e cache corrompido/com schema inválido falha
     explicitamente sem tentar a rede (ver `load_cached_request`).
     """
     if cache_dir is not None:
-        resultado_cache, ausente = _resultado_a_partir_do_cache(spec["request_id"], spec["url"], cache_dir)
+        resultado_cache, ausente = _resultado_a_partir_do_cache(spec, cache_dir)
         if not ausente:
             return resultado_cache
 
@@ -953,6 +1166,32 @@ def fetch_request(
                 # sem gastar as tentativas restantes (Bloqueador 2/8).
                 ultimo_erro = f"payload estruturalmente inválido: {motivo}"
                 logger.error("request_id=%s HTTP 200 mas payload inválido: %s", spec["request_id"], motivo)
+                return {
+                    "request_id": spec["request_id"],
+                    "url": spec["url"],
+                    "tentativas": tentativa,
+                    "status_http": resp.status_code,
+                    "tamanho": len(texto),
+                    "hash_resposta_raw": hash_resposta,
+                    "resultado": None,
+                    "erro": ultimo_erro,
+                    "de_cache": False,
+                }
+
+            correspondente, motivo_incompatibilidade = _validar_resultado_corresponde_request(spec, dados)
+            if not correspondente:
+                # Vinculação semântica (mesma regra de _resultado_a_partir_do_cache/
+                # _sanitizar_resultados_contra_request, seção 7 do binding):
+                # incompatibilidade semântica não é conserto de retry — é
+                # tratada como falha permanente, ANTES de save_cached_request,
+                # para que uma resposta nova de rede semanticamente incompleta
+                # (ex.: só uma fração das variáveis pedidas) nunca chegue a
+                # ser persistida como cache válido.
+                ultimo_erro = f"payload semanticamente incompatível com o request esperado: {motivo_incompatibilidade}"
+                logger.error(
+                    "request_id=%s HTTP 200 mas payload semanticamente incompatível: %s",
+                    spec["request_id"], motivo_incompatibilidade,
+                )
                 return {
                     "request_id": spec["request_id"],
                     "url": spec["url"],
@@ -1141,9 +1380,7 @@ def load_results_from_cache(
     cache_dir = Path(cache_dir)
     resultados: list[dict[str, Any]] = []
     for item in plano:
-        resultado_cache, ausente = _resultado_a_partir_do_cache(
-            item["request_id"], item.get("url"), cache_dir,
-        )
+        resultado_cache, ausente = _resultado_a_partir_do_cache(item, cache_dir)
         if ausente:
             resultado_cache = {
                 "request_id": item["request_id"],
@@ -1163,6 +1400,60 @@ def load_results_from_cache(
     return resultados
 
 
+def _sanitizar_resultados_contra_request(
+    plano: list[dict[str, Any]],
+    resultados: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Reaplica a vinculação semântica resultado↔request
+    (`_validar_resultado_corresponde_request` — a MESMA regra usada em
+    `_resultado_a_partir_do_cache`, sem duplicar lógica) sobre uma lista de
+    resultados arbitrária, antes de `avalia_completude_plano`.
+
+    Isso protege `build_long_from_results` contra bypass de
+    `load_results_from_cache`: um chamador poderia montar manualmente uma
+    lista de resultados com `request_id` de um request e payload de outro
+    (a mesma classe de ataque reproduzida com cache — copiar bytes de A
+    para o caminho de B —, só que sem sequer passar pelo cache). Um
+    resultado marcado como sucesso (`_resultado_e_sucesso`) mas
+    semanticamente incompatível com o request esperado do plano é
+    reescrito aqui como falha explícita ANTES da avaliação de completude —
+    nunca é contado como sucesso, nunca alimenta uma long "completa".
+
+    Resultado sem `request_id` reconhecível no plano, já marcado como
+    falha, ou sem forma de dicionário é devolvido inalterado — essas
+    situações já são tratadas por `avalia_completude_plano`
+    (inesperado/malformado/falha) e não são responsabilidade desta função.
+    """
+    plano_por_id = {item["request_id"]: item for item in plano}
+    sanitizados: list[dict[str, Any]] = []
+    for resultado in resultados:
+        if not isinstance(resultado, dict):
+            sanitizados.append(resultado)
+            continue
+        item_esperado = plano_por_id.get(resultado.get("request_id"))
+        if item_esperado is None or not _resultado_e_sucesso(resultado):
+            sanitizados.append(resultado)
+            continue
+
+        correspondente, motivo = _validar_resultado_corresponde_request(
+            item_esperado, resultado.get("resultado"),
+        )
+        if correspondente:
+            sanitizados.append(resultado)
+            continue
+
+        logger.error(
+            "request_id=%s resultado semanticamente incompatível com o request esperado "
+            "(bypass de load_results_from_cache bloqueado): %s",
+            resultado.get("request_id"), motivo,
+        )
+        resultado_sanitizado = dict(resultado)
+        resultado_sanitizado["resultado"] = None
+        resultado_sanitizado["erro"] = f"resultado semanticamente incompatível com o request esperado: {motivo}"
+        sanitizados.append(resultado_sanitizado)
+    return sanitizados
+
+
 def build_long_from_results(
     plano: list[dict[str, Any]],
     resultados: list[dict[str, Any]],
@@ -1172,6 +1463,13 @@ def build_long_from_results(
 ) -> pd.DataFrame:
     """Constrói a long CEMPRE reconciliada a partir de resultados já
     carregados (offline ou não) e do plano esperado (D2, seção 3).
+
+    Antes de tudo, reaplica a vinculação semântica resultado↔request via
+    `_sanitizar_resultados_contra_request` — a mesma regra usada na
+    montagem do cache (`_resultado_a_partir_do_cache`) —, para que um
+    resultado que chegue por qualquer caminho (cache ou lista construída
+    manualmente) e seja semanticamente incompatível com o request esperado
+    do plano NUNCA seja contado como sucesso.
 
     Usa `avalia_completude_plano` ANTES de normalizar: se `completo=False`
     (lote ausente, duplicado, inesperado, malformado ou com erro), levanta
@@ -1183,6 +1481,7 @@ def build_long_from_results(
     (seção 4: `codigo_municipio_ibge`, `ano`, `codigo_variavel_sidra`,
     `request_id`).
     """
+    resultados = _sanitizar_resultados_contra_request(plano, resultados)
     relatorio_completude = avalia_completude_plano(plano, resultados)
     if not relatorio_completude["completo"]:
         raise ValueError(
