@@ -1427,5 +1427,435 @@ class TestRebuildLongFromCache(unittest.TestCase):
             cempre.rebuild_long_from_cache(self.plano, self.cache_dir, self.calendario)
 
 
+# ---------------------------------------------------------------------------
+# D3 — manifesto e proveniência do pipeline CEMPRE
+#
+# Usa um plano pequeno (1 ano × 27 UFs, via build_national_request_plan
+# com `anos` explícito) — o contrato de UFs exige exatamente 27, mas não
+# há necessidade de gerar o plano nacional completo (351 requests) só
+# para testar o manifesto. Nenhum teste desta seção chama rede.
+# ---------------------------------------------------------------------------
+
+
+def _plano_e_ufs_d3() -> tuple[list[dict], list[dict]]:
+    calendario_sintetico = pd.DataFrame(
+        [{"uf_codigo": codigo, "uf_sigla": sigla} for codigo, sigla in _UFS_CONTRATADAS_SINTETICAS]
+    )
+    ufs_esperadas = cempre.uf_list_from_calendario(calendario_sintetico)
+    plano = cempre.build_national_request_plan(calendario=calendario_sintetico, anos=[2010])
+    return plano, ufs_esperadas
+
+
+def _resultados_sucesso_d3(plano: list[dict]) -> list[dict]:
+    return [
+        {
+            "request_id": item["request_id"],
+            "erro": None,
+            "resultado": {"valido": True},
+            "de_cache": True,
+            "hash_resposta_raw": cempre.hashlib.sha256(item["request_id"].encode("utf-8")).hexdigest(),
+        }
+        for item in plano
+    ]
+
+
+class TestSha256File(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.caminho = Path(self._tmpdir.name) / "artefato.bin"
+        self.caminho.write_bytes(b"conteudo original")
+
+    def test_hash_de_arquivo_e_deterministico(self) -> None:
+        hash_1 = cempre.sha256_file(self.caminho)
+        hash_2 = cempre.sha256_file(self.caminho)
+        self.assertEqual(hash_1, hash_2)
+        self.assertRegex(hash_1, r"^[0-9a-f]{64}$")
+
+    def test_alteracao_no_arquivo_muda_hash(self) -> None:
+        hash_antes = cempre.sha256_file(self.caminho)
+        self.caminho.write_bytes(b"conteudo alterado")
+        hash_depois = cempre.sha256_file(self.caminho)
+        self.assertNotEqual(hash_antes, hash_depois)
+
+    def test_arquivo_ausente_falha_explicitamente(self) -> None:
+        with self.assertRaises(FileNotFoundError):
+            cempre.sha256_file(Path(self._tmpdir.name) / "inexistente.bin")
+
+
+class TestHashPlanoCanonico(unittest.TestCase):
+    def setUp(self) -> None:
+        self.plano, _ = _plano_e_ufs_d3()
+
+    def test_hash_logico_do_plano_independe_da_ordem(self) -> None:
+        hash_original = cempre.hash_plano_canonico(self.plano)
+        hash_invertido = cempre.hash_plano_canonico(list(reversed(self.plano)))
+        self.assertEqual(hash_original, hash_invertido)
+
+    def test_hash_independe_da_ordem_de_chaves_do_dicionario(self) -> None:
+        item = self.plano[0]
+        item_reordenado = {chave: item[chave] for chave in reversed(list(item.keys()))}
+        plano_reordenado = [item_reordenado] + self.plano[1:]
+        self.assertEqual(cempre.hash_plano_canonico(self.plano), cempre.hash_plano_canonico(plano_reordenado))
+
+    def test_alteracao_real_no_plano_muda_hash(self) -> None:
+        hash_antes = cempre.hash_plano_canonico(self.plano)
+        plano_alterado = [dict(item) for item in self.plano]
+        plano_alterado[0]["ano"] = 2011
+        hash_depois = cempre.hash_plano_canonico(plano_alterado)
+        self.assertNotEqual(hash_antes, hash_depois)
+
+
+class TestBuildRequestProvenance(unittest.TestCase):
+    def setUp(self) -> None:
+        self.plano, _ = _plano_e_ufs_d3()
+
+    def test_proveniencia_preserva_hash_raw(self) -> None:
+        resultados = _resultados_sucesso_d3(self.plano)
+        provenance = cempre.build_request_provenance(self.plano, resultados)
+        resultados_por_id = {r["request_id"]: r for r in resultados}
+        for entrada in provenance:
+            self.assertEqual(entrada["hash_resposta_raw"], resultados_por_id[entrada["request_id"]]["hash_resposta_raw"])
+            self.assertEqual(entrada["status_execucao"], "sucesso")
+
+    def test_proveniencia_preserva_erro(self) -> None:
+        resultados = _resultados_sucesso_d3(self.plano)
+        resultados[0]["erro"] = "HTTP 500"
+        resultados[0]["resultado"] = None
+        provenance = cempre.build_request_provenance(self.plano, resultados)
+        entrada = next(e for e in provenance if e["request_id"] == self.plano[0]["request_id"])
+        self.assertEqual(entrada["erro"], "HTTP 500")
+        self.assertEqual(entrada["status_execucao"], "falha")
+
+    def test_proveniencia_marca_ausente(self) -> None:
+        resultados = _resultados_sucesso_d3(self.plano)[1:]
+        provenance = cempre.build_request_provenance(self.plano, resultados)
+        entrada = next(e for e in provenance if e["request_id"] == self.plano[0]["request_id"])
+        self.assertEqual(entrada["status_execucao"], "ausente")
+
+    def test_payload_bruto_nao_e_incluido_na_proveniencia(self) -> None:
+        resultados = _resultados_sucesso_d3(self.plano)
+        provenance = cempre.build_request_provenance(self.plano, resultados)
+        for entrada in provenance:
+            self.assertNotIn("resultado", entrada)
+
+
+class TestBuildManifest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.plano, self.ufs_esperadas = _plano_e_ufs_d3()
+
+    def _build(self, resultados: list[dict], **kwargs) -> dict:
+        return cempre.build_manifest(
+            self.plano,
+            resultados,
+            ufs_esperadas=self.ufs_esperadas,
+            anos_esperados=[2010],
+            git_commit="a" * 40,
+            timestamp_geracao="2026-01-01T00:00:00+00:00",
+            **kwargs,
+        )
+
+    def test_manifesto_valido_completo(self) -> None:
+        manifesto = self._build(_resultados_sucesso_d3(self.plano))
+        self.assertTrue(manifesto["execucao"]["completo"])
+        self.assertEqual(manifesto["plano"]["n_requests_esperados"], len(self.plano))
+        self.assertEqual(len(manifesto["requests"]), len(self.plano))
+        cempre.validate_manifest(manifesto)  # não deve levantar
+
+    def test_manifesto_valido_incompleto(self) -> None:
+        resultados = _resultados_sucesso_d3(self.plano)[1:]
+        manifesto = self._build(resultados)
+        self.assertFalse(manifesto["execucao"]["completo"])
+        self.assertEqual(len(manifesto["execucao"]["request_ids_ausentes"]), 1)
+        cempre.validate_manifest(manifesto)  # incompleto não é inconsistente
+
+    def test_payload_bruto_nao_e_incluido_no_manifesto(self) -> None:
+        manifesto = self._build(_resultados_sucesso_d3(self.plano))
+        for entrada in manifesto["requests"]:
+            self.assertNotIn("resultado", entrada)
+        texto = json.dumps(manifesto)
+        self.assertNotIn('"valido": true', texto.replace(" ", ""))
+
+    def test_timestamp_injetado_e_usado_literalmente(self) -> None:
+        manifesto = self._build(_resultados_sucesso_d3(self.plano))
+        self.assertEqual(manifesto["geracao"]["timestamp_utc"], "2026-01-01T00:00:00+00:00")
+
+    def test_completo_true_com_ausente_e_rejeitado(self) -> None:
+        manifesto = self._build(_resultados_sucesso_d3(self.plano)[1:])
+        manifesto["execucao"]["completo"] = True  # inconsistência forçada
+        with self.assertRaisesRegex(ValueError, "completo=True"):
+            cempre.validate_manifest(manifesto)
+
+    def test_completo_true_com_falha_e_rejeitado(self) -> None:
+        resultados = _resultados_sucesso_d3(self.plano)
+        resultados[0]["erro"] = "HTTP 500"
+        resultados[0]["resultado"] = None
+        manifesto = self._build(resultados)
+        manifesto["execucao"]["completo"] = True
+        with self.assertRaisesRegex(ValueError, "completo=True"):
+            cempre.validate_manifest(manifesto)
+
+    def test_completo_true_com_duplicado_e_rejeitado(self) -> None:
+        resultados = _resultados_sucesso_d3(self.plano) + [dict(_resultados_sucesso_d3(self.plano)[0])]
+        manifesto = self._build(resultados)
+        self.assertFalse(manifesto["execucao"]["completo"])
+        manifesto["execucao"]["completo"] = True
+        with self.assertRaisesRegex(ValueError, "completo=True"):
+            cempre.validate_manifest(manifesto)
+
+    def test_commit_git_malformado_e_rejeitado(self) -> None:
+        manifesto = self._build(_resultados_sucesso_d3(self.plano))
+        manifesto["codigo"]["git_commit"] = "commit_invalido"
+        with self.assertRaisesRegex(ValueError, "git_commit"):
+            cempre.validate_manifest(manifesto)
+
+    def test_sha256_de_artefato_malformado_e_rejeitado(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho_artefato = Path(diretorio) / "calendario.parquet"
+            caminho_artefato.write_bytes(b"conteudo qualquer")
+            manifesto = self._build(
+                _resultados_sucesso_d3(self.plano),
+                artefatos={"calendario_territorial": {"caminho": str(caminho_artefato)}},
+            )
+            manifesto["artefatos"]["calendario_territorial"]["sha256"] = "hash_nao_hexadecimal"
+            with self.assertRaisesRegex(ValueError, "sha256"):
+                cempre.validate_manifest(manifesto)
+
+    def test_artefato_long_parquet_registra_n_linhas_e_colunas(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio:
+            caminho_artefato = Path(diretorio) / "long.parquet"
+            caminho_artefato.write_bytes(b"conteudo qualquer")
+            manifesto = self._build(
+                _resultados_sucesso_d3(self.plano),
+                artefatos={"long_parquet": {"caminho": str(caminho_artefato), "n_linhas": 42, "colunas": ["a", "b"]}},
+            )
+            entrada = manifesto["artefatos"]["long_parquet"]
+            self.assertEqual(entrada["n_linhas"], 42)
+            self.assertEqual(entrada["colunas"], ["a", "b"])
+            self.assertRegex(entrada["sha256"], r"^[0-9a-f]{64}$")
+
+    def test_manifesto_nao_declara_gates_de_autorizacao(self) -> None:
+        manifesto = self._build(_resultados_sucesso_d3(self.plano))
+        texto = json.dumps(manifesto)
+        self.assertNotIn("EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA", texto)
+        self.assertNotIn("PAINEL_TECNICO_CONSTRUIDO", texto)
+
+    def test_build_manifest_nunca_chama_fetch_request(self) -> None:
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")):
+            self._build(_resultados_sucesso_d3(self.plano))
+
+    def test_build_manifest_nunca_chama_requests_get(self) -> None:
+        with mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            self._build(_resultados_sucesso_d3(self.plano))
+
+
+# ---------------------------------------------------------------------------
+# D3 — correção focal do spot-check (Bloqueadores 1 e 2): consistência
+# execução×proveniência e contrato da seção plano×proveniência.
+#
+# Os casos "completo=True + falha" (item B) e "manifesto completo/incompleto
+# coerente continua válido" (itens F/G) já são cobertos por
+# `TestBuildManifest.test_completo_true_com_falha_e_rejeitado` e
+# `test_manifesto_valido_completo`/`test_manifesto_valido_incompleto` acima
+# — não duplicados aqui.
+# ---------------------------------------------------------------------------
+
+
+class TestConsistenciaExecucaoRequests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.plano, self.ufs_esperadas = _plano_e_ufs_d3()
+
+    def _manifesto_completo_valido(self) -> dict:
+        return cempre.build_manifest(
+            self.plano,
+            _resultados_sucesso_d3(self.plano),
+            ufs_esperadas=self.ufs_esperadas,
+            anos_esperados=[2010],
+            git_commit="a" * 40,
+            timestamp_geracao="2026-01-01T00:00:00+00:00",
+        )
+
+    def test_n_sucessos_divergente_da_proveniencia_e_rejeitado(self) -> None:
+        manifesto = self._manifesto_completo_valido()
+        manifesto["execucao"]["n_sucessos"] -= 1
+        with self.assertRaisesRegex(ValueError, "n_sucessos"):
+            cempre.validate_manifest(manifesto)
+
+    def test_falha_agregada_mas_proveniencia_toda_sucesso_e_rejeitado(self) -> None:
+        manifesto = self._manifesto_completo_valido()
+        manifesto["execucao"]["n_falhas"] = 1
+        with self.assertRaisesRegex(ValueError, "n_falhas"):
+            cempre.validate_manifest(manifesto)
+
+    def test_ausente_na_execucao_mas_sucesso_na_proveniencia_e_rejeitado(self) -> None:
+        manifesto = self._manifesto_completo_valido()
+        manifesto["execucao"]["request_ids_ausentes"] = [self.plano[0]["request_id"]]
+        with self.assertRaisesRegex(ValueError, "request_ids_ausentes"):
+            cempre.validate_manifest(manifesto)
+
+    def test_duplicado_na_execucao_mas_proveniencia_diferente_e_rejeitado(self) -> None:
+        manifesto = self._manifesto_completo_valido()
+        manifesto["execucao"]["request_ids_duplicados"] = [self.plano[0]["request_id"]]
+        with self.assertRaisesRegex(ValueError, "request_ids_duplicados"):
+            cempre.validate_manifest(manifesto)
+
+
+class TestContratoPlanoManifesto(unittest.TestCase):
+    def setUp(self) -> None:
+        self.plano, self.ufs_esperadas = _plano_e_ufs_d3()
+
+    def _manifesto_valido(self) -> dict:
+        return cempre.build_manifest(
+            self.plano,
+            _resultados_sucesso_d3(self.plano),
+            ufs_esperadas=self.ufs_esperadas,
+            anos_esperados=[2010],
+            git_commit="a" * 40,
+            timestamp_geracao="2026-01-01T00:00:00+00:00",
+        )
+
+    def test_hash_plano_com_formato_invalido_e_rejeitado(self) -> None:
+        manifesto = self._manifesto_valido()
+        manifesto["plano"]["hash_plano"] = "hash_nao_hexadecimal"
+        with self.assertRaisesRegex(ValueError, "hash_plano"):
+            cempre.validate_manifest(manifesto)
+
+    def test_ano_fora_da_janela_no_plano_e_rejeitado(self) -> None:
+        manifesto = self._manifesto_valido()
+        manifesto["plano"]["anos"] = [2050]
+        with self.assertRaisesRegex(ValueError, "janela"):
+            cempre.validate_manifest(manifesto)
+
+    def test_ano_do_plano_divergente_da_proveniencia_e_rejeitado(self) -> None:
+        manifesto = self._manifesto_valido()
+        manifesto["plano"]["anos"] = [2011]  # dentro da janela, mas não é o ano real dos requests
+        with self.assertRaisesRegex(ValueError, "divergente dos anos"):
+            cempre.validate_manifest(manifesto)
+
+    def test_variavel_fora_do_contrato_no_plano_e_rejeitada(self) -> None:
+        manifesto = self._manifesto_valido()
+        manifesto["plano"]["variaveis"] = manifesto["plano"]["variaveis"] + [999999]
+        with self.assertRaisesRegex(ValueError, "variaveis fora do contrato"):
+            cempre.validate_manifest(manifesto)
+
+    def test_variavel_contratada_ausente_no_plano_e_rejeitada(self) -> None:
+        manifesto = self._manifesto_valido()
+        manifesto["plano"]["variaveis"] = manifesto["plano"]["variaveis"][:-1]
+        with self.assertRaisesRegex(ValueError, "variaveis fora do contrato"):
+            cempre.validate_manifest(manifesto)
+
+    def test_variaveis_em_ordem_diferente_mesmo_conjunto_continua_valido(self) -> None:
+        manifesto = self._manifesto_valido()
+        manifesto["plano"]["variaveis"] = list(reversed(manifesto["plano"]["variaveis"]))
+        cempre.validate_manifest(manifesto)  # não deve levantar
+
+    def test_ufs_do_plano_divergentes_da_proveniencia_e_rejeitado(self) -> None:
+        manifesto = self._manifesto_valido()
+        ufs_adulteradas = list(manifesto["plano"]["ufs"])
+        ufs_adulteradas[0] = "99"
+        manifesto["plano"]["ufs"] = ufs_adulteradas
+        with self.assertRaisesRegex(ValueError, "plano.ufs"):
+            cempre.validate_manifest(manifesto)
+
+
+class TestPersistenciaManifesto(unittest.TestCase):
+    def setUp(self) -> None:
+        self.plano, self.ufs_esperadas = _plano_e_ufs_d3()
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.diretorio = Path(self._tmpdir.name)
+        self.manifesto = cempre.build_manifest(
+            self.plano,
+            _resultados_sucesso_d3(self.plano),
+            ufs_esperadas=self.ufs_esperadas,
+            anos_esperados=[2010],
+            git_commit="a" * 40,
+            timestamp_geracao="2026-01-01T00:00:00+00:00",
+        )
+
+    def test_write_manifest_cria_json(self) -> None:
+        caminho = self.diretorio / "manifesto.json"
+        caminho_retornado = cempre.write_manifest(self.manifesto, caminho)
+        self.assertTrue(caminho.exists())
+        self.assertEqual(caminho_retornado, caminho)
+        with open(caminho, encoding="utf-8") as f:
+            conteudo = json.load(f)
+        self.assertEqual(conteudo["schema_manifesto"], self.manifesto["schema_manifesto"])
+
+    def test_overwrite_padrao_rejeita_arquivo_existente(self) -> None:
+        caminho = self.diretorio / "manifesto_overwrite.json"
+        cempre.write_manifest(self.manifesto, caminho)
+        with self.assertRaises(FileExistsError):
+            cempre.write_manifest(self.manifesto, caminho)
+        cempre.write_manifest(self.manifesto, caminho, overwrite=True)
+
+    def test_load_manifest_rejeita_json_invalido(self) -> None:
+        caminho = self.diretorio / "manifesto_invalido.json"
+        caminho.write_text("{ isso não é json", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "JSON"):
+            cempre.load_manifest(caminho)
+
+    def test_load_manifest_rejeita_contrato_inconsistente(self) -> None:
+        caminho = self.diretorio / "manifesto_inconsistente.json"
+        caminho.write_text(json.dumps({"schema_manifesto": "x"}), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "seção"):
+            cempre.load_manifest(caminho)
+
+    def test_roundtrip_json_preserva_conteudo(self) -> None:
+        caminho = self.diretorio / "manifesto_roundtrip.json"
+        cempre.write_manifest(self.manifesto, caminho)
+        manifesto_recarregado = cempre.load_manifest(caminho)
+        self.assertEqual(manifesto_recarregado, self.manifesto)
+
+    def test_write_manifest_nao_rejeita_execucao_incompleta(self) -> None:
+        manifesto_incompleto = cempre.build_manifest(
+            self.plano,
+            _resultados_sucesso_d3(self.plano)[1:],
+            ufs_esperadas=self.ufs_esperadas,
+            anos_esperados=[2010],
+            git_commit="a" * 40,
+            timestamp_geracao="2026-01-01T00:00:00+00:00",
+        )
+        caminho = self.diretorio / "manifesto_incompleto.json"
+        cempre.write_manifest(manifesto_incompleto, caminho)
+        manifesto_recarregado = cempre.load_manifest(caminho)
+        self.assertFalse(manifesto_recarregado["execucao"]["completo"])
+        self.assertEqual(len(manifesto_recarregado["execucao"]["request_ids_ausentes"]), 1)
+
+    def test_write_manifest_nunca_chama_fetch_request(self) -> None:
+        caminho = self.diretorio / "manifesto_sem_rede.json"
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")):
+            cempre.write_manifest(self.manifesto, caminho)
+            cempre.load_manifest(caminho)
+
+
+class TestGetGitHead(unittest.TestCase):
+    def test_mock_confirma_uso_do_hash_completo(self) -> None:
+        hash_completo = "f" * 40
+        resultado_mock = mock.Mock(returncode=0, stdout=hash_completo + "\n", stderr="")
+        with mock.patch.object(cempre.subprocess, "run", return_value=resultado_mock) as run_mock:
+            commit = cempre.get_git_head()
+        self.assertEqual(commit, hash_completo)
+        self.assertEqual(len(commit), 40)
+        run_mock.assert_called_once()
+
+    def test_falha_do_comando_git_e_explicita(self) -> None:
+        resultado_mock = mock.Mock(returncode=128, stdout="", stderr="fatal: not a git repository")
+        with mock.patch.object(cempre.subprocess, "run", return_value=resultado_mock):
+            with self.assertRaises(RuntimeError):
+                cempre.get_git_head()
+
+    def test_comando_git_ausente_e_explicito(self) -> None:
+        with mock.patch.object(cempre.subprocess, "run", side_effect=OSError("git não encontrado")):
+            with self.assertRaises(RuntimeError):
+                cempre.get_git_head()
+
+    def test_saida_em_formato_inesperado_e_explicita(self) -> None:
+        resultado_mock = mock.Mock(returncode=0, stdout="abreviado123\n", stderr="")
+        with mock.patch.object(cempre.subprocess, "run", return_value=resultado_mock):
+            with self.assertRaises(RuntimeError):
+                cempre.get_git_head()
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -25,7 +25,9 @@ import hashlib
 import json
 import logging
 import re
+import subprocess
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -1444,3 +1446,532 @@ def rebuild_long_from_cache(
     if caminho_persistencia is not None:
         write_long_parquet(long_reconciliada, caminho_persistencia, overwrite=overwrite)
     return long_reconciliada
+
+
+# ---------------------------------------------------------------------------
+# D3 — manifesto e proveniência do pipeline CEMPRE
+#
+# Registra FATOS sobre o plano, a execução/completude e os artefatos já
+# produzidos (seção 10 da especificação: `source_manifest.json`). NÃO
+# executa requests, NÃO é o orquestrador nacional (D4) e NÃO autoriza
+# nenhum gate — nenhuma função desta seção declara
+# `EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA` nem `PAINEL_TECNICO_CONSTRUIDO`.
+# ---------------------------------------------------------------------------
+
+_VERSAO_SCHEMA_MANIFESTO = "cempre_manifesto_v1"
+_RE_GIT_COMMIT = re.compile(r"^[0-9a-f]{40}$")
+_RE_SHA256 = re.compile(r"^[0-9a-f]{64}$")
+
+
+def sha256_file(caminho: str | Path, tamanho_chunk: int = 65536) -> str:
+    """Calcula o SHA-256 de um arquivo em disco (D3, seção 2).
+
+    Leitura binária em chunks (não carrega o arquivo inteiro em memória de
+    uma vez); nunca chama rede. Falha explicitamente (`FileNotFoundError`)
+    se o arquivo não existir. Usado para registrar artefatos no manifesto
+    (calendário territorial, long Parquet, outros artefatos futuros).
+    """
+    caminho = Path(caminho)
+    if not caminho.exists():
+        raise FileNotFoundError(f"arquivo não encontrado para cálculo de hash SHA-256: {caminho}")
+
+    hasher = hashlib.sha256()
+    with caminho.open("rb") as arquivo:
+        for bloco in iter(lambda: arquivo.read(tamanho_chunk), b""):
+            hasher.update(bloco)
+    return hasher.hexdigest()
+
+
+def hash_plano_canonico(plano: list[dict[str, Any]]) -> str:
+    """Hash lógico/canônico do plano de requests (D3, seção 3).
+
+    Independente da ordem incidental da lista e da ordem de chaves dos
+    dicionários — usa apenas o conteúdo contratual de cada request
+    (`request_id`, `ano`, `territorio`, `variaveis`, `fonte_tabela`,
+    `url`), ordena os itens por `request_id` e serializa em JSON canônico
+    (`sort_keys=True`, separadores compactos) antes de aplicar SHA-256.
+    Mesmo plano lógico em ordem diferente produz o mesmo hash; qualquer
+    mudança real em um lote produz um hash diferente.
+    """
+    itens_canonicos = []
+    for item in plano:
+        territorio = item.get("territorio") or {}
+        itens_canonicos.append({
+            "request_id": item["request_id"],
+            "ano": item["ano"],
+            "territorio": dict(territorio),
+            "variaveis": sorted(item.get("variaveis") or []),
+            "fonte_tabela": item.get("fonte_tabela"),
+            "url": item.get("url"),
+        })
+    itens_canonicos.sort(key=lambda item: item["request_id"])
+
+    texto_canonico = json.dumps(itens_canonicos, sort_keys=True, ensure_ascii=True, separators=(",", ":"))
+    return hashlib.sha256(texto_canonico.encode("utf-8")).hexdigest()
+
+
+def build_request_provenance(
+    plano: list[dict[str, Any]],
+    resultados: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Proveniência compacta por request (D3, seção 4): uma entrada por
+    request ESPERADO do plano, nunca o payload bruto nem a long inteira.
+
+    Para cada request, registra `request_id`, `ano`, território, variáveis,
+    `status_execucao` (`sucesso`/`falha`/`ausente`/`duplicado`), `de_cache`
+    (quando conhecido), `hash_resposta_raw` (quando disponível) e `erro`
+    (quando houver). Reutiliza `_resultado_e_sucesso` — não duplica a
+    lógica de sucesso já usada por `avalia_completude_plano`.
+    """
+    resultados_por_id: dict[str, list[dict[str, Any]]] = {}
+    for resultado in resultados:
+        if isinstance(resultado, dict) and resultado.get("request_id"):
+            resultados_por_id.setdefault(resultado["request_id"], []).append(resultado)
+
+    provenance: list[dict[str, Any]] = []
+    for item in plano:
+        entradas = resultados_por_id.get(item["request_id"], [])
+        if not entradas:
+            status_execucao, de_cache, hash_resposta_raw, erro = "ausente", None, None, None
+        elif len(entradas) > 1:
+            status_execucao = "duplicado"
+            de_cache, hash_resposta_raw = None, None
+            erro = f"{len(entradas)} resultados para este request_id — ambíguo"
+        else:
+            resultado = entradas[0]
+            status_execucao = "sucesso" if _resultado_e_sucesso(resultado) else "falha"
+            de_cache = resultado.get("de_cache")
+            hash_resposta_raw = resultado.get("hash_resposta_raw")
+            erro = resultado.get("erro")
+
+        provenance.append({
+            "request_id": item["request_id"],
+            "ano": item["ano"],
+            "territorio": dict(item.get("territorio") or {}),
+            "variaveis": sorted(item.get("variaveis") or []),
+            "status_execucao": status_execucao,
+            "de_cache": de_cache,
+            "hash_resposta_raw": hash_resposta_raw,
+            "erro": erro,
+        })
+    return provenance
+
+
+def get_git_head(cwd: str | Path | None = None) -> str:
+    """Consulta o commit Git atual via `git rev-parse HEAD` (D3, seção 6).
+
+    Somente leitura (`subprocess`): nunca altera o repositório, nunca
+    chama rede. Retorna sempre o hash COMPLETO (40 hex), nunca abreviado.
+    Levanta `RuntimeError` explícito se o commit não puder ser
+    determinado (comando ausente, fora de um repositório Git, saída em
+    formato inesperado).
+    """
+    diretorio = Path(cwd) if cwd is not None else ROOT
+    try:
+        resultado = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=diretorio,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    except (OSError, subprocess.SubprocessError) as exc:
+        raise RuntimeError(f"não foi possível executar 'git rev-parse HEAD': {exc}") from exc
+
+    if resultado.returncode != 0:
+        raise RuntimeError(
+            f"'git rev-parse HEAD' falhou (código {resultado.returncode}): {resultado.stderr.strip()}"
+        )
+
+    commit = resultado.stdout.strip()
+    if not _RE_GIT_COMMIT.fullmatch(commit):
+        raise RuntimeError(f"'git rev-parse HEAD' retornou formato inesperado (esperado 40 hex): {commit!r}")
+    return commit
+
+
+def timestamp_utc_iso(agora: datetime | None = None) -> str:
+    """Timestamp UTC em ISO-8601 (D3, seção 7).
+
+    Aceita `agora` explícito para tornar testes determinísticos (nunca
+    depende do relógio real quando informado); normaliza qualquer
+    `datetime` com fuso para UTC e assume UTC para um `datetime` "naive".
+    Sem `agora`, usa `datetime.now(timezone.utc)`.
+    """
+    momento = agora if agora is not None else datetime.now(timezone.utc)
+    if momento.tzinfo is None:
+        momento = momento.replace(tzinfo=timezone.utc)
+    else:
+        momento = momento.astimezone(timezone.utc)
+    return momento.isoformat()
+
+
+def _registrar_artefatos(artefatos: dict[str, dict[str, Any]] | None) -> dict[str, Any]:
+    """Calcula SHA-256/tamanho de cada artefato informado (D3, seção 5).
+
+    `artefatos` mapeia um nome lógico (ex.: `"calendario_territorial"`,
+    `"long_parquet"`) para um dict com `caminho` (obrigatório) e quaisquer
+    campos extras já conhecidos pelo chamador (ex.: `n_linhas`, `colunas`
+    para a long Parquet) — esses extras são preservados como estão, sem
+    recalcular nada que o chamador já validou.
+    """
+    if not artefatos:
+        return {}
+
+    registrados: dict[str, Any] = {}
+    for nome, info in artefatos.items():
+        caminho = Path(info["caminho"])
+        entrada: dict[str, Any] = {
+            "caminho": str(caminho),
+            "sha256": sha256_file(caminho),
+            "tamanho_bytes": caminho.stat().st_size,
+        }
+        entrada.update({chave: valor for chave, valor in info.items() if chave != "caminho"})
+        registrados[nome] = entrada
+    return registrados
+
+
+def build_manifest(
+    plano: list[dict[str, Any]],
+    resultados: list[dict[str, Any]],
+    ufs_esperadas: list[dict[str, str]],
+    anos_esperados: list[int] | None = None,
+    variaveis_esperadas: set[int] | list[int] | None = None,
+    artefatos: dict[str, dict[str, Any]] | None = None,
+    git_commit: str | None = None,
+    timestamp_geracao: str | None = None,
+    modo_geracao: str = "reconstrucao_offline_cache",
+) -> dict[str, Any]:
+    """Constrói o manifesto de proveniência do pipeline CEMPRE (D3, seção 5).
+
+    Reutiliza `validate_national_request_plan` (contrato do plano) e
+    `avalia_completude_plano` (execução/completude) — nunca recalcula essa
+    lógica em paralelo. NÃO executa requests, NÃO é o orquestrador D4 e
+    NÃO declara nenhum gate de autorização.
+    """
+    relatorio_plano = validate_national_request_plan(
+        plano,
+        ufs_esperadas=ufs_esperadas,
+        anos_esperados=anos_esperados,
+        variaveis_esperadas=variaveis_esperadas,
+    )
+    relatorio_completude = avalia_completude_plano(plano, resultados)
+
+    anos_plano = sorted({item["ano"] for item in plano})
+    variaveis_plano = sorted({variavel for item in plano for variavel in (item.get("variaveis") or [])})
+
+    return {
+        "schema_manifesto": _VERSAO_SCHEMA_MANIFESTO,
+        "fonte": {
+            "fonte_tabela": FONTE_TABELA,
+            "ano_min": ANO_MIN,
+            "ano_max": ANO_MAX,
+            "variaveis_contratadas": sorted(VARIAVEIS_ESPERADAS),
+            "segmentacao_territorial": "uf",
+        },
+        "codigo": {
+            "git_commit": git_commit if git_commit is not None else get_git_head(),
+            "versao_manifesto": _VERSAO_SCHEMA_MANIFESTO,
+        },
+        "plano": {
+            "n_requests_esperados": relatorio_plano["total_requests_esperados"],
+            "hash_plano": hash_plano_canonico(plano),
+            "anos": anos_plano,
+            "ufs": relatorio_plano["ufs"],
+            "variaveis": variaveis_plano,
+        },
+        "execucao": {
+            "n_requests_esperados": relatorio_completude["n_requests_esperados"],
+            "n_requests_recebidos": relatorio_completude["n_requests_recebidos"],
+            "n_sucessos": relatorio_completude["n_sucessos"],
+            "n_falhas": relatorio_completude["n_falhas"],
+            "request_ids_ausentes": relatorio_completude["request_ids_ausentes"],
+            "request_ids_inesperados": relatorio_completude["request_ids_inesperados"],
+            "request_ids_duplicados": relatorio_completude["request_ids_duplicados"],
+            "resultados_malformados": relatorio_completude["resultados_malformados"],
+            "completo": relatorio_completude["completo"],
+        },
+        "requests": build_request_provenance(plano, resultados),
+        "artefatos": _registrar_artefatos(artefatos),
+        "geracao": {
+            "timestamp_utc": timestamp_geracao if timestamp_geracao is not None else timestamp_utc_iso(),
+            "modo": modo_geracao,
+        },
+    }
+
+
+_ESTADOS_PROVENIENCIA_VALIDOS = {"sucesso", "falha", "ausente", "duplicado"}
+
+
+def _validar_consistencia_execucao_requests(
+    execucao_info: dict[str, Any],
+    requests_prov: list[dict[str, Any]],
+) -> None:
+    """Confronta `manifesto["execucao"]` com `manifesto["requests"]` (D3,
+    correção focal do spot-check — Bloqueador 1).
+
+    NÃO recalcula `avalia_completude_plano`: só verifica se as duas
+    representações já armazenadas no manifesto são coerentes entre si.
+    Preserva exatamente a semântica de `avalia_completude_plano`: request
+    ausente não conta em `n_falhas`; request duplicado conta em
+    `n_falhas`.
+    """
+    status_por_id: dict[str, str] = {}
+    for item in requests_prov:
+        status = item.get("status_execucao")
+        if status not in _ESTADOS_PROVENIENCIA_VALIDOS:
+            raise ValueError(
+                f"status_execucao inválido na proveniência do request {item.get('request_id')!r}: {status!r}"
+            )
+        status_por_id[item["request_id"]] = status
+
+    ids_sucesso = {rid for rid, status in status_por_id.items() if status == "sucesso"}
+    ids_ausente = {rid for rid, status in status_por_id.items() if status == "ausente"}
+    ids_duplicado = {rid for rid, status in status_por_id.items() if status == "duplicado"}
+    ids_falha_ou_duplicado = {
+        rid for rid, status in status_por_id.items() if status in ("falha", "duplicado")
+    }
+
+    n_sucessos_execucao = execucao_info.get("n_sucessos")
+    if n_sucessos_execucao != len(ids_sucesso):
+        raise ValueError(
+            f"execucao.n_sucessos ({n_sucessos_execucao!r}) diverge da proveniência "
+            f"({len(ids_sucesso)} request(s) com status_execucao='sucesso')"
+        )
+
+    n_falhas_execucao = execucao_info.get("n_falhas")
+    if n_falhas_execucao != len(ids_falha_ou_duplicado):
+        raise ValueError(
+            f"execucao.n_falhas ({n_falhas_execucao!r}) diverge da proveniência "
+            f"({len(ids_falha_ou_duplicado)} request(s) com status_execucao em "
+            f"{{'falha','duplicado'}})"
+        )
+
+    ausentes_execucao = set(execucao_info.get("request_ids_ausentes") or [])
+    if ausentes_execucao != ids_ausente:
+        raise ValueError(
+            f"execucao.request_ids_ausentes ({sorted(ausentes_execucao)}) diverge da proveniência "
+            f"(status_execucao='ausente' em: {sorted(ids_ausente)})"
+        )
+
+    duplicados_execucao = set(execucao_info.get("request_ids_duplicados") or [])
+    if duplicados_execucao != ids_duplicado:
+        raise ValueError(
+            f"execucao.request_ids_duplicados ({sorted(duplicados_execucao)}) diverge da proveniência "
+            f"(status_execucao='duplicado' em: {sorted(ids_duplicado)})"
+        )
+
+    if execucao_info.get("completo") and ids_sucesso != set(status_por_id.keys()):
+        nao_sucesso = sorted(set(status_por_id.keys()) - ids_sucesso)
+        raise ValueError(
+            "manifesto inconsistente: completo=True mas nem todo request esperado tem "
+            f"status_execucao='sucesso' na proveniência: {nao_sucesso}"
+        )
+
+
+def _validar_consistencia_plano_requests(
+    plano_info: dict[str, Any],
+    requests_prov: list[dict[str, Any]],
+) -> None:
+    """Confronta `manifesto["plano"]` com `manifesto["requests"]` (D3,
+    correção focal do spot-check — Bloqueador 2).
+
+    Valida o formato do que já está armazenado em `plano` (hash SHA-256
+    completo, anos e variáveis dentro do contrato CEMPRE) e confronta com
+    o que a proveniência realmente registra. NUNCA recomputa
+    `hash_plano_canonico` aqui — o plano completo pode não estar
+    disponível no reload; só valida o contrato disponível, sem inventar
+    informação.
+    """
+    hash_plano = plano_info.get("hash_plano")
+    if not isinstance(hash_plano, str) or not _RE_SHA256.fullmatch(hash_plano):
+        raise ValueError(
+            f"manifesto com hash_plano malformado (esperado SHA-256 hex de 64 caracteres): {hash_plano!r}"
+        )
+
+    anos_plano = plano_info.get("anos")
+    if not isinstance(anos_plano, list) or not anos_plano:
+        raise ValueError(f"manifesto com plano.anos vazio ou inválido: {anos_plano!r}")
+    if any(not isinstance(ano, int) for ano in anos_plano):
+        raise ValueError(f"manifesto com plano.anos contendo valor não inteiro: {anos_plano!r}")
+    if len(anos_plano) != len(set(anos_plano)):
+        raise ValueError(f"manifesto com plano.anos duplicado: {anos_plano!r}")
+    anos_fora_da_janela = sorted(ano for ano in anos_plano if not (ANO_MIN <= ano <= ANO_MAX))
+    if anos_fora_da_janela:
+        raise ValueError(f"manifesto com plano.anos fora da janela {ANO_MIN}-{ANO_MAX}: {anos_fora_da_janela}")
+
+    anos_proveniencia = {item.get("ano") for item in requests_prov}
+    if set(anos_plano) != anos_proveniencia:
+        raise ValueError(
+            f"manifesto com plano.anos ({sorted(anos_plano)}) divergente dos anos presentes na "
+            f"proveniência de requests ({sorted(anos_proveniencia)})"
+        )
+
+    variaveis_plano = plano_info.get("variaveis")
+    if variaveis_plano is None or sorted(variaveis_plano) != sorted(VARIAVEIS_ESPERADAS):
+        raise ValueError(f"manifesto com plano.variaveis fora do contrato CEMPRE: {variaveis_plano!r}")
+    for item in requests_prov:
+        variaveis_item = item.get("variaveis")
+        if variaveis_item is None or sorted(variaveis_item) != sorted(VARIAVEIS_ESPERADAS):
+            raise ValueError(
+                f"manifesto com variaveis fora do contrato CEMPRE na proveniência do request "
+                f"{item.get('request_id')!r}: {variaveis_item!r}"
+            )
+
+    ufs_plano = plano_info.get("ufs")
+    if not isinstance(ufs_plano, list):
+        raise ValueError(f"manifesto com plano.ufs inválido: {ufs_plano!r}")
+    ufs_proveniencia = {(item.get("territorio") or {}).get("codigo") for item in requests_prov}
+    if set(ufs_plano) != ufs_proveniencia:
+        raise ValueError(
+            f"manifesto com plano.ufs ({sorted(ufs_plano)}) divergente das UFs presentes na "
+            f"proveniência de requests ({sorted(ufs_proveniencia)})"
+        )
+
+
+def validate_manifest(manifesto: dict[str, Any]) -> dict[str, Any]:
+    """Valida o contrato estrutural do manifesto CEMPRE (D3, seção 8).
+
+    Rejeita explicitamente (`ValueError`) inconsistências evidentes: seção
+    obrigatória ausente; `fonte`/anos/variáveis fora do contrato CEMPRE;
+    `git_commit` que não é um hash completo de 40 hex; divergência entre
+    `n_requests_esperados` do plano, da execução e da quantidade real de
+    entradas em `requests`; request esperado sem entrada correspondente
+    em `requests` (ou duplicado/sem `request_id`); contradição entre
+    `execucao` e a proveniência por request (`_validar_consistencia_execucao_requests`
+    — Bloqueador 1 do spot-check); contradição entre `plano` (hash,
+    anos, variáveis, UFs) e a proveniência (`_validar_consistencia_plano_requests`
+    — Bloqueador 2); `completo=True` acompanhado de falhas, ausentes,
+    duplicados, inesperados ou malformados; e `sha256` malformado em
+    qualquer artefato registrado. Não é um framework genérico de JSON
+    Schema — só valida o contrato CEMPRE necessário. Não corrige nada
+    silenciosamente.
+    """
+    secoes_obrigatorias = {"schema_manifesto", "fonte", "codigo", "plano", "execucao", "requests", "artefatos", "geracao"}
+    secoes_ausentes = sorted(secoes_obrigatorias - set(manifesto.keys()))
+    if secoes_ausentes:
+        raise ValueError(f"manifesto sem seção(ões) obrigatória(s): {secoes_ausentes}")
+
+    fonte = manifesto["fonte"]
+    if fonte.get("fonte_tabela") != FONTE_TABELA:
+        raise ValueError(f"manifesto com fonte_tabela fora do contrato CEMPRE: {fonte.get('fonte_tabela')!r}")
+    if fonte.get("ano_min") != ANO_MIN or fonte.get("ano_max") != ANO_MAX:
+        raise ValueError(
+            f"manifesto com janela de anos fora do contrato CEMPRE: "
+            f"{fonte.get('ano_min')!r}-{fonte.get('ano_max')!r}"
+        )
+    variaveis_contratadas = fonte.get("variaveis_contratadas")
+    if variaveis_contratadas is None or sorted(variaveis_contratadas) != sorted(VARIAVEIS_ESPERADAS):
+        raise ValueError(f"manifesto com variaveis_contratadas fora do contrato CEMPRE: {variaveis_contratadas!r}")
+
+    git_commit = manifesto["codigo"].get("git_commit")
+    if not isinstance(git_commit, str) or not _RE_GIT_COMMIT.fullmatch(git_commit):
+        raise ValueError(f"manifesto com git_commit inválido (esperado hash completo de 40 hex): {git_commit!r}")
+
+    plano_info = manifesto["plano"]
+    execucao_info = manifesto["execucao"]
+    requests_prov = manifesto["requests"]
+    if not isinstance(requests_prov, list):
+        raise ValueError("manifesto['requests'] deve ser uma lista")
+
+    n_esperados_plano = plano_info.get("n_requests_esperados")
+    n_esperados_execucao = execucao_info.get("n_requests_esperados")
+    if not (n_esperados_plano == n_esperados_execucao == len(requests_prov)):
+        raise ValueError(
+            f"n_requests_esperados inconsistente: plano={n_esperados_plano!r}, "
+            f"execucao={n_esperados_execucao!r}, len(requests)={len(requests_prov)}"
+        )
+
+    request_ids_prov = [item.get("request_id") for item in requests_prov]
+    if any(not rid for rid in request_ids_prov):
+        raise ValueError("manifesto contém request na proveniência sem request_id")
+    if len(request_ids_prov) != len(set(request_ids_prov)):
+        raise ValueError("manifesto contém request_id duplicado na proveniência de requests")
+
+    _validar_consistencia_execucao_requests(execucao_info, requests_prov)
+    _validar_consistencia_plano_requests(plano_info, requests_prov)
+
+    completo = execucao_info.get("completo")
+    n_falhas = execucao_info.get("n_falhas")
+    ausentes = execucao_info.get("request_ids_ausentes") or []
+    inesperados = execucao_info.get("request_ids_inesperados") or []
+    duplicados = execucao_info.get("request_ids_duplicados") or []
+    malformados = execucao_info.get("resultados_malformados") or []
+    if completo:
+        if ausentes:
+            raise ValueError(f"manifesto inconsistente: completo=True mas há request_ids ausentes: {ausentes}")
+        if duplicados:
+            raise ValueError(f"manifesto inconsistente: completo=True mas há request_ids duplicados: {duplicados}")
+        if malformados:
+            raise ValueError(f"manifesto inconsistente: completo=True mas há resultados malformados: {malformados}")
+        if inesperados:
+            raise ValueError(f"manifesto inconsistente: completo=True mas há request_ids inesperados: {inesperados}")
+        if n_falhas:
+            raise ValueError(f"manifesto inconsistente: completo=True mas n_falhas={n_falhas}")
+
+    for nome_artefato, entrada in (manifesto.get("artefatos") or {}).items():
+        sha = entrada.get("sha256") if isinstance(entrada, dict) else None
+        if not isinstance(sha, str) or not _RE_SHA256.fullmatch(sha):
+            raise ValueError(f"manifesto com sha256 malformado para artefato {nome_artefato!r}: {sha!r}")
+
+    return manifesto
+
+
+def write_manifest(
+    manifesto: dict[str, Any],
+    caminho: str | Path,
+    overwrite: bool = False,
+) -> Path:
+    """Persiste o manifesto CEMPRE em JSON (D3, seção 9).
+
+    Valida estruturalmente o manifesto (`validate_manifest`) ANTES de
+    qualquer escrita — um manifesto estruturalmente inconsistente nunca é
+    gravado. Um manifesto que registra uma execução INCOMPLETA
+    (`completo=False`, com ausentes/falhas registrados) não é rejeitado
+    por isso — só inconsistência lógica é rejeitada (seção 12). Por
+    padrão (`overwrite=False`) falha explicitamente (`FileExistsError`)
+    se `caminho` já existir. Cria o diretório pai quando necessário;
+    escreve UTF-8, `ensure_ascii=False`, indentado e com chaves
+    ordenadas.
+    """
+    caminho = Path(caminho)
+    if caminho.suffix.lower() != ".json":
+        raise ValueError(f"caminho do manifesto deve terminar em '.json': {caminho}")
+
+    validate_manifest(manifesto)
+
+    if caminho.exists() and not overwrite:
+        raise FileExistsError(
+            f"arquivo já existe e overwrite=False (padrão) — manifesto não sobrescreve silenciosamente: {caminho}"
+        )
+
+    caminho.parent.mkdir(parents=True, exist_ok=True)
+    texto = json.dumps(manifesto, ensure_ascii=False, indent=2, sort_keys=True)
+    caminho.write_text(texto, encoding="utf-8")
+    return caminho
+
+
+def load_manifest(caminho: str | Path) -> dict[str, Any]:
+    """Carrega e valida o manifesto CEMPRE persistido em JSON (D3, seção 10).
+
+    Falha explicitamente (`FileNotFoundError`/`ValueError`) para arquivo
+    ausente, formato não suportado, JSON inválido, conteúdo que não é um
+    objeto JSON, ou qualquer violação do contrato verificado por
+    `validate_manifest` — nunca corrige campos silenciosamente.
+    """
+    caminho = Path(caminho)
+    if not caminho.exists():
+        raise FileNotFoundError(f"manifesto não encontrado: {caminho}")
+    if caminho.suffix.lower() != ".json":
+        raise ValueError(f"formato não suportado para manifesto: {caminho.suffix!r}; esperado '.json'")
+
+    texto = caminho.read_text(encoding="utf-8")
+    try:
+        manifesto = json.loads(texto)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"manifesto não é JSON válido ({caminho}): {exc}") from exc
+
+    if not isinstance(manifesto, dict):
+        raise ValueError(f"manifesto deve ser um objeto JSON (dict); recebido: {type(manifesto).__name__}")
+
+    validate_manifest(manifesto)
+    return manifesto
