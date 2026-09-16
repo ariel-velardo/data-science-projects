@@ -2990,5 +2990,471 @@ class TestDryRunNacionalSmokeCheckOffline(unittest.TestCase):
         self.assertFalse(relatorio["conflito_manifesto_existente"])
 
 
+# ---------------------------------------------------------------------------
+# D6 — adaptador da API de Dados Agregados do IBGE (agregados_v3)
+#
+# Fonte PARALELA e explicitamente distinta da apisidra legada. As fixtures
+# usadas aqui são respostas REAIS da API `servicodados.ibge.gov.br/api/v3/
+# agregados` (mesmos probes da auditoria de equivalência registrada em
+# ESTADO_ATUAL.md — Amajari/RR 2019, Pescaria Brava/SC 2007, Serra da
+# Saudade/MG 2018), congeladas em
+# data/raw/ibge/cempre/fixtures/agregados_v3_*.json. Nenhum teste desta
+# seção chama rede — não retoma a coleta nacional nem liga o adaptador ao
+# executor D5.
+# ---------------------------------------------------------------------------
+
+
+def _payload_agregados_amajari() -> list[dict]:
+    return _carrega_fixture("agregados_v3_1685_n6_1400027_amajari_rr_2019.json")
+
+
+def _payload_agregados_pescaria_brava() -> list[dict]:
+    return _carrega_fixture("agregados_v3_1685_n6_4212650_pescaria_brava_2007.json")
+
+
+def _payload_agregados_serra_da_saudade() -> list[dict]:
+    return _carrega_fixture("agregados_v3_1685_n6_3166600_serra_da_saudade_2018_var708.json")
+
+
+class TestValidateAgregadosPayload(unittest.TestCase):
+    """A: schema válido. B: schema inválido (vários casos)."""
+
+    def test_payload_real_amajari_e_valido(self) -> None:
+        valido, motivo = cempre.validate_agregados_payload(_payload_agregados_amajari())
+        self.assertTrue(valido)
+        self.assertIsNone(motivo)
+
+    def test_payload_real_pescaria_brava_e_valido(self) -> None:
+        valido, motivo = cempre.validate_agregados_payload(_payload_agregados_pescaria_brava())
+        self.assertTrue(valido)
+
+    def test_payload_nao_e_lista_e_invalido(self) -> None:
+        valido, motivo = cempre.validate_agregados_payload({"id": "708"})
+        self.assertFalse(valido)
+        self.assertIsNotNone(motivo)
+
+    def test_lista_vazia_e_invalida(self) -> None:
+        valido, motivo = cempre.validate_agregados_payload([])
+        self.assertFalse(valido)
+
+    def test_bloco_sem_campo_obrigatorio_e_invalido(self) -> None:
+        bloco = dict(_payload_agregados_amajari()[0])
+        del bloco["unidade"]
+        valido, motivo = cempre.validate_agregados_payload([bloco])
+        self.assertFalse(valido)
+        self.assertIn("unidade", motivo)
+
+    def test_resultados_nao_e_lista_e_invalido(self) -> None:
+        bloco = dict(_payload_agregados_amajari()[0])
+        bloco["resultados"] = {"nao": "e uma lista"}
+        valido, motivo = cempre.validate_agregados_payload([bloco])
+        self.assertFalse(valido)
+
+    def test_serie_entry_sem_localidade_e_invalido(self) -> None:
+        payload = json.loads(json.dumps(_payload_agregados_amajari()))
+        del payload[0]["resultados"][0]["series"][0]["localidade"]
+        valido, motivo = cempre.validate_agregados_payload(payload)
+        self.assertFalse(valido)
+        self.assertIn("localidade", motivo)
+
+    def test_localidade_sem_nivel_e_invalido(self) -> None:
+        payload = json.loads(json.dumps(_payload_agregados_amajari()))
+        del payload[0]["resultados"][0]["series"][0]["localidade"]["nivel"]
+        valido, motivo = cempre.validate_agregados_payload(payload)
+        self.assertFalse(valido)
+        self.assertIn("nivel", motivo)
+
+    def test_serie_nao_e_dicionario_e_invalido(self) -> None:
+        payload = json.loads(json.dumps(_payload_agregados_amajari()))
+        payload[0]["resultados"][0]["series"][0]["serie"] = ["2019", "27"]
+        valido, motivo = cempre.validate_agregados_payload(payload)
+        self.assertFalse(valido)
+
+    def test_todos_os_blocos_sem_series_e_invalido(self) -> None:
+        payload = json.loads(json.dumps(_payload_agregados_amajari()))
+        for bloco in payload:
+            bloco["resultados"] = []
+        valido, motivo = cempre.validate_agregados_payload(payload)
+        self.assertFalse(valido)
+        self.assertIn("nenhuma série", motivo)
+
+
+class TestNormalizeLongAgregados(unittest.TestCase):
+    """C: normalização numérica. D: '...' -> indisponivel. G/H: unidade e
+    município/ano/variável. E/F: equivalência com apisidra."""
+
+    def test_normalizacao_numerica_amajari(self) -> None:
+        df = cempre.normalize_long_agregados(_payload_agregados_amajari(), request_id="req_agregados_amajari")
+        self.assertEqual(len(df), 6)
+        por_variavel = df.set_index("codigo_variavel_sidra")
+        self.assertEqual(por_variavel.loc[706, "valor_bruto"], "27")
+        self.assertEqual(por_variavel.loc[706, "valor_numerico"], 27.0)
+        self.assertEqual(por_variavel.loc[706, "status_valor_api"], "observado")
+        self.assertEqual(por_variavel.loc[5944, "valor_bruto"], "512.40")
+        self.assertEqual(por_variavel.loc[5944, "valor_numerico"], 512.40)
+        self.assertTrue((df["codigo_municipio_ibge"] == "1400027").all())
+        self.assertTrue((df["ano"] == 2019).all())
+
+    def test_reticencias_viram_indisponivel(self) -> None:
+        df = cempre.normalize_long_agregados(_payload_agregados_pescaria_brava(), request_id="req_agregados_pescaria")
+        self.assertEqual(len(df), 6)
+        self.assertTrue((df["status_valor_api"] == "indisponivel").all())
+        self.assertTrue(df["valor_numerico"].isna().all())
+        self.assertTrue((df["valor_bruto"] == "...").all())
+
+    def test_unidade_e_nome_variavel_preenchidos(self) -> None:
+        df = cempre.normalize_long_agregados(_payload_agregados_amajari(), request_id="req_agregados_amajari")
+        por_variavel = df.set_index("codigo_variavel_sidra")
+        self.assertEqual(por_variavel.loc[706, "unidade"], "Unidades")
+        self.assertEqual(por_variavel.loc[662, "unidade"], "Mil Reais")
+        self.assertEqual(por_variavel.loc[10143, "unidade"], "Reais")
+        self.assertIn("unidades locais", por_variavel.loc[706, "nome_variavel"])
+
+    def test_serra_da_saudade_2018_var708_bate_com_valor_conhecido(self) -> None:
+        df = cempre.normalize_long_agregados(_payload_agregados_serra_da_saudade(), request_id="req_agregados_serra")
+        self.assertEqual(df.iloc[0]["valor_bruto"], "181")
+        self.assertEqual(df.iloc[0]["valor_numerico"], 181.0)
+
+    def test_variavel_fora_do_contrato_e_rejeitada(self) -> None:
+        payload = json.loads(json.dumps(_payload_agregados_amajari()))
+        payload[0]["id"] = "999999"
+        with self.assertRaisesRegex(ValueError, "variável"):
+            cempre.normalize_long_agregados(payload, request_id="req_var_invalida")
+
+    def test_ano_fora_da_janela_e_rejeitado(self) -> None:
+        payload = json.loads(json.dumps(_payload_agregados_amajari()))
+        payload[0]["resultados"][0]["series"][0]["serie"] = {"2050": "27"}
+        with self.assertRaisesRegex(ValueError, "ano"):
+            cempre.normalize_long_agregados(payload, request_id="req_ano_invalido")
+
+    # -- E: Amajari — valores equivalentes à fixture apisidra real de Roraima --
+
+    def test_amajari_equivalente_a_fixture_apisidra_roraima(self) -> None:
+        df_agregados = cempre.normalize_long_agregados(_payload_agregados_amajari(), request_id="req_agregados_amajari")
+        payload_apisidra = _carrega_fixture("tabela_1685_n6_in_n3_14_roraima_2019.json")
+        df_apisidra = cempre.normalize_long(payload_apisidra, request_id="req_apisidra_roraima")
+        df_apisidra_amajari = df_apisidra[df_apisidra["codigo_municipio_ibge"] == "1400027"]
+
+        colunas = [
+            "codigo_municipio_ibge", "ano", "codigo_variavel_sidra",
+            "valor_bruto", "valor_numerico", "status_valor_api", "unidade",
+        ]
+        a = df_agregados[colunas].sort_values("codigo_variavel_sidra").reset_index(drop=True)
+        b = df_apisidra_amajari[colunas].sort_values("codigo_variavel_sidra").reset_index(drop=True)
+        pd.testing.assert_frame_equal(a, b, check_dtype=False)
+
+    # -- F: Pescaria Brava — "..." equivalente à fixture apisidra real --
+
+    def test_pescaria_brava_equivalente_a_fixture_apisidra(self) -> None:
+        df_agregados = cempre.normalize_long_agregados(
+            _payload_agregados_pescaria_brava(), request_id="req_agregados_pescaria",
+        )
+        payload_apisidra = _carrega_fixture(
+            "tabela_1685_n6_4212650_pescaria_brava_2007_2013_2019.json",
+        )
+        df_apisidra = cempre.normalize_long(payload_apisidra, request_id="req_apisidra_pescaria")
+        df_apisidra_2007 = df_apisidra[df_apisidra["ano"] == 2007]
+
+        colunas = [
+            "codigo_municipio_ibge", "ano", "codigo_variavel_sidra",
+            "valor_bruto", "valor_numerico", "status_valor_api",
+        ]
+        a = df_agregados[colunas].sort_values("codigo_variavel_sidra").reset_index(drop=True)
+        b = df_apisidra_2007[colunas].sort_values("codigo_variavel_sidra").reset_index(drop=True)
+        # valor_numerico é None em ambos os lados (indisponivel); a coluna
+        # "a" fica dtype object (todas as linhas None) enquanto "b" é uma
+        # fatia de uma coluna float64 (outros anos têm valor real) — mesmo
+        # significado lógico (ausência), representação de dtype diferente.
+        a["valor_numerico"] = a["valor_numerico"].astype(float)
+        b["valor_numerico"] = b["valor_numerico"].astype(float)
+        pd.testing.assert_frame_equal(a, b, check_dtype=False)
+
+    # -- P/Q: converge à long canônica e o downstream continua funcionando --
+
+    def test_long_agregados_converge_para_validate_long_e_reconcile_territorial(self) -> None:
+        df = cempre.normalize_long_agregados(_payload_agregados_amajari(), request_id="req_agregados_amajari")
+        df_validado, relatorio = cempre.validate_long(df)
+        self.assertTrue(relatorio["aprovado"])
+
+        calendario = pd.DataFrame([
+            {"codigo_municipio_ibge": "1400027", "ano": 2019, "municipio_existia_no_ano": True},
+        ])
+        df_reconciliada = cempre.reconcile_territorial(df_validado, calendario)
+        self.assertTrue({"status_territorial", "incompatibilidade_territorial"} <= set(df_reconciliada.columns))
+        self.assertTrue((df_reconciliada["status_territorial"] == "existia_no_ano").all())
+        self.assertFalse(df_reconciliada["incompatibilidade_territorial"].any())
+
+
+class TestIdentidadeFonteAgregados(unittest.TestCase):
+    """N: cache de fonte errada rejeitado. O: request_id/proveniência
+    distinguem as fontes."""
+
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.cache_dir = Path(self._tmpdir.name)
+
+    # -- O --
+
+    def test_request_id_distinto_entre_fontes_para_mesmo_lote_logico(self) -> None:
+        territorios = [{"tipo": "uf", "codigo": "14", "sigla": "RR"}]
+        r_apisidra = cempre.build_requests(anos=[2019], territorios=territorios, variaveis=[706, 707, 708])
+        r_agregados = cempre.build_requests_agregados(anos=[2019], territorios=territorios, variaveis=[706, 707, 708])
+        self.assertNotEqual(r_apisidra[0]["request_id"], r_agregados[0]["request_id"])
+        self.assertEqual(r_agregados[0]["fonte_api"], cempre.FONTE_API_AGREGADOS)
+        self.assertNotIn("fonte_api", r_apisidra[0])
+
+    def test_build_requests_agregados_e_deterministico(self) -> None:
+        territorios = [{"tipo": "uf", "codigo": "14", "sigla": "RR"}]
+        r1 = cempre.build_requests_agregados(anos=[2019], territorios=territorios, variaveis=[706, 707, 708])
+        r2 = cempre.build_requests_agregados(anos=[2019], territorios=territorios, variaveis=[706, 707, 708])
+        self.assertEqual(r1[0]["request_id"], r2[0]["request_id"])
+
+    # -- N --
+
+    def test_cache_apisidra_e_rejeitado_para_request_agregados(self) -> None:
+        request_id = "req_fonte_cruzada_1"
+        payload_amajari = _payload_agregados_amajari()
+        texto = json.dumps(payload_amajari)
+        hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+        cempre.save_cached_request(
+            request_id, texto_resposta_raw=texto, hash_resposta_raw=hash_resposta,
+            cache_dir=self.cache_dir, fonte_api=cempre.FONTE_API_SIDRA,
+        )
+        item_agregados = {
+            "request_id": request_id, "url": "https://example/fake",
+            "ano": 2019, "territorio": {"tipo": "municipio", "codigo": "1400027"},
+            "variaveis": [706, 707, 708], "fonte_api": cempre.FONTE_API_AGREGADOS,
+        }
+        resultados = cempre.load_results_from_cache([item_agregados], self.cache_dir)
+        self.assertIsNone(resultados[0]["resultado"])
+        self.assertIn("fonte_api", resultados[0]["erro"])
+
+    def test_cache_agregados_e_rejeitado_para_request_apisidra(self) -> None:
+        request_id = "req_fonte_cruzada_2"
+        payload_amajari = _payload_agregados_amajari()
+        texto = json.dumps(payload_amajari)
+        hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+        cempre.save_cached_request(
+            request_id, texto_resposta_raw=texto, hash_resposta_raw=hash_resposta,
+            cache_dir=self.cache_dir, fonte_api=cempre.FONTE_API_AGREGADOS,
+        )
+        item_apisidra = {
+            "request_id": request_id, "url": "https://example/fake",
+            "ano": 2019, "territorio": {"tipo": "municipio", "codigo": "1400027"},
+            "variaveis": [706, 707, 708],
+        }
+        resultados = cempre.load_results_from_cache([item_apisidra], self.cache_dir)
+        self.assertIsNone(resultados[0]["resultado"])
+        self.assertIn("fonte_api", resultados[0]["erro"])
+
+    def test_cache_agregados_genuino_e_aceito_para_request_agregados(self) -> None:
+        request_id = "req_fonte_correta"
+        payload_amajari = _payload_agregados_amajari()
+        texto = json.dumps(payload_amajari)
+        hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+        cempre.save_cached_request(
+            request_id, texto_resposta_raw=texto, hash_resposta_raw=hash_resposta,
+            cache_dir=self.cache_dir, fonte_api=cempre.FONTE_API_AGREGADOS,
+        )
+        item_agregados = {
+            "request_id": request_id, "url": "https://example/fake",
+            "ano": 2019, "territorio": {"tipo": "municipio", "codigo": "1400027"},
+            "variaveis": [706, 707, 708, 5944, 662, 10143], "fonte_api": cempre.FONTE_API_AGREGADOS,
+        }
+        resultados = cempre.load_results_from_cache([item_agregados], self.cache_dir)
+        self.assertIsNone(resultados[0]["erro"])
+        self.assertIsNotNone(resultados[0]["resultado"])
+
+    def test_cache_legado_sem_fonte_api_e_tratado_como_apisidra(self) -> None:
+        # Retrocompatibilidade: envelope gravado por código anterior ao D6
+        # nunca tem a chave "fonte_api" — precisa continuar sendo aceito
+        # como apisidra por um request que também não a declara.
+        request_id = "req_cache_legado"
+        payload_real = _carrega_fixture(
+            "tabela_1685_n6_3166600_serra_da_saudade_2007_2008_2009_2018_2019.json",
+        )
+        texto = json.dumps(payload_real)
+        hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+        envelope_legado = {"request_id": request_id, "hash_resposta_raw": hash_resposta, "texto_resposta_raw": texto}
+        cempre.cache_path_for_request(request_id, self.cache_dir).parent.mkdir(parents=True, exist_ok=True)
+        cempre.cache_path_for_request(request_id, self.cache_dir).write_text(
+            json.dumps(envelope_legado), encoding="utf-8",
+        )
+        item_apisidra = {"request_id": request_id, "url": "https://example/fake"}
+        resultado = cempre.load_results_from_cache([item_apisidra], self.cache_dir)[0]
+        self.assertIsNone(resultado["erro"])
+        self.assertIsNotNone(resultado["resultado"])
+
+
+class TestBindingAgregados(unittest.TestCase):
+    """I: 1606 opcional. J: variável obrigatória ausente. K: variável
+    extra. L: UF errada. M: ano errado."""
+
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.cache_dir = Path(self._tmpdir.name)
+
+    def _salva_cache_agregados(self, request_id: str, payload: list[dict]) -> None:
+        texto = json.dumps(payload)
+        hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+        cempre.save_cached_request(
+            request_id, texto_resposta_raw=texto, hash_resposta_raw=hash_resposta,
+            cache_dir=self.cache_dir, fonte_api=cempre.FONTE_API_AGREGADOS,
+        )
+
+    def _item(self, **overrides: Any) -> dict:
+        base = {
+            "request_id": "req_binding_agregados",
+            "url": "https://example/fake",
+            "ano": 2019,
+            "territorio": {"tipo": "municipio", "codigo": "1400027"},
+            "variaveis": sorted(cempre.VARIAVEIS_ESPERADAS),
+            "fonte_api": cempre.FONTE_API_AGREGADOS,
+        }
+        base.update(overrides)
+        return base
+
+    # -- I: 1606 opcional --
+
+    def test_1606_opcional_payload_sem_1606_e_aceito(self) -> None:
+        item = self._item()
+        self._salva_cache_agregados(item["request_id"], _payload_agregados_amajari())
+        resultado = cempre.load_results_from_cache([item], self.cache_dir)[0]
+        self.assertIsNone(resultado["erro"])
+        self.assertIsNotNone(resultado["resultado"])
+
+    # -- J: variável obrigatória ausente --
+
+    def test_variavel_obrigatoria_ausente_e_rejeitada(self) -> None:
+        payload = [bloco for bloco in _payload_agregados_amajari() if bloco["id"] != "662"]
+        item = self._item()
+        self._salva_cache_agregados(item["request_id"], payload)
+        resultado = cempre.load_results_from_cache([item], self.cache_dir)[0]
+        self.assertIsNone(resultado["resultado"])
+        self.assertIn("obrigat", resultado["erro"])
+        self.assertIn("662", resultado["erro"])
+
+    # -- K: variável extra rejeitada --
+
+    def test_variavel_extra_e_rejeitada(self) -> None:
+        item = self._item(variaveis=[708])
+        self._salva_cache_agregados(item["request_id"], _payload_agregados_amajari())
+        resultado = cempre.load_results_from_cache([item], self.cache_dir)[0]
+        self.assertIsNone(resultado["resultado"])
+        self.assertIn("fora do grupo", resultado["erro"])
+
+    # -- L: UF errada rejeitada --
+
+    def test_uf_errada_e_rejeitada(self) -> None:
+        item = self._item(territorio={"tipo": "uf", "codigo": "11", "sigla": "RO"}, variaveis=[706, 707, 708, 5944, 662, 10143])
+        self._salva_cache_agregados(item["request_id"], _payload_agregados_amajari())
+        resultado = cempre.load_results_from_cache([item], self.cache_dir)[0]
+        self.assertIsNone(resultado["resultado"])
+        self.assertIn("UF", resultado["erro"])
+
+    # -- M: ano errado rejeitado --
+
+    def test_ano_errado_e_rejeitado(self) -> None:
+        item = self._item(ano=2018, variaveis=[706, 707, 708, 5944, 662, 10143])
+        self._salva_cache_agregados(item["request_id"], _payload_agregados_amajari())
+        resultado = cempre.load_results_from_cache([item], self.cache_dir)[0]
+        self.assertIsNone(resultado["resultado"])
+        self.assertIn("ano", resultado["erro"])
+
+    # -- caso genuíno continua aceito --
+
+    def test_caso_genuino_continua_aceito(self) -> None:
+        item = self._item(variaveis=[706, 707, 708, 5944, 662, 10143])
+        self._salva_cache_agregados(item["request_id"], _payload_agregados_amajari())
+        resultado = cempre.load_results_from_cache([item], self.cache_dir)[0]
+        self.assertIsNone(resultado["erro"])
+        self.assertIsNotNone(resultado["resultado"])
+
+    # -- zero rede --
+
+    def test_binding_agregados_nunca_chama_rede(self) -> None:
+        item = self._item(variaveis=[706, 707, 708, 5944, 662, 10143])
+        self._salva_cache_agregados(item["request_id"], _payload_agregados_amajari())
+        with mock.patch.object(cempre, "fetch_request_agregados", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            resultado = cempre.load_results_from_cache([item], self.cache_dir)[0]
+        self.assertIsNone(resultado["erro"])
+
+
+class TestFetchRequestAgregados(unittest.TestCase):
+    """Espelha TestFetchRequestVinculacaoSemanticaVariaveis, mas para
+    fetch_request_agregados — schema/binding do agregados_v3, zero rede
+    real (sessão mockada)."""
+
+    def _spec(self, **overrides: Any) -> dict:
+        base = {
+            "request_id": "req_fetch_agregados",
+            "url": "https://servicodados.ibge.gov.br/api/v3/agregados/1685/fake",
+            "params": {}, "ano": 2019,
+            "territorio": {"tipo": "municipio", "codigo": "1400027"},
+            "variaveis": sorted(cempre.VARIAVEIS_ESPERADAS),
+            "fonte_tabela": cempre.FONTE_TABELA,
+            "fonte_api": cempre.FONTE_API_AGREGADOS,
+        }
+        base.update(overrides)
+        return base
+
+    def _mock_sessao(self, payload: list[dict]) -> mock.Mock:
+        resposta = mock.Mock()
+        resposta.status_code = 200
+        resposta.text = json.dumps(payload)
+        resposta.json.return_value = payload
+        sessao_mock = mock.Mock()
+        sessao_mock.get.return_value = resposta
+        return sessao_mock
+
+    def test_resposta_valida_e_sucesso_e_persiste_cache_com_fonte_correta(self) -> None:
+        spec = self._spec(variaveis=[706, 707, 708, 5944, 662, 10143])
+        sessao = self._mock_sessao(_payload_agregados_amajari())
+        with tempfile.TemporaryDirectory() as diretorio:
+            cache_dir = Path(diretorio)
+            resultado = cempre.fetch_request_agregados(
+                spec, session=sessao, cache_dir=cache_dir, max_retries=1, backoff_base=0.0,
+            )
+            self.assertIsNone(resultado["erro"])
+            self.assertIsNotNone(resultado["resultado"])
+            caminho = cempre.cache_path_for_request(spec["request_id"], cache_dir)
+            self.assertTrue(caminho.exists())
+            envelope = json.loads(caminho.read_text(encoding="utf-8"))
+            self.assertEqual(envelope["fonte_api"], cempre.FONTE_API_AGREGADOS)
+        self.assertEqual(sessao.get.call_count, 1)
+
+    def test_payload_parcial_nao_e_sucesso_e_nao_cria_cache(self) -> None:
+        spec = self._spec()  # espera as 7 variáveis
+        payload_parcial = [_payload_agregados_amajari()[2]]  # só 708
+        sessao = self._mock_sessao(payload_parcial)
+        with tempfile.TemporaryDirectory() as diretorio:
+            cache_dir = Path(diretorio)
+            resultado = cempre.fetch_request_agregados(
+                spec, session=sessao, cache_dir=cache_dir, max_retries=1, backoff_base=0.0,
+            )
+            self.assertIsNone(resultado["resultado"])
+            self.assertIn("obrigat", resultado["erro"])
+            self.assertFalse(cempre.cache_path_for_request(spec["request_id"], cache_dir).exists())
+        self.assertEqual(sessao.get.call_count, 1)
+
+    def test_schema_invalido_nao_e_sucesso(self) -> None:
+        spec = self._spec()
+        sessao = self._mock_sessao([{"id": "708"}])  # sem 'resultados'
+        resultado = cempre.fetch_request_agregados(spec, session=sessao, max_retries=1, backoff_base=0.0)
+        self.assertIsNone(resultado["resultado"])
+        self.assertIsNotNone(resultado["erro"])
+
+    def test_zero_rede_real_apenas_sessao_mockada(self) -> None:
+        spec = self._spec(variaveis=[706, 707, 708, 5944, 662, 10143])
+        sessao = self._mock_sessao(_payload_agregados_amajari())
+        with mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            resultado = cempre.fetch_request_agregados(spec, session=sessao, max_retries=1, backoff_base=0.0)
+        self.assertIsNotNone(resultado["resultado"])
+
+
 if __name__ == "__main__":
     unittest.main()

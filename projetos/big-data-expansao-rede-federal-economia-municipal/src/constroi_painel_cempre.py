@@ -67,6 +67,21 @@ VARIAVEIS_ESPERADAS: set[int] = {706, 707, 708, 5944, 662, 1606, 10143}
 VARIAVEIS_OBRIGATORIAS: set[int] = {706, 707, 708, 5944, 662, 10143}
 VARIAVEL_OUTCOME_PRIMARIO = 708
 
+# ---------------------------------------------------------------------------
+# D6 — identidade explícita da fonte (apisidra legado vs. API oficial de
+# Dados Agregados do IBGE, "agregados_v3"). A auditoria focal de
+# equivalência (docs/data — probes reais, ver ESTADO_ATUAL.md) confirmou
+# equivalência semântica suficiente para implementar um adaptador; as duas
+# fontes NUNCA compartilham cache entre si (seção 9 do D6) mesmo que
+# describam o mesmo lote lógico (ano/UF/variáveis) — ver `fonte_api` no
+# envelope de cache (`save_cached_request`/`load_cached_request`) e nos
+# `request_id` distintos gerados por `build_requests` vs.
+# `build_requests_agregados`.
+# ---------------------------------------------------------------------------
+FONTE_API_SIDRA = "apisidra"
+FONTE_API_AGREGADOS = "agregados_v3"
+AGREGADOS_BASE_URL = "https://servicodados.ibge.gov.br/api/v3/agregados"
+
 STATUS_VALOR_API_COM_NUMERO = {
     "observado", "zero_real", "zero_arredondado", "zero_arredondado_negativo",
 }
@@ -272,6 +287,188 @@ def normalize_long(
     return pd.DataFrame(linhas, columns=_COLUNAS_LONG)
 
 
+# ---------------------------------------------------------------------------
+# D6 — adaptador da API oficial de Dados Agregados do IBGE ("agregados_v3")
+# para o CEMPRE/Tabela 1685. Fonte PARALELA e EXPLICITAMENTE DISTINTA da
+# apisidra legada (seção 1/2 do D6) — não substitui, não reescreve e não
+# finge ser `validate_sidra_payload`/`normalize_long`. As duas fontes
+# convergem para a MESMA long canônica (`_COLUNAS_LONG`), reutilizando
+# `parse_sidra_value` sem duplicar o parser de símbolos/valores.
+#
+# Schema real observado (probes da auditoria de equivalência, ver
+# ESTADO_ATUAL.md — Amajari/RR 2019, Pescaria Brava/SC 2007):
+#
+#   [
+#     {"id": "<variavel>", "variavel": "<nome>", "unidade": "<unidade>",
+#      "resultados": [
+#        {"classificacoes": [],
+#         "series": [
+#           {"localidade": {"id": "<municipio>", "nivel": {"id": "N6", ...},
+#                           "nome": "<nome> (<UF>)"},
+#            "serie": {"<ano>": "<valor bruto textual>", ...}}
+#         ]}
+#      ]}
+#   ]
+# ---------------------------------------------------------------------------
+
+_CAMPOS_OBRIGATORIOS_BLOCO_AGREGADOS = {"id", "variavel", "unidade", "resultados"}
+_CAMPOS_OBRIGATORIOS_SERIE_ENTRY_AGREGADOS = {"localidade", "serie"}
+_CAMPOS_OBRIGATORIOS_LOCALIDADE_AGREGADOS = {"id", "nivel"}
+
+
+def validate_agregados_payload(payload: Any) -> tuple[bool, str | None]:
+    """Valida a forma estrutural do payload da API de Dados Agregados do
+    IBGE (`servicodados.ibge.gov.br/api/v3/agregados`) para o agregado
+    1685 (D6, seção 4) — baseado exatamente no schema observado nos probes
+    reais da auditoria de equivalência, não presumido de memória.
+
+    Contrato mínimo por bloco de variável: `id` (código), `variavel`
+    (nome), `unidade`, `resultados` (lista, pode ser vazia — uma UF/ano
+    sem nenhuma localidade correspondente é uma cobertura vazia, não um
+    erro de schema). Cada `resultado.series` precisa ter `localidade`
+    (com `id` e `nivel`) e `serie` (dict ano→valor textual). Retorna
+    `(valido, motivo)`, com `motivo` específico o suficiente para
+    diagnóstico quando inválido — nunca aceita silenciosamente uma forma
+    diferente da observada.
+    """
+    if not isinstance(payload, list):
+        return False, f"payload não é uma lista (tipo recebido: {type(payload).__name__})"
+
+    if len(payload) == 0:
+        return False, "payload é uma lista vazia ([]) — não é sucesso para um request obrigatório"
+
+    n_series_totais = 0
+    for indice_bloco, bloco in enumerate(payload):
+        if not isinstance(bloco, dict):
+            return False, f"bloco de variável no índice {indice_bloco} não é um dicionário (tipo: {type(bloco).__name__})"
+
+        campos_faltantes = _CAMPOS_OBRIGATORIOS_BLOCO_AGREGADOS - bloco.keys()
+        if campos_faltantes:
+            return False, f"bloco de variável no índice {indice_bloco} sem campo(s) obrigatório(s): {sorted(campos_faltantes)}"
+
+        resultados = bloco["resultados"]
+        if not isinstance(resultados, list):
+            return False, f"bloco de variável no índice {indice_bloco}: 'resultados' não é uma lista"
+
+        for indice_resultado, resultado in enumerate(resultados):
+            if not isinstance(resultado, dict) or "series" not in resultado:
+                return False, (
+                    f"bloco de variável no índice {indice_bloco}, resultado {indice_resultado} "
+                    "sem campo 'series' ou não é um dicionário"
+                )
+            series = resultado["series"]
+            if not isinstance(series, list):
+                return False, f"bloco de variável no índice {indice_bloco}, resultado {indice_resultado}: 'series' não é uma lista"
+
+            for indice_serie, serie_entry in enumerate(series):
+                if not isinstance(serie_entry, dict):
+                    return False, (
+                        f"bloco {indice_bloco}, resultado {indice_resultado}, série {indice_serie} "
+                        f"não é um dicionário (tipo: {type(serie_entry).__name__})"
+                    )
+                campos_faltantes_serie = _CAMPOS_OBRIGATORIOS_SERIE_ENTRY_AGREGADOS - serie_entry.keys()
+                if campos_faltantes_serie:
+                    return False, (
+                        f"bloco {indice_bloco}, resultado {indice_resultado}, série {indice_serie} "
+                        f"sem campo(s) obrigatório(s): {sorted(campos_faltantes_serie)}"
+                    )
+                localidade = serie_entry["localidade"]
+                if not isinstance(localidade, dict):
+                    return False, f"bloco {indice_bloco}, resultado {indice_resultado}, série {indice_serie}: 'localidade' não é um dicionário"
+                campos_faltantes_localidade = _CAMPOS_OBRIGATORIOS_LOCALIDADE_AGREGADOS - localidade.keys()
+                if campos_faltantes_localidade:
+                    return False, (
+                        f"bloco {indice_bloco}, resultado {indice_resultado}, série {indice_serie}: "
+                        f"localidade sem campo(s) obrigatório(s): {sorted(campos_faltantes_localidade)}"
+                    )
+                serie_valores = serie_entry["serie"]
+                if not isinstance(serie_valores, dict):
+                    return False, f"bloco {indice_bloco}, resultado {indice_resultado}, série {indice_serie}: 'serie' não é um dicionário"
+                n_series_totais += 1
+
+    if n_series_totais == 0:
+        return False, "payload não contém nenhuma série de dados (todo bloco tem 'resultados' vazio)"
+
+    return True, None
+
+
+def normalize_long_agregados(
+    raw_response: Any,
+    request_id: str,
+    fonte_tabela: int = FONTE_TABELA,
+    data_extracao: str | None = None,
+    hash_resposta_raw: str | None = None,
+    versao_metadados: str | None = None,
+) -> pd.DataFrame:
+    """Traduz a resposta bruta da API de Dados Agregados do IBGE
+    diretamente para a MESMA long canônica produzida por `normalize_long`
+    (D6, seção 5) — nenhum campo apisidra (`D1C`/`D2C`/`D3C`/`V`) é
+    fabricado artificialmente; o mapeamento é direto a partir do schema
+    real:
+
+        localidade.id    -> codigo_municipio_ibge
+        localidade.nome  -> municipio_fonte
+        bloco.id         -> codigo_variavel_sidra
+        bloco.variavel   -> nome_variavel
+        bloco.unidade    -> unidade
+        chave de `serie` -> ano
+        valor de `serie` -> valor_bruto
+
+    Reutiliza `parse_sidra_value` (sem duplicar parser) — o valor bruto da
+    API de Dados Agregados já preserva os mesmos símbolos/formatos
+    observados na apisidra (comprovado empiricamente para `"..."`; demais
+    símbolos ainda sem evidência real, mas tratados pelo mesmo parser caso
+    apareçam). Levanta `ValueError` para código municipal, ano ou variável
+    fora do contrato — mesma política de `normalize_long`, nunca preserva
+    silenciosamente uma forma inesperada.
+    """
+    valido, motivo = validate_agregados_payload(raw_response)
+    if not valido:
+        raise ValueError(f"payload agregados_v3 estruturalmente inválido: {motivo}")
+
+    linhas: list[dict[str, Any]] = []
+    for bloco in raw_response:
+        variavel = int(bloco["id"])
+        if variavel not in VARIAVEIS_ESPERADAS:
+            raise ValueError(f"código de variável não esperado: {variavel}")
+
+        for resultado in bloco["resultados"]:
+            for serie_entry in resultado["series"]:
+                localidade = serie_entry["localidade"]
+                codigo = str(localidade["id"]).strip()
+                if not _RE_CODIGO_MUNICIPIO.match(codigo):
+                    raise ValueError(f"código municipal inválido em localidade.id: {codigo!r}")
+
+                for ano_str, valor in serie_entry["serie"].items():
+                    ano = int(ano_str)
+                    if not (ANO_MIN <= ano <= ANO_MAX):
+                        raise ValueError(f"ano fora da janela {ANO_MIN}-{ANO_MAX}: {ano}")
+
+                    valor_bruto = str(valor)
+                    status_valor_api, valor_numerico = parse_sidra_value(valor_bruto)
+
+                    linhas.append({
+                        "codigo_municipio_ibge": codigo,
+                        "ano": ano,
+                        "codigo_variavel_sidra": variavel,
+                        "municipio_fonte": localidade.get("nome"),
+                        "uf_fonte": None,
+                        "nome_variavel": bloco.get("variavel"),
+                        "unidade": bloco.get("unidade"),
+                        "valor_bruto": valor_bruto,
+                        "valor_numerico": valor_numerico,
+                        "status_valor_api": status_valor_api,
+                        "fonte_tabela": fonte_tabela,
+                        "request_id": request_id,
+                        "data_extracao": data_extracao,
+                        "hash_resposta_raw": hash_resposta_raw,
+                        "versao_metadados": versao_metadados,
+                        "observacao_status": None if status_valor_api != "desconhecido" else "símbolo não reconhecido",
+                    })
+
+    return pd.DataFrame(linhas, columns=_COLUNAS_LONG)
+
+
 _COLUNAS_CALENDARIO_OBRIGATORIAS = {
     "codigo_municipio_ibge", "ano", "municipio_existia_no_ano",
 }
@@ -449,6 +646,64 @@ def build_requests(
                 "territorio": territorio,
                 "variaveis": variaveis_ordenadas,
                 "fonte_tabela": fonte_tabela,
+            })
+    return requests_spec
+
+
+def _localidade_agregados(territorio: dict[str, str]) -> str:
+    if territorio["tipo"] == "municipio":
+        return f"N6[{territorio['codigo']}]"
+    if territorio["tipo"] == "uf":
+        return f"N6[N3[{territorio['codigo']}]]"
+    raise ValueError(f"tipo de território não suportado: {territorio['tipo']!r}")
+
+
+def build_requests_agregados(
+    anos: list[int],
+    territorios: list[dict[str, str]],
+    variaveis: list[int],
+    fonte_tabela: int = FONTE_TABELA,
+) -> list[dict[str, Any]]:
+    """Monta as requisições candidatas para a API de Dados Agregados do
+    IBGE (D6, seção 3) — MESMA granularidade lógica nacional já aprovada
+    em `build_requests`/D1 (ano × UF/município × grupo de variáveis); não
+    muda a estratégia de segmentação, só o schema/URL da fonte nova.
+
+    `request_id` é deliberadamente derivado de um texto canônico
+    DIFERENTE do de `build_requests` (prefixado por `FONTE_API_AGREGADOS`)
+    — isso garante que o mesmo lote lógico (mesmo ano/UF/variáveis) nunca
+    produza o mesmo `request_id`/caminho de cache que a apisidra (D6,
+    seção 2): as duas fontes nunca colidem fisicamente no mesmo arquivo de
+    cache, mesmo antes de qualquer checagem de `fonte_api` no envelope
+    (`save_cached_request`/`load_cached_request`). Cada item inclui
+    explicitamente `"fonte_api": FONTE_API_AGREGADOS`, usado por
+    `_resultado_a_partir_do_cache`/`_validar_resultado_corresponde_request`
+    para despachar validação/extração pelo schema correto.
+    """
+    variaveis_ordenadas = sorted(variaveis)
+    variaveis_url = "%7C".join(str(v) for v in variaveis_ordenadas)
+    requests_spec: list[dict[str, Any]] = []
+    for territorio in territorios:
+        localidade = _localidade_agregados(territorio)
+        for ano in anos:
+            chave = (
+                f"{FONTE_API_AGREGADOS}|{fonte_tabela}|{localidade}|"
+                f"{','.join(map(str, variaveis_ordenadas))}|{ano}"
+            )
+            request_id = hashlib.sha256(chave.encode("utf-8")).hexdigest()[:16]
+            url = (
+                f"{AGREGADOS_BASE_URL}/{fonte_tabela}/periodos/{ano}/variaveis/{variaveis_url}"
+                f"?localidades={localidade}"
+            )
+            requests_spec.append({
+                "request_id": request_id,
+                "url": url,
+                "params": {},
+                "ano": ano,
+                "territorio": territorio,
+                "variaveis": variaveis_ordenadas,
+                "fonte_tabela": fonte_tabela,
+                "fonte_api": FONTE_API_AGREGADOS,
             })
     return requests_spec
 
@@ -797,10 +1052,18 @@ def save_cached_request(
     texto_resposta_raw: str,
     hash_resposta_raw: str,
     cache_dir: Path = CACHE_DIR,
+    fonte_api: str = FONTE_API_SIDRA,
 ) -> Path:
     """Persiste a resposta bruta (texto exato + hash) em disco, indexada
     por `request_id`. Salva o TEXTO, não o JSON já parseado, para que a
     integridade possa ser reverificada byte a byte no carregamento.
+
+    `fonte_api` (D6, seção 9) identifica qual API produziu esta resposta
+    (`FONTE_API_SIDRA` ou `FONTE_API_AGREGADOS`) e é gravada no envelope —
+    proveniência explícita, não inferida da URL. O padrão é
+    `FONTE_API_SIDRA` para preservar retrocompatibilidade: todo chamador
+    existente (D0-D5) que não passa `fonte_api` continua produzindo
+    exatamente o mesmo envelope de antes, apenas com o campo adicional.
     """
     cache_dir = Path(cache_dir)
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -809,18 +1072,32 @@ def save_cached_request(
         "request_id": request_id,
         "hash_resposta_raw": hash_resposta_raw,
         "texto_resposta_raw": texto_resposta_raw,
+        "fonte_api": fonte_api,
     }
     caminho.write_text(json.dumps(envelope, ensure_ascii=False), encoding="utf-8")
     return caminho
 
 
-def load_cached_request(request_id: str, cache_dir: Path = CACHE_DIR) -> dict[str, Any] | None:
+def load_cached_request(
+    request_id: str,
+    cache_dir: Path = CACHE_DIR,
+    fonte_api_esperada: str | None = None,
+) -> dict[str, Any] | None:
     """Carrega a resposta em cache para `request_id`. Retorna `None` em
     cache miss (arquivo inexistente). Levanta `ValueError` se o cache
     existir mas estiver corrompido (JSON do envelope inválido, campos
     ausentes, hash não confere ou texto da resposta não é JSON válido) —
     corrupção NUNCA é aceita silenciosamente nem cai de volta para a rede
     automaticamente: quem chama decide o que fazer com o erro.
+
+    `fonte_api_esperada` (D6, seção 9): quando informado, o `fonte_api`
+    registrado no envelope precisa ser EXATAMENTE esse valor — cache
+    produzido por `agregados_v3` nunca é aceito para um request de
+    `apisidra`, e vice-versa, mesmo com hash/schema internamente
+    consistentes. `None` (padrão) pula essa checagem — retrocompatível com
+    cache legado gravado antes do D6, que é tratado como `FONTE_API_SIDRA`
+    quando o campo `fonte_api` está ausente do envelope (nunca inventa uma
+    fonte que o envelope não declarou).
     """
     caminho = cache_path_for_request(request_id, cache_dir)
     if not caminho.exists():
@@ -848,6 +1125,16 @@ def load_cached_request(request_id: str, cache_dir: Path = CACHE_DIR) -> dict[st
         raise ValueError(
             f"cache corrompido para request_id={request_id} ({caminho}): request_id do envelope "
             f"({request_id_no_envelope!r}) diverge do request_id esperado ({request_id!r})"
+        )
+
+    # Barreira de proveniência entre fontes (D6, seção 9): cache legado sem
+    # `fonte_api` é tratado como FONTE_API_SIDRA (nunca inventa uma fonte
+    # nova para um envelope antigo).
+    fonte_api_no_envelope = envelope.get("fonte_api", FONTE_API_SIDRA)
+    if fonte_api_esperada is not None and fonte_api_no_envelope != fonte_api_esperada:
+        raise ValueError(
+            f"cache corrompido para request_id={request_id} ({caminho}): fonte_api do envelope "
+            f"({fonte_api_no_envelope!r}) diverge da fonte esperada ({fonte_api_esperada!r})"
         )
 
     texto_resposta = envelope["texto_resposta_raw"]
@@ -912,6 +1199,63 @@ def _variaveis_do_payload(payload: list[dict[str, Any]]) -> set[int]:
     return variaveis
 
 
+def _sinais_payload_agregados(payload: list[Any]) -> tuple[set[int], set[str], set[int]]:
+    """Extrai (anos, códigos municipais, variáveis) de um payload da API de
+    Dados Agregados (schema `agregados_v3`, D6) — equivalente semântico de
+    `_anos_do_payload`/`_codigos_municipio_do_payload`/`_variaveis_do_payload`
+    para o schema aninhado (`bloco.id`, `bloco.resultados[].series[].localidade.id`,
+    `.serie` com anos como chaves). Tolerante a valores não conversíveis,
+    mesma política das funções equivalentes da apisidra — problema de
+    schema é responsabilidade de `validate_agregados_payload`/
+    `normalize_long_agregados`, não desta checagem de vinculação semântica.
+    """
+    anos: set[int] = set()
+    codigos: set[str] = set()
+    variaveis: set[int] = set()
+    for bloco in payload:
+        if not isinstance(bloco, dict):
+            continue
+        try:
+            variaveis.add(int(bloco["id"]))
+        except (KeyError, TypeError, ValueError):
+            pass
+        for resultado in bloco.get("resultados") or []:
+            if not isinstance(resultado, dict):
+                continue
+            for serie_entry in resultado.get("series") or []:
+                if not isinstance(serie_entry, dict):
+                    continue
+                localidade = serie_entry.get("localidade") or {}
+                codigo = str(localidade.get("id", "")).strip()
+                if codigo:
+                    codigos.add(codigo)
+                for ano_str in (serie_entry.get("serie") or {}):
+                    try:
+                        anos.add(int(ano_str))
+                    except (TypeError, ValueError):
+                        continue
+    return anos, codigos, variaveis
+
+
+def _extrair_sinais_semanticos_payload(
+    item_esperado: dict[str, Any],
+    payload: list[Any],
+) -> tuple[set[int], set[str], set[int]]:
+    """Despacha a extração de (anos, códigos municipais, variáveis) pelo
+    formato REAL da fonte (`item_esperado.get("fonte_api")`, D6, seção 7)
+    — `FONTE_API_SIDRA` por padrão, retrocompatível com todo spec/plano
+    que nunca declarou `fonte_api` (D0-D5).
+
+    É a ÚNICA função que sabe "abrir" cada um dos dois schemas; a regra
+    substantiva de vinculação em `_validar_resultado_corresponde_request`
+    (ano/território/variáveis obrigatórias) permanece ÚNICA e não sabe
+    nada sobre o formato de origem — nenhuma duplicação da regra.
+    """
+    if item_esperado.get("fonte_api", FONTE_API_SIDRA) == FONTE_API_AGREGADOS:
+        return _sinais_payload_agregados(payload)
+    return _anos_do_payload(payload), _codigos_municipio_do_payload(payload), _variaveis_do_payload(payload)
+
+
 def _validar_resultado_corresponde_request(
     item_esperado: dict[str, Any],
     payload: Any,
@@ -919,14 +1263,19 @@ def _validar_resultado_corresponde_request(
     """Vinculação semântica RESULTADO/CACHE ↔ REQUEST ESPERADO (bloqueador
     da auditoria integrada D1-D4, pré-extração nacional).
 
-    Integridade/hash (`load_cached_request`) e schema (`validate_sidra_payload`)
-    sozinhos NÃO bastam: um payload estruturalmente válido de outro lote
-    (outro ano, outra UF/território ou outro grupo de variáveis) pode ser
-    estruturalmente idêntico a um payload válido e ainda assim pertencer a
-    um request diferente. Esta função confirma que o CONTEÚDO do payload é
-    semanticamente compatível com o `item_esperado` (plano/spec de
-    request: `ano`, `territorio`, `variaveis`) — não apenas que passou na
-    validação estrutural.
+    Integridade/hash (`load_cached_request`) e schema (`validate_sidra_payload`/
+    `validate_agregados_payload`) sozinhos NÃO bastam: um payload
+    estruturalmente válido de outro lote (outro ano, outra UF/território
+    ou outro grupo de variáveis) pode ser estruturalmente idêntico a um
+    payload válido e ainda assim pertencer a um request diferente. Esta
+    função confirma que o CONTEÚDO do payload é semanticamente compatível
+    com o `item_esperado` (plano/spec de request: `ano`, `territorio`,
+    `variaveis`) — não apenas que passou na validação estrutural.
+
+    Funciona igualmente para as duas fontes (D6, seção 7): a extração dos
+    sinais (`_extrair_sinais_semanticos_payload`) despacha pelo schema
+    real via `fonte_api`; a regra de comparação abaixo é ÚNICA e nunca
+    duplicada entre apisidra e agregados_v3.
 
     Não recebe request_id porque a barreira de request_id já é aplicada
     separadamente em `load_cached_request` (envelope↔request_id). Esta
@@ -958,9 +1307,12 @@ def _validar_resultado_corresponde_request(
     if not isinstance(payload, list):
         return True, None
 
+    anos_payload, codigos_municipio_payload, variaveis_payload = _extrair_sinais_semanticos_payload(
+        item_esperado, payload,
+    )
+
     ano_esperado = item_esperado.get("ano")
     if ano_esperado is not None:
-        anos_payload = _anos_do_payload(payload)
         if anos_payload and anos_payload != {ano_esperado}:
             return False, (
                 f"payload pertence a ano(s) {sorted(anos_payload)}, mas o request esperado é "
@@ -969,7 +1321,6 @@ def _validar_resultado_corresponde_request(
 
     territorio_esperado = item_esperado.get("territorio") or {}
     tipo_territorio = territorio_esperado.get("tipo")
-    codigos_municipio_payload = _codigos_municipio_do_payload(payload)
     if tipo_territorio == "uf":
         codigo_uf_esperado = str(territorio_esperado.get("codigo", ""))
         ufs_payload = {codigo[:2] for codigo in codigos_municipio_payload if len(codigo) == 7}
@@ -992,8 +1343,6 @@ def _validar_resultado_corresponde_request(
 
     variaveis_esperadas = set(item_esperado.get("variaveis") or [])
     if variaveis_esperadas:
-        variaveis_payload = _variaveis_do_payload(payload)
-
         variaveis_fora_do_grupo = variaveis_payload - variaveis_esperadas
         if variaveis_fora_do_grupo:
             return False, (
@@ -1045,8 +1394,9 @@ def _resultado_a_partir_do_cache(
     """
     request_id = item_esperado["request_id"]
     url = item_esperado.get("url")
+    fonte_api = item_esperado.get("fonte_api", FONTE_API_SIDRA)
     try:
-        em_cache = load_cached_request(request_id, cache_dir)
+        em_cache = load_cached_request(request_id, cache_dir, fonte_api_esperada=fonte_api)
     except ValueError as exc:
         logger.error("request_id=%s cache corrompido: %s", request_id, exc)
         return {
@@ -1058,7 +1408,12 @@ def _resultado_a_partir_do_cache(
     if em_cache is None:
         return None, True
 
-    valido, motivo = validate_sidra_payload(em_cache["resultado"])
+    # Validação estrutural despachada pela fonte (D6, seção 9) — cada API
+    # tem seu próprio contrato de schema; a vinculação semântica abaixo
+    # (`_validar_resultado_corresponde_request`) já sabe lidar com os dois
+    # formatos sem duplicar a regra substantiva.
+    validador_payload = validate_agregados_payload if fonte_api == FONTE_API_AGREGADOS else validate_sidra_payload
+    valido, motivo = validador_payload(em_cache["resultado"])
     if not valido:
         logger.error("request_id=%s payload em cache é inválido: %s", request_id, motivo)
         return {
@@ -1231,6 +1586,155 @@ def fetch_request(
             time.sleep(backoff_base * (2 ** (tentativa - 1)))
 
     logger.error("request_id=%s falha persistente após %d tentativas", spec["request_id"], max_retries)
+    return {
+        "request_id": spec["request_id"],
+        "url": spec["url"],
+        "tentativas": max_retries,
+        "status_http": ultima_resposta_http,
+        "tamanho": None,
+        "hash_resposta_raw": None,
+        "resultado": None,
+        "erro": ultimo_erro,
+        "de_cache": False,
+    }
+
+
+def fetch_request_agregados(
+    spec: dict[str, Any],
+    session: requests.Session | None = None,
+    timeout: float = 15.0,
+    max_retries: int = 3,
+    backoff_base: float = 1.0,
+    cache_dir: Path | None = None,
+) -> dict[str, Any]:
+    """Executa uma requisição contra a API de Dados Agregados do IBGE
+    (`agregados_v3`) para o CEMPRE/Tabela 1685 (D6, seção 8) — espelha o
+    contrato e a política de retry/backoff de `fetch_request` (D0), mas
+    valida contra o schema real observado da fonte nova
+    (`validate_agregados_payload`) em vez do schema apisidra.
+
+    `spec` DEVE trazer `"fonte_api": FONTE_API_AGREGADOS` (ver
+    `build_requests_agregados`) — usado tanto para reaproveitar cache
+    (`_resultado_a_partir_do_cache`, que despacha a validação/binding pela
+    fonte) quanto para gravar a proveniência correta no envelope
+    (`save_cached_request`). Um `spec` sem `fonte_api` seria tratado como
+    `FONTE_API_SIDRA` por todo o resto do pipeline — por isso esta função
+    nunca inventa um padrão diferente do que o `spec` declarar
+    explicitamente.
+
+    Só é sucesso: HTTP 200 + JSON válido + payload estruturalmente válido
+    (`validate_agregados_payload`) + payload semanticamente vinculado ao
+    `spec` (`_validar_resultado_corresponde_request`, mesma regra
+    substantiva da apisidra, despachada pelo schema novo). Ambas as
+    falhas são tratadas como permanentes (sem gastar retries — retry não
+    conserta schema alterado nem payload de outro lote); erro de
+    decodificação JSON continua sendo tentado novamente, por ser
+    potencialmente transitório. `save_cached_request` só é chamado DEPOIS
+    da vinculação semântica passar, com `fonte_api=FONTE_API_AGREGADOS` —
+    uma resposta nova semanticamente incompatível nunca é persistida como
+    cache válido, e nunca é persistida sob a fonte errada.
+    """
+    if cache_dir is not None:
+        resultado_cache, ausente = _resultado_a_partir_do_cache(spec, cache_dir)
+        if not ausente:
+            return resultado_cache
+
+    fonte_api = spec.get("fonte_api", FONTE_API_AGREGADOS)
+    sess = session or requests
+    ultima_resposta_http: int | None = None
+    ultimo_erro: str | None = None
+
+    for tentativa in range(1, max_retries + 1):
+        inicio = time.monotonic()
+        try:
+            resp = sess.get(spec["url"], params=spec.get("params", {}), timeout=timeout)
+        except Exception as exc:  # noqa: BLE001 — falha de rede é um resultado válido a registrar, não um bug
+            ultimo_erro = str(exc)
+            logger.warning("request_id=%s tentativa=%d falhou (agregados_v3): %s", spec["request_id"], tentativa, exc)
+            if tentativa < max_retries:
+                time.sleep(backoff_base * (2 ** (tentativa - 1)))
+            continue
+
+        duracao = time.monotonic() - inicio
+        ultima_resposta_http = resp.status_code
+        texto = resp.text
+
+        if resp.status_code == 200:
+            hash_resposta = hashlib.sha256(texto.encode("utf-8")).hexdigest()
+            try:
+                dados = resp.json()
+            except Exception as exc:  # noqa: BLE001 — resposta corrompida/truncada é potencialmente transitória
+                ultimo_erro = f"JSON inválido: {exc}"
+                logger.warning(
+                    "request_id=%s tentativa=%d HTTP 200 mas JSON inválido (agregados_v3): %s",
+                    spec["request_id"], tentativa, exc,
+                )
+                if tentativa < max_retries:
+                    time.sleep(backoff_base * (2 ** (tentativa - 1)))
+                continue
+
+            valido, motivo = validate_agregados_payload(dados)
+            if not valido:
+                ultimo_erro = f"payload estruturalmente inválido: {motivo}"
+                logger.error("request_id=%s HTTP 200 mas payload agregados_v3 inválido: %s", spec["request_id"], motivo)
+                return {
+                    "request_id": spec["request_id"],
+                    "url": spec["url"],
+                    "tentativas": tentativa,
+                    "status_http": resp.status_code,
+                    "tamanho": len(texto),
+                    "hash_resposta_raw": hash_resposta,
+                    "resultado": None,
+                    "erro": ultimo_erro,
+                    "de_cache": False,
+                }
+
+            correspondente, motivo_incompatibilidade = _validar_resultado_corresponde_request(spec, dados)
+            if not correspondente:
+                ultimo_erro = f"payload semanticamente incompatível com o request esperado: {motivo_incompatibilidade}"
+                logger.error(
+                    "request_id=%s HTTP 200 mas payload agregados_v3 semanticamente incompatível: %s",
+                    spec["request_id"], motivo_incompatibilidade,
+                )
+                return {
+                    "request_id": spec["request_id"],
+                    "url": spec["url"],
+                    "tentativas": tentativa,
+                    "status_http": resp.status_code,
+                    "tamanho": len(texto),
+                    "hash_resposta_raw": hash_resposta,
+                    "resultado": None,
+                    "erro": ultimo_erro,
+                    "de_cache": False,
+                }
+
+            logger.info(
+                "request_id=%s sucesso (agregados_v3) tentativa=%d duracao=%.3fs tamanho=%d",
+                spec["request_id"], tentativa, duracao, len(texto),
+            )
+            if cache_dir is not None:
+                save_cached_request(spec["request_id"], texto, hash_resposta, cache_dir, fonte_api=fonte_api)
+            return {
+                "request_id": spec["request_id"],
+                "url": spec["url"],
+                "tentativas": tentativa,
+                "status_http": resp.status_code,
+                "tamanho": len(texto),
+                "hash_resposta_raw": hash_resposta,
+                "resultado": dados,
+                "erro": None,
+                "de_cache": False,
+            }
+        else:
+            logger.warning(
+                "request_id=%s tentativa=%d HTTP %s (agregados_v3)", spec["request_id"], tentativa, resp.status_code,
+            )
+            ultimo_erro = f"HTTP {resp.status_code}"
+
+        if tentativa < max_retries:
+            time.sleep(backoff_base * (2 ** (tentativa - 1)))
+
+    logger.error("request_id=%s falha persistente após %d tentativas (agregados_v3)", spec["request_id"], max_retries)
     return {
         "request_id": spec["request_id"],
         "url": spec["url"],

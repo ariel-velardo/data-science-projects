@@ -1,0 +1,122 @@
+[
+  {
+    "id": "706",
+    "variavel": "Número de unidades locais",
+    "unidade": "Unidades",
+    "resultados": [
+      {
+        "classificacoes": [],
+        "series": [
+          {
+            "localidade": {
+              "id": "4212650",
+              "nivel": { "id": "N6", "nome": "Município" },
+              "nome": "Pescaria Brava (SC)"
+            },
+            "serie": { "2007": "..." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "707",
+    "variavel": "Pessoal ocupado total",
+    "unidade": "Pessoas",
+    "resultados": [
+      {
+        "classificacoes": [],
+        "series": [
+          {
+            "localidade": {
+              "id": "4212650",
+              "nivel": { "id": "N6", "nome": "Município" },
+              "nome": "Pescaria Brava (SC)"
+            },
+            "serie": { "2007": "..." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "708",
+    "variavel": "Pessoal ocupado assalariado",
+    "unidade": "Pessoas",
+    "resultados": [
+      {
+        "classificacoes": [],
+        "series": [
+          {
+            "localidade": {
+              "id": "4212650",
+              "nivel": { "id": "N6", "nome": "Município" },
+              "nome": "Pescaria Brava (SC)"
+            },
+            "serie": { "2007": "..." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "5944",
+    "variavel": "Pessoal assalariado médio",
+    "unidade": "Pessoas",
+    "resultados": [
+      {
+        "classificacoes": [],
+        "series": [
+          {
+            "localidade": {
+              "id": "4212650",
+              "nivel": { "id": "N6", "nome": "Município" },
+              "nome": "Pescaria Brava (SC)"
+            },
+            "serie": { "2007": "..." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "662",
+    "variavel": "Salários e outras remunerações",
+    "unidade": "Mil Reais",
+    "resultados": [
+      {
+        "classificacoes": [],
+        "series": [
+          {
+            "localidade": {
+              "id": "4212650",
+              "nivel": { "id": "N6", "nome": "Município" },
+              "nome": "Pescaria Brava (SC)"
+            },
+            "serie": { "2007": "..." }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "10143",
+    "variavel": "Salário médio mensal em reais",
+    "unidade": "Reais",
+    "resultados": [
+      {
+        "classificacoes": [],
+        "series": [
+          {
+            "localidade": {
+              "id": "4212650",
+              "nivel": { "id": "N6", "nome": "Município" },
+              "nome": "Pescaria Brava (SC)"
+            },
+            "serie": { "2007": "..." }
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": "708",
+    "variavel": "Pessoal ocupado assalariado",
+    "unidade": "Pessoas",
+    "resultados": [
+      {
+        "classificacoes": [],
+        "series": [
+          {
+            "localidade": {
+              "id": "3166600",
+              "nivel": { "id": "N6", "nome": "Município" },
+              "nome": "Serra da Saudade (MG)"
+            },
+            "serie": { "2018": "181" }
+          }
+        ]
+      }
+    ]
+  }
+]
