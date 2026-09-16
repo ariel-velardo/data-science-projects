@@ -948,6 +948,70 @@ def validate_national_request_plan(
     }
 
 
+def build_national_request_plan_agregados(
+    calendario: pd.DataFrame | None = None,
+    anos: list[int] | None = None,
+    variaveis: set[int] | list[int] | None = None,
+    fonte_tabela: int = FONTE_TABELA,
+) -> list[dict[str, Any]]:
+    """Equivalente a `build_national_request_plan` (D1), mas para a fonte
+    `agregados_v3` (D6/D7) — MESMA granularidade nacional (ano × UF ×
+    grupo de variáveis, mesmos 13 anos × 27 UFs × 1 grupo = 351 requests
+    no plano padrão) e a MESMA validação (`validate_national_request_plan`
+    é agnóstica ao schema/URL da fonte — só inspeciona `request_id`/`ano`/
+    `territorio`/`variaveis`). A única troca é `build_requests` →
+    `build_requests_agregados`; cada item resultante carrega
+    `"fonte_api": FONTE_API_AGREGADOS` explicitamente (nunca inferido da
+    URL).
+    """
+    if calendario is None:
+        calendario = load_calendar_territorial()
+
+    anos_plano = sorted(range(ANO_MIN, ANO_MAX + 1)) if anos is None else sorted(anos)
+    variaveis_plano = sorted(VARIAVEIS_ESPERADAS if variaveis is None else variaveis)
+    territorios_plano = _validate_ufs_esperadas(uf_list_from_calendario(calendario))
+    plano = build_requests_agregados(
+        anos=anos_plano,
+        territorios=territorios_plano,
+        variaveis=variaveis_plano,
+        fonte_tabela=fonte_tabela,
+    )
+    validate_national_request_plan(
+        plano,
+        ufs_esperadas=territorios_plano,
+        anos_esperados=anos_plano,
+        variaveis_esperadas=variaveis_plano,
+    )
+    return plano
+
+
+def build_national_request_plan_por_fonte(
+    fonte_api: str,
+    calendario: pd.DataFrame | None = None,
+    anos: list[int] | None = None,
+    variaveis: set[int] | list[int] | None = None,
+    fonte_tabela: int = FONTE_TABELA,
+) -> list[dict[str, Any]]:
+    """Dispatcher de plano nacional por fonte (D7) — nenhuma lógica de
+    segmentação nova: só escolhe entre `build_national_request_plan`
+    (`FONTE_API_SIDRA`, D1) e `build_national_request_plan_agregados`
+    (`FONTE_API_AGREGADOS`, D6), ambos já validados internamente por
+    `validate_national_request_plan`. Falha explicitamente para qualquer
+    outra fonte — nunca cai silenciosamente para um padrão.
+    """
+    if fonte_api == FONTE_API_SIDRA:
+        return build_national_request_plan(
+            calendario=calendario, anos=anos, variaveis=variaveis, fonte_tabela=fonte_tabela,
+        )
+    if fonte_api == FONTE_API_AGREGADOS:
+        return build_national_request_plan_agregados(
+            calendario=calendario, anos=anos, variaveis=variaveis, fonte_tabela=fonte_tabela,
+        )
+    raise ValueError(
+        f"fonte_api desconhecida: {fonte_api!r} (esperado {FONTE_API_SIDRA!r} ou {FONTE_API_AGREGADOS!r})"
+    )
+
+
 def _resultado_e_sucesso(resultado: dict[str, Any]) -> bool:
     """Um resultado é sucesso somente se não houver erro registrado e o
     payload estiver presente — independentemente de ter vindo de cache
@@ -1748,6 +1812,32 @@ def fetch_request_agregados(
     }
 
 
+def fetch_request_by_source(
+    spec: dict[str, Any],
+    session: requests.Session | None = None,
+    timeout: float = 15.0,
+    max_retries: int = 3,
+    backoff_base: float = 1.0,
+    cache_dir: Path | None = None,
+) -> dict[str, Any]:
+    """Dispatcher de fetch por fonte (D7): `FONTE_API_SIDRA` → `fetch_request`;
+    `FONTE_API_AGREGADOS` → `fetch_request_agregados`. Nenhuma lógica de
+    retry/timeout/backoff/persistência nova — só escolhe a função correta
+    por `spec.get("fonte_api", FONTE_API_SIDRA)`, preservando o loop
+    sequencial único de `execute_missing_requests` (D5) sem duplicá-lo por
+    fonte.
+    """
+    if spec.get("fonte_api", FONTE_API_SIDRA) == FONTE_API_AGREGADOS:
+        return fetch_request_agregados(
+            spec, session=session, timeout=timeout, max_retries=max_retries,
+            backoff_base=backoff_base, cache_dir=cache_dir,
+        )
+    return fetch_request(
+        spec, session=session, timeout=timeout, max_retries=max_retries,
+        backoff_base=backoff_base, cache_dir=cache_dir,
+    )
+
+
 def fetch_metadata(table_id: int = FONTE_TABELA, timeout: float = 15.0) -> dict[str, Any]:
     """Consulta os metadados oficiais da tabela (seção 2). Chamada única,
     pequena — usada para confirmar o contrato, não para extrair dados.
@@ -1958,6 +2048,32 @@ def _sanitizar_resultados_contra_request(
     return sanitizados
 
 
+def _normalize_long_por_fonte(
+    item: dict[str, Any],
+    resultado: dict[str, Any],
+    data_extracao: str | None,
+    versao_metadados: str | None,
+) -> pd.DataFrame:
+    """Dispatcher de normalização por fonte (D7): `FONTE_API_SIDRA` →
+    `normalize_long`; `FONTE_API_AGREGADOS` → `normalize_long_agregados`.
+    As duas produzem a MESMA long canônica (`_COLUNAS_LONG`) — nenhuma
+    lógica de parsing/normalização é duplicada, só a escolha do
+    normalizador certo por `item.get("fonte_api")`. Retrocompatível: item
+    sem `fonte_api` (todo plano anterior ao D6) continua indo para
+    `normalize_long`, exatamente como antes.
+    """
+    fonte_api = item.get("fonte_api", FONTE_API_SIDRA)
+    normalizador = normalize_long_agregados if fonte_api == FONTE_API_AGREGADOS else normalize_long
+    return normalizador(
+        resultado["resultado"],
+        request_id=item["request_id"],
+        fonte_tabela=item.get("fonte_tabela", FONTE_TABELA),
+        data_extracao=data_extracao,
+        hash_resposta_raw=resultado.get("hash_resposta_raw"),
+        versao_metadados=versao_metadados,
+    )
+
+
 def build_long_from_results(
     plano: list[dict[str, Any]],
     resultados: list[dict[str, Any]],
@@ -2001,14 +2117,7 @@ def build_long_from_results(
     longs_por_request: list[pd.DataFrame] = []
     for item in plano:
         resultado = resultados_por_id[item["request_id"]]
-        long_request = normalize_long(
-            resultado["resultado"],
-            request_id=item["request_id"],
-            fonte_tabela=item.get("fonte_tabela", FONTE_TABELA),
-            data_extracao=data_extracao,
-            hash_resposta_raw=resultado.get("hash_resposta_raw"),
-            versao_metadados=versao_metadados,
-        )
+        long_request = _normalize_long_por_fonte(item, resultado, data_extracao, versao_metadados)
         longs_por_request.append(long_request)
 
     long_bruta = (
@@ -2353,6 +2462,7 @@ def build_request_provenance(
             "ano": item["ano"],
             "territorio": dict(item.get("territorio") or {}),
             "variaveis": sorted(item.get("variaveis") or []),
+            "fonte_api": item.get("fonte_api", FONTE_API_SIDRA),
             "status_execucao": status_execucao,
             "de_cache": de_cache,
             "hash_resposta_raw": hash_resposta_raw,
@@ -2434,6 +2544,20 @@ def _registrar_artefatos(artefatos: dict[str, dict[str, Any]] | None) -> dict[st
     return registrados
 
 
+def _fonte_api_do_plano(plano: list[dict[str, Any]]) -> str:
+    """Deriva a `fonte_api` única de um plano nacional (D7) — nunca
+    presume: uma execução nacional usa uma única fonte de cada vez
+    (`apisidra` OU `agregados_v3`, nunca uma mistura). Falha explicitamente
+    se o plano misturar fontes — isso indicaria um bug de composição do
+    plano, não um caso legítimo a tolerar silenciosamente. Item sem
+    `fonte_api` (todo plano anterior ao D6) é tratado como `FONTE_API_SIDRA`.
+    """
+    fontes = {item.get("fonte_api", FONTE_API_SIDRA) for item in plano}
+    if len(fontes) != 1:
+        raise ValueError(f"plano nacional mistura fonte_api: {sorted(fontes)} — esperada uma única fonte")
+    return next(iter(fontes))
+
+
 def build_manifest(
     plano: list[dict[str, Any]],
     resultados: list[dict[str, Any]],
@@ -2451,6 +2575,12 @@ def build_manifest(
     `avalia_completude_plano` (execução/completude) — nunca recalcula essa
     lógica em paralelo. NÃO executa requests, NÃO é o orquestrador D4 e
     NÃO declara nenhum gate de autorização.
+
+    `fonte["fonte_api"]` (D7) registra explicitamente qual API gerou esta
+    execução (`_fonte_api_do_plano`, derivada do plano — nunca inferida do
+    payload) — nenhum manifesto produzido por esta função é ambíguo quanto
+    à fonte, e um payload de `agregados_v3` nunca é apresentado como se
+    fosse `apisidra`.
     """
     relatorio_plano = validate_national_request_plan(
         plano,
@@ -2467,6 +2597,7 @@ def build_manifest(
         "schema_manifesto": _VERSAO_SCHEMA_MANIFESTO,
         "fonte": {
             "fonte_tabela": FONTE_TABELA,
+            "fonte_api": _fonte_api_do_plano(plano),
             "ano_min": ANO_MIN,
             "ano_max": ANO_MAX,
             "variaveis_contratadas": sorted(VARIAVEIS_ESPERADAS),
@@ -2807,6 +2938,9 @@ _CAMINHO_LONG_NACIONAL_PADRAO = ROOT / "data" / "interim" / "cempre_long_2007_20
 _CAMINHO_MANIFESTO_NACIONAL_PADRAO = ROOT / "data" / "raw" / "ibge" / "cempre" / "source_manifest.json"
 
 
+_FONTES_API_VALIDAS = {FONTE_API_SIDRA, FONTE_API_AGREGADOS}
+
+
 @dataclass(frozen=True)
 class NationalRunConfig:
     """Configuração explícita de um run nacional do pipeline CEMPRE (D4).
@@ -2815,9 +2949,16 @@ class NationalRunConfig:
     genérico. `modo` distingue `MODO_DRY_RUN` (padrão, seguro por
     construção) de `MODO_EXECUCAO_REAL` (guardado por
     `autorizacao_extracao`, ver `run_national_pipeline`). `anos`/
-    `variaveis`/`fonte_tabela` são repassados diretamente para
-    `build_national_request_plan` (D1) — `None` usa o contrato padrão
-    (janela 2007-2019 completa e `VARIAVEIS_ESPERADAS`).
+    `variaveis`/`fonte_tabela` são repassados diretamente para o builder
+    de plano da fonte escolhida — `None` usa o contrato padrão (janela
+    2007-2019 completa e `VARIAVEIS_ESPERADAS`).
+
+    `fonte_api` (D7) seleciona explicitamente qual API o pipeline nacional
+    usa — `FONTE_API_SIDRA` (padrão, retrocompatível: todo código anterior
+    ao D7 que não passa `fonte_api` continua se comportando exatamente
+    como antes) ou `FONTE_API_AGREGADOS`. Nunca inferida da URL/schema;
+    valor fora desse conjunto falha explicitamente na construção do
+    config, antes de qualquer plano/rede.
     """
 
     cache_dir: Path = CACHE_DIR
@@ -2829,12 +2970,20 @@ class NationalRunConfig:
     anos: list[int] | None = None
     variaveis: set[int] | list[int] | None = None
     fonte_tabela: int = FONTE_TABELA
-    # Repassados diretamente para fetch_request (D0) na execução real (D5) —
-    # nenhuma política de retry nova é inventada aqui, só configuração
-    # explícita do que fetch_request já suporta.
+    # Repassados diretamente para fetch_request/fetch_request_agregados na
+    # execução real (D5/D7) — nenhuma política de retry nova é inventada
+    # aqui, só configuração explícita do que os dois fetchers já suportam.
     timeout: float = 15.0
     max_retries: int = 3
     backoff_base: float = 1.0
+    fonte_api: str = FONTE_API_SIDRA
+
+    def __post_init__(self) -> None:
+        if self.fonte_api not in _FONTES_API_VALIDAS:
+            raise ValueError(
+                f"fonte_api inválida em NationalRunConfig: {self.fonte_api!r} "
+                f"(esperado um de {sorted(_FONTES_API_VALIDAS)})"
+            )
 
 
 def _garantir_autorizacao_execucao_real(modo: str, autorizacao_extracao: bool) -> None:
@@ -2888,7 +3037,8 @@ def dry_run_national_pipeline(config: NationalRunConfig) -> dict[str, Any]:
     futura execução real buscaria preencher (seção 9).
     """
     calendario = load_calendar_territorial(config.calendario_path)
-    plano = build_national_request_plan(
+    plano = build_national_request_plan_por_fonte(
+        config.fonte_api,
         calendario=calendario,
         anos=config.anos,
         variaveis=config.variaveis,
@@ -2930,6 +3080,7 @@ def dry_run_national_pipeline(config: NationalRunConfig) -> dict[str, Any]:
     return {
         "modo": MODO_DRY_RUN,
         "fonte_tabela": config.fonte_tabela,
+        "fonte_api": config.fonte_api,
         "anos": anos_plano,
         "variaveis": variaveis_plano,
         "n_requests_esperados": len(plano),
@@ -3073,7 +3224,7 @@ def execute_missing_requests(
     motivo_falha: str | None = None
     for request_id in ids_ausentes_ordenados:
         item = plano_por_id[request_id]
-        resultado = fetch_request(
+        resultado = fetch_request_by_source(
             item, session=session, timeout=timeout, max_retries=max_retries,
             backoff_base=backoff_base, cache_dir=cache_dir,
         )
@@ -3135,7 +3286,8 @@ def execute_national_pipeline(
 
     calendario = load_calendar_territorial(config.calendario_path)
     ufs_esperadas = uf_list_from_calendario(calendario)
-    plano = build_national_request_plan(
+    plano = build_national_request_plan_por_fonte(
+        config.fonte_api,
         calendario=calendario,
         anos=config.anos,
         variaveis=config.variaveis,
@@ -3149,6 +3301,7 @@ def execute_national_pipeline(
     if conflito_long_existente or conflito_manifesto_existente:
         return {
             "modo": MODO_EXECUCAO_REAL,
+            "fonte_api": config.fonte_api,
             "n_requests_esperados": len(plano),
             "n_cache_reaproveitados": 0,
             "n_requests_executados": 0,
@@ -3203,6 +3356,7 @@ def execute_national_pipeline(
 
     return {
         "modo": MODO_EXECUCAO_REAL,
+        "fonte_api": config.fonte_api,
         "n_requests_esperados": len(plano),
         "n_cache_reaproveitados": relatorio_coleta["n_cache_reaproveitados"],
         "n_requests_executados": relatorio_coleta["n_requests_executados"],

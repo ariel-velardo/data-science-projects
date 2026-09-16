@@ -3456,5 +3456,514 @@ class TestFetchRequestAgregados(unittest.TestCase):
         self.assertIsNotNone(resultado["resultado"])
 
 
+# ---------------------------------------------------------------------------
+# D7 — integração explícita e selecionável entre D6 (agregados_v3) e D5
+# (executor nacional). fonte_api="apisidra" (padrão, retrocompatível) ou
+# fonte_api="agregados_v3" usando a MESMA infraestrutura nacional: plano,
+# dry run, cache/pre-scan, fail-fast, retomabilidade, completude, long,
+# manifesto. NÃO executa coleta nacional, zero rede real.
+# ---------------------------------------------------------------------------
+
+
+def _payload_agregados_valido_para_item(item: dict, valor: str = "100") -> list[dict]:
+    """Payload agregados_v3 sintético genuinamente compatível com `item`
+    (mesma UF/município e ano do request, variáveis obrigatórias do grupo
+    solicitado presentes) — equivalente agregados de `_payload_valido_para_item`.
+    """
+    territorio = item["territorio"]
+    if territorio["tipo"] == "uf":
+        codigo_municipio = f"{territorio['codigo']}00001"
+    else:
+        codigo_municipio = territorio["codigo"]
+    variaveis_obrigatorias_do_item = sorted(set(item["variaveis"]) & cempre.VARIAVEIS_OBRIGATORIAS)
+    variaveis_a_incluir = variaveis_obrigatorias_do_item or sorted(item["variaveis"])[:1]
+    return [
+        {
+            "id": str(variavel),
+            "variavel": f"Variável {variavel}",
+            "unidade": "Unidades",
+            "resultados": [{
+                "classificacoes": [],
+                "series": [{
+                    "localidade": {
+                        "id": codigo_municipio,
+                        "nivel": {"id": "N6", "nome": "Município"},
+                        "nome": "Município Teste",
+                    },
+                    "serie": {str(item["ano"]): valor},
+                }],
+            }],
+        }
+        for variavel in variaveis_a_incluir
+    ]
+
+
+def _plano_execucao_abc_agregados() -> list[dict]:
+    """Mesmo desenho de `_plano_execucao_abc` (D5), mas com
+    `fonte_api=FONTE_API_AGREGADOS` explícito em cada item — plano
+    sintético pequeno, não é necessário simular os 351 requests nacionais.
+    """
+    especificacoes = [
+        ("req_exec_agg_a", "3166600"),
+        ("req_exec_agg_b", "1100015"),
+        ("req_exec_agg_c", "4212650"),
+    ]
+    return [
+        {
+            "request_id": request_id,
+            "url": f"https://servicodados.ibge.gov.br/api/v3/agregados/1685/fake/{request_id}",
+            "params": {}, "ano": 2010,
+            "territorio": {"tipo": "municipio", "codigo": codigo},
+            "variaveis": [708], "fonte_tabela": cempre.FONTE_TABELA,
+            "fonte_api": cempre.FONTE_API_AGREGADOS,
+        }
+        for request_id, codigo in especificacoes
+    ]
+
+
+def _payload_agregados_execucao(codigo: str, ano: int = 2010, variavel: int = 708, valor: str = "100") -> list[dict]:
+    return [{
+        "id": str(variavel),
+        "variavel": "Variável Teste",
+        "unidade": "Unidades",
+        "resultados": [{
+            "classificacoes": [],
+            "series": [{
+                "localidade": {"id": codigo, "nivel": {"id": "N6", "nome": "Município"}, "nome": "Município Teste"},
+                "serie": {str(ano): valor},
+            }],
+        }],
+    }]
+
+
+class TestNationalRunConfigFonteApi(unittest.TestCase):
+    """A: default continua apisidra. B: fonte inválida rejeitada."""
+
+    def test_default_e_apisidra(self) -> None:
+        self.assertEqual(cempre.NationalRunConfig().fonte_api, cempre.FONTE_API_SIDRA)
+
+    def test_fonte_agregados_e_aceita(self) -> None:
+        config = cempre.NationalRunConfig(fonte_api=cempre.FONTE_API_AGREGADOS)
+        self.assertEqual(config.fonte_api, cempre.FONTE_API_AGREGADOS)
+
+    def test_fonte_invalida_e_rejeitada(self) -> None:
+        with self.assertRaises(ValueError):
+            cempre.NationalRunConfig(fonte_api="bogus")
+
+
+class TestPlanoNacionalPorFonte(unittest.TestCase):
+    """D/E/F/S: plano por fonte, request_id/hash distintos entre fontes."""
+
+    def setUp(self) -> None:
+        self.calendario = pd.DataFrame(
+            [{"uf_codigo": codigo, "uf_sigla": sigla} for codigo, sigla in _UFS_CONTRATADAS_SINTETICAS]
+        )
+
+    def test_plano_agregados_tem_351_requests(self) -> None:
+        plano = cempre.build_national_request_plan_agregados(calendario=self.calendario)
+        self.assertEqual(len(plano), 351)
+
+    def test_plano_agregados_carrega_fonte_api_explicita(self) -> None:
+        plano = cempre.build_national_request_plan_agregados(calendario=self.calendario)
+        self.assertTrue(all(item["fonte_api"] == cempre.FONTE_API_AGREGADOS for item in plano))
+
+    def test_request_ids_distintos_entre_fontes(self) -> None:
+        plano_sidra = cempre.build_national_request_plan(calendario=self.calendario)
+        plano_agregados = cempre.build_national_request_plan_agregados(calendario=self.calendario)
+        ids_sidra = {item["request_id"] for item in plano_sidra}
+        ids_agregados = {item["request_id"] for item in plano_agregados}
+        self.assertEqual(ids_sidra & ids_agregados, set())
+
+    def test_hash_plano_distingue_as_fontes(self) -> None:
+        plano_sidra = cempre.build_national_request_plan(calendario=self.calendario)
+        plano_agregados = cempre.build_national_request_plan_agregados(calendario=self.calendario)
+        self.assertNotEqual(
+            cempre.hash_plano_canonico(plano_sidra), cempre.hash_plano_canonico(plano_agregados),
+        )
+
+    def test_dispatcher_de_plano_por_fonte(self) -> None:
+        plano_via_dispatcher = cempre.build_national_request_plan_por_fonte(
+            cempre.FONTE_API_AGREGADOS, calendario=self.calendario,
+        )
+        plano_direto = cempre.build_national_request_plan_agregados(calendario=self.calendario)
+        self.assertEqual(plano_via_dispatcher, plano_direto)
+
+    def test_dispatcher_com_fonte_desconhecida_falha(self) -> None:
+        with self.assertRaises(ValueError):
+            cempre.build_national_request_plan_por_fonte("bogus", calendario=self.calendario)
+
+
+class TestDryRunPorFonte(unittest.TestCase):
+    """C/D/G/H/U: dry run funciona para as duas fontes, cache source-aware,
+    zero rede em ambas."""
+
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.diretorio = Path(self._tmpdir.name)
+        self.calendario_path = self.diretorio / "calendario.parquet"
+        _escreve_calendario_nacional_sintetico(self.calendario_path)
+        self.cache_dir = self.diretorio / "cache"
+
+        calendario = cempre.load_calendar_territorial(self.calendario_path)
+        self.plano_sidra = cempre.build_national_request_plan(calendario=calendario, anos=[2010])
+        self.plano_agregados = cempre.build_national_request_plan_agregados(calendario=calendario, anos=[2010])
+
+    def _config(self, **overrides: Any) -> "cempre.NationalRunConfig":
+        base = dict(
+            cache_dir=self.cache_dir, calendario_path=self.calendario_path, anos=[2010],
+        )
+        base.update(overrides)
+        return cempre.NationalRunConfig(**base)
+
+    def test_dry_run_apisidra_continua_funcionando(self) -> None:
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            relatorio = cempre.dry_run_national_pipeline(self._config())
+        self.assertEqual(relatorio["fonte_api"], cempre.FONTE_API_SIDRA)
+        self.assertEqual(relatorio["n_requests_esperados"], 27)
+        self.assertTrue(relatorio["pronto_para_execucao_real"])
+
+    def test_dry_run_agregados_gera_plano_de_351_em_escala_reduzida(self) -> None:
+        # anos=[2010] reduz a 27 (1 ano x 27 UFs) só para o teste ser
+        # rápido; test_plano_agregados_tem_351_requests já confirma o
+        # total nacional completo (13 anos x 27 UFs = 351).
+        with mock.patch.object(cempre, "fetch_request_agregados", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            relatorio = cempre.dry_run_national_pipeline(self._config(fonte_api=cempre.FONTE_API_AGREGADOS))
+        self.assertEqual(relatorio["fonte_api"], cempre.FONTE_API_AGREGADOS)
+        self.assertEqual(relatorio["n_requests_esperados"], 27)
+        self.assertEqual(relatorio["n_cache_ausentes"], 27)
+        self.assertTrue(relatorio["pronto_para_execucao_real"])
+
+    def test_cache_agregados_valido_e_reaproveitado(self) -> None:
+        item = self.plano_agregados[0]
+        # _salva_cache_valido_d2 grava com fonte_api=apisidra por padrão —
+        # aqui precisamos de um cache genuíno agregados_v3, então chamamos
+        # save_cached_request diretamente com fonte_api explícito.
+        payload = _payload_agregados_valido_para_item(item)
+        texto = json.dumps(payload)
+        hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+        cempre.save_cached_request(
+            item["request_id"], texto_resposta_raw=texto, hash_resposta_raw=hash_resposta,
+            cache_dir=self.cache_dir, fonte_api=cempre.FONTE_API_AGREGADOS,
+        )
+        relatorio = cempre.dry_run_national_pipeline(self._config(fonte_api=cempre.FONTE_API_AGREGADOS))
+        self.assertIn(item["request_id"], relatorio["request_ids_cache_validos"])
+
+    # -- G: cache apisidra não é válido para plano agregados --
+
+    def test_cache_apisidra_nao_e_valido_para_plano_agregados(self) -> None:
+        item_sidra = self.plano_sidra[0]
+        # cache genuíno de apisidra, salvo sob o request_id do item apisidra;
+        # apresentado ao plano agregados via item sintético com o MESMO
+        # request_id mas fonte_api=agregados_v3 (simulação de colisão).
+        payload_sidra = _payload_valido_para_item(item_sidra)
+        texto = json.dumps(payload_sidra)
+        hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+        cempre.save_cached_request(
+            item_sidra["request_id"], texto_resposta_raw=texto, hash_resposta_raw=hash_resposta,
+            cache_dir=self.cache_dir, fonte_api=cempre.FONTE_API_SIDRA,
+        )
+        item_como_agregados = dict(item_sidra, fonte_api=cempre.FONTE_API_AGREGADOS)
+        resultado = cempre.load_results_from_cache([item_como_agregados], self.cache_dir)[0]
+        self.assertIsNone(resultado["resultado"])
+        self.assertIn("fonte_api", resultado["erro"])
+
+    # -- H: cache agregados não é válido para plano apisidra --
+
+    def test_cache_agregados_nao_e_valido_para_plano_apisidra(self) -> None:
+        item_agregados = self.plano_agregados[0]
+        payload_agregados = _payload_agregados_valido_para_item(item_agregados)
+        texto = json.dumps(payload_agregados)
+        hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+        cempre.save_cached_request(
+            item_agregados["request_id"], texto_resposta_raw=texto, hash_resposta_raw=hash_resposta,
+            cache_dir=self.cache_dir, fonte_api=cempre.FONTE_API_AGREGADOS,
+        )
+        item_como_sidra = dict(item_agregados)
+        del item_como_sidra["fonte_api"]
+        resultado = cempre.load_results_from_cache([item_como_sidra], self.cache_dir)[0]
+        self.assertIsNone(resultado["resultado"])
+        self.assertIn("fonte_api", resultado["erro"])
+
+    def test_residual_apisidra_fora_do_plano_agregados_e_ignorado(self) -> None:
+        cempre.save_cached_request(
+            "request_residual_fora_do_plano", texto_resposta_raw="[]",
+            hash_resposta_raw=cempre.hashlib.sha256(b"[]").hexdigest(), cache_dir=self.cache_dir,
+        )
+        with mock.patch.object(cempre, "fetch_request_agregados", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            relatorio = cempre.dry_run_national_pipeline(self._config(fonte_api=cempre.FONTE_API_AGREGADOS))
+        self.assertEqual(relatorio["n_requests_esperados"], 27)
+        self.assertEqual(relatorio["n_cache_validos"], 0)
+        self.assertEqual(relatorio["n_cache_invalidos"], 0)
+        self.assertEqual(relatorio["n_cache_ausentes"], 27)
+
+
+class TestExecuteMissingRequestsDispatchPorFonte(unittest.TestCase):
+    """I/J/K/L/M: execute_missing_requests despacha fetch por fonte, e
+    agregados_v3 preserva sequencialidade, fail-fast e retomabilidade."""
+
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.cache_dir = Path(self._tmpdir.name)
+        self.plano = _plano_execucao_abc_agregados()
+
+    def _sessao(self, *respostas: mock.Mock) -> mock.Mock:
+        sessao = mock.Mock()
+        sessao.get.side_effect = list(respostas)
+        return sessao
+
+    # -- I: apisidra despacha para fetch_request --
+
+    def test_despacha_apisidra_para_fetch_request(self) -> None:
+        plano_sidra = _plano_execucao_abc()
+        with mock.patch.object(cempre, "fetch_request", wraps=cempre.fetch_request) as fetch_mock, \
+             mock.patch.object(cempre, "fetch_request_agregados", side_effect=AssertionError("não deve ser chamado")):
+            sessao = self._sessao(
+                _resposta_sucesso(_payload_execucao("3166600")),
+                _resposta_sucesso(_payload_execucao("1100015")),
+                _resposta_sucesso(_payload_execucao("4212650")),
+            )
+            cempre.execute_missing_requests(
+                plano_sidra, self.cache_dir, session=sessao, max_retries=1, backoff_base=0.0,
+            )
+        self.assertEqual(fetch_mock.call_count, 3)
+
+    # -- J: agregados_v3 despacha para fetch_request_agregados --
+
+    def test_despacha_agregados_para_fetch_request_agregados(self) -> None:
+        with mock.patch.object(cempre, "fetch_request_agregados", wraps=cempre.fetch_request_agregados) as fetch_mock, \
+             mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")):
+            sessao = self._sessao(
+                _resposta_sucesso(_payload_agregados_execucao("3166600")),
+                _resposta_sucesso(_payload_agregados_execucao("1100015")),
+                _resposta_sucesso(_payload_agregados_execucao("4212650")),
+            )
+            relatorio = cempre.execute_missing_requests(
+                self.plano, self.cache_dir, session=sessao, max_retries=1, backoff_base=0.0,
+            )
+        self.assertEqual(fetch_mock.call_count, 3)
+        self.assertTrue(relatorio["sucesso_execucao"])
+
+    # -- K: execução sequencial preservada para agregados --
+
+    def test_agregados_preserva_execucao_sequencial(self) -> None:
+        sessao = self._sessao(
+            _resposta_sucesso(_payload_agregados_execucao("3166600")),
+            _resposta_sucesso(_payload_agregados_execucao("1100015")),
+            _resposta_sucesso(_payload_agregados_execucao("4212650")),
+        )
+        relatorio = cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao, max_retries=1, backoff_base=0.0,
+        )
+        self.assertEqual(sessao.get.call_count, 3)
+        self.assertEqual(relatorio["request_ids_executados"], ["req_exec_agg_a", "req_exec_agg_b", "req_exec_agg_c"])
+
+    # -- L: fail-fast preservado para agregados --
+
+    def test_agregados_preserva_fail_fast(self) -> None:
+        sessao = self._sessao(_resposta_sucesso(_payload_agregados_execucao("3166600")), _resposta_falha_http())
+        relatorio = cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao, max_retries=1, backoff_base=0.0,
+        )
+        self.assertEqual(sessao.get.call_count, 2)
+        self.assertFalse(relatorio["sucesso_execucao"])
+        self.assertEqual(relatorio["request_id_falha"], "req_exec_agg_b")
+        self.assertEqual(relatorio["request_ids_executados"], ["req_exec_agg_a"])
+        self.assertTrue(cempre.cache_path_for_request("req_exec_agg_a", self.cache_dir).exists())
+        self.assertFalse(cempre.cache_path_for_request("req_exec_agg_b", self.cache_dir).exists())
+        self.assertFalse(cempre.cache_path_for_request("req_exec_agg_c", self.cache_dir).exists())
+
+    # -- M: retomabilidade preservada para agregados --
+
+    def test_agregados_preserva_retomabilidade(self) -> None:
+        sessao_run1 = self._sessao(_resposta_sucesso(_payload_agregados_execucao("3166600")), _resposta_falha_http())
+        relatorio_1 = cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao_run1, max_retries=1, backoff_base=0.0,
+        )
+        self.assertFalse(relatorio_1["sucesso_execucao"])
+
+        sessao_run2 = self._sessao(
+            _resposta_sucesso(_payload_agregados_execucao("1100015")),
+            _resposta_sucesso(_payload_agregados_execucao("4212650")),
+        )
+        relatorio_2 = cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao_run2, max_retries=1, backoff_base=0.0,
+        )
+        self.assertEqual(sessao_run2.get.call_count, 2)
+        self.assertEqual(relatorio_2["request_ids_reaproveitados"], ["req_exec_agg_a"])
+        self.assertEqual(sorted(relatorio_2["request_ids_executados"]), ["req_exec_agg_b", "req_exec_agg_c"])
+        self.assertTrue(relatorio_2["sucesso_execucao"])
+
+    # -- T: autorização obrigatória independentemente da fonte --
+
+    def test_autorizacao_obrigatoria_para_fonte_agregados(self) -> None:
+        with mock.patch.object(cempre, "fetch_request_agregados", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            with self.assertRaises(PermissionError):
+                cempre.execute_national_pipeline(
+                    cempre.NationalRunConfig(fonte_api=cempre.FONTE_API_AGREGADOS),
+                    autorizacao_extracao=False,
+                )
+
+
+class TestBuildLongFromResultsDispatchPorFonte(unittest.TestCase):
+    """O/P: long agregados só após completude; normalize_long_agregados
+    realmente usado (não normalize_long)."""
+
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.cache_dir = Path(self._tmpdir.name)
+        self.plano = _plano_execucao_abc_agregados()
+        self.calendario = pd.DataFrame([
+            {"codigo_municipio_ibge": codigo, "ano": 2010, "municipio_existia_no_ano": True}
+            for codigo in ("3166600", "1100015", "4212650")
+        ])
+
+    def _salva(self, request_id: str, payload: list[dict]) -> None:
+        texto = json.dumps(payload)
+        hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+        cempre.save_cached_request(
+            request_id, texto_resposta_raw=texto, hash_resposta_raw=hash_resposta,
+            cache_dir=self.cache_dir, fonte_api=cempre.FONTE_API_AGREGADOS,
+        )
+
+    def test_normalize_long_agregados_e_realmente_usado(self) -> None:
+        for item in self.plano:
+            self._salva(item["request_id"], _payload_agregados_valido_para_item(item))
+        resultados = cempre.load_results_from_cache(self.plano, self.cache_dir)
+        with mock.patch.object(cempre, "normalize_long_agregados", wraps=cempre.normalize_long_agregados) as norm_agg, \
+             mock.patch.object(cempre, "normalize_long", wraps=cempre.normalize_long) as norm_legado:
+            long_construida = cempre.build_long_from_results(self.plano, resultados, self.calendario)
+        self.assertEqual(norm_agg.call_count, 3)
+        self.assertEqual(norm_legado.call_count, 0)
+        self.assertEqual(len(long_construida), 3)
+
+    def test_long_agregados_incompleta_nao_e_construida(self) -> None:
+        # só A e B têm cache -> completude falha -> long não é construída.
+        for item in self.plano[:2]:
+            self._salva(item["request_id"], _payload_agregados_valido_para_item(item))
+        resultados = cempre.load_results_from_cache(self.plano[:2], self.cache_dir)
+        with self.assertRaisesRegex(ValueError, "incompleto"):
+            cempre.build_long_from_results(self.plano, resultados, self.calendario)
+
+
+class TestManifestoPorFonte(unittest.TestCase):
+    """Q/R: manifesto registra fonte_api explicitamente, sem ambiguidade."""
+
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.diretorio = Path(self._tmpdir.name)
+        self.calendario = pd.DataFrame(
+            [{"uf_codigo": codigo, "uf_sigla": sigla} for codigo, sigla in _UFS_CONTRATADAS_SINTETICAS]
+        )
+        self.ufs_esperadas = cempre.uf_list_from_calendario(self.calendario)
+
+    def test_manifesto_agregados_registra_fonte_api(self) -> None:
+        plano = cempre.build_national_request_plan_agregados(calendario=self.calendario, anos=[2010])
+        resultados = [
+            {"request_id": item["request_id"], "erro": None, "resultado": [{"id": "x"}], "de_cache": True}
+            for item in plano
+        ]
+        manifesto = cempre.build_manifest(plano, resultados, ufs_esperadas=self.ufs_esperadas, anos_esperados=[2010])
+        self.assertEqual(manifesto["fonte"]["fonte_api"], cempre.FONTE_API_AGREGADOS)
+        self.assertTrue(all(r["fonte_api"] == cempre.FONTE_API_AGREGADOS for r in manifesto["requests"]))
+
+    def test_manifesto_apisidra_registra_fonte_api(self) -> None:
+        plano = cempre.build_national_request_plan(calendario=self.calendario, anos=[2010])
+        resultados = [
+            {"request_id": item["request_id"], "erro": None, "resultado": [{"id": "x"}], "de_cache": True}
+            for item in plano
+        ]
+        manifesto = cempre.build_manifest(plano, resultados, ufs_esperadas=self.ufs_esperadas, anos_esperados=[2010])
+        self.assertEqual(manifesto["fonte"]["fonte_api"], cempre.FONTE_API_SIDRA)
+        self.assertTrue(all(r["fonte_api"] == cempre.FONTE_API_SIDRA for r in manifesto["requests"]))
+
+    def test_plano_com_fontes_misturadas_e_rejeitado(self) -> None:
+        plano_sidra = cempre.build_national_request_plan(calendario=self.calendario, anos=[2010])
+        plano_agregados = cempre.build_national_request_plan_agregados(calendario=self.calendario, anos=[2010])
+        plano_misturado = [plano_sidra[0], plano_agregados[1]] + plano_sidra[2:]
+        with self.assertRaisesRegex(ValueError, "mistura fonte_api"):
+            cempre._fonte_api_do_plano(plano_misturado)
+
+
+class TestExecuteNationalPipelineAgregadosEndToEnd(unittest.TestCase):
+    """Item 12: teste end-to-end sintético com agregados_v3 — plano
+    sintético (27 UFs x 1 ano, via calendário sintético), TemporaryDirectory,
+    sessão fake, sem rede real. Fluxo completo: caches ausentes -> fetch
+    fake -> persistência -> reload -> completude -> normalize_long_agregados
+    -> long -> manifesto."""
+
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.diretorio = Path(self._tmpdir.name)
+        self.calendario_path = self.diretorio / "calendario.parquet"
+        _escreve_calendario_nacional_sintetico(self.calendario_path)
+        self.cache_dir = self.diretorio / "cache"
+        self.caminho_long = self.diretorio / "interim" / "long.parquet"
+        self.caminho_manifesto = self.diretorio / "raw" / "manifesto.json"
+
+        calendario = cempre.load_calendar_territorial(self.calendario_path)
+        self.plano = cempre.build_national_request_plan_agregados(calendario=calendario, anos=[2010])
+
+    def _config(self, **overrides: Any) -> "cempre.NationalRunConfig":
+        base = dict(
+            cache_dir=self.cache_dir, calendario_path=self.calendario_path,
+            caminho_long=self.caminho_long, caminho_manifesto=self.caminho_manifesto,
+            anos=[2010], max_retries=1, backoff_base=0.0, fonte_api=cempre.FONTE_API_AGREGADOS,
+        )
+        base.update(overrides)
+        return cempre.NationalRunConfig(**base)
+
+    def test_fluxo_completo_agregados_todos_ausentes_sucesso(self) -> None:
+        sessao = mock.Mock()
+        sessao.get.side_effect = lambda url, params=None, timeout=None: _resposta_sucesso(
+            _payload_agregados_valido_para_item(
+                next(item for item in self.plano if item["url"] == url),
+            ),
+        )
+        with mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            relatorio = cempre.execute_national_pipeline(self._config(), autorizacao_extracao=True, session=sessao)
+
+        self.assertEqual(relatorio["fonte_api"], cempre.FONTE_API_AGREGADOS)
+        self.assertEqual(sessao.get.call_count, 27)
+        self.assertTrue(relatorio["completo"])
+        self.assertTrue(relatorio["sucesso_execucao"])
+        self.assertIsNotNone(relatorio["caminho_long"])
+        self.assertIsNotNone(relatorio["caminho_manifesto"])
+
+        manifesto = cempre.load_manifest(relatorio["caminho_manifesto"])
+        cempre.validate_manifest(manifesto)
+        self.assertEqual(manifesto["fonte"]["fonte_api"], cempre.FONTE_API_AGREGADOS)
+        self.assertTrue(manifesto["execucao"]["completo"])
+
+        long_recarregada = cempre.load_long_parquet(relatorio["caminho_long"])
+        # 27 UFs x 6 variáveis obrigatórias por município (payload sintético
+        # inclui as 6, ver _payload_agregados_valido_para_item).
+        self.assertEqual(len(long_recarregada), 27 * 6)
+
+    def test_todos_caches_validos_zero_rede(self) -> None:
+        for item in self.plano:
+            texto = json.dumps(_payload_agregados_valido_para_item(item))
+            hash_resposta = cempre.hashlib.sha256(texto.encode("utf-8")).hexdigest()
+            cempre.save_cached_request(
+                item["request_id"], texto_resposta_raw=texto, hash_resposta_raw=hash_resposta,
+                cache_dir=self.cache_dir, fonte_api=cempre.FONTE_API_AGREGADOS,
+            )
+        sessao = mock.Mock()
+        sessao.get.side_effect = AssertionError("não deve ser chamado")
+        relatorio = cempre.execute_national_pipeline(self._config(), autorizacao_extracao=True, session=sessao)
+        self.assertEqual(sessao.get.call_count, 0)
+        self.assertTrue(relatorio["sucesso_execucao"])
+        self.assertEqual(relatorio["n_cache_reaproveitados"], 27)
+        self.assertEqual(relatorio["n_requests_executados"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()
