@@ -5,7 +5,7 @@
 > Atualizar quando uma etapa for fechada, um gate mudar ou uma nova unidade
 > de trabalho for aberta.
 >
-> Snapshot: 2026-09-15.
+> Snapshot: 2026-09-16.
 
 ---
 
@@ -17,10 +17,12 @@ Branch:
 
 HEAD/origin conhecido:
 
-`5dd529240162dc169b27c532abb99f552735bc62`
+`1b590587168112778011583ca49d2fbc86aa66af`
 
 Commits recentes:
 
+- `1b59058` — `fix: vincula cache ao request CEMPRE`
+- `bffd766` — `docs: registra fechamento do D4 CEMPRE`
 - `5dd5292` — `feat: implementa dry run nacional CEMPRE`
 - `a605530` — `docs: registra fechamento do D3 CEMPRE`
 - `cb853ec` — `feat: implementa manifesto e proveniencia CEMPRE`
@@ -33,7 +35,8 @@ Commits recentes:
 - `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
 
 Os commits foram enviados para `origin/main`. Checkpoint substantivo mais
-recente: `5dd529240162dc169b27c532abb99f552735bc62` (D4).
+recente: `1b590587168112778011583ca49d2fbc86aa66af` (correção do binding
+cache/request da auditoria integrada D1-D4 — ver seção 9).
 
 ---
 
@@ -434,7 +437,173 @@ O D4 fecha a orquestração nacional em modo dry run. Não declara
 
 ---
 
-## 9. Camada operacional
+## 9. Auditoria integrada D1-D4 — binding cache/request (bloqueador fechado)
+
+Status técnico:
+
+`AUDITORIA_INTEGRADA_D1_D4 = APROVADA_APOS_CORRECAO`
+
+`BINDING_CACHE_REQUEST = APROVADO`
+
+`BINDING_VARIAVEIS_OBRIGATORIAS = APROVADO`
+
+`PLANO_COMPLETUDE_INTEGRADOS = APROVADO`
+
+`CACHE_RETOMABILIDADE_PRECONDICAO = APROVADA`
+
+`LONG_NAO_PODE_SER_CONSTRUIDA_INCOMPLETA = CONFIRMADO`
+
+`MANIFESTO_NAO_MASCARA_INCOMPLETUDE = CONFIRMADO`
+
+`GUARDA_AUTORIZACAO = APROVADA`
+
+`DRY_RUN_ZERO_EFEITOS_COLATERAIS = CONFIRMADO`
+
+`PIPELINE_PRE_EXECUCAO_CEMPRE = APROVADO`
+
+`PODE_PROSSEGUIR_PARA_GATE_DE_EXECUCAO_REAL = SIM`
+
+`EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = NÃO`
+
+Commit substantivo da correção:
+
+`1b590587168112778011583ca49d2fbc86aa66af` — `fix: vincula cache ao
+request CEMPRE`
+
+Push: **CONCLUIDO**
+
+### Causa raiz
+
+A auditoria integrada final do pipeline nacional CEMPRE (D1-D4) reproduziu
+offline um único bloqueador pré-extração: um cache/resultado
+estruturalmente válido (hash íntegro, schema SIDRA correto) NÃO estava
+vinculado semanticamente ao request esperado. Foram reproduzidos dois
+sub-cenários do mesmo bloqueador:
+
+1. um único cache válido copiado para os nomes de vários `request_id`
+   esperados era aceito em todos eles (integridade/hash e schema não
+   bastam para provar pertencimento);
+2. um payload estruturalmente válido contendo SOMENTE a variável 708 (de
+   um grupo de 7 solicitado) também era aceito como resultado completo do
+   lote — falsa completude por variáveis parciais.
+
+### Correção aplicada
+
+Centralizada em um único helper, `_validar_resultado_corresponde_request`,
+reutilizado em todos os pontos de entrada de um resultado no pipeline
+(sem duplicar a regra):
+
+- **`envelope.request_id`** validado dentro de `load_cached_request` —
+  divergência entre o `request_id` do envelope e o `request_id` esperado
+  invalida o cache explicitamente (nunca corrigido/inferido pelo nome do
+  arquivo);
+- **ano** validado semanticamente: todo ano presente no payload precisa
+  ser exatamente o ano do request esperado;
+- **território** validado semanticamente: UF/município presentes no
+  payload precisam corresponder ao território do request esperado (UF
+  derivada dos 2 primeiros dígitos do código municipal — convenção já
+  usada e validada em `constroi_calendario_territorial_ibge.py`, não uma
+  heurística nova);
+- **variáveis** validadas em duas pontas:
+  `obrigatorias_solicitadas ⊆ variaveis_payload ⊆ variaveis_esperadas`,
+  onde `obrigatorias_solicitadas = variaveis_esperadas ∩
+  VARIAVEIS_OBRIGATORIAS`. As **seis variáveis básicas obrigatórias**
+  são:
+  - `706` — número de unidades locais;
+  - `707` — pessoal ocupado total;
+  - `708` — pessoal ocupado assalariado;
+  - `5944` — pessoal assalariado médio;
+  - `662` — salários e outras remunerações;
+  - `10143` — salário médio mensal em reais.
+
+  A variável `1606` permanece opcional/diagnóstica — presente ou ausente,
+  não afeta a validade do resultado. Qualquer variável fora do grupo
+  solicitado continua proibida (rejeição preservada, não relaxada).
+
+A mesma barreira semântica foi aplicada em três pontos, sem três
+implementações paralelas:
+
+- **cache existente**: `_resultado_a_partir_do_cache` (usada por
+  `fetch_request` em cache hit e por `load_results_from_cache`/D2) —
+  cache semanticamente incompatível vira resultado com erro explícito,
+  nunca sucesso;
+- **resposta NOVA de rede**: `fetch_request`, imediatamente após
+  `validate_sidra_payload` e ANTES de `save_cached_request`/retorno de
+  sucesso — uma resposta HTTP 200 com schema válido mas semanticamente
+  incompleta (ex.: só 708) nunca chega a ser persistida como cache
+  válido; tratada como falha permanente (sem gastar retries, já que
+  incompatibilidade semântica não se resolve por retry);
+- **bypass de `build_long_from_results`**: `_sanitizar_resultados_contra_request`,
+  aplicada antes de `avalia_completude_plano` dentro de
+  `build_long_from_results` — protege mesmo contra uma lista de
+  resultados construída manualmente (sem passar pelo cache), reescrevendo
+  como falha qualquer resultado marcado como sucesso mas semanticamente
+  incompatível com o request esperado do plano.
+
+### Impacto verificado
+
+- payload parcial (ex.: só 708) e cache trocado (A copiado para B) NUNCA
+  contam como sucesso na completude (`avalia_completude_plano`);
+- `build_long_from_results` nunca produz uma long "completa" a partir de
+  um resultado semanticamente incompatível — falha explicitamente
+  (`ValueError`, "incompleto") antes de normalizar/concatenar;
+- `validate_manifest` não foi alterado (nem deveria: não é o lugar da
+  correção) — como a barreira atua antes da aceitação do resultado, não
+  existe caminho normal para um manifesto registrar `completo=True` sobre
+  um resultado semanticamente incompatível;
+- `dry_run_national_pipeline` classifica cache semanticamente
+  incompatível como `invalido` (nunca como ausente), produz bloqueador
+  explícito e `pronto_para_execucao_real=False` — reproduzido tanto para
+  um único request trocado quanto em escala (todos os requests de um
+  plano sintético de 27 recebendo o mesmo payload parcial/trocado:
+  resultado NUNCA é "todos válidos, pronto=True").
+
+### Testes
+
+- 234/234 testes CEMPRE passando (`tests.test_constroi_painel_cempre`),
+  incluindo os testes adversariais dos dois recheck focais: envelope
+  `request_id` divergente, ano/território/variáveis errados, cache A
+  copiado para B, envelope correto + payload de outro lote, plano
+  sintético A/B/C com payload de A em todos, bypass manual de
+  `build_long_from_results`, payload contendo apenas 708, ausência
+  individual de cada uma das seis variáveis obrigatórias, payload válido
+  sem 1606, payload válido com 1606, variável extra fora do grupo,
+  resposta nova de rede semanticamente incompatível não persistida em
+  cache, dry run com cache semanticamente incompatível (isolado e em
+  escala);
+- 44/44 testes territoriais passando (`tests.test_constroi_calendario_territorial_ibge`),
+  inalterado;
+- `AUDITORIA_ZERO_REDE = SIM` — todo teste novo usa sessão/`fetch_request`
+  mockados; nenhuma chamada real à API SIDRA/IBGE.
+
+### O que a auditoria AINDA NÃO validou
+
+A aprovação acima cobre exclusivamente a integridade PRÉ-EXECUÇÃO
+(binding cache/request, completude offline, guardas, dry run). Ainda NÃO
+foram validados, e pertencem às próximas etapas:
+
+- executor real nacional;
+- rede real em 351 chamadas;
+- retries reais em escala nacional;
+- backoff real;
+- rate limiting;
+- paralelismo;
+- comportamento do SIDRA sob carga;
+- interrupção durante HTTP;
+- retomada do executor real;
+- performance real;
+- cobertura real retornada pelo SIDRA;
+- completude real da primeira coleta.
+
+`PODE_PROSSEGUIR_PARA_GATE_DE_EXECUCAO_REAL = SIM` significa apenas que a
+infraestrutura pré-execução está suficientemente íntegra para começar a
+projetar/habilitar o ramo real — **NÃO** significa
+`EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = SIM`. Não declara
+`PAINEL_TECNICO_CONSTRUIDO`.
+
+---
+
+## 10. Camada operacional
 
 Arquivos operacionais:
 
@@ -451,43 +620,54 @@ Esta camada e operacional e deve permanecer separada dos commits cientificos.
 
 ---
 
-## 10. Proximos passos
+## 11. Proximos passos
 
-1. realizar auditoria integrada final do pipeline nacional CEMPRE
-   (D1 + D2 + D3 + D4);
-2. verificar sistemicamente: plano; cache; completude; persistência;
-   manifesto; dry run; guardas; retomabilidade; riscos de artefatos
-   parciais ou inconsistentes;
-3. somente se essa auditoria for aprovada, decidir explicitamente sobre a
-   autorização da primeira extração nacional real;
-4. após autorização explícita, implementar/habilitar o ramo de execução
-   real de forma controlada;
-5. realizar a primeira extração nacional;
-6. validar cobertura/completude do material coletado antes de qualquer
-   construção analítica ou causal.
+1. desenhar o gate mínimo da execução real (critérios explícitos de
+   entrada/saída, distintos do dry run);
+2. implementar o ramo real do orquestrador de forma conservadora;
+3. executar SOMENTE requests cujo cache esteja ausente;
+4. persistir cada resposta válida individualmente em cache;
+5. nunca substituir automaticamente cache inválido;
+6. reavaliar completude após a coleta;
+7. somente com todos os requests válidos: construir long; persistir
+   Parquet; construir manifesto;
+8. realizar um spot-check do executor real;
+9. somente depois decidir explicitamente pela autorização da primeira
+   coleta nacional;
+10. após a primeira coleta, validar cobertura e qualidade antes de
+    qualquer análise econômica ou causal.
 
 Nao reabrir Fase 0, calendario territorial, D2, D3 ou D4 sem anomalia
-concreta.
+concreta. A aprovação da auditoria integrada (seção 9) autoriza
+prosseguir para o DESENHO do gate de execução real — não autoriza,
+por si só, implementar rede real nem executar a primeira coleta.
 
 ---
 
-## 11. Extracao nacional CEMPRE
+## 12. Extracao nacional CEMPRE
 
 Status:
 
 **EXTRAÇÃO NACIONAL CEMPRE = NÃO AUTORIZADA**
 
-Os commits territorial, Fase 0, D1, D2, D3 e D4, por si so, nao autorizam
-a extracao.
+Os commits territorial, Fase 0, D1, D2, D3, D4 e a correção do binding
+cache/request (seção 9), por si só, não autorizam a extração — inclusive
+com `PIPELINE_PRE_EXECUCAO_CEMPRE = APROVADO` e
+`PODE_PROSSEGUIR_PARA_GATE_DE_EXECUCAO_REAL = SIM`.
 
-Antes de qualquer extracao nacional ainda e necessario:
+Antes de qualquer extração nacional ainda é necessário:
 
-- gate independente pre-extracao nacional CEMPRE aprovado;
-- autorizacao explicita para a extracao nacional.
+- desenho e implementação do ramo real do orquestrador (ainda não
+  implementado — `run_national_pipeline` levanta `NotImplementedError`
+  para `modo=MODO_EXECUCAO_REAL`);
+- validação do executor real sob rede real (retries, backoff, rate
+  limiting, paralelismo, interrupção/retomada — ver seção 9, "O que a
+  auditoria ainda não validou");
+- autorização explícita para a extração nacional.
 
 ---
 
-## 12. Regra para agentes
+## 13. Regra para agentes
 
 Antes de trabalhar:
 
