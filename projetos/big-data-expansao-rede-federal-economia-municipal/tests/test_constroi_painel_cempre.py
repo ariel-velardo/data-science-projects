@@ -2465,13 +2465,28 @@ class TestDryRunNationalPipeline(unittest.TestCase):
                     self._config(), modo=cempre.MODO_EXECUCAO_REAL, autorizacao_extracao=False,
                 )
 
-    def test_execucao_real_autorizada_ainda_nao_implementada(self) -> None:
-        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")), \
-             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
-            with self.assertRaises(NotImplementedError):
-                cempre.run_national_pipeline(
-                    self._config(), modo=cempre.MODO_EXECUCAO_REAL, autorizacao_extracao=True,
-                )
+    def test_execucao_real_autorizada_delega_para_executor_via_sessao_mockada(self) -> None:
+        # D5: modo=execute + autorizacao_extracao=True agora executa o
+        # fluxo real (não mais NotImplementedError) — mas SEMPRE através da
+        # sessão injetada, nunca via cempre.requests.get real.
+        resposta_falha = mock.Mock()
+        resposta_falha.status_code = 500
+        resposta_falha.text = "erro"
+        sessao_mock = mock.Mock()
+        sessao_mock.get.return_value = resposta_falha
+        with mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            relatorio = cempre.run_national_pipeline(
+                self._config(max_retries=1, backoff_base=0.0),
+                modo=cempre.MODO_EXECUCAO_REAL,
+                autorizacao_extracao=True,
+                session=sessao_mock,
+            )
+        self.assertEqual(relatorio["modo"], cempre.MODO_EXECUCAO_REAL)
+        self.assertFalse(relatorio["sucesso_execucao"])
+        self.assertIsNotNone(relatorio["request_id_falha"])
+        self.assertIsNone(relatorio["caminho_long"])
+        self.assertIsNone(relatorio["caminho_manifesto"])
+        self.assertTrue(sessao_mock.get.called)
 
     def test_modo_desconhecido_falha_explicitamente(self) -> None:
         with self.assertRaises(ValueError):
@@ -2582,6 +2597,371 @@ class TestDryRunNationalPipeline(unittest.TestCase):
         self.assertEqual(relatorio["n_cache_validos"], 0)
         self.assertEqual(relatorio["n_cache_invalidos"], len(self.plano))
         self.assertFalse(relatorio["pronto_para_execucao_real"])
+
+
+# ---------------------------------------------------------------------------
+# D5 — executor real, sequencial e conservador do pipeline nacional CEMPRE
+#
+# `execute_missing_requests` é testado com um plano sintético pequeno
+# (A/B/C) — não é necessário simular os 351 requests nacionais para
+# validar sequencialidade, retomabilidade e persistência request a
+# request. `execute_national_pipeline`/`run_national_pipeline(modo=execute)`
+# são testados com o calendário sintético de 27 UFs já usado pelos testes
+# do D4. Todo teste usa sessão/fetch mockados — zero rede real.
+# ---------------------------------------------------------------------------
+
+
+def _plano_execucao_abc() -> list[dict]:
+    especificacoes = [
+        ("req_exec_a", "3166600"),
+        ("req_exec_b", "1100015"),
+        ("req_exec_c", "4212650"),
+    ]
+    return [
+        {
+            "request_id": request_id,
+            "url": f"https://apisidra.ibge.gov.br/values/{request_id}",
+            "params": {}, "ano": 2010,
+            "territorio": {"tipo": "municipio", "codigo": codigo},
+            "variaveis": [708], "fonte_tabela": cempre.FONTE_TABELA,
+        }
+        for request_id, codigo in especificacoes
+    ]
+
+
+def _payload_execucao(codigo: str, valor: str = "100") -> list[dict]:
+    return [_linha_payload_d2(codigo, 2010, 708, valor)]
+
+
+def _resposta_sucesso(payload: list[dict]) -> mock.Mock:
+    resposta = mock.Mock()
+    resposta.status_code = 200
+    resposta.text = json.dumps(payload)
+    resposta.json.return_value = payload
+    return resposta
+
+
+def _resposta_falha_http(status_code: int = 500) -> mock.Mock:
+    resposta = mock.Mock()
+    resposta.status_code = status_code
+    resposta.text = "erro"
+    return resposta
+
+
+class TestExecuteMissingRequests(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.cache_dir = Path(self._tmpdir.name)
+        self.plano = _plano_execucao_abc()
+
+    def _sessao(self, *respostas: mock.Mock) -> mock.Mock:
+        sessao = mock.Mock()
+        sessao.get.side_effect = list(respostas)
+        return sessao
+
+    # -- B: 3 caches ausentes + fake API válida -> somente 3 fetches --
+
+    def test_tres_ausentes_fake_api_valida_gera_tres_fetches(self) -> None:
+        sessao = self._sessao(
+            _resposta_sucesso(_payload_execucao("3166600")),
+            _resposta_sucesso(_payload_execucao("1100015")),
+            _resposta_sucesso(_payload_execucao("4212650")),
+        )
+        relatorio = cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao, max_retries=1, backoff_base=0.0,
+        )
+        self.assertEqual(sessao.get.call_count, 3)
+        self.assertEqual(relatorio["n_requests_executados"], 3)
+        self.assertEqual(relatorio["n_cache_reaproveitados"], 0)
+        self.assertTrue(relatorio["sucesso_execucao"])
+
+    # -- C: 2 válidos + 1 ausente -> somente 1 fetch --
+
+    def test_dois_validos_um_ausente_gera_um_fetch(self) -> None:
+        _salva_cache_valido_d2(self.cache_dir, "req_exec_a", _payload_execucao("3166600"))
+        _salva_cache_valido_d2(self.cache_dir, "req_exec_b", _payload_execucao("1100015"))
+        sessao = self._sessao(_resposta_sucesso(_payload_execucao("4212650")))
+        relatorio = cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao, max_retries=1, backoff_base=0.0,
+        )
+        self.assertEqual(sessao.get.call_count, 1)
+        self.assertEqual(relatorio["n_cache_reaproveitados"], 2)
+        self.assertEqual(relatorio["n_requests_executados"], 1)
+        self.assertTrue(relatorio["sucesso_execucao"])
+
+    # -- D: todos válidos -> zero fetch --
+
+    def test_todos_validos_zero_fetch(self) -> None:
+        for request_id, codigo in [("req_exec_a", "3166600"), ("req_exec_b", "1100015"), ("req_exec_c", "4212650")]:
+            _salva_cache_valido_d2(self.cache_dir, request_id, _payload_execucao(codigo))
+        sessao = mock.Mock()
+        sessao.get.side_effect = AssertionError("não deve ser chamado")
+        relatorio = cempre.execute_missing_requests(self.plano, self.cache_dir, session=sessao)
+        self.assertEqual(sessao.get.call_count, 0)
+        self.assertEqual(relatorio["n_cache_reaproveitados"], 3)
+        self.assertEqual(relatorio["n_requests_executados"], 0)
+        self.assertTrue(relatorio["sucesso_execucao"])
+
+    # -- E: cache inválido (corrompido) -> bloqueia antes da rede --
+
+    def test_cache_corrompido_bloqueia_antes_da_rede(self) -> None:
+        cempre.cache_path_for_request("req_exec_a", self.cache_dir).parent.mkdir(parents=True, exist_ok=True)
+        cempre.cache_path_for_request("req_exec_a", self.cache_dir).write_text("{ nao e json", encoding="utf-8")
+        sessao = mock.Mock()
+        sessao.get.side_effect = AssertionError("não deve ser chamado")
+        relatorio = cempre.execute_missing_requests(self.plano, self.cache_dir, session=sessao)
+        self.assertEqual(sessao.get.call_count, 0)
+        self.assertFalse(relatorio["sucesso_execucao"])
+        self.assertEqual(relatorio["request_id_falha"], "req_exec_a")
+        self.assertIn("req_exec_a", relatorio["request_ids_cache_invalidos"])
+
+    # -- F: cache com request_id trocado -> bloqueia antes da rede --
+
+    def test_cache_request_id_trocado_bloqueia_antes_da_rede(self) -> None:
+        _salva_cache_valido_d2(self.cache_dir, "req_exec_a", _payload_execucao("3166600"))
+        bytes_a = cempre.cache_path_for_request("req_exec_a", self.cache_dir).read_bytes()
+        cempre.cache_path_for_request("req_exec_b", self.cache_dir).write_bytes(bytes_a)
+        sessao = mock.Mock()
+        sessao.get.side_effect = AssertionError("não deve ser chamado")
+        relatorio = cempre.execute_missing_requests(self.plano, self.cache_dir, session=sessao)
+        self.assertEqual(sessao.get.call_count, 0)
+        self.assertFalse(relatorio["sucesso_execucao"])
+        self.assertIn("req_exec_b", relatorio["request_ids_cache_invalidos"])
+
+    # -- G: cache com variável obrigatória ausente -> bloqueia antes da rede --
+
+    def test_cache_variavel_obrigatoria_ausente_bloqueia_antes_da_rede(self) -> None:
+        plano_completo = [dict(self.plano[0], variaveis=sorted(cempre.VARIAVEIS_ESPERADAS))]
+        payload_parcial = [_linha_payload_d2("3166600", 2010, 708, "100")]
+        _salva_cache_valido_d2(self.cache_dir, plano_completo[0]["request_id"], payload_parcial)
+        sessao = mock.Mock()
+        sessao.get.side_effect = AssertionError("não deve ser chamado")
+        relatorio = cempre.execute_missing_requests(plano_completo, self.cache_dir, session=sessao)
+        self.assertEqual(sessao.get.call_count, 0)
+        self.assertFalse(relatorio["sucesso_execucao"])
+        self.assertIn(plano_completo[0]["request_id"], relatorio["request_ids_cache_invalidos"])
+
+    # -- H: primeira resposta válida é persistida imediatamente --
+
+    def test_primeira_resposta_valida_e_persistida_imediatamente(self) -> None:
+        sessao = self._sessao(_resposta_sucesso(_payload_execucao("3166600")), _resposta_falha_http())
+        cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao, max_retries=1, backoff_base=0.0,
+        )
+        self.assertTrue(cempre.cache_path_for_request("req_exec_a", self.cache_dir).exists())
+
+    # -- I: segundo request falha -> cache do primeiro permanece --
+    # -- item 10: cenário de falha no meio (fail-fast, C não é chamado) --
+
+    def test_falha_no_meio_e_fail_fast(self) -> None:
+        sessao = self._sessao(_resposta_sucesso(_payload_execucao("3166600")), _resposta_falha_http())
+        relatorio = cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao, max_retries=1, backoff_base=0.0,
+        )
+        self.assertEqual(sessao.get.call_count, 2)
+        self.assertFalse(relatorio["sucesso_execucao"])
+        self.assertEqual(relatorio["request_id_falha"], "req_exec_b")
+        self.assertEqual(relatorio["request_ids_executados"], ["req_exec_a"])
+        self.assertTrue(cempre.cache_path_for_request("req_exec_a", self.cache_dir).exists())
+        self.assertFalse(cempre.cache_path_for_request("req_exec_b", self.cache_dir).exists())
+        self.assertFalse(cempre.cache_path_for_request("req_exec_c", self.cache_dir).exists())
+
+    # -- item 11: retomada — um dos testes mais importantes do D5 --
+
+    def test_retomada_reaproveita_cache_e_busca_somente_faltantes(self) -> None:
+        sessao_run1 = self._sessao(_resposta_sucesso(_payload_execucao("3166600")), _resposta_falha_http())
+        relatorio_1 = cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao_run1, max_retries=1, backoff_base=0.0,
+        )
+        self.assertFalse(relatorio_1["sucesso_execucao"])
+        self.assertEqual(sessao_run1.get.call_count, 2)
+
+        sessao_run2 = self._sessao(
+            _resposta_sucesso(_payload_execucao("1100015")), _resposta_sucesso(_payload_execucao("4212650")),
+        )
+        relatorio_2 = cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao_run2, max_retries=1, backoff_base=0.0,
+        )
+        self.assertEqual(sessao_run2.get.call_count, 2)
+        self.assertEqual(relatorio_2["n_cache_reaproveitados"], 1)
+        self.assertEqual(relatorio_2["request_ids_reaproveitados"], ["req_exec_a"])
+        self.assertEqual(sorted(relatorio_2["request_ids_executados"]), ["req_exec_b", "req_exec_c"])
+        self.assertTrue(relatorio_2["sucesso_execucao"])
+
+    # -- S/T: binding semântico continua aplicado antes do cache; payload parcial não cria cache --
+
+    def test_payload_parcial_da_api_nao_cria_cache(self) -> None:
+        plano_completo = [dict(self.plano[0], variaveis=sorted(cempre.VARIAVEIS_ESPERADAS))]
+        payload_parcial = [_linha_payload_d2("3166600", 2010, 708, "100")]
+        sessao = self._sessao(_resposta_sucesso(payload_parcial))
+        relatorio = cempre.execute_missing_requests(
+            plano_completo, self.cache_dir, session=sessao, max_retries=1, backoff_base=0.0,
+        )
+        self.assertFalse(relatorio["sucesso_execucao"])
+        self.assertFalse(cempre.cache_path_for_request(plano_completo[0]["request_id"], self.cache_dir).exists())
+
+    # -- W: executor não chama request para cache válido (não regrava/não altera mtime) --
+
+    def test_cache_valido_nunca_e_tocado_novamente(self) -> None:
+        _salva_cache_valido_d2(self.cache_dir, "req_exec_a", _payload_execucao("3166600"))
+        caminho_a = cempre.cache_path_for_request("req_exec_a", self.cache_dir)
+        mtime_antes = caminho_a.stat().st_mtime
+        sessao = self._sessao(
+            _resposta_sucesso(_payload_execucao("1100015")), _resposta_sucesso(_payload_execucao("4212650")),
+        )
+        cempre.execute_missing_requests(
+            self.plano, self.cache_dir, session=sessao, max_retries=1, backoff_base=0.0,
+        )
+        self.assertEqual(caminho_a.stat().st_mtime, mtime_antes)
+
+
+class TestExecuteNationalPipeline(unittest.TestCase):
+    def setUp(self) -> None:
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.diretorio = Path(self._tmpdir.name)
+        self.calendario_path = self.diretorio / "calendario.parquet"
+        _escreve_calendario_nacional_sintetico(self.calendario_path)
+        self.cache_dir = self.diretorio / "cache"
+        self.caminho_long = self.diretorio / "interim" / "long.parquet"
+        self.caminho_manifesto = self.diretorio / "raw" / "manifesto.json"
+
+        calendario = cempre.load_calendar_territorial(self.calendario_path)
+        self.plano = cempre.build_national_request_plan(calendario=calendario, anos=[2010])
+
+    def _config(self, **overrides: Any) -> "cempre.NationalRunConfig":
+        base = dict(
+            cache_dir=self.cache_dir,
+            calendario_path=self.calendario_path,
+            caminho_long=self.caminho_long,
+            caminho_manifesto=self.caminho_manifesto,
+            anos=[2010],
+            max_retries=1,
+            backoff_base=0.0,
+        )
+        base.update(overrides)
+        return cempre.NationalRunConfig(**base)
+
+    def _popular_todos_os_caches_validos(self) -> None:
+        for item in self.plano:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], _payload_valido_para_item(item))
+
+    # -- A: execução sem autorização -> PermissionError, zero rede --
+
+    def test_execucao_sem_autorizacao_permission_error_zero_rede(self) -> None:
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            with self.assertRaises(PermissionError):
+                cempre.execute_national_pipeline(self._config(), autorizacao_extracao=False)
+
+    # -- N/O/P: completo=True -> long produzida -> manifesto produzido e recarregável --
+
+    def test_todos_caches_validos_produz_long_e_manifesto(self) -> None:
+        self._popular_todos_os_caches_validos()
+        sessao = mock.Mock()
+        sessao.get.side_effect = AssertionError("não deve ser chamado")
+        relatorio = cempre.execute_national_pipeline(self._config(), autorizacao_extracao=True, session=sessao)
+        self.assertEqual(sessao.get.call_count, 0)
+        self.assertTrue(relatorio["completo"])
+        self.assertTrue(relatorio["sucesso_execucao"])
+        self.assertIsNotNone(relatorio["caminho_long"])
+        self.assertIsNotNone(relatorio["caminho_manifesto"])
+        self.assertTrue(Path(relatorio["caminho_long"]).exists())
+        self.assertTrue(Path(relatorio["caminho_manifesto"]).exists())
+
+        manifesto_recarregado = cempre.load_manifest(relatorio["caminho_manifesto"])
+        cempre.validate_manifest(manifesto_recarregado)
+        self.assertTrue(manifesto_recarregado["execucao"]["completo"])
+
+    # -- J/K: após falha, long e manifesto finais não existem --
+
+    def test_falha_em_um_request_impede_long_e_manifesto(self) -> None:
+        item_ausente = self.plano[0]
+        for item in self.plano[1:]:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], _payload_valido_para_item(item))
+        sessao = mock.Mock()
+        sessao.get.return_value = _resposta_falha_http()
+        relatorio = cempre.execute_national_pipeline(self._config(), autorizacao_extracao=True, session=sessao)
+        self.assertFalse(relatorio["sucesso_execucao"])
+        self.assertFalse(relatorio["completo"])
+        self.assertIsNone(relatorio["caminho_long"])
+        self.assertIsNone(relatorio["caminho_manifesto"])
+        self.assertFalse(self.caminho_long.exists())
+        self.assertFalse(self.caminho_manifesto.exists())
+        self.assertEqual(relatorio["request_id_falha"], item_ausente["request_id"])
+
+    # -- M: retomada completa -> completude=True --
+
+    def test_retomada_apos_falha_completa_a_coleta(self) -> None:
+        item_ausente = self.plano[0]
+        for item in self.plano[1:]:
+            _salva_cache_valido_d2(self.cache_dir, item["request_id"], _payload_valido_para_item(item))
+
+        sessao_run1 = mock.Mock()
+        sessao_run1.get.return_value = _resposta_falha_http()
+        relatorio_1 = cempre.execute_national_pipeline(self._config(), autorizacao_extracao=True, session=sessao_run1)
+        self.assertFalse(relatorio_1["sucesso_execucao"])
+
+        sessao_run2 = mock.Mock()
+        sessao_run2.get.return_value = _resposta_sucesso(_payload_valido_para_item(item_ausente))
+        relatorio_2 = cempre.execute_national_pipeline(self._config(), autorizacao_extracao=True, session=sessao_run2)
+        self.assertEqual(sessao_run2.get.call_count, 1)
+        self.assertTrue(relatorio_2["completo"])
+        self.assertTrue(relatorio_2["sucesso_execucao"])
+        self.assertIsNotNone(relatorio_2["caminho_long"])
+        self.assertIsNotNone(relatorio_2["caminho_manifesto"])
+
+    # -- Q: overwrite=False protege long existente --
+
+    def test_overwrite_false_protege_long_existente(self) -> None:
+        self._popular_todos_os_caches_validos()
+        self.caminho_long.parent.mkdir(parents=True, exist_ok=True)
+        self.caminho_long.write_bytes(b"conteudo original")
+        sessao = mock.Mock()
+        sessao.get.side_effect = AssertionError("não deve ser chamado")
+        relatorio = cempre.execute_national_pipeline(self._config(), autorizacao_extracao=True, session=sessao)
+        self.assertFalse(relatorio["sucesso_execucao"])
+        self.assertIsNone(relatorio["caminho_long"])
+        self.assertEqual(self.caminho_long.read_bytes(), b"conteudo original")
+        self.assertEqual(sessao.get.call_count, 0)
+
+    # -- R: overwrite=False protege manifesto existente --
+
+    def test_overwrite_false_protege_manifesto_existente(self) -> None:
+        self._popular_todos_os_caches_validos()
+        self.caminho_manifesto.parent.mkdir(parents=True, exist_ok=True)
+        self.caminho_manifesto.write_text("{}", encoding="utf-8")
+        sessao = mock.Mock()
+        sessao.get.side_effect = AssertionError("não deve ser chamado")
+        relatorio = cempre.execute_national_pipeline(self._config(), autorizacao_extracao=True, session=sessao)
+        self.assertFalse(relatorio["sucesso_execucao"])
+        self.assertIsNone(relatorio["caminho_manifesto"])
+        self.assertEqual(self.caminho_manifesto.read_text(encoding="utf-8"), "{}")
+        self.assertEqual(sessao.get.call_count, 0)
+
+    # -- item 19: run_national_pipeline delega para o executor real --
+
+    def test_run_national_pipeline_execute_delega_para_executor(self) -> None:
+        self._popular_todos_os_caches_validos()
+        sessao = mock.Mock()
+        sessao.get.side_effect = AssertionError("não deve ser chamado")
+        relatorio = cempre.run_national_pipeline(
+            self._config(), modo=cempre.MODO_EXECUCAO_REAL, autorizacao_extracao=True, session=sessao,
+        )
+        self.assertEqual(relatorio["modo"], cempre.MODO_EXECUCAO_REAL)
+        self.assertTrue(relatorio["completo"])
+
+    # -- U/V: dry run continua default e sem efeitos colaterais mesmo após D5 --
+
+    def test_dry_run_continua_padrao_e_sem_efeitos_colaterais_apos_d5(self) -> None:
+        with mock.patch.object(cempre, "fetch_request", side_effect=AssertionError("não deve ser chamado")), \
+             mock.patch.object(cempre.requests, "get", side_effect=AssertionError("não deve ser chamado")):
+            relatorio = cempre.run_national_pipeline(self._config())
+        self.assertEqual(relatorio["modo"], cempre.MODO_DRY_RUN)
+        self.assertFalse(self.caminho_long.exists())
+        self.assertFalse(self.caminho_manifesto.exists())
+        self.assertFalse(self.cache_dir.exists() and any(self.cache_dir.iterdir()))
 
 
 class TestDryRunNacionalSmokeCheckOffline(unittest.TestCase):

@@ -2325,6 +2325,12 @@ class NationalRunConfig:
     anos: list[int] | None = None
     variaveis: set[int] | list[int] | None = None
     fonte_tabela: int = FONTE_TABELA
+    # Repassados diretamente para fetch_request (D0) na execução real (D5) —
+    # nenhuma política de retry nova é inventada aqui, só configuração
+    # explícita do que fetch_request já suporta.
+    timeout: float = 15.0
+    max_retries: int = 3
+    backoff_base: float = 1.0
 
 
 def _garantir_autorizacao_execucao_real(modo: str, autorizacao_extracao: bool) -> None:
@@ -2464,12 +2470,257 @@ def format_dry_run_summary(relatorio: dict[str, Any]) -> str:
     return "\n".join(linhas)
 
 
+# ---------------------------------------------------------------------------
+# D5 — executor real, sequencial e conservador do pipeline nacional CEMPRE
+#
+# Duas funções deliberadamente separadas (seção 2 do pedido):
+#
+# `execute_missing_requests` — só cuida da coleta request a request: pula
+# cache válido, bloqueia (fail-fast, ANTES de qualquer rede) se houver
+# cache inválido em QUALQUER item do plano, e executa sequencialmente
+# somente os requests com cache ausente, parando na primeira falha de
+# rede/schema/binding. Testável com plano sintético pequeno — nunca exige
+# simular os 351 requests nacionais.
+#
+# `execute_national_pipeline` — compõe (não duplica) `execute_missing_requests`
+# com D1 (`build_national_request_plan`/`avalia_completude_plano`), D2
+# (`load_results_from_cache`/`build_long_from_results`/`write_long_parquet`)
+# e D3 (`build_manifest`/`write_manifest`): só avança para long/manifesto
+# quando a coleta teve sucesso E a completude recarregada do cache (nunca
+# dos objetos em memória da coleta) confirma `completo=True`.
+#
+# Nenhuma das duas funções chama rede fora de `fetch_request` (reutilizado
+# integralmente, sem segunda persistência paralela de cache) e nenhuma
+# decide autorização — a guarda (`_garantir_autorizacao_execucao_real`)
+# continua sendo a única porta de entrada para `modo=MODO_EXECUCAO_REAL`.
+# ---------------------------------------------------------------------------
+
+
+def execute_missing_requests(
+    plano: list[dict[str, Any]],
+    cache_dir: Path,
+    session: requests.Session | None = None,
+    timeout: float = 15.0,
+    max_retries: int = 3,
+    backoff_base: float = 1.0,
+) -> dict[str, Any]:
+    """Executor sequencial e conservador dos requests com cache AUSENTE
+    (D5, seções 3, 6-9). Não decide completude nem constrói long/manifesto
+    — isso é responsabilidade de `execute_national_pipeline`.
+
+    Ordem (seção 16, passos 4-8): primeiro INSPECIONA o cache de TODOS os
+    itens do plano, reutilizando o mesmo contrato de classificação do dry
+    run (`load_results_from_cache` + `_classificar_resultado_cache`) —
+    isso inclui a vinculação semântica já validada (`envelope.request_id`,
+    ano, território, variáveis obrigatórias). Se QUALQUER item tiver cache
+    inválido (corrompido, schema inválido, `request_id` trocado, payload
+    de outro lote, variável obrigatória ausente), a execução é bloqueada
+    ANTES de qualquer chamada de rede — nenhum fetch acontece, mesmo para
+    os demais itens com cache ausente; o arquivo de cache inválido nunca é
+    apagado, sobrescrito ou tratado como miss (permanece para diagnóstico).
+
+    Só then executa, EM ORDEM e sequencialmente (sem paralelismo/async),
+    os requests com cache ausente via `fetch_request` (que já cuida de
+    schema, vinculação semântica e persistência do cache em caso de
+    sucesso — nenhuma segunda escrita de cache é feita aqui). Cache válido
+    nunca é regravado nem tem o `mtime` alterado (nunca é tocado). Para na
+    PRIMEIRA falha (fail-fast, seção 10): os requests restantes do plano
+    não são buscados, mas o cache de qualquer request anterior bem
+    sucedido permanece em disco — é exatamente essa persistência request a
+    request que permite retomar depois (seção 11), fazendo cache hit nos
+    que já tiveram sucesso e buscando somente o que ainda falta.
+    """
+    resultados_cache = load_results_from_cache(plano, cache_dir)
+    ids_validos: list[str] = []
+    ids_ausentes: list[str] = []
+    ids_invalidos: list[str] = []
+    for resultado in resultados_cache:
+        categoria = _classificar_resultado_cache(resultado)
+        if categoria == "valido":
+            ids_validos.append(resultado["request_id"])
+        elif categoria == "ausente":
+            ids_ausentes.append(resultado["request_id"])
+        else:
+            ids_invalidos.append(resultado["request_id"])
+
+    if ids_invalidos:
+        return {
+            "n_requests_esperados": len(plano),
+            "n_cache_reaproveitados": len(ids_validos),
+            "n_requests_executados": 0,
+            "request_ids_reaproveitados": sorted(ids_validos),
+            "request_ids_executados": [],
+            "request_ids_cache_invalidos": sorted(ids_invalidos),
+            "request_id_falha": sorted(ids_invalidos)[0],
+            "motivo_falha": (
+                f"{len(ids_invalidos)} cache(s) inválido(s)/corrompido(s) — execução bloqueada "
+                f"ANTES de qualquer rede: {sorted(ids_invalidos)}"
+            ),
+            "sucesso_execucao": False,
+        }
+
+    plano_por_id = {item["request_id"]: item for item in plano}
+    ids_ausentes_ordenados = [
+        item["request_id"] for item in plano if item["request_id"] in set(ids_ausentes)
+    ]
+
+    request_ids_executados: list[str] = []
+    request_id_falha: str | None = None
+    motivo_falha: str | None = None
+    for request_id in ids_ausentes_ordenados:
+        item = plano_por_id[request_id]
+        resultado = fetch_request(
+            item, session=session, timeout=timeout, max_retries=max_retries,
+            backoff_base=backoff_base, cache_dir=cache_dir,
+        )
+        if resultado.get("erro") is not None or resultado.get("resultado") is None:
+            request_id_falha = request_id
+            motivo_falha = resultado.get("erro")
+            break
+        request_ids_executados.append(request_id)
+
+    return {
+        "n_requests_esperados": len(plano),
+        "n_cache_reaproveitados": len(ids_validos),
+        "n_requests_executados": len(request_ids_executados),
+        "request_ids_reaproveitados": sorted(ids_validos),
+        "request_ids_executados": request_ids_executados,
+        "request_ids_cache_invalidos": [],
+        "request_id_falha": request_id_falha,
+        "motivo_falha": motivo_falha,
+        "sucesso_execucao": request_id_falha is None,
+    }
+
+
+def execute_national_pipeline(
+    config: NationalRunConfig,
+    autorizacao_extracao: bool,
+    session: requests.Session | None = None,
+) -> dict[str, Any]:
+    """Orquestrador da execução real nacional do pipeline CEMPRE (D5, seção
+    16). Ponto de entrada conservador: sequencial, retomável por cache,
+    sem paralelismo/scheduling.
+
+    Reaplica a guarda de autorização (`_garantir_autorizacao_execucao_real`)
+    mesmo sendo chamada normalmente através de `run_national_pipeline` —
+    nunca assume que o chamador já validou isso.
+
+    Ordem operacional (seção 16): (1) autorização; (2) plano nacional
+    (D1, já validado internamente); (3) conflito de artefatos existentes
+    com `overwrite=False` — bloqueia ANTES de qualquer coleta, mesmo
+    comportamento já aprovado no dry run (D4); (4) coleta sequencial
+    somente dos requests ausentes (`execute_missing_requests`); (5)
+    RECARGA de todos os resultados a partir do cache (`load_results_from_cache`
+    — nunca os objetos retidos em memória durante a coleta, para que a
+    fonte de verdade final seja exatamente o que ficou persistido em
+    disco) e avaliação de completude (`avalia_completude_plano`); (6)
+    somente com coleta bem-sucedida E `completo=True`: constrói a long
+    (`build_long_from_results`), persiste em Parquet
+    (`write_long_parquet`, `overwrite` repassado do config — nunca
+    sobrescreve silenciosamente), constrói o manifesto (`build_manifest`,
+    reaproveitando a proveniência real da coleta, sem lógica paralela) e
+    persiste (`write_manifest`).
+
+    Se houver falha durante a coleta OU a completude recarregada do cache
+    não fechar (`completo=False`), a long e o manifesto finais NÃO são
+    produzidos — apenas os caches individuais já válidos permanecem em
+    disco (nunca removidos), permitindo retomada em uma execução
+    posterior.
+    """
+    _garantir_autorizacao_execucao_real(MODO_EXECUCAO_REAL, autorizacao_extracao)
+
+    calendario = load_calendar_territorial(config.calendario_path)
+    ufs_esperadas = uf_list_from_calendario(calendario)
+    plano = build_national_request_plan(
+        calendario=calendario,
+        anos=config.anos,
+        variaveis=config.variaveis,
+        fonte_tabela=config.fonte_tabela,
+    )
+
+    caminho_long = Path(config.caminho_long)
+    caminho_manifesto = Path(config.caminho_manifesto)
+    conflito_long_existente = caminho_long.exists() and not config.overwrite
+    conflito_manifesto_existente = caminho_manifesto.exists() and not config.overwrite
+    if conflito_long_existente or conflito_manifesto_existente:
+        return {
+            "modo": MODO_EXECUCAO_REAL,
+            "n_requests_esperados": len(plano),
+            "n_cache_reaproveitados": 0,
+            "n_requests_executados": 0,
+            "request_ids_reaproveitados": [],
+            "request_ids_executados": [],
+            "request_id_falha": None,
+            "motivo_falha": (
+                "conflito de artefato existente com overwrite=False — execução bloqueada "
+                f"antes de qualquer coleta (long_existe={conflito_long_existente}, "
+                f"manifesto_existe={conflito_manifesto_existente})"
+            ),
+            "completo": False,
+            "caminho_long": None,
+            "caminho_manifesto": None,
+            "git_commit": get_git_head(),
+            "sucesso_execucao": False,
+        }
+
+    relatorio_coleta = execute_missing_requests(
+        plano, config.cache_dir, session=session,
+        timeout=config.timeout, max_retries=config.max_retries, backoff_base=config.backoff_base,
+    )
+
+    # Fonte de verdade final: sempre o que ficou persistido em disco, nunca
+    # os objetos retidos em memória durante a coleta (seção 13 do pedido).
+    resultados_finais = load_results_from_cache(plano, config.cache_dir)
+    relatorio_completude = avalia_completude_plano(plano, resultados_finais)
+
+    caminho_long_final: str | None = None
+    caminho_manifesto_final: str | None = None
+    if relatorio_coleta["sucesso_execucao"] and relatorio_completude["completo"]:
+        long_reconciliada = build_long_from_results(plano, resultados_finais, calendario)
+        write_long_parquet(long_reconciliada, caminho_long, overwrite=config.overwrite)
+        caminho_long_final = str(caminho_long)
+
+        manifesto = build_manifest(
+            plano,
+            resultados_finais,
+            ufs_esperadas=ufs_esperadas,
+            anos_esperados=config.anos,
+            variaveis_esperadas=config.variaveis,
+            artefatos={
+                "calendario_territorial": {
+                    "caminho": str(config.calendario_path or CALENDARIO_TERRITORIAL_PATH),
+                },
+                "long_parquet": {"caminho": str(caminho_long), "n_linhas": len(long_reconciliada)},
+            },
+            modo_geracao="execucao_real_nacional",
+        )
+        write_manifest(manifesto, caminho_manifesto, overwrite=config.overwrite)
+        caminho_manifesto_final = str(caminho_manifesto)
+
+    return {
+        "modo": MODO_EXECUCAO_REAL,
+        "n_requests_esperados": len(plano),
+        "n_cache_reaproveitados": relatorio_coleta["n_cache_reaproveitados"],
+        "n_requests_executados": relatorio_coleta["n_requests_executados"],
+        "request_ids_reaproveitados": relatorio_coleta["request_ids_reaproveitados"],
+        "request_ids_executados": relatorio_coleta["request_ids_executados"],
+        "request_id_falha": relatorio_coleta["request_id_falha"],
+        "motivo_falha": relatorio_coleta["motivo_falha"],
+        "completo": relatorio_completude["completo"],
+        "caminho_long": caminho_long_final,
+        "caminho_manifesto": caminho_manifesto_final,
+        "git_commit": get_git_head(),
+        "sucesso_execucao": relatorio_coleta["sucesso_execucao"] and relatorio_completude["completo"],
+    }
+
+
 def run_national_pipeline(
     config: NationalRunConfig,
     modo: str = MODO_DRY_RUN,
     autorizacao_extracao: bool = False,
+    session: requests.Session | None = None,
 ) -> dict[str, Any]:
-    """Ponto de entrada único do orquestrador nacional CEMPRE (D4, seção 11).
+    """Ponto de entrada único do orquestrador nacional CEMPRE (D4/D5).
 
     `dry_run=True` (via `modo=MODO_DRY_RUN`) é o padrão e nunca chama
     rede. Qualquer tentativa de `modo=MODO_EXECUCAO_REAL` sem
@@ -2477,11 +2728,11 @@ def run_national_pipeline(
     (`PermissionError`), ANTES de qualquer request — ver
     `_garantir_autorizacao_execucao_real`.
 
-    A execução real ainda NÃO está implementada nesta etapa: mesmo
-    autorizada, levanta `NotImplementedError` explícito. A infraestrutura
-    (D1-D3) já foi orquestrada e validada via dry run; o branch de
-    execução real será habilitado somente após gate explícito de
-    autorização de extração nacional — isto NÃO é esse gate.
+    Com `modo=MODO_EXECUCAO_REAL` e `autorizacao_extracao=True`, delega
+    para `execute_national_pipeline` (D5) — o executor real, sequencial e
+    conservador. `session` é repassado integralmente para
+    `fetch_request` (mesmo mecanismo de injeção já existente), permitindo
+    testar o fluxo real inteiro sem nenhuma chamada de rede verdadeira.
     """
     _garantir_autorizacao_execucao_real(modo, autorizacao_extracao)
 
@@ -2489,11 +2740,6 @@ def run_national_pipeline(
         return dry_run_national_pipeline(config)
 
     if modo == MODO_EXECUCAO_REAL:
-        raise NotImplementedError(
-            "execução real do pipeline nacional CEMPRE ainda não está implementada (D4). "
-            "A infraestrutura foi orquestrada e validada via dry run; o branch de execução "
-            "real será habilitado somente após gate explícito de autorização de extração "
-            "nacional (ver docs/playbooks/ESTADO_ATUAL.md)."
-        )
+        return execute_national_pipeline(config, autorizacao_extracao=autorizacao_extracao, session=session)
 
     raise ValueError(f"modo de execução desconhecido: {modo!r} (esperado {MODO_DRY_RUN!r} ou {MODO_EXECUCAO_REAL!r})")
