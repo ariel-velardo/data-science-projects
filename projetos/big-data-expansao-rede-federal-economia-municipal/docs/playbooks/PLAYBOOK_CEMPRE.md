@@ -60,9 +60,17 @@ agregado 1685), com contratos de schema distintos:
 Regra arquitetural válida para qualquer interface futura: **nunca
 converter silenciosamente o payload de uma fonte em payload de outra**
 (ex.: tratar resposta de `agregados_v3` como se fosse `apisidra`). Cada
-fonte tem seu próprio normalizador; ambas convergem para a MESMA long
-canônica (seção 5). `agregados_v3` ainda não é a fonte nacional ativa —
-consultar `ESTADO_ATUAL.md` antes de presumir qual interface está em uso.
+fonte tem seu próprio contrato bruto/normalizador; ambas convergem para a
+MESMA long canônica (seção 5).
+
+O pipeline nacional (D5/D7) suporta explicitamente `fonte_api=apisidra`
+ou `fonte_api=agregados_v3` como configuração — nunca inferida da URL.
+Default: `apisidra`. A fonte operacional **candidata** para a próxima
+primeira coleta é `agregados_v3`, devido ao Cloudflare Challenge
+observado na `apisidra` neste ambiente — isso ainda NÃO é coleta
+autorizada nem concluída; consultar `ESTADO_ATUAL.md` para o estado real
+de implementação, testes e gates antes de presumir qual fonte está em
+uso ou qual coleta foi de fato executada.
 
 ---
 
