@@ -17,10 +17,12 @@ Branch:
 
 HEAD/origin conhecido:
 
-`1b590587168112778011583ca49d2fbc86aa66af`
+`7218c56b36f0ef665d6e1a4daf55ce0dfa12b86f`
 
 Commits recentes:
 
+- `7218c56` — `feat: implementa executor controlado CEMPRE`
+- `7277798` — `docs: fecha auditoria pre-extracao CEMPRE`
 - `1b59058` — `fix: vincula cache ao request CEMPRE`
 - `bffd766` — `docs: registra fechamento do D4 CEMPRE`
 - `5dd5292` — `feat: implementa dry run nacional CEMPRE`
@@ -35,8 +37,8 @@ Commits recentes:
 - `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
 
 Os commits foram enviados para `origin/main`. Checkpoint substantivo mais
-recente: `1b590587168112778011583ca49d2fbc86aa66af` (correção do binding
-cache/request da auditoria integrada D1-D4 — ver seção 9).
+recente: `7218c56b36f0ef665d6e1a4daf55ce0dfa12b86f` (D5 — executor
+controlado nacional CEMPRE — ver seção 10).
 
 ---
 
@@ -603,7 +605,206 @@ projetar/habilitar o ramo real — **NÃO** significa
 
 ---
 
-## 10. Camada operacional
+## 10. D5 — Executor controlado nacional
+
+Status técnico:
+
+`D5_EXECUTOR_CONTROLADO_IMPLEMENTADO = SIM`
+
+`D5_SPOT_CHECK = APROVADO`
+
+`GUARDA_EXECUCAO_REAL = APROVADA`
+
+`CACHE_PRE_SCAN = APROVADO`
+
+`CACHE_VALIDO_NAO_REEXECUTA = CONFIRMADO`
+
+`CACHE_INVALIDO_BLOQUEIA_ANTES_REDE = CONFIRMADO`
+
+`PERSISTENCIA_REQUEST_A_REQUEST = CONFIRMADA`
+
+`FAIL_FAST = CONFIRMADO`
+
+`RETOMABILIDADE_EXECUTOR_SIMULADA = APROVADA`
+
+`RELOAD_CACHE_COMO_FONTE_FINAL = CONFIRMADO`
+
+`COMPLETUDE_POS_COLETA = APROVADA`
+
+`LONG_APENAS_SE_COMPLETO = CONFIRMADO`
+
+`MANIFESTO_APENAS_APOS_LONG = CONFIRMADO`
+
+`EXECUTOR_D5 = APROVADO`
+
+`PODE_PROSSEGUIR_PARA_GATE_DA_PRIMEIRA_EXECUCAO = SIM`
+
+`EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = NÃO`
+
+Commit substantivo:
+
+`7218c56b36f0ef665d6e1a4daf55ce0dfa12b86f` — `feat: implementa executor
+controlado CEMPRE`
+
+Push: **CONCLUIDO**
+
+O D5 implementou o executor real do pipeline nacional CEMPRE (até então
+bloqueado por `NotImplementedError` no D4) e passou por spot-check
+independente no Codex, aprovado sem bloqueadores.
+
+### Arquitetura
+
+Três funções, sem duplicação de contrato:
+
+- `execute_missing_requests(plano, cache_dir, session, timeout,
+  max_retries, backoff_base)` — coleta pura, sequencial, request a
+  request; testável com plano sintético pequeno (não exige simular os
+  351 requests nacionais);
+- `execute_national_pipeline(config, autorizacao_extracao, session)` —
+  orquestração completa: guarda de autorização, plano, conflito de
+  artefatos, coleta, recarga, completude, long, manifesto;
+- `run_national_pipeline(config, modo, autorizacao_extracao, session)` —
+  ponto de entrada único por modo (`dry_run` inalterado;
+  `execute` + `autorizacao_extracao=True` agora delega para
+  `execute_national_pipeline` em vez de levantar `NotImplementedError`).
+
+### Ordem operacional aprovada
+
+1. validar autorização (`_garantir_autorizacao_execucao_real`, mesma
+   guarda do D4 — `PermissionError` antes de qualquer plano/rede);
+2. construir/validar plano nacional (D1, `build_national_request_plan`);
+3. verificar conflitos dos outputs finais (long/manifesto existentes com
+   `overwrite=False`) — bloqueia ANTES de qualquer coleta;
+4. pre-scan de TODOS os caches do plano (reaproveita
+   `load_results_from_cache`/D2, incluindo a vinculação semântica da
+   seção 9: `envelope.request_id`, ano, território, variáveis
+   obrigatórias);
+5. bloquear a execução inteira se QUALQUER cache esperado for inválido
+   — zero chamada de rede, mesmo para outros itens ausentes do mesmo
+   plano;
+6. executar sequencialmente (sem paralelismo/async) SOMENTE os requests
+   com cache ausente;
+7. persistir cada cache válido imediatamente via `fetch_request`
+   (nenhuma segunda escrita de cache no executor);
+8. fail-fast na primeira falha — requests restantes do plano não são
+   buscados;
+9. recarregar TODOS os resultados a partir do cache em disco
+   (`load_results_from_cache` de novo — nunca os objetos retidos em
+   memória durante a coleta: a fonte de verdade final é sempre o que
+   ficou persistido);
+10. avaliar completude (`avalia_completude_plano`) sobre essa recarga;
+11. somente se `completo=True` E a coleta teve sucesso, construir a long
+    (`build_long_from_results`, sem lógica paralela);
+12. persistir a long em Parquet (`write_long_parquet`, `overwrite`
+    repassado do config — nunca sobrescreve silenciosamente);
+13. somente após a long persistida com sucesso, construir o manifesto
+    (`build_manifest`, reaproveitando a proveniência real da coleta);
+14. persistir o manifesto (`write_manifest`);
+15. retornar o relatório final (contagens, `request_id_falha` se houver,
+    `completo`, caminhos, `git_commit`, `sucesso_execucao` — nunca trata
+    `autorizacao_extracao=True` como sinônimo de sucesso).
+
+### Cache
+
+- **cache válido**: reaproveitado; sem nova chamada de rede; sem
+  regravação; bytes/`mtime` preservados (testado explicitamente);
+- **cache ausente**: único estado elegível para fetch;
+- **cache inválido** (corrompido, schema inválido, `request_id`
+  trocado, payload de outro lote, variável obrigatória ausente):
+  bloqueia ANTES da rede; nunca é apagado; nunca é sobrescrito; nunca
+  vira cache miss — permanece em disco para diagnóstico.
+
+`overwrite=True` se aplica exclusivamente aos ARTEFATOS FINAIS (long e
+manifesto) — nunca relaxa a política de cache inválido, que é sempre
+bloqueante independentemente de `overwrite`.
+
+### Retomabilidade (SIMULADA)
+
+Propriedade validada com sessões HTTP fake (mock), reproduzindo o
+cenário de interrupção lógica:
+
+- **Run 1**: A → sucesso, cache persistido; B → falha; C → não
+  executado (fail-fast);
+- **Run 2** (mesmo `cache_dir`): A → reaproveitado do cache (zero nova
+  chamada); B → executado; C → executado.
+
+`RETOMABILIDADE_EXECUTOR_SIMULADA = APROVADA`. Isso é retomabilidade
+SIMULADA com sessões fake — a interrupção FÍSICA real de um processo
+(kill, queda de energia, perda de conexão a meio de uma resposta HTTP em
+andamento) ainda NÃO foi validada.
+
+### Falhas parciais (comportamento conhecido, NÃO bloqueante)
+
+Se a long for persistida com sucesso e a persistência do manifesto
+falhar (ex.: `FileExistsError` por conflito com `overwrite=False`,
+ou qualquer outra falha após `write_long_parquet`):
+
+- a execução falha explicitamente (`sucesso_execucao=False`);
+- o manifesto final não existe;
+- a long permanece em disco como artefato parcial detectável (não é
+  removida — o pipeline nunca desfaz uma escrita já concluída);
+- uma nova execução com `overwrite=False` bloqueia antes da rede ao
+  detectar o conflito de artefato existente (mesma guarda do dry run);
+- requer intervenção explícita (decidir `overwrite=True` conscientemente
+  ou mover/remover o artefato parcial manualmente).
+
+Não há rollback transacional entre long e manifesto — isso é
+deliberado e conhecido, não um bug.
+
+### Testes
+
+- 253/253 testes CEMPRE passando (`tests.test_constroi_painel_cempre`),
+  incluindo os testes obrigatórios do D5: guarda de autorização, cache
+  válido/ausente/inválido (corrompido, `request_id` trocado, variável
+  obrigatória ausente), persistência request a request, fail-fast,
+  retomada simulada, recarga do cache como fonte final, completude
+  pós-coleta, long somente se completo, manifesto somente após long
+  persistida, proteção `overwrite=False` para long e manifesto,
+  manifesto final recarregável via `load_manifest`/`validate_manifest`,
+  dry run inalterado e sem efeitos colaterais após o D5;
+- 44/44 testes territoriais passando, inalterado;
+- `AUDITORIA_D5_ZERO_REDE = SIM` — todo teste novo usa sessão/`fetch_request`
+  mockados; `cempre.requests.get` real é explicitamente bloqueado nos
+  testes de alto nível; nenhuma chamada real à API SIDRA/IBGE.
+
+### Dry run nacional real (diagnóstico, não autorização)
+
+Estado atual do cache nacional real (`CACHE_DIR`), verificado via dry
+run somente leitura:
+
+- `n_requests_esperados = 351`;
+- `n_cache_validos = 0`;
+- `n_cache_ausentes = 351`;
+- `n_cache_invalidos = 0`;
+- `n_requests_que_exigiriam_rede = 351`;
+- `pronto_para_execucao_real = True`.
+
+`pronto_para_execucao_real=True` é SOMENTE diagnóstico técnico — não
+significa `EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = SIM`. Nenhuma extração
+real foi realizada nesta etapa.
+
+### O que o D5 ainda NÃO validou
+
+- comportamento real da API SIDRA;
+- 351 chamadas reais;
+- necessidade real de rate limiting;
+- retries em condições reais;
+- adequação do timeout real;
+- backoff sob falhas reais;
+- performance total da coleta;
+- duração real da coleta;
+- interrupção FÍSICA de processo/energia;
+- retomada após interrupção física real (só a simulada, com mocks, foi
+  validada);
+- cobertura efetivamente retornada pela API;
+- qualidade efetiva dos dados coletados.
+
+O D5 fecha o executor controlado nacional. Não declara
+`PAINEL_TECNICO_CONSTRUIDO` e não autoriza a extração nacional CEMPRE.
+
+---
+
+## 11. Camada operacional
 
 Arquivos operacionais:
 
@@ -620,54 +821,68 @@ Esta camada e operacional e deve permanecer separada dos commits cientificos.
 
 ---
 
-## 11. Proximos passos
+## 12. Proximos passos
 
-1. desenhar o gate mínimo da execução real (critérios explícitos de
-   entrada/saída, distintos do dry run);
-2. implementar o ramo real do orquestrador de forma conservadora;
-3. executar SOMENTE requests cujo cache esteja ausente;
-4. persistir cada resposta válida individualmente em cache;
-5. nunca substituir automaticamente cache inválido;
-6. reavaliar completude após a coleta;
-7. somente com todos os requests válidos: construir long; persistir
-   Parquet; construir manifesto;
-8. realizar um spot-check do executor real;
-9. somente depois decidir explicitamente pela autorização da primeira
-   coleta nacional;
-10. após a primeira coleta, validar cobertura e qualidade antes de
-    qualquer análise econômica ou causal.
+1. definir o gate operacional da PRIMEIRA execução real (critérios
+   explícitos de entrada/saída — distinto do gate de infraestrutura já
+   aprovado no D5);
+2. decidir explicitamente os parâmetros iniciais conservadores da
+   primeira coleta: `timeout`; `max_retries`; `backoff_base`; execução
+   sequencial (sem paralelismo); critérios de interrupção manual;
+3. realizar um dry run final imediatamente antes da coleta (estado do
+   cache pode mudar entre esta atualização e a execução);
+4. somente após decisão humana explícita:
+   `EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = SIM`;
+5. executar a primeira coleta nacional (`execute_national_pipeline`,
+   `modo=MODO_EXECUCAO_REAL`, `autorizacao_extracao=True`);
+6. acompanhar progresso e falhas durante a coleta real;
+7. ao final, verificar: 351 requests; caches válidos; zero caches
+   inválidos; completude;
+8. construir/validar long e manifesto (já automático em
+   `execute_national_pipeline` quando `completo=True`);
+9. auditar cobertura e qualidade dos dados efetivamente coletados;
+10. somente depois decidir explicitamente sobre eventual
+    `PAINEL_TECNICO_CONSTRUIDO`.
 
-Nao reabrir Fase 0, calendario territorial, D2, D3 ou D4 sem anomalia
-concreta. A aprovação da auditoria integrada (seção 9) autoriza
-prosseguir para o DESENHO do gate de execução real — não autoriza,
-por si só, implementar rede real nem executar a primeira coleta.
+Nao reabrir Fase 0, calendario territorial, D2, D3, D4 ou D5 sem anomalia
+concreta. `PODE_PROSSEGUIR_PARA_GATE_DA_PRIMEIRA_EXECUCAO = SIM` (seção
+10) autoriza prosseguir para o DESENHO do gate da primeira execução —
+NÃO equivale a `EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = SIM` e não
+autoriza, por si só, executar a primeira coleta.
 
 ---
 
-## 12. Extracao nacional CEMPRE
+## 13. Extracao nacional CEMPRE
 
 Status:
 
 **EXTRAÇÃO NACIONAL CEMPRE = NÃO AUTORIZADA**
 
-Os commits territorial, Fase 0, D1, D2, D3, D4 e a correção do binding
-cache/request (seção 9), por si só, não autorizam a extração — inclusive
-com `PIPELINE_PRE_EXECUCAO_CEMPRE = APROVADO` e
-`PODE_PROSSEGUIR_PARA_GATE_DE_EXECUCAO_REAL = SIM`.
+Os commits territorial, Fase 0, D1, D2, D3, D4, a correção do binding
+cache/request (seção 9) e o executor controlado D5 (seção 10), por si
+só, não autorizam a extração — inclusive com
+`PIPELINE_PRE_EXECUCAO_CEMPRE = APROVADO`,
+`PODE_PROSSEGUIR_PARA_GATE_DE_EXECUCAO_REAL = SIM` e
+`PODE_PROSSEGUIR_PARA_GATE_DA_PRIMEIRA_EXECUCAO = SIM`.
+
+O ramo real do orquestrador (`execute_national_pipeline`) já está
+implementado e aprovado em spot-check (D5) — a lacuna que falta não é
+mais de implementação, é de validação sob condições reais e de decisão
+humana explícita.
 
 Antes de qualquer extração nacional ainda é necessário:
 
-- desenho e implementação do ramo real do orquestrador (ainda não
-  implementado — `run_national_pipeline` levanta `NotImplementedError`
-  para `modo=MODO_EXECUCAO_REAL`);
+- definição do gate operacional da primeira execução (seção 12);
+- decisão explícita dos parâmetros conservadores iniciais (timeout,
+  max_retries, backoff, critérios de interrupção);
 - validação do executor real sob rede real (retries, backoff, rate
-  limiting, paralelismo, interrupção/retomada — ver seção 9, "O que a
-  auditoria ainda não validou");
+  limiting, paralelismo, interrupção física/retomada real — ver seção
+  10, "O que o D5 ainda não validou");
 - autorização explícita para a extração nacional.
 
 ---
 
-## 13. Regra para agentes
+## 14. Regra para agentes
 
 Antes de trabalhar:
 
