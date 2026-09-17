@@ -1471,7 +1471,135 @@ nenhuma decisão de desenho causal.
 
 ---
 
-## 19. Regra para agentes
+## 19. D10 — Painel analítico CEMPRE município-ano
+
+Status técnico:
+
+`PAINEL_ANALITICO_CEMPRE = CONSTRUIDO`
+
+`CHAVE_MUNICIPIO_ANO = APROVADA`
+
+`REGRA_EXISTENCIA_TERRITORIAL = APLICADA`
+
+`MUNICIPIO_ANO_PRE_CRIACAO_EXCLUIDO = CONFIRMADO`
+
+`STATUS_ESPECIAIS_PRESERVADOS = SIM`
+
+`VARIAVEL_1606_PRESERVADA_COMO_OPCIONAL = SIM`
+
+`COBERTURA_FASE_II_ANALITICA = APROVADA`
+
+`COBERTURA_129_ANALITICA = APROVADA`
+
+`PAINEL_ANALITICO_CEMPRE_APROVADO = SIM`
+
+`PRONTO_PARA_INTEGRAR_CADASTRO_CAUSAL = SIM`
+
+`DESENHO_CAUSAL_APROVADO = NÃO`
+
+Commit substantivo:
+
+`f04991a3f5bf5dfcd98765d95c2d60922a45ccb3` — `feat: constroi painel
+analitico CEMPRE`
+
+Push: **CONCLUIDO**
+
+### O que foi construído
+
+Entrada: `data/interim/cempre_long_2007_2019.parquet` (long técnica
+nacional, imutável, aprovada em D8/D9 — não alterada nesta etapa).
+
+Novo script `src/constroi_painel_analitico_cempre.py`
+(`build_painel_analitico`, `auditar_populacao`,
+`build_diagnostico_exclusao_territorial`,
+`relatorio_missing_por_variavel`, `validate_painel_analitico`).
+
+Regra territorial analítica (única regra de inclusão/exclusão):
+somente `status_territorial == "existia_no_ano"` entra no painel
+principal — nunca decidido pelo valor retornado pela API. A long
+técnica tem 72.410 município-ano estruturais (5.570 municípios × 13
+anos); 32 município-ano são pré-criação territorial e foram excluídos
+do painel principal (preservados em diagnóstico, não apagados nem
+corrigidos na long). Painel final: **72.378 linhas**, uma por
+`(codigo_municipio_ibge, ano)`, chave única — bate exatamente com a
+soma dos municípios existentes por ano (5.564×2 + 5.565×4 + 5.570×7).
+
+7 variáveis contratadas viram colunas numéricas (`valor_numerico`
+reaproveitado, sem reparsear `valor_bruto`) mais 7 colunas de status
+espelhadas (nomenclatura reaproveitada de
+`constroi_painel_cempre._VARIAVEL_PARA_COLUNA`, estendida para 1606).
+Variável 1606 incluída e preservada como **opcional** no contrato — sua
+ausência/status especial nunca exclui município-ano.
+`status_valor_api == "desconhecido"` bloqueia a construção
+(`ValueError`) — não ocorreu (zero desconhecidos na execução real).
+
+Casos reais confirmados excluídos do painel principal (ano 2012,
+apesar de valor `observado`/`zero_real` na long técnica, já
+sinalizados com `incompatibilidade_territorial=True` desde D8/D9):
+Balneário Rincão/SC (`4220000`) e Paraíso das Águas/MS (`5006275`) —
+ambos voltam a aparecer normalmente a partir de 2013, ano de sua
+criação oficial.
+
+### Distribuição de NAs por status (painel final, revisão pós-D10)
+
+7 NAs no total, distribuídos em 4 variáveis, **100% originados de
+`sigilo`**, **zero originados de `indisponivel`** (esperado: os casos
+`indisponivel` da long técnica estavam concentrados em município-ano
+pré-criação, removidos pela regra territorial) e **zero de qualquer
+outro status**. `zero_real`/`zero_arredondado` continuam valores
+numéricos 0 — nunca contados como `n_na`. Nenhuma incompatibilidade
+entre NA e status encontrada.
+
+### Correção de isolamento de testes (sem mudança de lógica produtiva)
+
+Ao rodar a suíte técnica completa como regressão, 2 testes de
+`TestDryRunPorFonte` (`tests/test_constroi_painel_cempre.py`) falhavam
+porque seu `_config()` não isolava `caminho_long`/`caminho_manifesto`
+em diretório temporário — o default de `NationalRunConfig` apontava
+para os artefatos reais do projeto, que agora existem legitimamente
+(D8/D9), gerando um falso conflito de artefato no cenário sintético do
+teste. Corrigido **somente no teste** (`_config()` agora passa
+`caminho_long`/`caminho_manifesto` dentro do `TemporaryDirectory` já
+usado pelo `setUp`) — nenhuma linha de código produtivo
+(`constroi_painel_cempre.py`) foi alterada.
+
+### Testes e regressão
+
+- 24/24 testes novos de `tests/test_constroi_painel_analitico_cempre.py`
+  passando (pivot long→wide, chave única, exclusão/preservação
+  territorial, Balneário Rincão e Paraíso das Águas excluídos, sigilo/
+  indisponível/zero/desconhecido tratados corretamente, 1606 não
+  determina exclusão, 708/707 preservadas, cobertura Fase II/129
+  candidatos);
+- 320/320 testes de `tests/test_constroi_painel_cempre.py` passando
+  (317 anteriores + 3 do D9 + a correção de isolamento acima, sem
+  regressão);
+- 44/44 testes territoriais passando, inalterado;
+- zero chamada de rede em todas as suítes.
+
+### Artefatos gerados (não versionados — política de `.gitignore`
+inalterada)
+
+- `data/processed/cempre_painel_analitico_2007_2019.parquet`
+  (72.378 linhas × 19 colunas);
+- `outputs/diagnostics/cempre_municipio_ano_excluidos_territorio.csv`
+  (224 linhas — rastreabilidade das 32 exclusões território, NÃO usado
+  como input causal).
+
+### O que esta seção NÃO declara
+
+- integração ao cadastro causal nacional (próxima etapa, ainda não
+  iniciada);
+- `DESENHO_CAUSAL_APROVADO` — decisão separada, não decorre da
+  construção do painel analítico;
+- `PAINEL_TECNICO_CONSTRUIDO` permanece como já estava (D9) — esta
+  seção não o reabre nem o altera.
+
+Não reabrir o D10 sem anomalia concreta.
+
+---
+
+## 20. Regra para agentes
 
 Antes de trabalhar:
 
