@@ -15,12 +15,15 @@ Branch:
 
 `main`
 
-HEAD/origin conhecido após os commits substantivos do D12:
+HEAD/origin conhecido após os commits substantivos do D13:
 
-`b52fff82a0f5aa15d7cd9c879265c3356f0e5552`
+`78d006bdaa11e9b351e62b61f428e9602930c86a`
 
 Commits recentes:
 
+- `78d006b` — `feat: implementa gate de identificacao causal`
+- `e4c1ef7` — `fix: amplia fallback Plotly sem Kaleido`
+- `90293f7` — `docs: registra D12 e protocolo visual academico`
 - `b52fff8` — `feat: adiciona notebook academico e identidade visual IPT`
 - `11b690e` — `feat: audita suporte temporal da populacao causal`
 - `4bfa02a` — `docs: registra painel CEMPRE integrado ao cadastro causal`
@@ -1727,7 +1730,164 @@ fallback HTML local, sem instalar dependências e sem rede.
 
 ---
 
-## 22. Regra para agentes
+## 22. D13 — Gate de Identificação Causal
+
+Status técnico:
+
+`D13_GATE_IDENTIFICACAO = CONCLUIDO`
+
+`GATE_IDENTIFICACAO = APTO_PARA_ESPECIFICACAO`
+
+`PRE_TENDENCIAS_DESCRITIVAS = CONCLUIDAS`
+
+`POOL_CONTROLES_4964 = CONFIRMADO`
+
+`JANELA_2PRE_3POS = CANDIDATA_PRINCIPAL`
+
+`JANELA_3PRE_3POS = CANDIDATA_SENSIBILIDADE`
+
+`JANELA_ANTECIPACAO_DEFINIDA = NÃO`
+
+`AMOSTRA_CAUSAL_FINAL = NÃO DEFINIDA`
+
+`DESENHO_CAUSAL_APROVADO = NÃO`
+
+`PRONTO_PARA_D14_ESPECIFICACAO = SIM`
+
+Commit substantivo:
+
+`78d006bdaa11e9b351e62b61f428e9602930c86a` — `feat: implementa gate de
+identificacao causal`
+
+Commit de correção visual (pré-requisito técnico, sem alterar análise):
+
+`e4c1ef75987c9f06e22f06f0a3f358133949a036` — `fix: amplia fallback Plotly
+sem Kaleido`
+
+Push: **CONCLUIDO** (ambos).
+
+### O que o D13 audita e diagnostica (sem estimar nenhum efeito)
+
+O D13 responde dez perguntas de identificação causal exigidas antes de
+qualquer estimação — tratamento, comparação, janela, timing, suporte e
+pré-tendências —, reaproveitando integralmente os artefatos já aprovados
+(D10/D11/D12), sem recalculá-los. Confirmado, reproduzindo exatamente os
+números do D12:
+
+- **129 candidatos principais**, coortes 2009=21, 2010=27, 2011=66,
+  2012=13, 2013=2;
+- suporte temporal: **2 pré + 3 pós = 129/129**; **3 pré + 3 pós =
+  108/129**; a coorte 2009 vai de 21/21 (2pré+3pós) para 0/21 (3pré+3pós)
+  porque a janela exigiria 2006, fora do painel 2007–2019 — limitação de
+  calendário, não de qualidade do outcome;
+- pool estrutural de **4.964 controles**, distinto dos **4.970** municípios
+  nunca expostos em 2007–2019 — auditado empiricamente (não presumido): os
+  4.964 são subconjunto estrito dos 4.970 (0 exceções), nenhum é Fase II
+  (0 exceções); os 6 nunca expostos fora do pool ficam de fora por
+  `universo_incompleto` (municípios criados após 2007), não por falha de
+  exposição.
+
+### Timing e antecipação
+
+`JANELA_ANTECIPACAO_DEFINIDA = NÃO` — o `CONTRATO_CAUSAL.md` e o
+`PROTOCOLO_PRE_ANALISE.md` não têm, e o D13 não inventou, uma regra geral
+de antecipação. Achado específico preservado, não reinterpretado: dos 129
+candidatos, **128 estão sob `origem_coorte='proxy_censo'`** (sem
+`ano_transicao`/`primeiro_ano_completo` documentados individualmente) e
+**1 — Cabo Frio/RJ, código `3300704`** — está sob
+`origem_coorte='institucional_validada'`, com `ano_transicao=2009`
+(excluído da estimação no cadastro causal) e `primeiro_ano_completo=2010`
+(igual à `ano_coorte_candidata`). Este é o único caso em que o contrato já
+tem regra de timing inequívoca; não foi generalizado para os demais 128.
+
+### Pré-tendências descritivas
+
+Baseline (`g-1`), níveis pré-tratamento (por coorte, usando toda a história
+pré disponível — 2 a 6 anos, não travado em 2) e índice normalizado
+(`g-1=100`) foram diagnosticados usando **exclusivamente anos
+pré-tratamento**; nenhuma observação pós-tratamento foi usada para
+escolher o desenho. A diferença de nível entre tratados (muito mais altos)
+e o pool de controles no baseline **não foi tratada como reprovação
+automática de DiD** — é um diagnóstico esperado, dado que a seleção dos
+municípios Fase II pelo MEC não é aleatória (DAG do `CONTRATO_CAUSAL.md`).
+O índice `g-1=100` foi usado somente para visualização de trajetória
+relativa; nenhum outcome transformado foi persistido em nenhum artefato.
+Spillover e arranjos populacionais permanecem diagnósticos já produzidos em
+etapas anteriores, não reabertos nem usados como critério de exclusão
+automática.
+
+### Gráficos adicionados
+
+`06_distribuicao_baseline_tratados_controles`,
+`07_pre_tendencias_niveis`, `08_pre_tendencias_indice`,
+`09_mudanca_pre_g2_g1` — Plotly, identidade IPT, salvos via
+`src/visualizacao_ipt.py` (fallback HTML local, Kaleido segue indisponível
+e não foi instalado).
+
+### Correção técnica no fallback visual
+
+`Plotly` instalado no ambiente é `7.0.0`, que passou a levantar
+`RuntimeError` (em vez de `ImportError`) quando o Kaleido está ausente. O
+fallback de `salvar_figura_ipt` (já documentado desde o D12) não capturava
+esse tipo e travava a execução do notebook — corrigido ampliando o
+`except` para incluir `RuntimeError`, sem alterar nenhuma outra lógica
+visual nem a paleta/identidade IPT. Teste focal adicionado em
+`tests/test_visualizacao_ipt.py` simulando `write_image` levantando
+`RuntimeError` e confirmando o fallback para HTML sem exceção (3/3 testes
+passando).
+
+### Testes
+
+- `tests/test_diagnostica_identificacao_causal.py`: **10/10 passando**,
+  offline — cobrem cálculo de baseline, uso exclusivo de períodos pré,
+  normalização `g-1=100`, tratamento da coorte 2009, ausência de
+  contaminação por dados pós-tratamento e preservação do pool canônico
+  (nenhum controle filtrado por outcome);
+- `tests/test_visualizacao_ipt.py`: **3/3 passando**, incluindo o novo
+  teste focal do fallback `RuntimeError`;
+- `tests/test_audita_populacao_causal_cempre.py` (D12): **17/17 passando**,
+  sem regressão — os resultados do D12 permanecem inalterados.
+
+### Notebook
+
+`notebooks/01_analise_expansao_rede_federal_economia_municipal.ipynb`
+cresceu de 28 para **63 células**, executado integralmente offline e salvo
+com outputs, **zero traceback**, **9 figuras Plotly** renderizadas, com
+seções didáticas sobre Diferenças-em-Diferenças, tratamento escalonado,
+hipótese de tendências paralelas, baseline, pré-tendências, limitação da
+coorte 2009 e classificação do gate de identificação. Nenhum ATT, nenhum
+matching, nenhum TWFE causal e nenhum Callaway–Sant'Anna foi executado.
+
+### Propostas candidatas (registradas, não congeladas)
+
+- `GRUPO_COMPARACAO_CANDIDATO` = pool estrutural dos 4.964 controles;
+- `JANELA_PRINCIPAL_CANDIDATA` = 2 pré + 3 pós;
+- `JANELA_SENSIBILIDADE_CANDIDATA` = 3 pré + 3 pós, restrita às coortes com
+  suporte (2010–2013);
+- `OUTCOME_PRINCIPAL_CANDIDATO` = CEMPRE 708 em nível, sem transformação;
+- `ESTIMADOR_CANDIDATO_FUTURO` = DiD para tratamento escalonado /
+  Callaway–Sant'Anna.
+
+Essas decisões ainda precisam ser congeladas no D14 — não são um contrato
+final.
+
+### Próximo passo
+
+**D14 — Congelamento da Especificação Causal**, que deverá decidir
+explicitamente: (1) definição operacional do tratamento; (2) regra de
+timing; (3) tratamento da antecipação/transição; (4) grupo de comparação
+final (never-treated e eventual papel de not-yet-treated); (5) janela
+principal; (6) janela de sensibilidade; (7) tratamento da coorte 2009;
+(8) outcome principal e eventuais transformações de sensibilidade; (9)
+tratamento do sigilo do município `5003900`/2012; (10) política de
+spillover para robustez; (11) configuração futura do estimador. Nenhum
+efeito causal foi estimado no fechamento do D13.
+
+Não reabrir D13 sem anomalia concreta.
+
+---
+
+## 23. Regra para agentes
 
 Antes de trabalhar:
 
