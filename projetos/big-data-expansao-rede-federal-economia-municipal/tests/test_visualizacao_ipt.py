@@ -34,6 +34,28 @@ class TestVisualizacaoIpt(unittest.TestCase):
         self.assertEqual(destino.name, "grafico.html")
         self.assertEqual(destino.parent.name, "interactive")
 
+    def test_salvar_figura_faz_fallback_html_quando_kaleido_lanca_runtimeerror(self) -> None:
+        """Plotly >= 7 levanta RuntimeError (nao mais ImportError) quando o
+        pacote Kaleido esta ausente. O fallback precisa capturar esse tipo
+        tambem, sem propagar excecao."""
+
+        class FiguraKaleidoAusenteRuntimeError:
+            def write_image(self, *_args, **_kwargs) -> None:
+                raise RuntimeError(
+                    "Image export requires the Kaleido package, v1.0.0 or greater, "
+                    'which can be installed using pip:\n\n    $ pip install --upgrade "kaleido>=1"'
+                )
+
+            def write_html(self, caminho: Path, **_kwargs) -> None:
+                Path(caminho).write_text("<html></html>", encoding="utf-8")
+
+        with tempfile.TemporaryDirectory() as diretorio:
+            destino = visual.salvar_figura_ipt(FiguraKaleidoAusenteRuntimeError(), Path(diretorio) / "grafico.png")
+            self.assertTrue(destino.exists())
+
+        self.assertEqual(destino.name, "grafico.html")
+        self.assertEqual(destino.parent.name, "interactive")
+
 
 if __name__ == "__main__":
     unittest.main()

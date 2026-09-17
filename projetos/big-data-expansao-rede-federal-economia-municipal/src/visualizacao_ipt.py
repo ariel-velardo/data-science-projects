@@ -63,7 +63,9 @@ def salvar_figura_ipt(fig: go.Figure, caminho_png: Path) -> Path:
     try:
         fig.write_image(caminho_png, scale=2)
         return caminho_png
-    except (ImportError, ValueError):
+    except (ImportError, ValueError, RuntimeError):
+        # Plotly >= 7 levanta RuntimeError (em vez de ImportError) quando o
+        # Kaleido esta ausente; mantemos o mesmo fallback HTML documentado.
         caminho_html = caminho_png.parent / "interactive" / f"{caminho_png.stem}.html"
         caminho_html.parent.mkdir(parents=True, exist_ok=True)
         fig.write_html(caminho_html, include_plotlyjs=True, full_html=True)
