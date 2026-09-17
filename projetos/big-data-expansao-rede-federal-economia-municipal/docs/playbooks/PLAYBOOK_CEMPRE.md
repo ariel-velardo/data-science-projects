@@ -188,9 +188,12 @@ Símbolos:
 → `zero_arredondado_negativo`
 → `0`
 
-`x`
-→ `sigilo`
+`x`, `X`
+→ `sigilo` (valor inibido para não identificar o informante, conforme
+documentação oficial do SIDRA)
 → nulo
+→ `valor_bruto` preservado exatamente como recebido (`"x"` ou `"X"`,
+nunca normalizado fisicamente de um para o outro).
 
 `..`
 → `nao_aplicavel`

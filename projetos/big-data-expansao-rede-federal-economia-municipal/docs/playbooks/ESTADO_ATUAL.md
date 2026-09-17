@@ -1190,7 +1190,132 @@ Antes de qualquer extração nacional ainda é necessário:
 
 ---
 
-## 16. Regra para agentes
+## 16. D8 — Primeira coleta nacional real via `agregados_v3` (concluída; painel técnico ainda NÃO declarado)
+
+Status técnico:
+
+`COLETA_NACIONAL_AGREGADOS_351 = CONCLUIDA`
+
+`CACHE_AGREGADOS_351 = PERSISTIDO`
+
+`CONSTRUCAO_LONG_AGREGADOS_TENTATIVA_1 = REPROVADA` (bloqueio real,
+símbolo `"X"` maiúsculo, 18 linhas, ano 2012, municípios de SC e MT)
+
+`SIMBOLO_X_MAIUSCULO = SIGILO_CONFIRMADO` (documentação oficial do
+SIDRA: `X` = valor inibido para não identificar o informante)
+
+`PARSER_SIGILO_X_x = CORRIGIDO`
+
+`LONG_CEMPRE_AGREGADOS = CONSTRUIDA` (reconstrução cache-only, zero rede
+nova)
+
+`MANIFESTO_CEMPRE_AGREGADOS = CONSTRUIDO_E_VALIDADO`
+
+`STATUS_DESCONHECIDO = ZERO`
+
+`PAINEL_TECNICO_CONSTRUIDO = NÃO`
+
+`PRONTO_PARA_AUDITORIA_QUALIDADE_COBERTURA = SIM`
+
+`COLETA_NACIONAL = CONCLUIDA` (para a fonte `agregados_v3` — não reabre
+automaticamente coleta nacional via `apisidra` nem autoriza nova coleta
+nacional sem decisão explícita futura)
+
+`EXTRACAO_NACIONAL_CEMPRE_AUTORIZADA = NÃO` (a autorização concedida
+cobriu exclusivamente o evento pontual já executado — os 351 requests
+`agregados_v3` desta coleta — e não abre automaticamente autorização
+para coletas futuras)
+
+Commit substantivo da correção do parser:
+
+`798f54a57ea05cca026571dee1bcde1bca4616a7` — `fix: reconhece sigilo
+maiusculo no CEMPRE`
+
+Push: **CONCLUIDO**
+
+### Linha do tempo factual
+
+Preservada integralmente, incluindo o bloqueio real — não reescrita
+como se a primeira execução tivesse sido perfeita:
+
+1. Dry run nacional real `agregados_v3` aprovado (seção 14, item 1):
+   351 esperados, 0 caches válidos, 351 ausentes, 0 inválidos, sem
+   conflito de outputs, `pronto_para_execucao_real=True`.
+2. Canário real único aprovado: exatamente 1 chamada HTTP real (UF=RO,
+   ano=2007), HTTP 200, `validate_agregados_payload` e binding semântico
+   aprovados, normalização em memória aprovada, zero efeito colateral.
+3. Autorização humana explícita concedida para a primeira coleta
+   nacional real via `agregados_v3`, com os parâmetros conservadores
+   default já implementados (`timeout=15.0`, `max_retries=3`,
+   `backoff_base=1.0`, execução sequencial, fail-fast).
+4. Execução real completou 351/351 requests HTTP com sucesso (1 timeout
+   transitório em `request_id=0886246915adfdc3`, recuperado
+   automaticamente pelo retry). 351 caches `agregados_v3` persistidos em
+   disco, sem nenhuma corrupção.
+5. A construção da long foi **corretamente bloqueada** por
+   `validate_long`: 18 linhas (ano 2012, municípios de Santa Catarina e
+   Mato Grosso) vieram com `valor_bruto="X"` (maiúsculo) — símbolo não
+   reconhecido pelo parser vigente (`parse_sidra_value` só aceitava
+   `"x"` minúsculo como sigilo). Nenhuma long nem manifesto foram
+   criados nesse momento; a guarda de `desconhecido` funcionou como
+   projetado (seção 7 deste playbook).
+6. Investigação offline (100% a partir dos 351 caches já em disco, zero
+   nova chamada de rede) confirmou que essas 18 linhas eram o único
+   símbolo não reconhecido em toda a coleta, e que a documentação
+   oficial do SIDRA define `X` como "valor inibido para não identificar
+   o informante" — equivalente semântico de `x` minúsculo (`sigilo`).
+7. Correção focal aplicada em `parse_sidra_value`
+   (`src/constroi_painel_cempre.py`): `"x"` e `"X"` agora retornam
+   `("sigilo", None)`; nenhum outro símbolo foi tornado permissivo;
+   `desconhecido` continua bloqueante para qualquer outro caso;
+   `valor_bruto` continua preservado exatamente como recebido (`"x"` ou
+   `"X"`, nunca normalizado fisicamente de um para o outro). Testes
+   adicionados em `tests/test_constroi_painel_cempre.py`: `"x"` →
+   sigilo; `"X"` → sigilo; `valor_bruto` preservado como `"X"` após
+   `normalize_long_agregados`; símbolo desconhecido novo (`"Y"`)
+   continua bloqueante em `parse_sidra_value` e em `validate_long`.
+8. Regressão completa pós-correção: 320/320 testes CEMPRE passando (317
+   anteriores + 3 novos); 44/44 testes territoriais passando,
+   inalterado. Zero rede nos testes.
+9. Reconstrução da long/manifesto feita **inteiramente a partir dos 351
+   caches já persistidos** — zero nova chamada HTTP (rede bloqueada
+   explicitamente no script de execução; nenhuma tentativa de rede
+   ocorreu). `run_national_pipeline` em `modo=execute` reaproveitou
+   351/351 caches, executou 0 requests novos, `completo=True`,
+   `sucesso_execucao=True`.
+10. Long e manifesto validados: `validate_long` aprovado (zero
+    duplicatas, zero bloqueios); `load_manifest`/`validate_manifest`
+    aprovados sem exceção; `fonte.fonte_api="agregados_v3"`;
+    `execucao.n_sucessos=351`, `n_falhas=0`, `completo=True`;
+    `codigo.git_commit` do manifesto = `798f54a5...` (commit da
+    correção do parser, confirmando a proveniência pós-correção).
+
+### Resultado da long (`data/interim/cempre_long_2007_2019.parquet`)
+
+- 506.870 linhas; 5.570 municípios distintos; anos 2007–2019 (13);
+  variáveis: 662, 706, 707, 708, 1606, 5944, 10143 (7 — grupo completo
+  contratado);
+- distribuição de `status_valor_api`: `observado` = 506.629;
+  `indisponivel` = 210; `sigilo` = 18 (todas com `valor_bruto="X"`);
+  `zero_real` = 11; `zero_arredondado` = 2; `desconhecido` = 0.
+
+### O que esta seção NÃO declara
+
+- `PAINEL_TECNICO_CONSTRUIDO` — ainda pendente auditoria de cobertura e
+  qualidade dos dados efetivamente coletados frente ao esperado;
+- adequação analítica de sigilo, comparabilidade RAIS/eSocial ou
+  deflator — decisões humanas da seção 19 do `PLAYBOOK_CEMPRE.md`
+  (`PAINEL_ANALITICO_APROVADO`);
+- autorização para qualquer nova coleta nacional futura (via
+  `agregados_v3` ou `apisidra`).
+
+Não reabrir esta coleta nacional sem anomalia concreta. Próximo passo:
+auditoria de cobertura/qualidade dos dados efetivamente coletados, antes
+de qualquer declaração de `PAINEL_TECNICO_CONSTRUIDO`.
+
+---
+
+## 17. Regra para agentes
 
 Antes de trabalhar:
 
