@@ -5,7 +5,7 @@
 > Atualizar quando uma etapa for fechada, um gate mudar ou uma nova unidade
 > de trabalho for aberta.
 >
-> Snapshot: 2026-09-16.
+> Snapshot: 2026-09-17.
 
 ---
 
@@ -17,10 +17,11 @@ Branch:
 
 HEAD/origin conhecido:
 
-`5b716907f9c02aa4b7ebb5a4c949d4147a0e7521`
+`e906b2b107f408f55cda7dd46149956b58f9dc12`
 
 Commits recentes:
 
+- `e906b2b` — `feat: integra painel CEMPRE ao cadastro causal`
 - `5b71690` — `feat: integra fonte agregados ao pipeline CEMPRE`
 - `d4ace33` — `docs: registra adaptador CEMPRE de agregados`
 - `4a4355e` — `feat: adiciona adaptador CEMPRE para API de agregados`
@@ -41,9 +42,8 @@ Commits recentes:
 - `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
 
 Os commits foram enviados para `origin/main`. Checkpoint substantivo mais
-recente: `5b716907f9c02aa4b7ebb5a4c949d4147a0e7521` (D7 — integração
-explícita e selecionável de `agregados_v3` ao pipeline nacional — ver
-seção 12).
+recente: `e906b2b107f408f55cda7dd46149956b58f9dc12` (D11 — integração do
+painel analítico CEMPRE ao cadastro causal — ver seção 20).
 
 ---
 
@@ -1599,7 +1599,63 @@ Não reabrir o D10 sem anomalia concreta.
 
 ---
 
-## 20. Regra para agentes
+## 20. D11 — Painel CEMPRE integrado ao cadastro causal
+
+Status técnico:
+
+`PAINEL_CEMPRE_CADASTRO_CAUSAL = CONSTRUIDO`
+
+`MERGE_CADASTRAL = APROVADO`
+
+`POPULACAO_FASE_II_147 = PRESERVADA`
+
+`CANDIDATOS_PRINCIPAIS_129 = PRESERVADOS`
+
+`COORTES_CANDIDATAS = PRESERVADAS`
+
+`POOL_CONTROLES = PRESERVADO`
+
+`OUTCOME_CEMPRE = PRESERVADO`
+
+`PAINEL_INTEGRADO_APROVADO = SIM`
+
+`PRONTO_PARA_AUDITORIA_POPULACAO_CAUSAL = SIM`
+
+`DESENHO_CAUSAL_APROVADO = NÃO`
+
+Commit substantivo:
+
+`e906b2b107f408f55cda7dd46149956b58f9dc12` — `feat: integra painel
+CEMPRE ao cadastro causal`
+
+Artefatos canônicos não versionados, usados sem recalcular: painel
+analítico CEMPRE D10; cadastro nacional de exposição/elegibilidade; e
+cadastro causal Fase II. O painel integrado preserva 72.378 linhas e a
+chave única `(codigo_municipio_ibge, ano)`, cobrindo 5.570 municípios.
+Os dois merges foram `many_to_one`; zero município do painel ficou sem
+correspondência no cadastro nacional.
+
+Foram preservados: 147 Fase II; 129 candidatos principais; coortes
+2009–2013 de 21/27/66/13/2; 600 expostos e 4.970 nunca expostos; 4.964
+elegíveis e 606 não elegíveis a controle. Nenhum Fase II tem
+`pode_ser_controle=True`. Os casos especiais institucionais foram
+mantidos sem reinterpretação, inclusive Sobral/CE como
+`candidato_com_ressalva`, `primeiro_ano_completo=2010` e
+`ano_coorte_candidata=2010`.
+
+Outcome e status CEMPRE foram preservados sem transformação. Não foram
+criados `post`, `tratado_ano`, `event_time`, matching, pesos causais ou
+estimação. O schema final tem **58 colunas**: 19 do D10 (5 identidade/
+território + 7 valores + 7 status), 11 do cadastro nacional e **28** do
+cadastro causal. A divergência textual 57×58 foi resolvida: a coluna não
+contabilizada era `revisao_prioritaria`, metadata legítima já existente no
+cadastro causal; não há colunas duplicadas, sufixos de merge ou colisões.
+
+Validação focal: 22/22 testes D11 passaram, zero rede.
+
+---
+
+## 21. Regra para agentes
 
 Antes de trabalhar:
 
