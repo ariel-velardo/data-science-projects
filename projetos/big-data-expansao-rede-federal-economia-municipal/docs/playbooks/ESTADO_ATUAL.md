@@ -1315,7 +1315,163 @@ de qualquer declaração de `PAINEL_TECNICO_CONSTRUIDO`.
 
 ---
 
-## 17. Regra para agentes
+## 17. D9 — Auditoria de cobertura e qualidade do painel técnico nacional CEMPRE (aprovada)
+
+Status técnico:
+
+`AUDITORIA_COBERTURA_CEMPRE = APROVADA`
+
+`AUDITORIA_QUALIDADE_CEMPRE = APROVADA`
+
+`COBERTURA_FASE_II = APROVADA`
+
+`COBERTURA_129_CANDIDATOS = APROVADA`
+
+`MANIFESTO_FINAL_CEMPRE = APROVADO`
+
+`PAINEL_TECNICO_CONSTRUIDO = SIM`
+
+`PRONTO_PARA_CONSTRUCAO_ANALITICA = SIM`
+
+`DESENHO_CAUSAL_APROVADO = NÃO` (não inferido a partir da qualidade do
+painel técnico — decisão separada, fora do escopo desta auditoria)
+
+Artefatos auditados (inalterados por esta auditoria — tarefa somente
+diagnóstica, zero rede, zero escrita):
+
+- `data/interim/cempre_long_2007_2019.parquet`
+- `data/raw/ibge/cempre/source_manifest.json`
+
+### Integridade estrutural
+
+- 506.870 linhas; 5.570 municípios distintos; 13 anos (2007–2019); 7
+  variáveis (662, 706, 707, 708, 1606, 5944, 10143);
+- grid: `5.570 × 13 × 7 = 506.870`, exato;
+- zero duplicatas na chave `(codigo_municipio_ibge, ano,
+  codigo_variavel_sidra)`;
+- cobertura por ano: exatamente 38.990 linhas/ano, todos os 13 anos, sem
+  exceção;
+- cobertura por variável: exatamente 72.410 linhas/variável, todas as 7,
+  sem exceção.
+
+### Distribuição de `status_valor_api`
+
+`observado` = 506.629; `indisponivel` = 210; `sigilo` = 18; `zero_real`
+= 11; `zero_arredondado` = 2; `zero_arredondado_negativo` = 0;
+`nao_aplicavel` = 0; `desconhecido` = 0.
+
+### Território
+
+`status_territorial`: `existia_no_ano` = 506.646 linhas;
+`nao_existia_no_ano` = 224 linhas (32 combinações município-ano × 7
+variáveis: 210 `indisponivel`, 11 `sigilo`, 2 `observado`, 1
+`zero_real`).
+
+Ressalva territorial registrada (decisão futura da construção
+analítica — **não corrigida nem alterada no painel técnico**): dois
+municípios com valor observado um ano antes da criação formal segundo o
+calendário territorial (DTB), ambos já marcados
+`incompatibilidade_territorial=True` pelo próprio pipeline (D2):
+
+- Balneário Rincão/SC, código `4220000`, ano 2012, variável 706
+  (número de unidades locais), valor = 1;
+- Paraíso das Águas/MS, código `5006275`, ano 2012, variável 706, valor
+  = 2.
+
+Mesmo padrão institucional já documentado para Pescaria Brava/2007
+(seção 14 do `PLAYBOOK_CEMPRE.md`) — município com atividade econômica
+registrada antes da existência político-territorial oficial. Não é
+tratado como bloqueador técnico: é isolado (2 municípios, 1 ano), já
+sinalizado pelo contrato existente, e a decisão sobre incluir/excluir
+esses pontos pertence à fase analítica, não à técnica.
+
+### Sigilo (18 linhas)
+
+100% no ano 2012; 4 municípios (São Miguel da Boa Vista/SC, Figueirão/MS,
+Balneário Rincão/SC, Paraíso das Águas/MS); 100% `valor_bruto="X"`,
+`status_valor_api="sigilo"`, `valor_numerico=None`. Nenhuma
+inconsistência técnica.
+
+### Indisponível (210 linhas)
+
+100% em município-ano que ainda não existia segundo o calendário
+territorial; 0 indisponíveis em município já existente — mesmo padrão
+institucional documentado (Pescaria Brava).
+
+### Zeros
+
+`zero_real` = 11; `zero_arredondado` = 2. Classificação coerente com o
+contrato vigente (seção 7 do `PLAYBOOK_CEMPRE.md`).
+
+### Variável 1606
+
+72.410 linhas; 5.570 municípios; 13 anos — cobertura completa,
+estatisticamente equivalente às 6 variáveis obrigatórias. **Permanece
+OPCIONAL no contrato de aquisição** — não promovida a obrigatória sem
+decisão metodológica explícita.
+
+### Plausibilidade
+
+`validate_cross_measures` (reutilizada, sem lógica paralela): aprovado,
+0 violações — 0 casos de `pessoal_ocupado_assalariado (708) >
+pessoal_ocupado_total (707)`, 0 valores negativos nas medidas
+auditadas.
+
+### Unidades e labels
+
+Todas as 7 variáveis com exatamente 1 combinação nome/unidade — nenhuma
+inconsistência.
+
+### Cobertura Fase II e candidatos principais
+
+- 147/147 municípios Fase II presentes na long; 147/147 com 13 anos × 7
+  variáveis completos; 0 ausentes; 0 status especiais no subconjunto
+  Fase II;
+- candidatos principais (`candidato_amostra_principal=True` no cadastro
+  causal já existente): 129/129 presentes; 129/129 completos.
+
+### Manifesto
+
+`fonte_api=agregados_v3`; `n_sucessos=351`; `n_falhas=0`;
+`completo=True`; SHA-256 do parquet da long consistente com o
+registrado no manifesto; `n_linhas=506.870`; `git_commit` da geração =
+`798f54a57ea05cca026571dee1bcde1bca4616a7` (commit da correção do
+parser — seção 16).
+
+### O que esta seção NÃO declara
+
+- `DESENHO_CAUSAL_APROVADO` — decisão separada, não decorre da
+  qualidade/cobertura do painel técnico;
+- qualquer regra de transformação long → wide, tratamento de
+  incompatibilidade territorial na análise, ou decisão sobre a
+  variável 1606 na análise — pertencem à construção do painel
+  analítico (ver seção 18, "Próximos passos").
+
+Não reabrir esta auditoria sem anomalia concreta.
+
+---
+
+## 18. Próximos passos (pós-auditoria de cobertura/qualidade)
+
+1. construir o painel analítico município-ano a partir da long técnica;
+2. definir regras explícitas para:
+   - existência territorial;
+   - incompatibilidade territorial;
+   - valores especiais;
+   - variável 1606;
+   - transformação long → wide;
+3. integrar o painel CEMPRE ao cadastro causal nacional;
+4. auditar a população analítica resultante;
+5. somente depois avançar para diagnósticos de identificação causal.
+
+Não iniciar construção analítica ou análise causal antes das decisões
+explícitas do item 2. `PAINEL_TECNICO_CONSTRUIDO = SIM` autoriza avançar
+para a construção do painel analítico — não autoriza, por si só,
+nenhuma decisão de desenho causal.
+
+---
+
+## 19. Regra para agentes
 
 Antes de trabalhar:
 
