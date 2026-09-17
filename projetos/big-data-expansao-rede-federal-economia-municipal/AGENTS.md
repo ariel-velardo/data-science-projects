@@ -38,3 +38,9 @@ Relatório final mínimo:
 - gate;
 - estado final;
 - confirmação das ações proibidas que não ocorreram.
+
+## Identidade visual acadêmica
+
+- Plotly é a biblioteca preferencial para gráficos analíticos.
+- Usar o tema central definido em `src/visualizacao_ipt.py`, com paleta inspirada na identidade visual do IPT; não criar paletas ad hoc.
+- Gráficos usados em decisões metodológicas devem aparecer no notebook acadêmico principal.

@@ -15,12 +15,15 @@ Branch:
 
 `main`
 
-HEAD/origin conhecido:
+HEAD/origin conhecido após os commits substantivos do D12:
 
-`e906b2b107f408f55cda7dd46149956b58f9dc12`
+`b52fff82a0f5aa15d7cd9c879265c3356f0e5552`
 
 Commits recentes:
 
+- `b52fff8` — `feat: adiciona notebook academico e identidade visual IPT`
+- `11b690e` — `feat: audita suporte temporal da populacao causal`
+- `4bfa02a` — `docs: registra painel CEMPRE integrado ao cadastro causal`
 - `e906b2b` — `feat: integra painel CEMPRE ao cadastro causal`
 - `5b71690` — `feat: integra fonte agregados ao pipeline CEMPRE`
 - `d4ace33` — `docs: registra adaptador CEMPRE de agregados`
@@ -42,7 +45,9 @@ Commits recentes:
 - `dd6bbac` — `docs: adiciona playbooks operacionais do projeto`
 
 Os commits foram enviados para `origin/main`. Checkpoint substantivo mais
-recente: `e906b2b107f408f55cda7dd46149956b58f9dc12` (D11 — integração do
+recente antes deste registro documental: `b52fff82a0f5aa15d7cd9c879265c3356f0e5552`
+(notebook acadêmico principal e identidade visual IPT), precedido por
+`11b690e` (D12) e `4bfa02a` (registro documental do D11). O D11 — integração do
 painel analítico CEMPRE ao cadastro causal — ver seção 20).
 
 ---
@@ -1655,7 +1660,74 @@ Validação focal: 22/22 testes D11 passaram, zero rede.
 
 ---
 
-## 21. Regra para agentes
+## 21. D12 — Auditoria da população causal e suporte temporal CEMPRE
+
+Status técnico:
+
+`AUDITORIA_POPULACAO_CAUSAL = CONCLUIDA`
+
+`CANDIDATOS_129_AUDITADOS = SIM`
+
+`SUPORTE_ADJACENTE_2PRE_3POS = DIAGNOSTICADO`
+
+`SUPORTE_ADJACENTE_3PRE_3POS = DIAGNOSTICADO`
+
+`POOL_CONTROLES_4964 = AUDITADO`
+
+`DISPONIBILIDADE_708 = AUDITADA`
+
+`NOTEBOOK_ACADEMICO_PRINCIPAL = CRIADO`
+
+`IDENTIDADE_VISUAL_IPT = PADRONIZADA`
+
+`AMOSTRA_CAUSAL_FINAL = NÃO DEFINIDA`
+
+`DESENHO_CAUSAL_APROVADO = NÃO`
+
+`PRONTO_PARA_GATE_DE_IDENTIFICACAO = SIM`
+
+Commit substantivo:
+
+`11b690e` — `feat: audita suporte temporal da populacao causal`
+
+O D12 audita, sem selecionar nem persistir uma amostra causal final, a
+disponibilidade de calendário e do outcome CEMPRE 708 por município/coorte.
+As elegibilidades diagnósticas usam janelas **adjacentes completas**: 2 pré +
+3 pós requer `g-2` a `g+2`; 3 pré + 3 pós requer `g-3` a `g+2`. Cada ano
+requerido deve existir no painel e possuir outcome numérico utilizável.
+
+Foram auditados 129 candidatos principais, distribuídos nas coortes 2009–2013
+em 21/27/66/13/2. Todos passam 2 pré + 3 pós (129/129); 108 passam 3 pré + 3
+pós (108/129). Os 21 restantes pertencem à coorte 2009: a janela 3 pré + 3
+pós exigiria 2006, fora do período 2007–2019. Essa é uma limitação de
+calendário, não de disponibilidade do outcome.
+
+Para os 1.677 município-ano dos 129 candidatos, o CEMPRE 708 está completo:
+observado em todas as células, sem missing, sigilo, indisponível ou zero. O
+pool canônico contém 4.964 controles estruturais, distinto dos 4.970
+municípios nunca expostos. Há uma única célula de 708 sigilosa no pool:
+município `5003900`, ano 2012. Ela não afeta a coorte 2009 (4.964/0 em
+2 pré + 3 pós / 3 pré + 3 pós), mas reduz as coortes 2010–2013 para
+4.963/4.963, pois 2012 integra ambas as janelas adjacentes.
+
+Validação focal: 17/17 testes D12 passaram, offline. Nenhum efeito causal,
+pré-tendência, matching, `post`, `event_time`, ATT ou estimador foi criado.
+
+### Protocolo acadêmico e visual
+
+O notebook `notebooks/01_analise_expansao_rede_federal_economia_municipal.ipynb`
+é a camada narrativa e acadêmica do projeto; `src/` e `tests/` permanecem a
+camada reproduzível e testável. Decisões metodológicas e gráficos relevantes
+devem aparecer no notebook principal. Plotly é a biblioteca visual preferencial
+e a identidade inspirada no IPT está centralizada em `src/visualizacao_ipt.py`.
+
+O notebook foi salvo com outputs, tabelas estilizadas e cinco figuras Plotly.
+Kaleido não está disponível no ambiente; por isso, a exportação estática usa o
+fallback HTML local, sem instalar dependências e sem rede.
+
+---
+
+## 22. Regra para agentes
 
 Antes de trabalhar:
 
