@@ -15,12 +15,14 @@ Branch:
 
 `main`
 
-HEAD/origin conhecido após os commits substantivos do D13:
+HEAD/origin conhecido após os commits substantivos do D14:
 
-`78d006bdaa11e9b351e62b61f428e9602930c86a`
+`9f01bd4e95559a10f975ffc3cfcd6c042ef44d48`
 
 Commits recentes:
 
+- `9f01bd4` — `feat: congela especificacao causal`
+- `9871046` — `docs: registra gate de identificacao causal`
 - `78d006b` — `feat: implementa gate de identificacao causal`
 - `e4c1ef7` — `fix: amplia fallback Plotly sem Kaleido`
 - `90293f7` — `docs: registra D12 e protocolo visual academico`
@@ -1887,7 +1889,162 @@ Não reabrir D13 sem anomalia concreta.
 
 ---
 
-## 23. Regra para agentes
+## 23. D14 — Congelamento da Especificação Causal
+
+Status técnico:
+
+`ESPECIFICACAO_CAUSAL_CONGELADA = SIM`
+
+`PRONTO_PARA_CONSTRUIR_AMOSTRA_CAUSAL = SIM`
+
+`DESENHO_CAUSAL_APROVADO = NÃO`
+
+`EVIDENCIA_INSTITUCIONAL_ANTECIPACAO = INSUFICIENTE_PARA_REGRA_GERAL`
+
+`SUPOSICAO_ANTECIPACAO_PRINCIPAL = 0_PERIODOS`
+
+`GRUPO_COMPARACAO_PRINCIPAL = NEVER_TREATED`
+
+`NOT_YET_TREATED = NÃO UTILIZADO`
+
+Commit substantivo:
+
+`9f01bd4e95559a10f975ffc3cfcd6c042ef44d48` — `feat: congela especificacao
+causal`
+
+Push: **CONCLUIDO**.
+
+### O que o D14 fez
+
+Transformou as propostas diagnósticas do D13 em uma especificação causal
+explícita e reproduzível, sem estimar nenhum efeito, sem executar
+Callaway–Sant'Anna, sem matching e sem rede. Preservou integralmente os
+resultados de D12/D13: 129 candidatos principais (coortes 2009=21,
+2010=27, 2011=66, 2012=13, 2013=2), pool estrutural de 4.964 controles,
+2 pré + 3 pós = 129/129, 3 pré + 3 pós = 108/129, coorte 2009 incluída na
+janela principal e excluída por construção da sensibilidade.
+
+### Ajuste conceitual 1 — antecipação: evidência vs. suposição
+
+O fechamento inicial do D14 registrava apenas
+`JANELA_ANTECIPACAO_DEFINIDA = NÃO`, o que misturava duas ideias
+distintas. Corrigido para separar explicitamente:
+
+- **Evidência institucional** (`EVIDENCIA_INSTITUCIONAL_ANTECIPACAO =
+  INSUFICIENTE_PARA_REGRA_GERAL`) — os documentos aprovados não permitem
+  afirmar empiricamente ausência de antecipação para os 128/129 candidatos
+  sob `origem_coorte='proxy_censo'`. Isso é uma **limitação**, registrada
+  como tal (status `LIMITACAO` na tabela do contrato), não como pendência
+  que bloqueia o congelamento.
+- **Suposição da especificação** (`SUPOSICAO_ANTECIPACAO_PRINCIPAL =
+  0_PERIODOS`) — a especificação principal adota zero períodos de
+  antecipação como **hipótese identificadora**, não como fato observado;
+  é o parâmetro padrão de Callaway–Sant'Anna e a opção mais conservadora
+  sem inventar uma janela sem evidência.
+
+Cabo Frio/RJ (código `3300704`) permanece tratado pela regra institucional
+específica já existente no cadastro causal (D11), distinta desta suposição
+geral: 2009 = `ano_transicao`, excluído da estimação; 2010 =
+`primeiro_ano_completo` = coorte `g` = `k=0`.
+
+### Ajuste conceitual 2 — not-yet-treated: escolha deliberada, não proibição técnica
+
+A justificativa inicial (`pode_ser_controle=False` "proibiria"
+not-yet-treated) foi corrigida. `pode_ser_controle=False` significa apenas
+que os 147 municípios Fase II não pertencem ao pool estrutural de
+controles permanentes — conceito distinto de usar unidades ainda não
+tratadas como grupo de comparação econométrico (not-yet-treated), que
+Callaway–Sant'Anna suporta tecnicamente.
+
+A decisão de usar exclusivamente never-treated é **metodológica e
+deliberada**, fundamentada em cinco razões (detalhadas no notebook, seção
+41): (1) suficiência operacional dos 4.963 never-treated; (2) simplicidade
+de interpretação do contrafactual; (3) incerteza de timing dos futuros
+tratados (mesma limitação de proxy do Censo); (4) antecipação geral não
+empiricamente conhecida (ajuste conceitual 1); (5) risco de contaminação
+se o comportamento pré-tratamento mudar antes do ano registrado.
+Adicionalmente, not-yet-treated é pequeno e decrescente entre os 129 (81
+em 2010, 15 em 2011, 2 em 2012, 0 a partir de 2013), agregando pouca
+informação frente aos 4.963 never-treated já disponíveis.
+
+### Contrato final da especificação (22 itens, notebook seção 60)
+
+Todos os itens essenciais (tratamento, coorte g, ano zero, suposição de
+antecipação principal, controle principal, período total, outcome,
+sigilo, covariáveis, estimando) estão `CONGELADO`. Sensibilidades
+registradas (não bloqueiam): janela 3 pré + 3 pós, transformação log1p,
+covariáveis condicionais (dependentes de fonte de dados ainda não
+aprovada), filtros espaciais de spillover (limiares já documentados:
+25/50/100 km, arranjo populacional). Limitação registrada (não bloqueia):
+evidência institucional de antecipação insuficiente para regra geral.
+Único item `PENDENTE` não essencial: outcome per capita, indisponível por
+ausência de fonte populacional municipal aprovada no projeto — nenhuma
+nova coleta foi aberta.
+
+### Decisões congeladas — resumo
+
+- Tratamento: presença operacional de campus Fase II (cadastro causal
+  D11, não redefinido);
+- Coorte g = `ano_coorte_candidata`;
+- Controle principal: never-treated, pool estrutural 4.964 menos o
+  município com sigilo (`5003900`, 708/2012) = **4.963**;
+- Outcome principal: CEMPRE 708, em nível; log1p como sensibilidade (há
+  zeros reais no pool de controles);
+- Período total da estimação: 2007–2019 inteiro (distinto da janela de
+  event-study);
+- Janela principal de event-study: `k = -2,-1,0,+1,+2`, com `k=-1` como
+  referência;
+- Janela de sensibilidade: `k = -3,...,+2`, restrita às coortes
+  2010–2013 (108/129);
+- Sigilo do município `5003900` em 2012: excluído do painel causal
+  principal inteiro (nunca imputado, nunca zerado);
+- Painel balanceado exigido na especificação principal;
+- Covariáveis: nenhuma no principal (gate D — sensibilidade futura,
+  dependente de fonte de dados);
+- Spillover: nenhum filtro no principal (gate A — thresholds já
+  documentados como sensibilidade futura).
+
+### Módulo e testes
+
+`src/define_especificacao_causal.py` — contrato de especificação
+(`EspecificacaoCausal`, `ESPECIFICACAO_CAUSAL_V1`) e funções puras
+(`unidades_tratadas_principal`, `unidades_controle_principal`,
+`anos_excluidos_por_municipio`, `event_time`, `janela_principal_k`,
+`janela_sensibilidade_k`, `resumo_especificacao`). Nenhuma amostra causal
+é persistida por este módulo — apenas definição lógica das unidades.
+
+`tests/test_define_especificacao_causal.py`: **14/14 passando**, offline
+— cobrem controle principal never-treated, not-yet-treated fora do
+principal, separação entre evidência institucional e suposição de
+antecipação (dois campos distintos, nunca confundidos), regra específica
+de Cabo Frio, exclusão do sigilo sem imputação/zeragem, 129 tratados e
+4.963 controles reproduzidos.
+
+Regressão focal (D12+D13+D14+visual): **44/44 passando**, offline.
+
+### Notebook
+
+`notebooks/01_analise_expansao_rede_federal_economia_municipal.ipynb`
+cresceu de 63 para **107 células**, executado integralmente offline e
+salvo com outputs, **zero traceback**, 32/32 células de código com
+output, **10 figuras Plotly** (9 do D13 + 1 nova de auditoria de
+transformação do outcome). Nenhum ATT, nenhum matching, nenhum TWFE
+causal e nenhum Callaway–Sant'Anna foi executado.
+
+### Próximo passo
+
+**D15 — Construção da Amostra Causal Congelada**, que deverá materializar,
+sem estimar nenhum efeito: os 129 tratados conforme o contrato; os 4.963
+controles never-treated; painel balanceado; período 2007–2019; exclusão
+do município `5003900`; aplicação da exclusão institucional de 2009 para
+Cabo Frio; metadados necessários para a futura estimação; validações da
+população resultante.
+
+Não reabrir D12/D13/D14 sem anomalia concreta.
+
+---
+
+## 24. Regra para agentes
 
 Antes de trabalhar:
 
