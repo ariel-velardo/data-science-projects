@@ -3632,8 +3632,16 @@ class TestDryRunPorFonte(unittest.TestCase):
         self.plano_agregados = cempre.build_national_request_plan_agregados(calendario=calendario, anos=[2010])
 
     def _config(self, **overrides: Any) -> "cempre.NationalRunConfig":
+        # caminho_long/caminho_manifesto isolados em diretório temporário —
+        # sem isso, o default de NationalRunConfig aponta para os artefatos
+        # reais do projeto (data/interim/cempre_long_2007_2019.parquet e
+        # data/raw/ibge/cempre/source_manifest.json), que agora existem
+        # legitimamente (D8/D9) e fariam este teste ver um conflito de
+        # artefato que não tem nada a ver com o cenário sintético testado.
         base = dict(
             cache_dir=self.cache_dir, calendario_path=self.calendario_path, anos=[2010],
+            caminho_long=self.diretorio / "long_sintetica.parquet",
+            caminho_manifesto=self.diretorio / "manifesto_sintetico.json",
         )
         base.update(overrides)
         return cempre.NationalRunConfig(**base)
