@@ -138,7 +138,7 @@ def parse_sidra_value(v_raw: str) -> tuple[str, float | None]:
         return "zero_arredondado", 0.0
     if v in _ZERO_ARREDONDADO_NEGATIVO:
         return "zero_arredondado_negativo", 0.0
-    if v == "x":
+    if v == "x" or v == "X":
         return "sigilo", None
     if v == "..":
         return "nao_aplicavel", None

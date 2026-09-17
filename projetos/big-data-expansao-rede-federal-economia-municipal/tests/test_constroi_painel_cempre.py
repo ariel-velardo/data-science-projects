@@ -112,6 +112,16 @@ class TestParseSidraValue(unittest.TestCase):
         self.assertEqual(status, "sigilo")
         self.assertIsNone(valor)
 
+    def test_sigilo_maiusculo(self) -> None:
+        status, valor = cempre.parse_sidra_value("X")
+        self.assertEqual(status, "sigilo")
+        self.assertIsNone(valor)
+
+    def test_simbolo_desconhecido_letra_y_continua_bloqueante(self) -> None:
+        status, valor = cempre.parse_sidra_value("Y")
+        self.assertEqual(status, "desconhecido")
+        self.assertIsNone(valor)
+
     def test_nao_aplicavel(self) -> None:
         status, valor = cempre.parse_sidra_value("..")
         self.assertEqual(status, "nao_aplicavel")
@@ -3101,6 +3111,18 @@ class TestNormalizeLongAgregados(unittest.TestCase):
         self.assertTrue((df["status_valor_api"] == "indisponivel").all())
         self.assertTrue(df["valor_numerico"].isna().all())
         self.assertTrue((df["valor_bruto"] == "...").all())
+
+    def test_sigilo_maiusculo_preserva_valor_bruto_exato(self) -> None:
+        payload = json.loads(json.dumps(_payload_agregados_pescaria_brava()))
+        for bloco in payload:
+            for resultado in bloco["resultados"]:
+                for serie in resultado["series"]:
+                    for ano in serie["serie"]:
+                        serie["serie"][ano] = "X"
+        df = cempre.normalize_long_agregados(payload, request_id="req_agregados_sigilo_x")
+        self.assertTrue((df["status_valor_api"] == "sigilo").all())
+        self.assertTrue((df["valor_bruto"] == "X").all())
+        self.assertTrue(df["valor_numerico"].isna().all())
 
     def test_unidade_e_nome_variavel_preenchidos(self) -> None:
         df = cempre.normalize_long_agregados(_payload_agregados_amajari(), request_id="req_agregados_amajari")
