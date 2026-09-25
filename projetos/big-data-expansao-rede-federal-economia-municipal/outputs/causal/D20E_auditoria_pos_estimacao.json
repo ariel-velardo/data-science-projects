@@ -1,0 +1,179 @@
+{
+  "unidade": "D20E",
+  "criado_em_utc": "2026-09-25T03:43:09.869793+00:00",
+  "verificacoes": {
+    "att_gt_sem_duplicidade": true,
+    "att_gt_pos_finito": true,
+    "event_time_correto": true,
+    "referencia_k_menos_1": true,
+    "coortes_completas": true,
+    "simple_unico": true,
+    "hash_d15_integro": true,
+    "hash_view_d20b_integro": true
+  },
+  "leads": {
+    "n_leads": 5,
+    "event_times": [
+      -6,
+      -5,
+      -4,
+      -3,
+      -2
+    ],
+    "max_abs_att": 8867.934213177514,
+    "n_bandas_excluem_zero": 3,
+    "interpretacao": "diagnostico_pos_estimacao; nao comprova nem refuta automaticamente tendencias paralelas"
+  },
+  "contextualizacao_magnitude": {
+    "denominador": "media de municipio-ano pre-tratamento dos 128 tratados",
+    "media_pre_tratamento": 17190.577006507592,
+    "att_simple_nivel": 2050.9902966071954,
+    "att_sobre_media_pre": 0.11930898513940406,
+    "rotulo": "CONTEXTUALIZACAO_DESCRITIVA_NAO_NOVO_ESTIMANDO_CAUSAL"
+  },
+  "coorte_2013": {
+    "coorte_g": 2013,
+    "att": -2200.017788779828,
+    "std_error": 1640.189613268146,
+    "ci_lower": -5885.541647406291,
+    "ci_upper": 1485.5060698466355,
+    "zero_fora_intervalo": "",
+    "inferencia": "bootstrap_simultanea_95",
+    "n_tratados": 2,
+    "suporte_temporal": "2007-2019; k=-6...6",
+    "warning_precisao": "COORTE_2013_N2_PRECISAO_CRITICA"
+  },
+  "comparacao_suporte": [
+    {
+      "especificacao": "principal",
+      "n_tratados": 128,
+      "n_controles": 4963,
+      "escala_outcome": "nivel",
+      "coortes": "2009,2010,2011,2012,2013",
+      "ATT_simple": 2050.9902966071954,
+      "banda_lower": 1481.3244815745077,
+      "banda_upper": 2620.6561116398834,
+      "observacao_metodologica": "Especificação principal congelada",
+      "ATT_event_k0": 818.2776058457586,
+      "ATT_event_k1": 1641.5888465267983,
+      "ATT_event_k2": 2188.811931732319
+    },
+    {
+      "especificacao": "suporte",
+      "n_tratados": 123,
+      "n_controles": 4963,
+      "escala_outcome": "nivel",
+      "coortes": "2009,2010,2011,2012,2013",
+      "ATT_simple": 1818.3355151088697,
+      "banda_lower": 1289.5004804652826,
+      "banda_upper": 2347.1705497524567,
+      "observacao_metodologica": "Exclui apenas cinco tratados extremos D18; não é amostra principal",
+      "ATT_event_k0": 610.9242311806556,
+      "ATT_event_k1": 1296.6859819575425,
+      "ATT_event_k2": 1753.4491366191114
+    }
+  ],
+  "comparacao_spillover": [
+    {
+      "especificacao": "principal",
+      "n_tratados": 128,
+      "n_controles": 4963,
+      "escala_outcome": "nivel",
+      "coortes": "2009,2010,2011,2012,2013",
+      "ATT_simple": 2050.9902966071954,
+      "banda_lower": 1481.3244815745077,
+      "banda_upper": 2620.6561116398834,
+      "observacao_metodologica": "Especificação principal congelada",
+      "ATT_event_k0": 818.2776058457586,
+      "ATT_event_k1": 1641.5888465267983,
+      "ATT_event_k2": 2188.811931732319
+    },
+    {
+      "especificacao": "spillover_25km",
+      "n_tratados": 128,
+      "n_controles": 4589,
+      "escala_outcome": "nivel",
+      "coortes": "2009,2010,2011,2012,2013",
+      "ATT_simple": 2069.8677039876516,
+      "banda_lower": 1501.5432264918225,
+      "banda_upper": 2638.1921814834805,
+      "observacao_metodologica": "Exclui controles pré-classificados a <=25 km",
+      "ATT_event_k0": 826.5189873202223,
+      "ATT_event_k1": 1656.3327301018737,
+      "ATT_event_k2": 2208.620229761386
+    },
+    {
+      "especificacao": "spillover_50km",
+      "n_tratados": 128,
+      "n_controles": 3488,
+      "escala_outcome": "nivel",
+      "coortes": "2009,2010,2011,2012,2013",
+      "ATT_simple": 2070.0737681789406,
+      "banda_lower": 1492.800360238326,
+      "banda_upper": 2647.347176119555,
+      "observacao_metodologica": "Exclui controles pré-classificados a <=50 km",
+      "ATT_event_k0": 838.343958303469,
+      "ATT_event_k1": 1676.647841707282,
+      "ATT_event_k2": 2227.8352409152812
+    },
+    {
+      "especificacao": "spillover_100km",
+      "n_tratados": 128,
+      "n_controles": 1323,
+      "escala_outcome": "nivel",
+      "coortes": "2009,2010,2011,2012,2013",
+      "ATT_simple": 2096.0031930755117,
+      "banda_lower": 1534.16531809146,
+      "banda_upper": 2657.8410680595634,
+      "observacao_metodologica": "Exclui controles pré-classificados a <=100 km",
+      "ATT_event_k0": 861.9648112717306,
+      "ATT_event_k1": 1713.700839710884,
+      "ATT_event_k2": 2264.9597682823132
+    },
+    {
+      "especificacao": "arranjo_populacional",
+      "n_tratados": 128,
+      "n_controles": 4818,
+      "escala_outcome": "nivel",
+      "coortes": "2009,2010,2011,2012,2013",
+      "ATT_simple": 2080.0023826555093,
+      "banda_lower": 1511.7197968818077,
+      "banda_upper": 2648.284968429211,
+      "observacao_metodologica": "Classificação IBGE 2010; sensibilidade temporalmente limitada",
+      "ATT_event_k0": 838.2917363921752,
+      "ATT_event_k1": 1680.358059944479,
+      "ATT_event_k2": 2236.6721701172687
+    }
+  ],
+  "gates": {
+    "D20E_AUDITORIA_POS_ESTIMACAO_CONCLUIDA": "SIM",
+    "D20E_PRE_TENDENCIAS_REAVALIADAS": "SIM",
+    "D20E_OVERLAP_REAVALIADO": "SIM",
+    "D20E_SPILLOVER_REAVALIADO": "SIM",
+    "D20E_COORTE_2013_REAVALIADA": "SIM",
+    "D20E_MATRIZ_EVIDENCIA_PRODUZIDA": "SIM",
+    "D20E_INTERPRETACAO_CAUSAL_PENDENTE_REVISAO": "SIM",
+    "DESENHO_CAUSAL_APROVADO": "NAO"
+  },
+  "reprodutibilidade_seed": {
+    "reproduzivel": true,
+    "random_state": 20260924,
+    "boot_iterations": 1999,
+    "n_jobs": 1,
+    "max_abs_diff": 1.8189894035458565e-12,
+    "tolerancia_numerica": 1e-10,
+    "max_abs_diff_por_objeto": {
+      "att_gt": 1.8189894035458565e-12,
+      "simple": 0.0,
+      "cohort": 4.547473508864641e-13,
+      "event": 4.547473508864641e-13
+    },
+    "duracao_repeticao_segundos": 9.084402199951,
+    "outputs_principais_sobrescritos": false
+  },
+  "pesos_agregacao": {
+    "expostos_saida_publica": false,
+    "status": "NAO_EXPOSTOS_PELA_SAIDA_PUBLICA_DIFFERENCES_0_3_0",
+    "auditoria_realizada": "agregacoes simple, cohort e event foram obtidas diretamente da API; nao foi inferida ponderacao alternativa a partir das tabelas finais"
+  }
+}

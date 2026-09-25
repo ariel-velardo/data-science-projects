@@ -1,0 +1,90 @@
+{
+  "unidade": "D20D",
+  "especificacao": "log1p",
+  "rotulo": "ROBUSTEZ_LOG1P",
+  "criado_em_utc": "2026-09-25T03:42:21.177385+00:00",
+  "configuracao": {
+    "backend": "differences==0.3.0",
+    "outcome": "pessoal_ocupado_assalariado",
+    "base_period": "universal",
+    "control_group": "never_treated",
+    "est_method": "dr",
+    "anticipation": 0,
+    "as_repeated_cross_section": false,
+    "boot_iterations": 1999,
+    "random_state": 20260924,
+    "n_jobs": 1,
+    "alpha": 0.05,
+    "k_referencia": -1,
+    "janela_principal": [
+      -2,
+      -1,
+      0,
+      1,
+      2
+    ]
+  },
+  "populacao": {
+    "especificacao": "log1p",
+    "rotulo": "ROBUSTEZ_LOG1P",
+    "n_linhas": 66183,
+    "n_municipios": 5091,
+    "n_tratados": 128,
+    "n_controles": 4963,
+    "coortes": {
+      "2009": 21,
+      "2010": 26,
+      "2011": 66,
+      "2012": 13,
+      "2013": 2
+    },
+    "anos": [
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "escala_outcome": "log1p",
+    "codigos_excluidos": [],
+    "tratados_preservados_spillover": true
+  },
+  "metadados_execucao": {
+    "especificacao": "log1p",
+    "rotulo": "ROBUSTEZ_LOG1P",
+    "duracao_segundos": 9.235841499990784,
+    "n_celulas_att_gt": 65,
+    "n_celulas_pos_tratamento": 45,
+    "n_celulas_pos_falhas": 0,
+    "warnings": [],
+    "workaround_k_menos_1": true,
+    "estimativa_pontual_invariante": true
+  },
+  "outputs": [
+    {
+      "path": "outputs/causal/D20D_log1p_att_gt.csv",
+      "sha256": "7bbb991881fb9c83f0d5ce2c95c350c88865d46e43dc28bf85fc7dedf127153b"
+    },
+    {
+      "path": "outputs/causal/D20D_log1p_simple.csv",
+      "sha256": "53f43755473a2987e2f42d906fc6871068fa65c999d52d9a236adaee7d22b094"
+    },
+    {
+      "path": "outputs/causal/D20D_log1p_cohort.csv",
+      "sha256": "c4035644e73cca6814f694237a9bef6ad8e333b68c1442e3c74c9c7339210357"
+    },
+    {
+      "path": "outputs/causal/D20D_log1p_event_study.csv",
+      "sha256": "ffe1805316e2d805083d31b10b7d2980c63585b72443f014151b15dbc03fe84b"
+    }
+  ],
+  "resultado_principal_substituido": false
+}

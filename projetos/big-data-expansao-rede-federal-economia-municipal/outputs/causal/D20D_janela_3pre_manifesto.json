@@ -1,0 +1,111 @@
+{
+  "unidade": "D20D",
+  "especificacao": "janela_3pre",
+  "rotulo": "ROBUSTEZ_JANELA_3PRE",
+  "criado_em_utc": "2026-09-25T03:42:29.414329+00:00",
+  "configuracao": {
+    "backend": "differences==0.3.0",
+    "outcome": "pessoal_ocupado_assalariado",
+    "base_period": "universal",
+    "control_group": "never_treated",
+    "est_method": "dr",
+    "anticipation": 0,
+    "as_repeated_cross_section": false,
+    "boot_iterations": 1999,
+    "random_state": 20260924,
+    "n_jobs": 1,
+    "alpha": 0.05,
+    "k_referencia": -1,
+    "janela_principal": [
+      -2,
+      -1,
+      0,
+      1,
+      2
+    ]
+  },
+  "populacao": {
+    "especificacao": "janela_3pre",
+    "rotulo": "ROBUSTEZ_JANELA_3PRE",
+    "n_linhas": 65910,
+    "n_municipios": 5070,
+    "n_tratados": 107,
+    "n_controles": 4963,
+    "coortes": {
+      "2010": 26,
+      "2011": 66,
+      "2012": 13,
+      "2013": 2
+    },
+    "anos": [
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "escala_outcome": "nivel",
+    "codigos_excluidos": [
+      "1100122",
+      "1501709",
+      "1502707",
+      "2307601",
+      "3104502",
+      "3126109",
+      "3134202",
+      "3147006",
+      "3200607",
+      "3203205",
+      "3203908",
+      "3302205",
+      "3303401",
+      "3303906",
+      "3306305",
+      "4108304",
+      "4118204",
+      "5102637",
+      "5106752",
+      "5211503",
+      "5221601"
+    ],
+    "tratados_preservados_spillover": true
+  },
+  "metadados_execucao": {
+    "especificacao": "janela_3pre",
+    "rotulo": "ROBUSTEZ_JANELA_3PRE",
+    "duracao_segundos": 7.9264933000085875,
+    "n_celulas_att_gt": 52,
+    "n_celulas_pos_tratamento": 34,
+    "n_celulas_pos_falhas": 0,
+    "warnings": [],
+    "workaround_k_menos_1": true,
+    "estimativa_pontual_invariante": true
+  },
+  "outputs": [
+    {
+      "path": "outputs/causal/D20D_janela_3pre_att_gt.csv",
+      "sha256": "d2ccdf6efe9e45b5ffad292f453ae7a052765447dbb6339be815cfbae85b1594"
+    },
+    {
+      "path": "outputs/causal/D20D_janela_3pre_simple.csv",
+      "sha256": "8c00a84b0cb2d5fba92d0c0b097481f83c6799e2fd6d9e0f885e2817c8644e83"
+    },
+    {
+      "path": "outputs/causal/D20D_janela_3pre_cohort.csv",
+      "sha256": "cf001e3c70f6369a90a4c68b65ffb6961b984c96ed344b41cb04e2bd80f9176d"
+    },
+    {
+      "path": "outputs/causal/D20D_janela_3pre_event_study.csv",
+      "sha256": "bf61d826d6dd2ffc1ae2ab004c115412e3cc59b6aa6f3777af5e1117fe3eb1d1"
+    }
+  ],
+  "resultado_principal_substituido": false
+}

@@ -1,0 +1,19 @@
+{
+  "backend": "differences==0.3.0",
+  "base_period": "universal",
+  "control_group": "never_treated",
+  "est_method": "dr",
+  "boot_iterations": 1999,
+  "random_state": 20260924,
+  "n_jobs": 1,
+  "n_jobs_cpu_disponiveis": 16,
+  "n_jobs_justificativa": "1; differences 0.3.0 falha com n_jobs>1 neste ambiente e n_jobs nao pode alterar o resultado",
+  "alpha": 0.05,
+  "nivel_confianca": 0.95,
+  "bandas_simultaneas": true,
+  "cluster": "entidade_automatico_cluster_var_None",
+  "k_referencia": -1,
+  "k_referencia_deterministico": 0.0,
+  "executado_na_base_real": false,
+  "definido_antes_do_efeito_real": true
+}

@@ -1,0 +1,136 @@
+{
+  "unidade": "D20C",
+  "criado_em_utc": "2026-09-25T03:42:11.512058+00:00",
+  "git": {
+    "branch": "main",
+    "head": "c59022fc15e081411ff09bdf8765bc6347d15b00"
+  },
+  "inputs": {
+    "d15": {
+      "path": "data/processed/amostra_causal_cempre_2007_2019.parquet",
+      "sha256": "7c24c01b569ed6d10f773d00599b5010e1607696f46d716827182a078e4d733b"
+    },
+    "view_d20b": {
+      "path": "data/processed/amostra_principal_estimavel_d20b_2007_2019.parquet",
+      "sha256": "91b0a14b38740a56c1b6b3912e1ad3252632037b9044c992ec5331a932a10969"
+    }
+  },
+  "configuracao": {
+    "backend": "differences==0.3.0",
+    "outcome": "pessoal_ocupado_assalariado",
+    "base_period": "universal",
+    "control_group": "never_treated",
+    "est_method": "dr",
+    "anticipation": 0,
+    "as_repeated_cross_section": false,
+    "boot_iterations": 1999,
+    "random_state": 20260924,
+    "n_jobs": 1,
+    "alpha": 0.05,
+    "k_referencia": -1,
+    "janela_principal": [
+      -2,
+      -1,
+      0,
+      1,
+      2
+    ]
+  },
+  "populacao": {
+    "n_linhas": 66183,
+    "n_municipios": 5091,
+    "n_tratados": 128,
+    "n_controles": 4963,
+    "anos": [
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "painel_balanceado": true,
+    "chave_unica": true,
+    "outcome_nulos": 0,
+    "coortes": {
+      "2009": 21,
+      "2010": 26,
+      "2011": 66,
+      "2012": 13,
+      "2013": 2
+    },
+    "cabo_frio_ausente": true,
+    "codigo_5003900_ausente": true,
+    "todas_linhas_elegiveis": true
+  },
+  "outcome": "pessoal_ocupado_assalariado",
+  "agregacoes": [
+    "ATT(g,t)",
+    "simple",
+    "cohort",
+    "event"
+  ],
+  "metadados_execucao": {
+    "especificacao": "principal",
+    "rotulo": "ESTIMATIVA_PRINCIPAL",
+    "duracao_segundos": 9.07262620003894,
+    "n_celulas_att_gt": 65,
+    "n_celulas_pos_tratamento": 45,
+    "n_celulas_pos_falhas": 0,
+    "warnings": [],
+    "workaround_k_menos_1": true,
+    "estimativa_pontual_invariante": true
+  },
+  "outputs": [
+    {
+      "path": "outputs/causal/D20C_att_gt_principal.csv",
+      "sha256": "1c5004d8ddfd687a9863142df27b5b5e9a2518739689adaef2d76897cf93d065"
+    },
+    {
+      "path": "outputs/causal/D20C_agregacao_simples.csv",
+      "sha256": "c088cec4f4c3c81e27f719e700b466c611edbbe7fd2aa0e2357d31887f3b0a63"
+    },
+    {
+      "path": "outputs/causal/D20C_agregacao_coorte.csv",
+      "sha256": "597b07d3c681e369734936ed7c555f2b5462fc89b08a88a38e95f9615914af05"
+    },
+    {
+      "path": "outputs/causal/D20C_event_study_completo.csv",
+      "sha256": "7092a54c43630398c392475dc04b6083ccef01cf842f07a18ba62bfb2db4f446"
+    },
+    {
+      "path": "outputs/causal/D20C_event_study_principal.csv",
+      "sha256": "d505ea3131ba960006c680a14e799df2677095ea932128afaaaafaa720456cd7"
+    },
+    {
+      "path": "outputs/figures/interactive/D20C_event_study_principal.html",
+      "sha256": "05020c59433f71d3417c98a04bece76d86ad0858599a466278c9fb8c50359a2b"
+    },
+    {
+      "path": "outputs/figures/interactive/D20C_event_study_completo.html",
+      "sha256": "bf53ca25814c37097a7a4048ce4a4ce37e35323776ee8098753c4d0035dbf249"
+    },
+    {
+      "path": "outputs/figures/interactive/D20C_att_coorte.html",
+      "sha256": "b1069101e1e2f1175684baa887c5f7d5b3fa88884affba8c95e7ff66b83aac4e"
+    }
+  ],
+  "gates": {
+    "D20C_AMOSTRA_PRINCIPAL_VALIDADA": "SIM",
+    "D20C_ATT_GT_REAL_ESTIMADO": "SIM",
+    "D20C_AGREGACAO_SIMPLE_ESTIMADA": "SIM",
+    "D20C_AGREGACAO_COORTE_ESTIMADA": "SIM",
+    "D20C_EVENT_STUDY_REAL_ESTIMADO": "SIM",
+    "D20C_BOOTSTRAP_1999_CONCLUIDO": "SIM",
+    "D20C_BANDAS_SIMULTANEAS_VALIDAS": "SIM",
+    "D20C_RESULTADO_PRINCIPAL_CONGELADO": "SIM",
+    "DESENHO_CAUSAL_APROVADO": "NAO"
+  }
+}
