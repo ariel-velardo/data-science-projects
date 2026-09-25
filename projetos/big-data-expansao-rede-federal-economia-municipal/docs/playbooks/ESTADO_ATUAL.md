@@ -5,7 +5,7 @@
 > Atualizar quando uma etapa for fechada, um gate mudar ou uma nova unidade
 > de trabalho for aberta.
 >
-> Snapshot: 2026-09-17.
+> Snapshot: 2026-09-25 (projeto pausado — ver seção 33).
 
 ---
 
@@ -15,12 +15,13 @@ Branch:
 
 `main`
 
-HEAD/origin conhecido após os commits substantivos do D14:
+HEAD/origin conhecido após o registro documental do D14:
 
-`9f01bd4e95559a10f975ffc3cfcd6c042ef44d48`
+`c59022fc15e081411ff09bdf8765bc6347d15b00`
 
 Commits recentes:
 
+- `c59022f` — `docs: registra especificacao causal congelada`
 - `9f01bd4` — `feat: congela especificacao causal`
 - `9871046` — `docs: registra gate de identificacao causal`
 - `78d006b` — `feat: implementa gate de identificacao causal`
@@ -2044,7 +2045,873 @@ Não reabrir D12/D13/D14 sem anomalia concreta.
 
 ---
 
-## 24. Regra para agentes
+## 24. D15 — Construção da Amostra Causal Congelada
+
+Status técnico:
+
+`AMOSTRA_CONSTRUIDA = SIM`
+
+`PRONTA_PARA_ESTIMACAO = SIM`
+
+`DESENHO_CAUSAL_APROVADO = NAO`
+
+Artefatos:
+
+- `notebooks/02_construcao_amostra_causal.ipynb`;
+- `data/processed/amostra_causal_cempre_2007_2019.parquet`;
+- `outputs/diagnostics/exclusoes_amostra_causal.csv`;
+- `src/constroi_amostra_causal.py`;
+- `tests/test_constroi_amostra_causal.py`.
+
+Dimensões reproduzidas: 129 tratados, 4.963 controles never-treated,
+5.092 municípios, 66.196 município-anos no painel-base e 66.195
+observações elegíveis. O código `5003900` foi excluído integralmente
+por sigilo do outcome em 2012. Cabo Frio/RJ permanece no painel-base e
+2009 é a única observação mascarada para estimação.
+
+A auditoria pós-D15 confirmou chave única, painel-base balanceado,
+ausência de sobreposição tratado/controle, coortes 2009=21, 2010=27,
+2011=66, 2012=13 e 2013=2, e outcome final sem missing ou sigilo.
+
+---
+
+## 25. D16 — Análise Descritiva da Amostra Causal
+
+Status técnico:
+
+`D16_AMOSTRA_DESCRITA = SIM`
+
+`D16_INCONSISTENCIA_BLOQUEADORA = NAO`
+
+`D16_PRONTA_PARA_DIAGNOSTICOS_PRE_ESTIMACAO = SIM`
+
+`DESENHO_CAUSAL_APROVADO = NAO`
+
+O notebook `notebooks/03_analise_descritiva_amostra_causal.ipynb`
+documenta composição, coortes, distribuição territorial, cobertura
+temporal e do outcome, escala, assimetria, evolução anual e cobertura
+descritiva de event-time. Nenhum ATT, event-study causal, matching, TWFE
+causal ou Callaway–Sant'Anna foi executado.
+
+O outcome final possui 66.193 observações com status `observado` e 3
+`zero_real`, sem NaNs. A população com suporte de calendário é 129 na
+janela principal e 108 na sensibilidade. Depois da máscara Cabo
+Frio/2009, 128 e 107, respectivamente, possuem todos os valores de `k`
+elegíveis. Essa distinção é observacional e não altera as populações
+congeladas.
+
+Artefatos diagnósticos:
+
+- `outputs/diagnostics/resumo_amostra_causal.csv`;
+- `outputs/diagnostics/distribuicao_coortes.csv`;
+- `outputs/diagnostics/cobertura_event_time.csv`;
+- figuras Plotly em HTML interativo sob `outputs/figures/interactive/`.
+
+PNG permanece indisponível porque `kaleido>=1` não está instalado no
+ambiente. Nenhuma dependência foi instalada.
+
+---
+
+## 26. D17 — Diagnósticos pré-estimação
+
+Status técnico:
+
+`D17_DIAGNOSTICOS_PRE_ESTIMACAO_CONCLUIDOS = SIM`
+
+`D17_SUPORTE_EMPIRICO_DOCUMENTADO = SIM`
+
+`D17_AMOSTRA_PRONTA_TECNICAMENTE_PARA_IMPLEMENTACAO_DO_ESTIMADOR = NAO`
+
+`D17_ALERTA_IDENTIFICACAO_IMPORTANTE = SIM`
+
+`DESENHO_CAUSAL_APROVADO = NAO`
+
+O notebook `notebooks/04_diagnosticos_pre_estimacao.ipynb` executa uma
+auditoria exclusivamente pré-estimação da amostra congelada D15. Nenhum
+ATT, Callaway–Sant'Anna, event-study causal, TWFE causal, matching,
+trimming, peso causal ou seleção automática de unidades foi executado.
+
+### Inputs e preservação
+
+Foram reproduzidos: 129 tratados; 4.963 controles never-treated; 5.092
+municípios; 66.196 município-anos; 66.195 observações elegíveis; coortes
+2009=21, 2010=27, 2011=66, 2012=13 e 2013=2; painel-base balanceado;
+zero sobreposição tratado/controle; zero missing ou sigilo no outcome;
+`5003900` ausente; Cabo Frio/2009 como única máscara observacional.
+
+Hashes SHA-256 calculados no início e no fim do notebook confirmaram que
+o parquet D15, os quatro CSVs D15/D16 e os notebooks 02/03 permaneceram
+inalterados durante a D17.
+
+### Covariáveis e comparabilidade
+
+Os dados processados atuais não contêm população municipal, urbanização,
+PIB/renda, escolaridade ou infraestrutura. Não houve download nem criação
+de proxy artificial. As medidas CEMPRE variantes no tempo foram usadas
+somente no baseline comum de 2007, anterior a todas as coortes; em anos
+contemporâneos/pós-tratamento permanecem outcomes ou possíveis mediadores.
+
+No baseline de 2007, tratados já apresentam escala econômica muito maior.
+Os SMDs foram: unidades locais = 0,936; pessoal ocupado total = 0,870;
+pessoal ocupado assalariado = 0,869; salário médio nominal em reais =
+0,436. Esses valores são diagnósticos, não regra de exclusão.
+
+### Pré-trajetórias e overlap
+
+Trajetórias prévias foram comparadas por coorte contra never-treated usando
+somente `k<0`, em nível e `log1p` (esta última apenas como diagnóstico de
+escala). Slopes em nível são heterogêneas; 2011 e 2012 apresentam diferenças
+particularmente relevantes frente aos controles. Os intervalos e slopes são
+rotulados como diagnósticos de poder limitado; ausência de rejeição não é
+tratada como prova de tendências paralelas, em linha com Roth (2022).
+
+Uma regressão logística L2 simples, com covariáveis CEMPRE de 2007 e
+macrorregião, foi usada apenas para diagnosticar overlap. O intervalo
+empírico comum do score foi aproximadamente [0,000834; 0,848672]: cinco
+tratados e 1.361 controles ficaram nas caudas fora desse intervalo. Nenhuma
+unidade foi removida e nenhum matching/peso foi derivado —
+`PROPENSITY_SCORE_DIAGNOSTICO != MATCHING`.
+
+### Geografia, spillover, coortes pequenas e influência
+
+Entre os 4.963 controles D15, 374/1.475/3.640 ficam a até 25/50/100 km da
+sede de um município Fase II. Cento e quarenta e cinco compartilham um
+Arranjo Populacional IBGE 2010 com Fase II. As classificações são
+temporárias e diagnósticas; `papel_causal` não foi alterado. A limitação
+temporal dos arranjos de 2010 foi preservada.
+
+O parquet de arranjos disponível cobre municípios candidatos a controle,
+não os 129 tratados. Por isso, a quantidade de tratados no mesmo arranjo e
+a decomposição dessa exposição por coorte não são identificáveis nesse
+artefato; nenhuma linha ou coorte foi imputada para preencher essa lacuna.
+
+As coortes 2012 (13 tratados) e 2013 (2) foram mantidas, com alerta de
+precisão. Cabo Frio explica integralmente a passagem 129→128 na janela
+principal e 108→107 na sensibilidade. No baseline, os dez maiores tratados
+concentram aproximadamente 34,35% do outcome do grupo; nenhum outlier foi
+excluído.
+
+### Artefatos D17
+
+- `notebooks/04_diagnosticos_pre_estimacao.ipynb`;
+- `src/diagnostica_pre_estimacao.py`;
+- `tests/test_diagnostica_pre_estimacao.py`;
+- `outputs/diagnostics/covariaveis_pre_tratamento.csv`;
+- `outputs/diagnostics/balanco_descritivo_pre_tratamento.csv`;
+- `outputs/diagnostics/diagnostico_overlap.csv`;
+- `outputs/diagnostics/diagnostico_pre_tendencias.csv`;
+- `outputs/diagnostics/diagnostico_spillover_controles.csv`;
+- `outputs/diagnostics/riscos_identificacao_D17.csv`;
+- nove figuras Plotly D17 em HTML interativo sob
+  `outputs/figures/interactive/`.
+
+O notebook D17 foi executado integralmente offline: 44 células, 21 células
+de código com output e zero traceback. O notebook acadêmico principal foi
+atualizado apenas com uma síntese curta e também executado integralmente,
+sem traceback. PNG continuou indisponível por ausência de Kaleido; nenhuma
+dependência foi instalada.
+
+Validação automatizada executada offline:
+
+- testes sintéticos específicos da D17: 12/12 aprovados;
+- suíte focal relevante D14–D17: 115/115 aprovados;
+- suíte completa do projeto: 711/711 aprovados.
+
+O gate técnico permanece conservador: os diagnósticos e o suporte estão
+documentados, mas diferenças de escala, caudas de overlap, pré-trajetórias,
+covariáveis municipais ausentes, risco de spillover/antecipação e coortes
+pequenas impedem declarar a amostra pronta para implementar o estimador.
+Isso não equivale a rejeição causal definitiva e não modifica decisões
+congeladas.
+
+---
+
+## 27. D18 — Reavaliação do gate pré-estimação
+
+Status técnico:
+
+`D18_REAVALIACAO_PRE_ESTIMACAO_CONCLUIDA = SIM`
+
+`D18_OVERLAP_ATT_DOCUMENTADO = SIM`
+
+`D18_PRE_TENDENCIAS_ESCALA_AUDITADAS = SIM`
+
+`D18_INFLUENCIA_PRE_TRATAMENTO_AUDITADA = SIM`
+
+`D18_PLANO_ROBUSTEZ_PRE_ESPECIFICADO = SIM`
+
+`D18_PRONTO_TECNICAMENTE_PARA_IMPLEMENTAR_ESTIMADOR = SIM`
+
+`D18_IDENTIFICACAO_SUFICIENTE_PARA_INTERPRETACAO_CAUSAL = COM_RESSALVAS`
+
+`DESENHO_CAUSAL_APROVADO = NAO`
+
+O notebook `notebooks/05_reavaliacao_gate_pre_estimacao.ipynb` reavaliou
+exclusivamente com informação pré-tratamento, características estruturais e
+metadados congelados os alertas da D17. Nenhum ATT, Callaway–Sant'Anna real,
+event-study causal, TWFE causal, matching, trimming, peso ou seleção por
+resultado pós-tratamento foi executado.
+
+### Refinamento rastreável da D17
+
+A D17 encontrou diferenças grandes de nível, cinco tratados e 1.361 controles
+fora da interseção completa dos intervalos do score, slopes em nível
+heterogêneas, proximidade espacial, concentração do outcome e coortes pequenas.
+A D18 não reescreve esses fatos; refinou sua interpretação:
+
+- diferenças de nível/porte não equivalem a violação automática de tendências
+  paralelas;
+- os cinco tratados estão todos acima do máximo dos controles, enquanto os
+  1.361 controles estão todos abaixo do mínimo dos tratados — apenas o primeiro
+  caso é falta de suporte diretamente relevante para ATT;
+- slopes em nível são fortemente sensíveis à escala do outcome;
+- precisão limitada, especialmente em 2013, não é falha de identificação por
+  si só;
+- proximidade espacial documenta exposição potencial, não contaminação
+  comprovada;
+- ausência de covariáveis externas não impede tecnicamente o DiD incondicional
+  congelado no D14, embora limite especificações condicionais e mantenha
+  confundimento como ressalva substantiva.
+
+### Overlap orientado ao ATT
+
+O score diagnóstico D17 foi preservado sem novo ajuste. Os limites observados
+foram:
+
+- tratados: `[0,0008337554; 0,9623589047]`;
+- controles: `[0,0000126253; 0,8486715311]`;
+- tratados abaixo do mínimo dos controles: 0;
+- tratados acima do máximo dos controles: 5;
+- controles abaixo do mínimo dos tratados: 1.361;
+- controles acima do máximo dos tratados: 0;
+- tratados dentro da faixa dos controles: 124;
+- controles dentro da faixa dos tratados: 3.602.
+
+Os cinco tratados na cauda superior são Feira de Santana/BA (2012),
+Caruaru/PE (2011), Anápolis/GO (2011), Caxias do Sul/RS (2011) e
+Santarém/PA (2010). O nearest-support foi calculado no espaço padronizado
+das quatro covariáveis CEMPRE de 2007 e macrorregião, apenas como descrição;
+nenhuma unidade foi removida e nenhuma distância foi convertida em matching.
+
+### Escala, primeiras diferenças e influência
+
+Diferenças de slopes em nível (tratados menos controles) por coorte foram
+aproximadamente 303,2; 107,6; 878,2; 1.501,9 e 1.981,3 para 2009–2013. Em
+`log1p`, apenas para diagnóstico de escala, as diferenças foram -0,0082;
+-0,0271; 0,0174; 0,0003 e 0,0425. Em 2009–2010 o sinal muda e em 2012 a
+diferença praticamente desaparece na escala logarítmica; isso mostra forte
+componente mecânico de escala, sem provar tendências paralelas.
+
+As primeiras diferenças pré em nível apresentaram SMDs aproximados de 0,237;
+0,180; 0,590; 0,802 e 0,516 por coorte. A incerteza foi apresentada
+descritivamente, com o erro-padrão calculado sobre médias por município para
+evitar tratar linhas anuais como réplicas independentes e sem p-valor
+decisório. O diagnóstico de influência omitiu do
+cálculo pré, nunca da amostra, o maior tratado e os top 5/10: as divergências
+foram atenuadas, mas persistiram em 2011–2012. O padrão combina influência de
+grandes municípios com heterogeneidade difusa.
+
+### Coorte 2013, spillover e antecipação
+
+Os dois tratados de 2013 são Angra dos Reis/RJ e Registro/SP. Ambos estão
+dentro da faixa de score dos controles e no Sudeste. Registro apresenta
+trajetória pré crescente mais regular; Angra dos Reis apresenta volatilidade
+maior. A classificação é `PRECISAO` como problema principal e `TRAJETORIA`
+como risco adicional; `SUPORTE` não é o problema observado nessa coorte.
+
+Nos cenários hipotéticos, sem mudar `papel_causal`, restariam:
+
+- 4.589 controles após sinalizar até 25 km;
+- 3.488 após até 50 km;
+- 1.323 após até 100 km;
+- 4.818 após compartilhamento de arranjo populacional.
+
+Há, portanto, volume substancial de controles para sensibilidades espaciais
+futuras, inclusive no cenário mais severo. A limitação temporal dos Arranjos
+Populacionais de 2010 permanece.
+
+Para antecipação, foi preservada a separação entre fato, hipótese e risco:
+128/129 timings são `proxy_censo`; `anticipation=0` continua hipótese
+congelada; e mudança comportamental anterior ao registro segue plausível. Os
+padrões em `k=-2` e `k=-3` não são uniformes e não autorizam redefinir `g` ou
+criar nova janela nesta etapa.
+
+### Dois gates e plano futuro
+
+O gate D17 misturava prontidão técnica com suficiência de identificação. A D18
+separa os conceitos. A amostra D15 possui contrato, chave, outcome, coortes,
+papéis, período e máscaras tecnicamente implementáveis; logo, a implementação
+futura do estimador pode começar em etapa própria. A interpretação causal não
+fica irrestritamente aprovada: suporte dos cinco tratados extremos,
+heterogeneidade pré, influência de porte, timing proxy, spillover plausível e
+ausência de covariáveis externas permanecem ressalvas.
+
+O plano futuro de robustez foi pré-especificado, sem execução: principal em
+nível; `log1p`; janela `k=-3...+2`; agregações por coorte; diagnóstico separado
+de 2013; spillover 25/50/100 km; arranjo populacional; ajustes com covariáveis
+baseline existentes, se metodologicamente definidos; e eventual restrição de
+suporte apenas como sensibilidade formalizada. Nenhuma especificação foi
+escolhida usando resultados pós-tratamento.
+
+### Artefatos D18
+
+- `notebooks/05_reavaliacao_gate_pre_estimacao.ipynb`;
+- `src/reavalia_gate_pre_estimacao.py`;
+- `tests/test_reavalia_gate_pre_estimacao.py`;
+- `outputs/diagnostics/D18_overlap_att.csv`;
+- `outputs/diagnostics/D18_pre_tendencias_escala.csv`;
+- `outputs/diagnostics/D18_primeiras_diferencas.csv`;
+- `outputs/diagnostics/D18_influencia_pre.csv`;
+- `outputs/diagnostics/D18_spillover_cenarios.csv`;
+- `outputs/diagnostics/D18_matriz_riscos.csv`;
+- `outputs/diagnostics/D18_plano_robustez.csv`;
+- sete figuras Plotly D18 em HTML interativo sob
+  `outputs/figures/interactive/`.
+
+O parquet D15 permaneceu byte-identical, com SHA-256
+`7c24c01b569ed6d10f773d00599b5010e1607696f46d716827182a078e4d733b`.
+Cabo Frio/2009 permaneceu como única máscara e nenhuma coorte foi excluída.
+
+Validação executada offline:
+
+- testes específicos D18: **11/11 aprovados**;
+- suíte focal D14–D18 + identidade visual: **51/51 aprovados**;
+- suíte completa do projeto: **722/722 aprovados**;
+- notebook D18: 37 células, 14 células de código executadas, zero traceback;
+- notebook acadêmico principal: 115 células, 36 células de código
+  executadas, zero traceback;
+- sete outputs Plotly preservados também como HTML interativo;
+- `git diff --check` sem erro.
+
+A inspeção visual automática em navegador não pôde abrir a URL local por
+política do ambiente. A validação programática confirmou títulos/eixos das sete
+figuras, presença dos HTMLs Plotly e ausência de erro nos notebooks. PNG não foi
+gerado por ausência de Kaleido, já documentada; nenhuma dependência foi
+instalada.
+
+### Próximo passo
+
+A D18 autoriza apenas iniciar, em tarefa posterior específica, a implementação
+técnica do estimador candidato e do plano de robustez. Não aprova o desenho
+causal, não autoriza estimar automaticamente nesta mesma unidade de trabalho e
+não fecha as ressalvas de interpretação.
+
+---
+
+## 28. D19 — infraestrutura e validação do estimador DiD escalonado
+
+### Estado do gate
+
+**D19_BACKEND_CALLAWAY_SANTANNA_VALIDADO = BLOQUEADO_DEPENDENCIA**
+
+**D19_DGP_SINTETICO_VALIDADO = SIM**
+
+**D19_ATT_GT_SINTETICO_VALIDADO = NAO**
+
+**D19_HETEROGENEIDADE_SINTETICA_VALIDADA = SIM**
+
+**D19_EVENT_STUDY_SINTETICO_VALIDADO = NAO**
+
+**D19_INFERENCIA_CONFIGURADA = NAO**
+
+**D19_DRY_RUN_AMOSTRA_REAL_VALIDADO = SIM**
+
+**D19_INFRAESTRUTURA_PRONTA_PARA_ESTIMACAO_REAL = NAO**
+
+**D19_EFEITO_CAUSAL_REAL_ESTIMADO = NAO**
+
+**DESENHO_CAUSAL_APROVADO = NAO**
+
+O notebook notebooks/06_infraestrutura_estimador_did_escalonado.ipynb
+construiu e validou a infraestrutura anterior à estimação real. Não havia
+backend confiável de Callaway–Sant'Anna instalado: R/Rscript e o pacote did
+estavam ausentes; o pacote Python differences também estava ausente. O
+statsmodels 0.14.6 disponível não implementa ATT grupo-tempo e foi usado
+somente para uma demonstração TWFE em painel sintético explicitamente marcado.
+Nenhum pacote foi instalado e nenhuma aproximação caseira de
+Callaway–Sant'Anna foi criada.
+
+### Contrato e plano operacional
+
+O contrato técnico separa o painel integral de estimação (2007–2019) da janela
+principal de reporte (k=-2...+2). O mapeamento futuro para R did usa município
+como idname, ano como tname, primeira coorte como gname, zero para
+never-treated, outcome em nível, control_group=nevertreated, anticipation=0,
+base_period=universal e fórmula principal incondicional. O plano D20 recomenda
+att_gt, agregações dynamic, group e simple, cluster por município, multiplier
+bootstrap e bandas simultâneas. A execução exige autorização de dependência e
+nova validação sintética do backend.
+
+### DGP e cenários sintéticos
+
+O módulo src/simula_did_escalonado.py gera painéis determinísticos com efeitos
+fixos de unidade e tempo, coortes escalonadas, never-treated, dinâmica,
+heterogeneidade por coorte, antecipação opcional, violação controlada de
+tendências paralelas, overlap fraco e coorte pequena. Foram executados cinco
+cenários:
+
+1. desenho limpo;
+2. heterogeneidade forte;
+3. violação de tendências paralelas;
+4. overlap fraco;
+5. coorte 2013 com n=2.
+
+A verdade conhecida ATT(g,t) e suas agregações foram mantidas sob o rótulo
+VERDADE_DGP_NAO_ESTIMATIVA. Elas comprovam o DGP, não o estimador moderno, que
+permanece ausente. No cenário heterogêneo, a média global verdadeira foi
+11,3564 e o TWFE sintético convencional foi 10,4065, ilustrando por que TWFE
+não substitui o estimador grupo-tempo.
+
+### Dry-run estrutural na D15
+
+A base real foi apenas lida, validada e convertida ao contrato futuro. O
+dry-run confirmou:
+
+- 66.196 linhas, 5.092 municípios e chave município-ano única;
+- 129 tratados e 4.963 never-treated;
+- coortes 2009–2013 com contagens 21, 27, 66, 13 e 2;
+- 66.195 linhas elegíveis;
+- Cabo Frio/2009 como única máscara;
+- código histórico 5003900 ausente;
+- os cinco tratados extremos de suporte preservados;
+- coorte 2013 preservada e marcada com alerta de precisão;
+- estimacao_executada=False.
+
+O parquet D15 permaneceu byte-identical, com SHA-256
+7c24c01b569ed6d10f773d00599b5010e1607696f46d716827182a078e4d733b.
+
+### Artefatos D19
+
+- notebooks/06_infraestrutura_estimador_did_escalonado.ipynb;
+- src/simula_did_escalonado.py;
+- src/estima_did_escalonado.py;
+- tests/test_infraestrutura_did_escalonado.py;
+- outputs/diagnostics/D19_backends.csv;
+- outputs/diagnostics/D19_contrato_estimador.csv;
+- outputs/diagnostics/D19_mapeamento_backend.csv;
+- outputs/diagnostics/D19_cenarios_sinteticos.csv;
+- outputs/diagnostics/D19_att_gt_verdade.csv;
+- outputs/diagnostics/D19_event_study_verdade.csv;
+- outputs/diagnostics/D19_twfe_sintetico.csv;
+- outputs/diagnostics/D19_dry_run_amostra_real.csv;
+- outputs/diagnostics/D19_coortes_reporte.csv;
+- outputs/diagnostics/D19_plano_operacional_D20.csv;
+- seis figuras Plotly D19 em HTML interativo sob
+  outputs/figures/interactive/.
+
+O notebook acadêmico principal recebeu somente uma síntese curta dos gates e
+dos artefatos D19.
+
+### Validação executada offline
+
+- testes específicos D19: **19/19 aprovados**;
+- suíte focal D14–D19 + identidade visual: **70/70 aprovados**;
+- suíte completa do projeto: **741/741 aprovados**;
+- notebook D19: 50 células, 17 células de código executadas, zero traceback;
+- notebook acadêmico principal: 117 células, 37 células de código
+  executadas, zero traceback;
+- seis outputs Plotly D19 preservados como HTML interativo;
+- hash da D15 confirmado antes e depois do dry-run;
+- git diff --check sem erro.
+
+### Limitações e próximo passo
+
+Não foram validados ATT(g,t) estimados, agregações estimadas, event-study
+estimado, erros-padrão, bootstrap ou bandas simultâneas. A D20 só poderá
+começar após autorização explícita para disponibilizar o backend recomendado e
+repetir os testes sintéticos antes de qualquer uso da D15. A D19 não aprova o
+desenho causal nem autoriza estimação real automática.
+
+---
+
+## 29. D20A — validação do backend Python `differences==0.3.0`
+
+### Estado do gate
+
+**D20A_PYTHON_DIFERENCES_0_3_0_DISPONIVEL = SIM**
+
+**D20A_BACKEND_CALLAWAY_SANTANNA_PYTHON_VALIDADO = SIM**
+
+**D20A_CONVENCAO_COORTE_VALIDADA = SIM**
+
+**D20A_BASE_PERIOD_VALIDADO = SIM**
+
+**D20A_NEVER_TREATED_VALIDADO = SIM**
+
+**D20A_ATT_GT_SINTETICO_VALIDADO = SIM**
+
+**D20A_MONTE_CARLO_VALIDADO = SIM**
+
+**D20A_EVENT_STUDY_SINTETICO_VALIDADO = SIM**
+
+**D20A_INFERENCIA_VALIDADA = PARCIAL**
+
+**D20A_PAINEL_DESBALANCEADO_VALIDADO = SIM**
+
+**D20A_CABO_FRIO_IMPLEMENTACAO_DEFINIDA = BLOQUEADO_DECISAO**
+
+**D20A_DRY_RUN_REAL_BACKEND_VALIDADO = SIM**
+
+**D20A_PRONTO_PARA_PRIMEIRA_ESTIMACAO_REAL = NAO**
+
+**D20A_EFEITO_REAL_ESTIMADO = NAO**
+
+**DESENHO_CAUSAL_APROVADO = NAO**
+
+### Ambiente e instalação
+
+Não foi instalado R, Rscript, `did` ou `DRDID`. O dry-run do pip confirmou
+que `differences==0.3.0` seria o único pacote novo. A instalação ocorreu
+somente na `.venv` do projeto; Python 3.11.9, numpy 2.4.6, pandas 3.0.5,
+scikit-learn 1.9.0, statsmodels 0.15.0 e scipy 1.17.1 permaneceram
+inalterados. `pip check` estava limpo antes e permaneceu limpo depois.
+
+### Auditoria estrutural da API
+
+O backend exige DataFrame com MultiIndex entidade-tempo e representa
+*never-treated* com coorte nula, não zero. Coorte é o primeiro período
+tratado e o tempo relativo é `t-g`; para `g=2011`, 2010 corresponde a `k=-1`,
+2011 a `k=0` e 2012 a `k=+1`.
+
+Com `anticipation=0`, `base_period='universal'` usa `g-1` como base comum e
+normaliza `k=-1` em zero. `base_period='varying'` usa comparações sequenciais
+nos leads e não produz a mesma referência normalizada. O grupo de controle
+principal validado foi exclusivamente `never_treated`. `est_method='dr'`
+resolve para o estimador duplamente robusto em painel com propensity score
+logístico MLE; não equivale a `dr-ipt`.
+
+No modo painel, `cluster_var=None` já agrupa por entidade. Para painel
+desbalanceado foi necessário fixar `as_repeated_cross_section=False`; o
+backend então forma pares completos por célula ATT(g,t).
+
+### Validação sintética e Monte Carlo
+
+Foram reutilizados, sem criar DGP paralelo, os cinco cenários da D19: LIMPO,
+HETEROGENEIDADE_FORTE, VIOLACAO_PARALLEL_TRENDS, OVERLAP_FRACO e
+COORTE_2013_N2. ATT(g,t), agregações `simple`, `cohort` e `event` foram
+comparadas com a verdade conhecida.
+
+As sementes foram congeladas antes dos resultados: 23001–23030 para ponto e
+24001–24010 para cobertura, com n=240 e 99 repetições de bootstrap. No cenário
+limpo, sobre 750 células, o bias médio foi 0,0473, MAE 0,2207, RMSE 0,2762 e
+correlação 0,9949, sem falhas de convergência. A cobertura simultânea observada
+foi 1,00 sobre 250 células em dez sementes; o volume limitado de sementes e
+bootstrap recomenda interpretar esse valor apenas como smoke test empírico,
+não como calibração definitiva.
+
+A violação deliberada de tendências paralelas gerou bias médio 3,7132 e
+cobertura analítica pontual zero, como esperado. Overlap fraco e coorte 2013
+com n=2 permaneceram executáveis, mas com alertas de suporte e precisão.
+
+### Inferência e Cabo Frio
+
+A versão 0.3.0 inclui multiplier bootstrap e bandas simultâneas. Porém, com
+`base_period='universal'`, a presença da célula determinística `k=-1` de
+variância zero causa divisão por zero e bandas simultâneas `NaN`. A D20A usa a
+API pública `filter_gt` para excluir `k=-1` apenas do bootstrap e reinsere a
+referência zero somente na apresentação. Por depender desse workaround, o
+gate de inferência é PARCIAL.
+
+No teste desbalanceado equivalente a Cabo Frio, remover apenas 2009 preserva
+2010 e todos os demais anos no objeto e mantém a coorte. Entretanto, sob base
+universal, o município deixa de participar de toda célula pós-tratamento da
+coorte 2010 que requer o par com 2009. O backend ainda pondera a agregação pela
+contagem integral da coorte, embora a célula seja estimada nos pares completos.
+Essa diferença é material e exige decisão metodológica humana; a D20A não
+escolheu entre manter a regra atual, excluir a unidade da população principal
+ou alterar a estratégia.
+
+### Dry-run real e artefatos
+
+O dry-run leu a D15, aplicou somente a elegibilidade já congelada, converteu
+controles para coorte nula e instanciou `ATTgt`. Um guard explícito impede
+`.fit()` em dados não sintéticos. O parquet D15 permaneceu byte-identical, com
+SHA-256 `7c24c01b569ed6d10f773d00599b5010e1607696f46d716827182a078e4d733b`.
+
+Principais artefatos:
+
+- `notebooks/07_validacao_backend_differences.ipynb`;
+- `src/valida_backend_differences.py`;
+- `tests/test_backend_differences_d20a.py`;
+- `outputs/diagnostics/D20A_api_differences.csv`;
+- `outputs/diagnostics/D20A_base_period.csv`;
+- `outputs/diagnostics/D20A_cenarios_resumo.csv`;
+- `outputs/diagnostics/D20A_monte_carlo_resumo.csv`;
+- `outputs/diagnostics/D20A_monte_carlo_configuracao.json`;
+- `outputs/diagnostics/D20A_cabo_frio_sintetico.csv`;
+- `outputs/diagnostics/D20A_dry_run_real.csv`;
+- `outputs/diagnostics/D20A_gates.csv`;
+- `outputs/diagnostics/D20A_ambiente.csv`;
+- `outputs/diagnostics/D20A_dependencias_novas.csv`;
+- dois gráficos Plotly D20A em HTML interativo sob
+  `outputs/figures/interactive/`.
+
+O notebook acadêmico principal recebeu a síntese, os gates, o resumo do Monte
+Carlo e o gráfico decisório de ATT dinâmico versus verdade conhecida.
+
+### Validação executada
+
+- testes específicos D20A: **13/13 aprovados**;
+- suíte completa do projeto: **754/754 aprovados**;
+- notebook D20A: 20 células, 10 células de código executadas, zero traceback;
+- notebook acadêmico principal: 121 células, 39 células de código executadas,
+  zero traceback;
+- inspeção visual em navegador local dos dois HTMLs Plotly concluída;
+- nenhuma alteração no stack científico além de `differences==0.3.0`;
+- nenhum fit, ATT, event-study ou p-valor foi calculado na amostra real;
+- nenhum commit, push ou staging foi executado.
+
+### Limitações e próximo gate
+
+A D20A valida o backend para desenvolvimento técnico, não para execução real.
+Antes da primeira estimação na D15 são necessárias duas decisões humanas:
+tratamento metodológico de Cabo Frio e aceitação ou substituição do workaround
+de inferência da versão 0.3.0. Nenhuma dessas decisões deve ser tomada com base
+em resultados reais, que continuam inexistentes.
+
+---
+
+## 30. D20B — fechamento pré-estimação: Cabo Frio + inferência
+
+### Estado do gate
+
+**D20B_CABO_FRIO_DECISAO_FECHADA = SIM**
+
+**D20B_POPULACAO_ESTIMAVEL_128_VALIDADA = SIM**
+
+**D20B_VIEW_BALANCEADA_VALIDADA = SIM**
+
+**D20B_WORKAROUND_K_MENOS_1_VALIDADO = SIM**
+
+**D20B_INFERENCIA_CONFIGURADA = SIM**
+
+**D20B_BOOTSTRAP_FINAL_PRE_ESPECIFICADO = SIM**
+
+**D20B_PRONTO_PARA_ESTIMACAO_REAL = SIM**
+
+**D20B_EFEITO_REAL_ESTIMADO = NAO**
+
+**DESENHO_CAUSAL_APROVADO = NAO**
+
+### Decisão metodológica sobre Cabo Frio
+
+A D20B preserva duas populações distintas:
+
+```text
+POPULACAO_D15_TRATADOS = 129
+POPULACAO_PRINCIPAL_ESTIMAVEL = 128
+```
+
+Cabo Frio/RJ (`3300704`) continua documentado na D15 com `g=2010` e 13
+linhas. Seu `k=-1` principal é 2009, ano de transição institucional já
+inelegível. Assim, o município não possui base válida para
+`base_period='universal'`. Não houve imputação, uso de 2009, mudança de `g`,
+repeated cross-section ou exclusão implícita por célula.
+
+A view/cópia principal exclui Cabo Frio integralmente apenas da estimação. Ela
+contém 128 tratados, 4.963 controles, 5.091 municípios e 66.183 linhas em
+painel balanceado 2007–2019. As coortes são 2009=21, 2010=26, 2011=66,
+2012=13 e 2013=2; `5003900` permanece ausente.
+
+Como a decisão altera a população tratada do estimando principal, ela foi
+registrada no addendum
+`docs/methodology/ADDENDUM_D20B_CABO_FRIO_INFERENCIA.md`. O D14 original não
+foi reescrito. A motivação é exclusivamente a incompatibilidade pré-resultado
+`Cabo Frio/2009 × g-1`.
+
+### Workaround e inferência
+
+Em dados sintéticos D19, foram comparados: A) `base_period='universal'` sem
+bootstrap/filtro; e B) remoção de `k=-1` antes do multiplier bootstrap. A
+diferença máxima foi zero para ATT(g,t) pós-tratamento, agregações `cohort` e
+`simple` e event-study em todos os `k != -1`. `k=-1` não participa da banda e
+é recolocado como zero, sem erro-padrão ou limites, somente na apresentação.
+
+A configuração final foi congelada antes de efeitos reais:
+
+- `boot_iterations=1999`;
+- `random_state=20260924`;
+- `n_jobs=1`;
+- `alpha=0.05`;
+- bandas simultâneas de 95%;
+- cluster automático por entidade.
+
+Embora o ambiente tenha 16 CPUs, `differences==0.3.0` falhou com `n_jobs=4`
+no multiplier bootstrap por incompatibilidade Joblib/tqdm. `n_jobs=1` foi
+congelado como configuração estável. Os 1.999 draws não foram executados na
+base real.
+
+### Artefatos e validação
+
+- `docs/methodology/ADDENDUM_D20B_CABO_FRIO_INFERENCIA.md`;
+- `data/processed/amostra_principal_estimavel_d20b_2007_2019.parquet`;
+- `outputs/diagnostics/D20B_view_principal_estimavel.csv`;
+- `outputs/diagnostics/D20B_workaround_k_menos_1.csv`;
+- `outputs/diagnostics/D20B_invariancia_*.csv`;
+- `outputs/diagnostics/D20B_configuracao_inferencia.json`;
+- `outputs/diagnostics/D20B_gates.csv`;
+- seções D20B nos notebooks 07 e acadêmico principal.
+
+Validação executada:
+
+- testes específicos D20A/D20B: **19/19 aprovados**;
+- suíte completa: **760/760 aprovados**;
+- notebook 07: 28 células, 13 células de código executadas, zero traceback;
+- notebook acadêmico principal: 125 células, 40 células de código executadas,
+  zero traceback;
+- D15 byte-identical, SHA-256
+  `7c24c01b569ed6d10f773d00599b5010e1607696f46d716827182a078e4d733b`;
+- nenhum fit, ATT, event-study ou p-valor real executado;
+- nenhum commit, push ou staging executado.
+
+`D20B_PRONTO_PARA_ESTIMACAO_REAL = SIM` fecha apenas os dois bloqueios
+técnicos autorizados nesta unidade. Não inicia automaticamente a estimação e
+não aprova o desenho causal.
+
+---
+
+## 31. D20C–D20E — primeira estimação real, robustezes e auditoria
+
+### Escopo e estado do gate
+
+A primeira estimação no outcome real foi executada na view D20B congelada,
+sem redefinir tratamento, coortes, outcome, controles, antecipação, população,
+modelo ou robustezes após observar os resultados. A D21 não foi executada.
+
+**D20C_AMOSTRA_PRINCIPAL_VALIDADA = SIM**
+
+**D20C_ATT_GT_REAL_ESTIMADO = SIM**
+
+**D20C_AGREGACAO_SIMPLE_ESTIMADA = SIM**
+
+**D20C_AGREGACAO_COORTE_ESTIMADA = SIM**
+
+**D20C_EVENT_STUDY_REAL_ESTIMADO = SIM**
+
+**D20C_BOOTSTRAP_1999_CONCLUIDO = SIM**
+
+**D20C_BANDAS_SIMULTANEAS_VALIDAS = SIM**
+
+**D20C_RESULTADO_PRINCIPAL_CONGELADO = SIM**
+
+**D20D_LOG1P_EXECUTADO = SIM**
+
+**D20D_JANELA_3PRE_EXECUTADA = SIM**
+
+**D20D_SUPORTE_EXECUTADO = SIM**
+
+**D20D_SPILLOVER_25_EXECUTADO = SIM**
+
+**D20D_SPILLOVER_50_EXECUTADO = SIM**
+
+**D20D_SPILLOVER_100_EXECUTADO = SIM**
+
+**D20D_ARRANJO_EXECUTADO = SIM**
+
+**D20D_ROBUSTEZES_PRE_ESPECIFICADAS_CONCLUIDAS = SIM**
+
+**D20E_AUDITORIA_POS_ESTIMACAO_CONCLUIDA = SIM**
+
+**D20E_PRE_TENDENCIAS_REAVALIADAS = SIM**
+
+**D20E_OVERLAP_REAVALIADO = SIM**
+
+**D20E_SPILLOVER_REAVALIADO = SIM**
+
+**D20E_COORTE_2013_REAVALIADA = SIM**
+
+**D20E_MATRIZ_EVIDENCIA_PRODUZIDA = SIM**
+
+**D20E_INTERPRETACAO_CAUSAL_PENDENTE_REVISAO = SIM**
+
+**DESENHO_CAUSAL_APROVADO = NAO**
+
+### Especificação e população
+
+O principal usa `differences==0.3.0`, ATT grupo-tempo DR sem covariáveis,
+`base_period='universal'`, `control_group='never_treated'`, painel verdadeiro,
+`anticipation=0`, referência `k=-1`, 1.999 draws, seed `20260924`,
+`n_jobs=1`, `alpha=0.05` e bandas simultâneas.
+
+A view permanece com 128 tratados, 4.963 controles, 5.091 municípios,
+66.183 linhas e painel balanceado 2007–2019. As coortes são 2009=21,
+2010=26, 2011=66, 2012=13 e 2013=2. Cabo Frio e `5003900` estão ausentes.
+
+### Resultados congelados
+
+O ATT simples principal é **2.050,9903**, erro-padrão **296,5924** e banda
+simultânea de 95% **[1.481,3245; 2.620,6561]**. Foram produzidas 65 células
+ATT(g,t), sendo 45 pós-tratamento; não houve falha nem warning de célula
+pós-tratamento.
+
+Por coorte: 2009 = 4.048,5987; 2010 = 1.694,9899; 2011 = 1.478,5356;
+2012 = 2.345,8441; e 2013 = -2.200,0178. A coorte 2013 tem somente dois
+tratados e banda ampla [-5.885,5416; 1.485,5061]; imprecisão não foi tratada
+como efeito zero nem motivou exclusão.
+
+No event-study, `k=0`, `k=1` e `k=2` são, respectivamente, 818,2776,
+1.641,5888 e 2.188,8119. Há cinco leads disponíveis; as bandas de `k=-4`,
+`k=-3` e `k=-2` não incluem zero. Esse padrão é um diagnóstico material de
+identificação, não prova ou refutação mecânica de tendências paralelas.
+
+As robustezes produziram ATT simples: log1p = 0,003965, com banda
+[-0,025647; 0,033577] em escala não comparável a empregos; janela com três
+pré-períodos = 1.576,2500; suporte = 1.818,3355; spillover 25 km =
+2.069,8677; 50 km = 2.070,0738; 100 km = 2.096,0032; e arranjo populacional
+= 2.080,0024. Todas as sensibilidades em nível mantiveram o sinal e tiveram
+bandas descritivamente sobrepostas ao principal. Isso não prova ausência de
+spillover nem corrige o estimando principal.
+
+A contextualização descritiva usa somente a média pré-tratamento dos tratados
+(17.190,5770): ATT simples / média pré = 0,119309, ou 11,93%. Essa razão não é
+um novo estimando causal.
+
+### Auditoria e reprodutibilidade
+
+Uma repetição integral com a configuração congelada foi realizada em memória,
+sem sobrescrever os outputs principais. A maior diferença absoluta foi
+`1,8189894035458565e-12`, abaixo da tolerância numérica `1e-10`. A saída
+pública do backend não expõe os pesos de agregação; nenhuma ponderação ad hoc
+foi inferida.
+
+Hashes de entrada preservados:
+
+- D15: `7c24c01b569ed6d10f773d00599b5010e1607696f46d716827182a078e4d733b`;
+- view D20B: `91b0a14b38740a56c1b6b3912e1ad3252632037b9044c992ec5331a932a10969`.
+
+### Artefatos e validação
+
+Os artefatos principais, manifests, tabelas de robustez, gates e matriz de
+evidência estão em `outputs/causal/`; os três gráficos Plotly IPT estão em
+`outputs/figures/interactive/`. O notebook didático é
+`notebooks/08_estimacao_causal_principal_robustez.ipynb`; o notebook acadêmico
+principal contém apenas a síntese D20C–D20E. O plano futuro, sem execução de
+ML causal, está em `docs/methodology/PLANO_D21_CAUSAL_ML.md`.
+
+Validação executada:
+
+- testes focais D20C–D20E: **14/14 aprovados**;
+- regressão D14–D20E: **103/103 aprovados**;
+- suíte completa: **774/774 aprovados**;
+- notebook 08: 34 células, 12/12 células de código executadas, dois outputs
+  Plotly e zero erro/traceback;
+- notebook acadêmico principal: 129 células, 42/42 células de código
+  executadas, 12 outputs Plotly e zero erro/traceback;
+- `pip check` sem dependências quebradas e `git diff --check` sem erro;
+- nenhum pacote instalado, dado bruto alterado, commit, push ou staging.
+
+### Limitações e próximo gate
+
+O resultado continua condicionado a tendências paralelas não observáveis,
+timing majoritariamente proxy, cinco tratados extremos, influência de porte,
+spillovers plausíveis, pequena coorte 2013 e validade externa limitada ao
+estimando e à população analisados. A significância estatística não remove
+essas ressalvas. A interpretação causal aguarda revisão humana; nenhuma etapa
+D21 está autorizada automaticamente.
+
+---
+
+## 32. Regra para agentes
 
 Antes de trabalhar:
 
@@ -2063,3 +2930,99 @@ Nao iniciar automaticamente:
 - commit ou push nao autorizado.
 
 Se o Git observado divergir materialmente deste snapshot, parar e reportar.
+
+---
+
+## 33. PAUSA DO PROJETO
+
+**STATUS_PROJETO = PAUSADO**
+
+**DATA_PAUSA = 2026-09-25**
+
+### Motivo
+
+Projeto academicamente válido, porém pausado porque a disciplina Big Data &
+Analytics seguirá com um novo projeto mais centrado em Machine Learning /
+Causal Machine Learning.
+
+**Pausado não significa descartado. Todo o trabalho realizado permanece
+preservado** no histórico Git e nos documentos desta pasta.
+
+### Última etapa efetivamente concluída
+
+D20C–D20E (seção 31): primeira estimação causal real (ATT grupo-tempo via
+Callaway–Sant'Anna, `differences==0.3.0`), robustezes pré-especificadas
+(D20D) e auditoria pós-estimação com matriz de evidência (D20E).
+`DESENHO_CAUSAL_APROVADO = NAO` — a interpretação causal continua pendente
+de revisão humana; nenhuma etapa D21 foi executada.
+
+### Análises já realizadas (resumo)
+
+- D20A: validação do backend `differences==0.3.0` em dados sintéticos;
+- D20B: decisão metodológica sobre Cabo Frio/RJ (excluído apenas da view de
+  estimação, preservado na D15) e congelamento da configuração de
+  inferência (bootstrap 1.999 draws, `random_state=20260924`, `n_jobs=1`);
+- D20C: ATT simples principal = 2.050,9903 (erro-padrão 296,5924, banda
+  simultânea 95% [1.481,3245; 2.620,6561]), agregações por coorte e
+  event-study;
+- D20D: sete robustezes (log1p, janela de 3 pré-períodos, suporte,
+  spillover 25/50/100 km, arranjo populacional) — sinal preservado em
+  todas;
+- D20E: reavaliação de pré-tendências, overlap, spillover e coorte 2013;
+  matriz de evidência produzida; interpretação causal explicitamente
+  pendente.
+
+### Estado dos dados
+
+- artefatos científicos (`outputs/causal/*.csv`, `data/processed/*.parquet`)
+  seguem a política vigente do projeto e permanecem fora do Git (regra
+  `*.csv`/`data/processed/*` do `.gitignore`), reproduzíveis a partir dos
+  scripts em `src/` e dos notebooks;
+- manifestos e configurações em JSON (`outputs/causal/*_manifesto.json`,
+  `outputs/causal/D20D_gates.json`, `outputs/causal/D20E_auditoria_pos_estimacao.json`,
+  `outputs/diagnostics/D20A_monte_carlo_configuracao.json`,
+  `outputs/diagnostics/D20B_configuracao_inferencia.json`) são pequenos e
+  foram versionados como exceção deliberada, junto com este fechamento;
+- a D15 (base de tratamento) permanece byte-identical, SHA-256
+  `7c24c01b569ed6d10f773d00599b5010e1607696f46d716827182a078e4d733b`.
+
+### Notebooks principais
+
+- `notebooks/01_analise_expansao_rede_federal_economia_municipal.ipynb` —
+  notebook acadêmico principal, com a síntese de todas as etapas D1–D20E;
+- `notebooks/02` a `notebooks/08` — notebooks técnicos de suporte
+  (construção da amostra causal, diagnósticos pré-estimação, infraestrutura
+  do estimador escalonado, validação de backend, estimação principal e
+  robustez).
+
+### Testes e validações existentes
+
+- suíte completa do projeto: **774/774 aprovados** (`python -m unittest
+  discover -s tests -p "test_*.py"`), executada nesta sessão de pausa sem
+  nenhuma alteração metodológica;
+- `pip check`: sem dependências quebradas;
+- `git diff --check`: sem marcadores de conflito.
+
+### Limitações e pendências congeladas
+
+Caso o projeto seja retomado no futuro:
+
+1. decidir a interpretação causal do resultado principal (D20E deixou a
+   matriz de evidência pronta, mas a leitura humana final não foi feita);
+2. avaliar `docs/methodology/PLANO_D21_CAUSAL_ML.md` — plano de Machine
+   Learning causal ainda não executado, sem nenhuma estimação realizada;
+3. o resultado principal continua condicionado a tendências paralelas não
+   observáveis, timing majoritariamente proxy, cinco tratados extremos,
+   influência de porte, spillovers plausíveis, pequena coorte 2013 (n=2) e
+   validade externa limitada à população e ao estimando analisados;
+4. a seção "Status" do `README.md` (`EFEITO_CAUSAL_ESTIMADO = NAO`) ficou
+   desatualizada frente ao D20C, que já produziu uma estimativa real; a
+   correção desse status é uma decisão de interpretação causal (pendência
+   1) e não foi alterada nesta pausa para não antecipar essa decisão.
+
+### Ponto exato de retomada
+
+Ler esta seção, a seção 31 (D20C–D20E) e
+`docs/methodology/PLANO_D21_CAUSAL_ML.md`; decidir a interpretação causal
+pendente antes de iniciar qualquer nova estimação; só então avaliar se o
+D21 (Causal ML) deve ser iniciado.
