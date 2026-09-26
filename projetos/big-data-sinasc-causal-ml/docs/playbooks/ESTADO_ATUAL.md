@@ -1,17 +1,19 @@
 # Estado Atual
 
-STATUS = FASE_1_CONCLUIDA
-FASE_ATUAL = FASE_1_DESENHO_E_OVERLAP
+STATUS = FASE_2_EXECUTADA_GATE_CONSERVADOR
+FASE_ATUAL = FASE_2_ML_E_AIPW
 DATA_INICIO = 2026-09-25
 DATA_ATUALIZACAO = 2026-09-26
 GATE_FASE_0 = VIAVEL_COM_RESSALVAS
 GATE_FASE_1 = PRONTO_COM_RESSALVAS
-EFEITO_CAUSAL_ESTIMADO = NAO
-MODELO_CAUSAL_EXECUTADO = NAO
+EFEITO_CAUSAL_ESTIMADO = SIM
+MODELO_CAUSAL_EXECUTADO = SIM
+CAUSALIDADE_PROVADA = NAO
+GATE_FASE_2 = RESULTADO_NAO_INTERPRETAVEL
 
 ## Objetivo
 
-Definir a amostra analítica, o contrato causal mínimo e as covariáveis pré-tratamento; auditar balanceamento, positividade e overlap antes de qualquer estimação causal.
+Comparar predição de baixo peso e estimação AIPW cross-fitted sob as hipóteses e população congeladas da Fase 1. Fase 1 publicada no checkpoint `caf1446`.
 
 ## Pergunta candidata
 
@@ -34,7 +36,7 @@ Entre gestantes comparáveis em características observáveis, iniciar o pré-na
 - População principal: nascidos vivos com T conhecido, peso principal válido e gestação única.
 - Amostra candidata: 2.251.570 registros; T=1: 1.942.045 (86,253%); T=0: 309.525 (13,747%).
 
-## Decisões tomadas
+## Decisões herdadas da Fase 1
 
 - Escopo restrito ao ano de 2024 e ao desenho da Fase 1, sem estimação de efeito.
 - Fonte principal exclusivamente institucional oficial.
@@ -68,6 +70,19 @@ Entre gestantes comparáveis em características observáveis, iniciar o pré-na
 
 ## Próxima etapa
 
-1. Congelar o desenho e a população no plano da Fase 2.
-2. Executar benchmark preditivo e AIPW cross-fitted autorizados, após checkpoint da Fase 1.
-3. Interpretar estabilidade e limitações, sem certificação de causalidade.
+1. Revisar substantivamente o gate de concentração de influência com orientação acadêmica, sem reinterpretá-lo como teste universal de invalidade.
+2. Avaliar seleção, confundimento não observado e incerteza por dependência geográfica antes de promover conclusões causais.
+3. Usar os notebooks como material do trabalho, mantendo resultados condicionais e limitações explícitas.
+
+## Resultado da Fase 2
+
+- População integral preservada: 2.251.570. Sem trimming oculto. Três folds estratificados T/Y, seed 20240925.
+- Predição (teste N=450.314): logística ROC-AUC 0,574248, AP 0,100220, Brier 0,072350; HGB 0,583494, 0,104537 e 0,072239. Discriminação limitada, calibração por decis razoável. Precision/recall/F1 ao limiar 0,5 são zero.
+- Associação bruta NÃO CAUSAL: −1,423859 pp.
+- C1 AIPW: −1,340527 pp (SE 0,061994; IC95% −1,462034 a −1,219019).
+- C2 AIPW: −1,231456 pp (SE 0,061981; IC95% −1,352938 a −1,109973).
+- 0,01–0,99 não altera N; 0,05–0,95 mantém 2.103.319, C1 −1,382662 pp e C2 −1,273369 pp.
+- Todos os ajustes logísticos convergiram. HGB usa early stopping interno ao treino.
+- Gate `RESULTADO_NAO_INTERPRETAVEL` segundo regra conservadora pré-especificada: top 1% de |IF| concentra 78,8% de IF² (limite do plano 50%). Estimativas são estáveis entre modelos e trimming; o gate decorre desse diagnóstico, não de falha de execução.
+- Este limiar não é um critério universal de identificação ou validade assintótica. Contribuição máxima individual é ~0,0015 pp; ESS dos controles ~232.772. Os resultados e esse contraponto são preservados para revisão.
+- Sem placebo defensável; heterogeneidade omitida; nenhum Causal Forest ou artigo final produzido.

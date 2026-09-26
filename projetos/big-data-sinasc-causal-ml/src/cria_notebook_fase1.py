@@ -62,7 +62,7 @@ from src.executa_fase1 import executar_fase1
 from src.visualizacao_ipt import CORES_IPT, aplicar_tema_ipt, configurar_plotly
 
 configurar_plotly()
-pio.renderers.default = "notebook_connected"
+pio.renderers.default = "png"
 # Recalcular com: python -m src.executa_fase1 (na .venv deste projeto).
 # As tabelas abaixo leem os resultados integrais persistidos dessa execução.
 amostra = json.loads((raiz / "outputs/diagnostics/fase1_amostra.json").read_text(encoding="utf-8"))
@@ -74,7 +74,9 @@ print("Efeito causal estimado: NÃO")
 def salvar_figura(figura, nome, largura=1100, altura=650):
     caminho = (raiz / "outputs" / "figures" / nome).with_suffix(".html")
     figura.update_layout(width=largura, height=altura)
+    figura.update_yaxes(automargin=True)
     figura.write_html(caminho, include_plotlyjs="cdn")
+    figura.write_image(caminho.with_suffix('.png'))
     print("Figura interativa salva:", caminho)
 """
         )
@@ -188,6 +190,7 @@ fig_m = px.bar(
 )
 fig_m.update_traces(marker_color=CORES_IPT["AZUL_MEDIO"])
 aplicar_tema_ipt(fig_m, "Missing e códigos ignorados no X principal")
+fig_m.update_yaxes(automargin=True)
 fig_m.show()
 salvar_figura(fig_m, "fase1_missing_x.png")
 """
@@ -244,6 +247,8 @@ fig_smd = px.bar(
 fig_smd.update_traces(marker_color=CORES_IPT["CIANO"])
 fig_smd.add_vline(x=0.1, line_dash="dash", line_color=CORES_IPT["AZUL_ESCURO"])
 aplicar_tema_ipt(fig_smd, "Desequilíbrio bruto entre T=1 e T=0")
+fig_smd.update_layout(margin=dict(l=210, r=40, t=80, b=80))
+fig_smd.update_yaxes(automargin=True)
 fig_smd.show()
 salvar_figura(fig_smd, "fase1_smd_bruto.png")
 """

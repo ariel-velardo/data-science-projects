@@ -20,7 +20,7 @@ Ministério da Saúde, [Portal de Dados Abertos do SUS](https://dadosabertos.sau
 
 ## Status
 
-`FASE_1_DESENHO_E_OVERLAP` concluída — gate `PRONTO_COM_RESSALVAS`; propensity OOF convergente e suporte quantificado. Nenhum efeito causal estimado nesta fase.
+`FASE_2_ML_E_AIPW` executada — benchmark e AIPW cross-fitted concluídos. Gate conservador `RESULTADO_NAO_INTERPRETAVEL` por concentração da função de influência; ver `docs/methodology/RESULTADOS_E_LIMITACOES_FASE2.md`. Causalidade não provada.
 
 ## Estrutura
 
@@ -68,4 +68,4 @@ O notebook principal é `notebooks/02_amostra_desenho_e_overlap.ipynb`. O propen
 
 ## Limite metodológico
 
-Não foram executados ATE, ATT, ATC, matching, IPW de outcome, AIPW, DML, Causal Forest, CATE/uplift ou qualquer afirmação causal.
+A Fase 2 executou AIPW cross-fitted para a diferença média de risco na população selecionada, sob hipóteses observacionais explícitas. O gate conservador e as limitações estão documentados; causalidade não foi provada. Não foram executados Causal Forest ou CATE/uplift.

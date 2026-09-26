@@ -1,0 +1,14 @@
+{
+  "status": "APROVADO",
+  "n": 2251570,
+  "datas": {
+    "datas_invalidas": 0,
+    "fora_2024": 0,
+    "minima": "2024-01-01 00:00:00",
+    "maxima": "2024-12-31 00:00:00"
+  },
+  "cobertura_oof": "exatamente uma previsão por observação",
+  "resultados_reconciliados": 6,
+  "tolerancia_absoluta": 1e-12,
+  "n_nan_predicoes": 0
+}
