@@ -1,0 +1,22 @@
+{
+  "rotulo": "AUDITORIA / SENSIBILIDADE FASE 3",
+  "gate": "GATE_FASE2_EXCESSIVAMENTE_CONSERVADOR",
+  "historico_fase2": "RESULTADO_NAO_INTERPRETAVEL",
+  "sintese": "O veto automático pelo top 1% >50% de IF² é excessivamente conservador como diagnóstico de invalidade numérica/inferencial. AIPW histórico reconciliado, contribuição individual pequena, ajustes geográficos estáveis e simulação oráculo questionam esse veto. A inclusão de múltiplas muda a magnitude em cerca de 0,20 pp e define outro alvo. Seleção, confundimento e temporalidade continuam impedindo uma interpretação causal forte; o gate histórico não foi alterado.",
+  "criterio_decisao": "Juízo metodológico conjunto; sem seleção por sinal ou significância estatística; não é um novo teste formal.",
+  "erro_material_aipw_original": false,
+  "causalidade_provada": false,
+  "permite_exercicio_didatico_fase4": true,
+  "condicao_fase4": "Somente após validação, commit e push Fase 3 e padronização PT-BR. Preservar desenho, honestidade da avaliação e interpretação exploratória; nenhuma política clínica.",
+  "evidencias": [
+    {"dimensao": "Literatura", "evidencia": "13 referências; não localizado fundamento para top1/50 como critério universal", "limite": "Busca dirigida, não sistemática"},
+    {"dimensao": "Implementação", "evidencia": "Seis combinações históricas reproduzidas; deltas de estimativa e SE iguais a zero", "limite": "Corretude computacional não identifica causalidade"},
+    {"dimensao": "Influência", "evidencia": "Top 1% ~78,8%; máximo individual <0,06% de IF²; extremos predominantemente controles com Y=1", "limite": "Concentração coletiva merece diagnóstico; não é prova de regularidade"},
+    {"dimensao": "Inferência geográfica", "evidencia": "SE municipal aumenta ~10%; bootstrap condicional fica ligeiramente acima do sandwich", "limite": "Independência entre municípios e incerteza completa dos nuisances não verificadas"},
+    {"dimensao": "Ajuste geográfico", "evidencia": "Três folds sem cluster compartilhado; mudança C1/C2 <0,005 pp", "limite": "Uma partição; DF ausente de um treino externo"},
+    {"dimensao": "Monte Carlo", "evidencia": "S3: gate 100%, cobertura 97,5%; S4: gate 100%, cobertura 89,5%", "limite": "200 réplicas/cenário; oráculo iid não valida o SINASC"},
+    {"dimensao": "C3", "evidencia": "Propensity HGB: -1,232469 pp, próximo de C2 -1,231456 pp", "limite": "Estabilidade entre modelos não exclui viés comum"},
+    {"dimensao": "Elegibilidade", "evidencia": "CONSPRENAT muda ~0,01 pp; P0 ~0,02 pp; múltiplas ~0,20 pp, sem mudança de sinal", "limite": "Múltiplas têm alvo e dependência distintos; não equivalem à principal"},
+    {"dimensao": "Estimando", "evidencia": "Contraste padronizado na população selecionada de nascidos vivos", "limite": "Não identifica efeito em todas as concepções nem em estrato principal de sobreviventes"}
+  ]
+}

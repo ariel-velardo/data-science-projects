@@ -1,0 +1,234 @@
+{
+  "contrato": {
+    "n": 2250506,
+    "chaves": "bbccc113f8f409f5a13885dd0803f00b95a397af0ab78e41d9b598a0e39636ec",
+    "dados": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5",
+    "agrupado": false,
+    "c3": false,
+    "x": [
+      "IDADEMAE_NUM",
+      "ESCOLARIDADE_MAE",
+      "RACA_COR_MAE",
+      "SITUACAO_CONJUGAL",
+      "PARIDADE_CAT",
+      "PERDAS_FETAIS_CAT",
+      "UF_RESIDENCIA"
+    ],
+    "seed": 20240925,
+    "codigo": {
+      "executa_robustez_fase3.py": "1f95950b8067a7d9e5353d039c093e9d6a4d43f24fe4c0fa9c3a4ce11865fe32",
+      "modelagem_preditiva.py": "c75dd05af8da95a6d88ad070fe2964d89f5e20c91005777b56713fe8e33d3752",
+      "inferencia_cluster.py": "25eafedc22ea518286c475dd61de10e3104334d1708e5b6c74788db52856fc9b"
+    }
+  },
+  "folds": [
+    {
+      "fold": 1,
+      "n_treino": 1500337,
+      "n_validacao": 750169,
+      "intersecao_registros": 0,
+      "validacao_ty": {
+        "0": 93657,
+        "1": 9383,
+        "2": 597331,
+        "3": 49798
+      },
+      "ajustes": {
+        "e": {
+          "n_iter": 49,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C1": {
+          "n_iter": 63,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m1_C1": {
+          "n_iter": 50,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C2": {
+          "n_iter": 70,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        },
+        "m1_C2": {
+          "n_iter": 77,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        }
+      }
+    },
+    {
+      "fold": 2,
+      "n_treino": 1500337,
+      "n_validacao": 750169,
+      "intersecao_registros": 0,
+      "validacao_ty": {
+        "0": 93657,
+        "1": 9384,
+        "2": 597330,
+        "3": 49798
+      },
+      "ajustes": {
+        "e": {
+          "n_iter": 49,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C1": {
+          "n_iter": 61,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m1_C1": {
+          "n_iter": 50,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C2": {
+          "n_iter": 70,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        },
+        "m1_C2": {
+          "n_iter": 100,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        }
+      }
+    },
+    {
+      "fold": 3,
+      "n_treino": 1500338,
+      "n_validacao": 750168,
+      "intersecao_registros": 0,
+      "validacao_ty": {
+        "0": 93657,
+        "1": 9383,
+        "2": 597330,
+        "3": 49798
+      },
+      "ajustes": {
+        "e": {
+          "n_iter": 52,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C1": {
+          "n_iter": 64,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m1_C1": {
+          "n_iter": 54,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C2": {
+          "n_iter": 64,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        },
+        "m1_C2": {
+          "n_iter": 100,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        }
+      }
+    }
+  ],
+  "cache_sha256": "312e85e8023154f2bee132748d53234e6472883aafbf8cbac339304e2ddd3309"
+}

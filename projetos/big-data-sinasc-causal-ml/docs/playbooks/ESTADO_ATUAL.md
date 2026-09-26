@@ -1,7 +1,7 @@
 # Estado Atual
 
-STATUS = FASE_2_EXECUTADA_GATE_CONSERVADOR
-FASE_ATUAL = FASE_2_ML_E_AIPW
+STATUS = FASE_3_AUDITADA_COM_RESSALVAS
+FASE_ATUAL = FASE_3_ROBUSTEZ_METODOLOGICA
 DATA_INICIO = 2026-09-25
 DATA_ATUALIZACAO = 2026-09-26
 GATE_FASE_0 = VIAVEL_COM_RESSALVAS
@@ -10,6 +10,19 @@ EFEITO_CAUSAL_ESTIMADO = SIM
 MODELO_CAUSAL_EXECUTADO = SIM
 CAUSALIDADE_PROVADA = NAO
 GATE_FASE_2 = RESULTADO_NAO_INTERPRETAVEL
+GATE_FASE_3 = GATE_FASE2_EXCESSIVAMENTE_CONSERVADOR
+
+## Auditoria metodológica da Fase 3
+
+- A fórmula AIPW, as seis linhas históricas e os 18 arquivos protegidos foram reconciliados sem erro material e sem reescrever a Fase 2. O gate histórico acima permanece registrado.
+- O limiar de 50% de IF² no 1% mais extremo é uma heurística, não um teste universal de invalidade. A revisão de 13 referências, o contraexemplo analítico e 800 replicações Monte Carlo sustentam a revisão de seu uso como veto automático. Isso não comprova identificação causal.
+- C1: −1,340527 pp; C2: −1,231456 pp. Erros-padrão agrupados por município: 0,068287 e 0,067997 pp, respectivamente. A dependência geográfica aumenta a incerteza em aproximadamente 10%.
+- O ajuste cruzado agrupado por município altera as estimativas em menos de 0,005 pp. Nenhuma exclusão de UF inverte o sinal. O modelo C3 de propensão HGB resulta em −1,232469 pp.
+- Excluir discordância de consultas ou ampliar a regra de peso tem pouca influência; incluir gestações múltiplas altera a magnitude em aproximadamente 0,20 pp e muda a população-alvo.
+- Confundimento residual, seleção de nascidos vivos e temporalidade de covariáveis continuam limitantes. O estimando observável é uma associação padronizada na população selecionada; sua interpretação causal exige hipóteses não verificadas.
+- Validação: 22 linhas da Fase 3 reconciliadas, 65 testes aprovados e `pip check` sem inconsistências. Notebook 04 executado integralmente; registros em `outputs/diagnostics/fase3_validacao.json`.
+- Evidências e limitações: [relatório completo](../methodology/ROBUSTEZ_FASE3.md), [literatura](../literature/AUDITORIA_GATE_INFLUENCIA.md) e [estimando](../methodology/AUDITORIA_ESTIMANDO_FASE3.md).
+- Próxima sequência autorizada: concluir commit/push desta fase; padronizar e reexecutar notebooks 01–04 em português; depois executar a Fase 4 exclusivamente como exercício didático exploratório. Não há autorização para Fase 5 ou artigo completo.
 
 ## Objetivo
 

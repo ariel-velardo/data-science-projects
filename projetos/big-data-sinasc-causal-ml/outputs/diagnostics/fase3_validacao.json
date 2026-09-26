@@ -1,0 +1,49 @@
+{
+  "status": "APROVADO",
+  "linhas_reconciliadas": 22,
+  "tolerancia_absoluta": 1e-12,
+  "sandwich_independente": "DuckDB GROUP BY; score centrado por registro",
+  "fase2": {
+    "status": "APROVADO",
+    "n": 2251570,
+    "datas": {
+      "datas_invalidas": 0,
+      "fora_2024": 0,
+      "minima": "2024-01-01 00:00:00",
+      "maxima": "2024-12-31 00:00:00"
+    },
+    "cobertura_oof": "exatamente uma previsão por observação",
+    "resultados_reconciliados": 6,
+    "tolerancia_absoluta": 1e-12,
+    "n_nan_predicoes": 0
+  },
+  "populacoes": {
+    "aleatorio": {
+      "n": 2251570,
+      "n_t1": 1942045,
+      "n_t0": 309525
+    },
+    "geografico": {
+      "n": 2251570,
+      "n_t1": 1942045,
+      "n_t0": 309525
+    },
+    "consprenat": {
+      "n": 2250506,
+      "n_t1": 1941385,
+      "n_t0": 309121
+    },
+    "p0": {
+      "n": 2254701,
+      "n_t1": 1944812,
+      "n_t0": 309889
+    },
+    "multiplas": {
+      "n": 2304013,
+      "n_t1": 1988680,
+      "n_t0": 315333
+    }
+  },
+  "historico_intacto": true,
+  "clusters_exclusivos_nos_folds": true
+}

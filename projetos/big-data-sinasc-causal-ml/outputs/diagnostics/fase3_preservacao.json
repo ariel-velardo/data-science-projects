@@ -1,0 +1,23 @@
+{
+  "head_inicial": "e9dfc2a05b58b91d48ec253739768048c892bfd0",
+  "historico_sha256": {
+    "data/processed/sinasc_2024.parquet": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5",
+    "data/raw/SINASC_2024_csv.zip": "27e55de6359e1b1914301dc1d752d78e9535a7a52cc0640931dd94876aca6027",
+    "docs/methodology/PLANO_ESTIMACAO_FASE2.md": "de3c35cbeb85a3b10834ac2f994c2398d6eae07e275bd1f68a0a4e0b7c177723",
+    "docs/methodology/RESULTADOS_E_LIMITACOES_FASE2.md": "5ef869aeeb5c312b538ad6a95c057c305b6909c176cb2ed4b29ae6cd6a05cd97",
+    "notebooks/03_ml_preditivo_e_aipw.ipynb": "3a18ec835697787707e748ea10fe409df948f70a5c89e6269c07b76d6d854870",
+    "outputs/diagnostics/fase2_aipw.json": "113d7358d3eed3f43ac0e359a2746fcac0bf32d0085daa99d58e5705428bd23a",
+    "outputs/diagnostics/fase2_modelagem_preditiva.json": "30b5e4aeebb47821711e454f604351ca5d93d95e561b55df039ea904e6e1ffae",
+    "outputs/diagnostics/fase2_sensibilidades.json": "383225dc8f8b7a06f6fe60dacdd646e467927670d3816375aba8a0971cfce364",
+    "outputs/diagnostics/fase2_validacao.json": "b49ad535b02e88ab5ba31f60ca47eeb5b55ca3c392974b8110ff6455a6b4f76b",
+    "outputs/diagnostics/RESULTADOS_FASE2.md": "dc0862f7e0505334a962cdafbbc08f72e65f426b537385150eadedc9c07601df",
+    "outputs/diagnostics/VALIDACAO_FASE2.md": "f0695e9f9b6b2f3b24d621bfa3b09ab2c702b0d8e1472d39ff26bc7d603e0ab9",
+    "outputs/tables/fase2_predicoes_oof.npz": "2c5c0c63b957527d6cfdbf81834071e972ae411dedb331366bbd163a115fb900",
+    "src/cria_notebook_fase2.py": "5e93267422632f8a76103a3aaeb5b298039dded4a7d61c0f19c81286257afa89",
+    "src/diagnostica_overlap.py": "88fc96718128308bee1ffcf506b3eab0f74181ad4328872430fc9df444954f08",
+    "src/estima_aipw.py": "f5090b57189f10f77d35ac7cec3156d89fbae93542ad009058fd6081480fa09f",
+    "src/executa_fase2.py": "fff8da73458a4b07a79c7a21144dc0bd9b11ab4c3cb28f019cd0d87cf4a23215",
+    "src/modelagem_preditiva.py": "c75dd05af8da95a6d88ad070fe2964d89f5e20c91005777b56713fe8e33d3752",
+    "src/valida_resultados_fase2.py": "5b9159077d79ef96b6383e83363d27e894d3a77e42693519feb5df4d6e524984"
+  }
+}

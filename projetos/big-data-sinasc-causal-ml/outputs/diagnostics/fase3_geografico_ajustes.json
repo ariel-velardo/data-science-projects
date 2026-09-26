@@ -1,0 +1,243 @@
+{
+  "contrato": {
+    "n": 2251570,
+    "chaves": "2b6d49e6c62e552cff9c8cf00355d0ee55ae737f89a857ba1ed67fdc44d58043",
+    "dados": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5",
+    "agrupado": true,
+    "c3": false,
+    "x": [
+      "IDADEMAE_NUM",
+      "ESCOLARIDADE_MAE",
+      "RACA_COR_MAE",
+      "SITUACAO_CONJUGAL",
+      "PARIDADE_CAT",
+      "PERDAS_FETAIS_CAT",
+      "UF_RESIDENCIA"
+    ],
+    "seed": 20240925,
+    "codigo": {
+      "executa_robustez_fase3.py": "1f95950b8067a7d9e5353d039c093e9d6a4d43f24fe4c0fa9c3a4ce11865fe32",
+      "modelagem_preditiva.py": "c75dd05af8da95a6d88ad070fe2964d89f5e20c91005777b56713fe8e33d3752",
+      "inferencia_cluster.py": "25eafedc22ea518286c475dd61de10e3104334d1708e5b6c74788db52856fc9b"
+    }
+  },
+  "folds": [
+    {
+      "fold": 1,
+      "n_treino": 1501047,
+      "n_validacao": 750523,
+      "intersecao_registros": 0,
+      "validacao_ty": {
+        "0": 93762,
+        "1": 9413,
+        "2": 597508,
+        "3": 49840
+      },
+      "ajustes": {
+        "e": {
+          "n_iter": 51,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C1": {
+          "n_iter": 65,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m1_C1": {
+          "n_iter": 56,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C2": {
+          "n_iter": 46,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        },
+        "m1_C2": {
+          "n_iter": 92,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        }
+      },
+      "n_clusters_treino": 3724,
+      "n_clusters_validacao": 1857,
+      "intersecao_clusters": 0
+    },
+    {
+      "fold": 2,
+      "n_treino": 1501045,
+      "n_validacao": 750525,
+      "intersecao_registros": 0,
+      "validacao_ty": {
+        "0": 93763,
+        "1": 9413,
+        "2": 597508,
+        "3": 49841
+      },
+      "ajustes": {
+        "e": {
+          "n_iter": 53,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C1": {
+          "n_iter": 52,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m1_C1": {
+          "n_iter": 57,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C2": {
+          "n_iter": 44,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        },
+        "m1_C2": {
+          "n_iter": 92,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        }
+      },
+      "n_clusters_treino": 3720,
+      "n_clusters_validacao": 1861,
+      "intersecao_clusters": 0
+    },
+    {
+      "fold": 3,
+      "n_treino": 1501048,
+      "n_validacao": 750522,
+      "intersecao_registros": 0,
+      "validacao_ty": {
+        "0": 93762,
+        "1": 9412,
+        "2": 597508,
+        "3": 49840
+      },
+      "ajustes": {
+        "e": {
+          "n_iter": 52,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C1": {
+          "n_iter": 51,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m1_C1": {
+          "n_iter": 58,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": false
+        },
+        "m0_C2": {
+          "n_iter": 70,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        },
+        "m1_C2": {
+          "n_iter": 99,
+          "convergence_warning": false,
+          "tentativas": [
+            {
+              "tentativa": 1,
+              "convergence_warnings": []
+            }
+          ],
+          "early_stopping": true
+        }
+      },
+      "n_clusters_treino": 3718,
+      "n_clusters_validacao": 1863,
+      "intersecao_clusters": 0
+    }
+  ],
+  "cache_sha256": "0b0b9aafcb211044dc3623324defad9fda985c64b12f51840e20ed5a11e898fa"
+}
