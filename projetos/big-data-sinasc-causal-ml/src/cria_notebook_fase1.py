@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import nbformat as nbf
+from src.apresentacao_pt import preparar_notebook
 
 
 def criar_notebook(destino: Path) -> None:
@@ -341,6 +342,7 @@ display(Markdown(f"### {gate}\\n\\n{justificativa}\\n\\n**EFEITO_CAUSAL_ESTIMADO
     )
     nb["cells"] = c
     destino.parent.mkdir(parents=True, exist_ok=True)
+    preparar_notebook(nb)
     nbf.write(nb, destino)
 
 

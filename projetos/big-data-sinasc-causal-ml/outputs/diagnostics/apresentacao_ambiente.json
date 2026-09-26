@@ -1,0 +1,17 @@
+{
+  "python_relativo": ".venv/Scripts/python.exe",
+  "versao": "3.11.9",
+  "dependencias": {
+    "numpy": "2.4.6",
+    "pandas": "3.0.6",
+    "duckdb": "1.5.5",
+    "scikit-learn": "1.8.0",
+    "plotly": "6.9.0",
+    "kaleido": "1.4.0",
+    "nbformat": "5.11.1",
+    "jupyter": "1.1.1"
+  },
+  "pip_check": "No broken requirements found.",
+  "venv_ignorada_git": true,
+  "pacotes_instalados_nesta_etapa": false
+}

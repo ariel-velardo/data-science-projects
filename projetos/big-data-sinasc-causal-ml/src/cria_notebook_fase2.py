@@ -1,6 +1,7 @@
 """Notebook didático com resultados persistidos da execução integral."""
 from pathlib import Path
 import nbformat as nbf
+from src.apresentacao_pt import preparar_notebook
 
 
 def criar_notebook(destino):
@@ -192,6 +193,7 @@ O gate usa as regras declaradas no plano anterior à estimação. Não é certif
     code("display(Markdown('**'+causal['gate']+'**')); print('EFEITO_CAUSAL_ESTIMADO = SIM; CAUSALIDADE_PROVADA = NAO')")
     nb.cells = cells
     nbf.validate(nb)
+    preparar_notebook(nb)
     nbf.write(nb, destino)
 
 

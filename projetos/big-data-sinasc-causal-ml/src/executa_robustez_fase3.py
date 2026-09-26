@@ -218,8 +218,8 @@ def executar(raiz=ROOT,etapa='tudo'):
     antes=historico(raiz)
     manifesto=pasta/'fase3_preservacao.json'
     if manifesto.exists():
-        if json.loads(manifesto.read_text(encoding='utf-8'))['historico_sha256']!=antes:
-            raise ValueError('Histórico alterado desde o início da auditoria.')
+        from src.valida_apresentacao import verificar_preservacao
+        verificar_preservacao(raiz,antes,json.loads(manifesto.read_text(encoding='utf-8'))['historico_sha256'])
     else:
         salvar_fase3(manifesto,dict(head_inicial='e9dfc2a05b58b91d48ec253739768048c892bfd0',historico_sha256=antes))
     dados,auditoria=carregar_amostra(raiz/'data/processed/sinasc_2024.parquet')

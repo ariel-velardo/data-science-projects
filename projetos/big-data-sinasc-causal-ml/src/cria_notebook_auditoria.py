@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import nbformat as nbf
+from src.apresentacao_pt import preparar_notebook
 
 
 def criar_notebook(destino: Path) -> None:
@@ -215,6 +216,7 @@ Os dados permitem avançar para uma Fase 1 de desenho causal, mas o avanço deve
         ),
     ]
     destino.parent.mkdir(parents=True, exist_ok=True)
+    preparar_notebook(notebook)
     nbf.write(notebook, destino)
 
 

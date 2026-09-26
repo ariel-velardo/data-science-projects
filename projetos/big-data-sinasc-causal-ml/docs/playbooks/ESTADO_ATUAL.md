@@ -26,6 +26,14 @@ GATE_FASE_3 = GATE_FASE2_EXCESSIVAMENTE_CONSERVADOR
 
 ## Objetivo
 
+### Padronização PT-BR posterior à Fase 3
+
+- Notebooks 01–04 regenerados por suas fontes e executados integralmente. Títulos, narrativa, tabelas e figuras usam a camada compartilhada `src/apresentacao_pt.py`; identificadores reais e nomes técnicos são preservados.
+- Verificação automática de idioma aprovada. Todos os números extraídos das tabelas HTML e os hashes dos diagnósticos anteriores permaneceram iguais (`python -m src.valida_apresentacao`). Suíte: 72 testes aprovados.
+- A `.venv` existente foi mantida: Python 3.11.9, `pip check` aprovado e ambiente ignorado pelo Git. Nenhum pacote instalado. Execução manual documentada no README.
+- O manifesto original da Fase 3 permanece intacto. As alterações autorizadas no notebook 03 e em seu gerador constam em `apresentacao_preservacao.json`; metadados de execução são separados das fontes das células. Os contratos de quatro caches tiveram apenas o hash da guarda de preservação atualizado, após conferir igualdade textual do restante do executor contra `48ce06b`. Nenhuma predição ou ajuste foi alterado.
+- O HTML foi exportado e os gráficos PNG conferidos. A abertura do arquivo local no navegador foi bloqueada pela política de URL; a inspeção visual usou os PNGs locais, sem contornar esse bloqueio.
+
 Comparar predição de baixo peso e estimação AIPW cross-fitted sob as hipóteses e população congeladas da Fase 1. Fase 1 publicada no checkpoint `caf1446`.
 
 ## Pergunta candidata

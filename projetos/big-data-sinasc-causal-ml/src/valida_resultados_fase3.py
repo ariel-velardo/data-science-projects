@@ -4,6 +4,7 @@ from pathlib import Path
 import duckdb
 import numpy as np
 import pandas as pd
+from src.valida_apresentacao import verificar_preservacao
 from src.audita_influencia import aipw_independente
 from src.executa_robustez_fase3 import (carregar_amostra,historico,salvar_fase3,
                                        validar_fase2_sem_escrita,sha256)
@@ -36,7 +37,7 @@ def validar(raiz=None):
     raiz=Path(raiz or Path(__file__).resolve().parents[1]); p=raiz/'outputs/diagnostics'
     ler=lambda nome:json.loads((p/nome).read_text(encoding='utf-8'))
     esperado=ler('fase3_preservacao.json')['historico_sha256']
-    assert historico(raiz)==esperado,'Histórico modificado.'
+    verificar_preservacao(raiz,historico(raiz),esperado)
     fase2=validar_fase2_sem_escrita(raiz)
     sens=ler('fase3_sensibilidades.json'); geo=ler('fase3_crossfit_geografico.json')
     n_linhas=0; populacoes={}
@@ -76,7 +77,7 @@ def validar(raiz=None):
     assert principal-populacoes['consprenat']['n']==sens['amostras']['P1']['n_consprenat_zero']
     assert populacoes['p0']['n']-principal==sens['amostras']['P0']['n_peso_fora_p1']
     assert populacoes['multiplas']['n']-principal==sens['amostras']['MULTIPLAS']['n_multipla']
-    assert historico(raiz)==esperado
+    verificar_preservacao(raiz,historico(raiz),esperado)
     resultado=dict(status='APROVADO',linhas_reconciliadas=n_linhas,tolerancia_absoluta=1e-12,
                    sandwich_independente='DuckDB GROUP BY; score centrado por registro',
                    fase2=fase2,populacoes=populacoes,historico_intacto=True,

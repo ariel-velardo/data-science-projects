@@ -1,0 +1,12 @@
+{
+  "motivo": "Somente guarda de apresentação alterada; igualdade textual do restante conferida contra commit 48ce06b. Ajustes, dados, semente e predições preservados.",
+  "codigo_antes": "1f95950b8067a7d9e5353d039c093e9d6a4d43f24fe4c0fa9c3a4ce11865fe32",
+  "codigo_depois": "2a3ef9896d849fd2fb51cd731ef4bc5cb4a876236b33483ffed27c25fe03df71",
+  "contratos_atualizados": [
+    "fase3_consprenat_ajustes.json",
+    "fase3_geografico_ajustes.json",
+    "fase3_multiplas_ajustes.json",
+    "fase3_p0_ajustes.json"
+  ],
+  "funcoes_computacionais_iguais": true
+}

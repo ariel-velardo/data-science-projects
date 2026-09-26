@@ -1,6 +1,7 @@
 """Notebook executável da auditoria, com tabelas e figuras IPT autocontidas."""
 from pathlib import Path
 import nbformat as nbf
+from src.apresentacao_pt import preparar_notebook
 
 
 def criar_notebook(destino):
@@ -292,6 +293,7 @@ print('Sem CATE, Causal Forest ou uplift. Causalidade não provada.')
 ''')
     nb.cells=cells
     nbf.validate(nb)
+    preparar_notebook(nb)
     nbf.write(nb,destino)
 
 

@@ -16,7 +16,7 @@
     ],
     "seed": 20240925,
     "codigo": {
-      "executa_robustez_fase3.py": "1f95950b8067a7d9e5353d039c093e9d6a4d43f24fe4c0fa9c3a4ce11865fe32",
+      "executa_robustez_fase3.py": "2a3ef9896d849fd2fb51cd731ef4bc5cb4a876236b33483ffed27c25fe03df71",
       "modelagem_preditiva.py": "c75dd05af8da95a6d88ad070fe2964d89f5e20c91005777b56713fe8e33d3752",
       "inferencia_cluster.py": "25eafedc22ea518286c475dd61de10e3104334d1708e5b6c74788db52856fc9b"
     }

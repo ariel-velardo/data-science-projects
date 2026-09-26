@@ -1,0 +1,14 @@
+{
+  "motivo": "Tradução PT-BR e reexecução expressamente solicitadas após publicação da Fase 3; hashes originais preservados.",
+  "excecoes": {
+    "notebooks/03_ml_preditivo_e_aipw.ipynb": {
+      "antes": "3a18ec835697787707e748ea10fe409df948f70a5c89e6269c07b76d6d854870",
+      "depois": "d729a697bd4293da81dd0fbf0f7bccf3d9afe4137f6c63d7ae0df240be069de2",
+      "fontes_sha256": "944a3365420d44b1eece3a44278c438cf4de8563ba59976ac22f2e48b74dd8b2"
+    },
+    "src/cria_notebook_fase2.py": {
+      "antes": "5e93267422632f8a76103a3aaeb5b298039dded4a7d61c0f19c81286257afa89",
+      "depois": "b3f0b0c522ecc44fec5448cf3b2f2b008ac5c0cab83f7eb6d787f665bf84f659"
+    }
+  }
+}
