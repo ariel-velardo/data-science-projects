@@ -1,0 +1,1325 @@
+{
+  "dimensoes": {
+    "registros": 2389325,
+    "colunas": 62
+  },
+  "granularidade_candidata": "um registro de nascido vivo",
+  "identificador": {
+    "coluna": "contador",
+    "n_preenchido": 2389325,
+    "n_distintos": 2389325,
+    "n_missing": 0,
+    "n_duplicados": 0,
+    "contador_unico": true,
+    "observacao": "Identificador técnico único no arquivo; sua estabilidade entre versões não foi estabelecida pelo dicionário."
+  },
+  "tratamento_candidato": {
+    "coluna": "MESPRENAT",
+    "semantica_oficial": "Mês de gestação em que iniciou o pré-natal.",
+    "n_total": 2389325,
+    "n_utilizavel": 2308388,
+    "percentual_utilizavel": 96.612558,
+    "n_inicio_ate_terceiro_mes": 1992408,
+    "n_inicio_apos_terceiro_mes": 315980,
+    "n_codigo_99": 37569,
+    "n_missing": 43368,
+    "n_outros_invalidos": 0,
+    "dominio_observado": {
+      "01": 559924,
+      "02": 1031124,
+      "03": 401360,
+      "04": 147243,
+      "05": 80878,
+      "06": 42831,
+      "07": 23737,
+      "08": 14193,
+      "09": 7098,
+      "99": 37569,
+      "<MISSING>": 43368
+    },
+    "regra_diagnostica": "T=1 para meses 1-3; T=0 para meses 4-9; 99/missing fora de T.",
+    "questao_aberta": "O PDF 1996-2019 não documenta o código 99 para MESPRENAT; sua interpretação como ignorado é operacional e deve ser confirmada."
+  },
+  "outcome_candidato": {
+    "coluna": "PESO",
+    "semantica_oficial": "Peso ao nascer em gramas.",
+    "unidade": "gramas",
+    "n_total": 2389325,
+    "n_valido": 2389104,
+    "percentual_valido": 99.990751,
+    "n_baixo_peso": 226375,
+    "prevalencia_baixo_peso_percentual": 9.47531,
+    "n_missing_invalido": 221,
+    "peso_minimo_gramas": 100.0,
+    "peso_maximo_gramas": 7000.0,
+    "percentis_gramas": {
+      "p01": 1223.0,
+      "p05": 2215.0,
+      "p50": 3190.0,
+      "p95": 3950.0,
+      "p99": 4305.0
+    },
+    "n_abaixo_500g_alerta": 3727,
+    "n_acima_6000g_alerta": 59,
+    "regra_diagnostica": "Y=1 para peso numérico positivo inferior a 2.500 g.",
+    "questao_aberta": "Pesos extremos são mantidos no diagnóstico bruto e sinalizados; uma regra de exclusão biológica exige decisão metodológica posterior."
+  },
+  "covariaveis_por_temporalidade": {
+    "A_provavelmente_pre_tratamento": [
+      "CODMUNNATU",
+      "CODMUNRES",
+      "CODPAISRES",
+      "CODUFNATU",
+      "DTNASCMAE",
+      "ESCMAE",
+      "ESCMAE2010",
+      "ESCMAEAGR1",
+      "ESTCIVMAE",
+      "IDADEMAE",
+      "IDADEPAI",
+      "NATURALMAE",
+      "PARIDADE",
+      "QTDFILMORT",
+      "QTDFILVIVO",
+      "QTDGESTANT",
+      "QTDPARTCES",
+      "QTDPARTNOR",
+      "RACACORMAE",
+      "SERIESCMAE"
+    ],
+    "B_provavelmente_pos_tratamento_mediadora": [
+      "APGAR1",
+      "APGAR5",
+      "CODANOMAL",
+      "CONSPRENAT",
+      "CONSULTAS",
+      "DTNASC",
+      "GESTACAO",
+      "HORANASC",
+      "IDANOMAL",
+      "KOTELCHUCK",
+      "PARTO",
+      "RACACOR",
+      "SEMAGESTAC",
+      "SEXO",
+      "STCESPARTO",
+      "STTRABPART",
+      "TPAPRESENT",
+      "TPNASCASSI",
+      "TPROBSON"
+    ],
+    "C_temporalidade_ou_papel_duvidoso": [
+      "CODESTAB",
+      "CODOCUPMAE",
+      "DTULTMENST",
+      "GRAVIDEZ",
+      "LOCNASC",
+      "TPMETESTIM"
+    ]
+  },
+  "n_x_pre_tratamento_candidatos": 20,
+  "principais_campos_missing": [
+    {
+      "coluna": "CODANOMAL",
+      "n_missing": 2361762,
+      "percentual_missing": 98.846411
+    },
+    {
+      "coluna": "IDADEPAI",
+      "n_missing": 1603365,
+      "percentual_missing": 67.105354
+    },
+    {
+      "coluna": "DTULTMENST",
+      "n_missing": 1271415,
+      "percentual_missing": 53.212309
+    },
+    {
+      "coluna": "SERIESCMAE",
+      "n_missing": 819455,
+      "percentual_missing": 34.296506
+    },
+    {
+      "coluna": "CODOCUPMAE",
+      "n_missing": 154910,
+      "percentual_missing": 6.483421
+    },
+    {
+      "coluna": "TPFUNCRESP",
+      "n_missing": 55704,
+      "percentual_missing": 2.33137
+    },
+    {
+      "coluna": "QTDPARTCES",
+      "n_missing": 53138,
+      "percentual_missing": 2.223975
+    },
+    {
+      "coluna": "QTDPARTNOR",
+      "n_missing": 49125,
+      "percentual_missing": 2.05602
+    },
+    {
+      "coluna": "QTDFILMORT",
+      "n_missing": 47818,
+      "percentual_missing": 2.001318
+    },
+    {
+      "coluna": "RACACORMAE",
+      "n_missing": 45610,
+      "percentual_missing": 1.908907
+    },
+    {
+      "coluna": "CODMUNNATU",
+      "n_missing": 43486,
+      "percentual_missing": 1.820012
+    },
+    {
+      "coluna": "CODUFNATU",
+      "n_missing": 43486,
+      "percentual_missing": 1.820012
+    },
+    {
+      "coluna": "NATURALMAE",
+      "n_missing": 43486,
+      "percentual_missing": 1.820012
+    },
+    {
+      "coluna": "MESPRENAT",
+      "n_missing": 43368,
+      "percentual_missing": 1.815073
+    },
+    {
+      "coluna": "QTDGESTANT",
+      "n_missing": 35956,
+      "percentual_missing": 1.50486
+    }
+  ],
+  "schema_auditado": [
+    {
+      "coluna": "contador",
+      "descricao_oficial": "Número identificador do registro.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "10",
+        "100",
+        "1000",
+        "10000"
+      ],
+      "valores_distintos": 2389325,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "identificador",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "ORIGEM",
+      "descricao_oficial": "Banco de dados de origem.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "2"
+      ],
+      "valores_distintos": 2,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "contextual",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "CODESTAB",
+      "descricao_oficial": "Código do estabelecimento de saúde onde ocorreu o nascimento.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "3037274",
+        "2079542",
+        "2752700",
+        "2566168",
+        "0026794"
+      ],
+      "valores_distintos": 5368,
+      "n_missing": 22772,
+      "percentual_missing": 0.953073,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "ainda não classificado",
+      "grupo_temporal_provisorio": "C. temporalidade ou papel causal duvidoso"
+    },
+    {
+      "coluna": "CODMUNNASC",
+      "descricao_oficial": "Código IBGE do município de nascimento.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "355030",
+        "330455",
+        "530010",
+        "261160",
+        "230440"
+      ],
+      "valores_distintos": 3829,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "ainda não classificado",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "LOCNASC",
+      "descricao_oficial": "Local de nascimento.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "valores_distintos": 6,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "ainda não classificado",
+      "grupo_temporal_provisorio": "C. temporalidade ou papel causal duvidoso"
+    },
+    {
+      "coluna": "IDADEMAE",
+      "descricao_oficial": "Idade da mãe.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "26",
+        "24",
+        "27",
+        "25",
+        "28"
+      ],
+      "valores_distintos": 57,
+      "n_missing": 21,
+      "percentual_missing": 0.000879,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "ESTCIVMAE",
+      "descricao_oficial": "Situação conjugal da mãe.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "2",
+        "5",
+        "4",
+        "9"
+      ],
+      "valores_distintos": 6,
+      "n_missing": 9224,
+      "percentual_missing": 0.38605,
+      "codigos_especiais_documentados": "9=Ignorada",
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "ESCMAE",
+      "descricao_oficial": "Escolaridade, em anos de estudo concluídos.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "4",
+        "5",
+        "3",
+        "2",
+        "1"
+      ],
+      "valores_distintos": 6,
+      "n_missing": 7787,
+      "percentual_missing": 0.325908,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "CODOCUPMAE",
+      "descricao_oficial": "Código de ocupação da mãe conforme a CBO.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "999992",
+        "622020",
+        "999991",
+        "621005",
+        "354705"
+      ],
+      "valores_distintos": 2048,
+      "n_missing": 154910,
+      "percentual_missing": 6.483421,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "ainda não classificado",
+      "grupo_temporal_provisorio": "C. temporalidade ou papel causal duvidoso"
+    },
+    {
+      "coluna": "QTDFILVIVO",
+      "descricao_oficial": "Número de filhos vivos.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "00",
+        "01",
+        "02",
+        "03",
+        "04"
+      ],
+      "valores_distintos": 23,
+      "n_missing": 29835,
+      "percentual_missing": 1.248679,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "QTDFILMORT",
+      "descricao_oficial": "Número de perdas fetais e abortos.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "00",
+        "01",
+        "02",
+        "03",
+        "04"
+      ],
+      "valores_distintos": 27,
+      "n_missing": 47818,
+      "percentual_missing": 2.001318,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "CODMUNRES",
+      "descricao_oficial": "Código IBGE do município de residência.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "355030",
+        "330455",
+        "530010",
+        "130260",
+        "230440"
+      ],
+      "valores_distintos": 5583,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "GESTACAO",
+      "descricao_oficial": "Faixa de semanas de gestação.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "5",
+        "4",
+        "6",
+        "3",
+        "2"
+      ],
+      "valores_distintos": 7,
+      "n_missing": 17699,
+      "percentual_missing": 0.740753,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "GRAVIDEZ",
+      "descricao_oficial": "Tipo de gravidez.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "2",
+        "3",
+        "9"
+      ],
+      "valores_distintos": 4,
+      "n_missing": 1244,
+      "percentual_missing": 0.052065,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "ainda não classificado",
+      "grupo_temporal_provisorio": "C. temporalidade ou papel causal duvidoso"
+    },
+    {
+      "coluna": "PARTO",
+      "descricao_oficial": "Tipo de parto.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "2",
+        "1",
+        "9"
+      ],
+      "valores_distintos": 3,
+      "n_missing": 1132,
+      "percentual_missing": 0.047377,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "CONSULTAS",
+      "descricao_oficial": "Faixa do número de consultas de pré-natal.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "4",
+        "3",
+        "2",
+        "1",
+        "9"
+      ],
+      "valores_distintos": 5,
+      "n_missing": 3067,
+      "percentual_missing": 0.128363,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "DTNASC",
+      "descricao_oficial": "Data de nascimento.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "03042024",
+        "02042024",
+        "28022024",
+        "10042024",
+        "04042024"
+      ],
+      "valores_distintos": 366,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "HORANASC",
+      "descricao_oficial": "Horário de nascimento.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1000",
+        "1100",
+        "1030",
+        "0900",
+        "0930"
+      ],
+      "valores_distintos": 1440,
+      "n_missing": 1149,
+      "percentual_missing": 0.048089,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "SEXO",
+      "descricao_oficial": "Sexo do recém-nascido.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "2",
+        "0"
+      ],
+      "valores_distintos": 3,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": "0=Ignorado",
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "APGAR1",
+      "descricao_oficial": "Apgar no primeiro minuto.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "09",
+        "08",
+        "07",
+        "10",
+        "06"
+      ],
+      "valores_distintos": 12,
+      "n_missing": 23705,
+      "percentual_missing": 0.992121,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "APGAR5",
+      "descricao_oficial": "Apgar no quinto minuto.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "09",
+        "10",
+        "08",
+        "07",
+        "06"
+      ],
+      "valores_distintos": 12,
+      "n_missing": 23623,
+      "percentual_missing": 0.988689,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "RACACOR",
+      "descricao_oficial": "Raça/cor do nascido.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "4",
+        "1",
+        "2",
+        "5",
+        "3"
+      ],
+      "valores_distintos": 5,
+      "n_missing": 35830,
+      "percentual_missing": 1.499587,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "PESO",
+      "descricao_oficial": "Peso ao nascer em gramas.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "3200",
+        "3100",
+        "3300",
+        "3000",
+        "3400"
+      ],
+      "valores_distintos": 4756,
+      "n_missing": 221,
+      "percentual_missing": 0.009249,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "Y candidato",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "IDANOMAL",
+      "descricao_oficial": "Indicador de anomalia identificada.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "2",
+        "1",
+        "9"
+      ],
+      "valores_distintos": 3,
+      "n_missing": 13815,
+      "percentual_missing": 0.578197,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "DTCADASTRO",
+      "descricao_oficial": "Data do cadastro da DN no sistema.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "15022024",
+        "10092024",
+        "16042024",
+        "11062024",
+        "10062024"
+      ],
+      "valores_distintos": 690,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "contextual",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "CODANOMAL",
+      "descricao_oficial": "Código da anomalia segundo a CID-10.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "Q699",
+        "Q381",
+        "Q690",
+        "Q668",
+        "Q909"
+      ],
+      "valores_distintos": 4719,
+      "n_missing": 2361762,
+      "percentual_missing": 98.846411,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "NUMEROLOTE",
+      "descricao_oficial": "Número do lote.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "20240009",
+        "20240010",
+        "20240008",
+        "20240011",
+        "20240006"
+      ],
+      "valores_distintos": 397,
+      "n_missing": 2543,
+      "percentual_missing": 0.106432,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "identificador",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "VERSAOSIST",
+      "descricao_oficial": "Versão do sistema.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "3.2.50",
+        "3.2.01",
+        "3.2.02",
+        "3.2.00",
+        "2.2.03"
+      ],
+      "valores_distintos": 7,
+      "n_missing": 2612,
+      "percentual_missing": 0.10932,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "contextual",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "DTRECEBIM",
+      "descricao_oficial": "Data do último recebimento do lote pelo Sisnet.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "17042025",
+        "24102025",
+        "29052024",
+        "27012025",
+        "04072024"
+      ],
+      "valores_distintos": 583,
+      "n_missing": 13087,
+      "percentual_missing": 0.547728,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "contextual",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "DIFDATA",
+      "descricao_oficial": "Diferença entre a data de nascimento e a data de recebimento original da DN.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "014",
+        "013",
+        "009",
+        "011",
+        "010"
+      ],
+      "valores_distintos": 702,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "contextual",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "OPORT_DN",
+      "descricao_oficial": "Não localizada no dicionário oficial 1996-2019.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "9",
+        "14",
+        "13",
+        "11",
+        "10"
+      ],
+      "valores_distintos": 646,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "contextual",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "DTRECORIGA",
+      "descricao_oficial": "Data de primeiro recebimento, com regras de preenchimento derivadas.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "29052024",
+        "12062024",
+        "15052024",
+        "30122024",
+        "27032024"
+      ],
+      "valores_distintos": 570,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "contextual",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "NATURALMAE",
+      "descricao_oficial": "Código do país de nascimento da mãe quando estrangeira.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "835",
+        "831",
+        "829",
+        "833",
+        "815"
+      ],
+      "valores_distintos": 27,
+      "n_missing": 43486,
+      "percentual_missing": 1.820012,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "CODMUNNATU",
+      "descricao_oficial": "Código do município de naturalidade da mãe.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "355030",
+        "330455",
+        "530010",
+        "230440",
+        "310620"
+      ],
+      "valores_distintos": 5549,
+      "n_missing": 43486,
+      "percentual_missing": 1.820012,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "CODUFNATU",
+      "descricao_oficial": "Código da UF de naturalidade da mãe.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "35",
+        "31",
+        "29",
+        "33",
+        "15"
+      ],
+      "valores_distintos": 28,
+      "n_missing": 43486,
+      "percentual_missing": 1.820012,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "ESCMAE2010",
+      "descricao_oficial": "Escolaridade da mãe segundo categorias de 2010.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "3",
+        "5",
+        "2",
+        "4",
+        "1"
+      ],
+      "valores_distintos": 7,
+      "n_missing": 20673,
+      "percentual_missing": 0.865223,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "SERIESCMAE",
+      "descricao_oficial": "Série escolar da mãe.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "3",
+        "8",
+        "2",
+        "1",
+        "7"
+      ],
+      "valores_distintos": 8,
+      "n_missing": 819455,
+      "percentual_missing": 34.296506,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "DTNASCMAE",
+      "descricao_oficial": "Data de nascimento da mãe.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "10091997",
+        "27071999",
+        "05051995",
+        "05051997",
+        "26061995"
+      ],
+      "valores_distintos": 13749,
+      "n_missing": 16755,
+      "percentual_missing": 0.701244,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "RACACORMAE",
+      "descricao_oficial": "Raça/cor da mãe.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "4",
+        "1",
+        "2",
+        "5",
+        "3"
+      ],
+      "valores_distintos": 5,
+      "n_missing": 45610,
+      "percentual_missing": 1.908907,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "QTDGESTANT",
+      "descricao_oficial": "Número de gestações anteriores.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "00",
+        "01",
+        "02",
+        "03",
+        "04"
+      ],
+      "valores_distintos": 43,
+      "n_missing": 35956,
+      "percentual_missing": 1.50486,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "QTDPARTNOR",
+      "descricao_oficial": "Número de partos vaginais anteriores.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "00",
+        "01",
+        "02",
+        "03",
+        "04"
+      ],
+      "valores_distintos": 43,
+      "n_missing": 49125,
+      "percentual_missing": 2.05602,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "QTDPARTCES",
+      "descricao_oficial": "Número de partos cesáreos anteriores.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "00",
+        "01",
+        "02",
+        "03",
+        "04"
+      ],
+      "valores_distintos": 30,
+      "n_missing": 53138,
+      "percentual_missing": 2.223975,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "IDADEPAI",
+      "descricao_oficial": "Idade do pai.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "30",
+        "32",
+        "29",
+        "33",
+        "28"
+      ],
+      "valores_distintos": 90,
+      "n_missing": 1603365,
+      "percentual_missing": 67.105354,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "DTULTMENST",
+      "descricao_oficial": "Data da última menstruação.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "15122023",
+        "05082023",
+        "20122023",
+        "20062023",
+        "05052023"
+      ],
+      "valores_distintos": 550,
+      "n_missing": 1271415,
+      "percentual_missing": 53.212309,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "ainda não classificado",
+      "grupo_temporal_provisorio": "C. temporalidade ou papel causal duvidoso"
+    },
+    {
+      "coluna": "SEMAGESTAC",
+      "descricao_oficial": "Número de semanas de gestação.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "39",
+        "38",
+        "40",
+        "37",
+        "41"
+      ],
+      "valores_distintos": 27,
+      "n_missing": 17830,
+      "percentual_missing": 0.746236,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "TPMETESTIM",
+      "descricao_oficial": "Método utilizado para estimar a gestação.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "8",
+        "2",
+        "1",
+        "9"
+      ],
+      "valores_distintos": 4,
+      "n_missing": 17830,
+      "percentual_missing": 0.746236,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "ainda não classificado",
+      "grupo_temporal_provisorio": "C. temporalidade ou papel causal duvidoso"
+    },
+    {
+      "coluna": "CONSPRENAT",
+      "descricao_oficial": "Número de consultas de pré-natal.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "10",
+        "09",
+        "08",
+        "07",
+        "11"
+      ],
+      "valores_distintos": 60,
+      "n_missing": 30516,
+      "percentual_missing": 1.277181,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "MESPRENAT",
+      "descricao_oficial": "Mês de gestação em que iniciou o pré-natal.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "02",
+        "01",
+        "03",
+        "04",
+        "05"
+      ],
+      "valores_distintos": 10,
+      "n_missing": 43368,
+      "percentual_missing": 1.815073,
+      "codigos_especiais_documentados": "99 observado; não documentado no PDF oficial 1996-2019",
+      "papel_analitico_provisorio": "T candidato",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "TPAPRESENT",
+      "descricao_oficial": "Tipo de apresentação do recém-nascido.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "2",
+        "9",
+        "3"
+      ],
+      "valores_distintos": 4,
+      "n_missing": 16690,
+      "percentual_missing": 0.698524,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "STTRABPART",
+      "descricao_oficial": "Indicador de trabalho de parto induzido.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "2",
+        "1",
+        "9"
+      ],
+      "valores_distintos": 3,
+      "n_missing": 20839,
+      "percentual_missing": 0.872171,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "STCESPARTO",
+      "descricao_oficial": "Indicador de cesárea antes do início do trabalho de parto.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "3",
+        "1",
+        "2",
+        "9"
+      ],
+      "valores_distintos": 4,
+      "n_missing": 19859,
+      "percentual_missing": 0.831155,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "TPNASCASSI",
+      "descricao_oficial": "Profissional que assistiu o nascimento.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "2",
+        "4",
+        "3",
+        "9"
+      ],
+      "valores_distintos": 5,
+      "n_missing": 14985,
+      "percentual_missing": 0.627165,
+      "codigos_especiais_documentados": "9=Ignorado",
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "TPFUNCRESP",
+      "descricao_oficial": "Função do responsável pelo preenchimento.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "2",
+        "5",
+        "1",
+        "3",
+        "4"
+      ],
+      "valores_distintos": 6,
+      "n_missing": 55704,
+      "percentual_missing": 2.33137,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "ainda não classificado",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "TPDOCRESP",
+      "descricao_oficial": "Tipo de documento do responsável pelo preenchimento.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "3",
+        "4",
+        "5",
+        "2",
+        "0"
+      ],
+      "valores_distintos": 6,
+      "n_missing": 13150,
+      "percentual_missing": 0.550365,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "ainda não classificado",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "DTDECLARAC",
+      "descricao_oficial": "Data da declaração.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "24042024",
+        "27032024",
+        "18032024",
+        "05042024",
+        "08042024"
+      ],
+      "valores_distintos": 611,
+      "n_missing": 25650,
+      "percentual_missing": 1.073525,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "contextual",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "ESCMAEAGR1",
+      "descricao_oficial": "Escolaridade 2010 agregada.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "06",
+        "08",
+        "05",
+        "04",
+        "12"
+      ],
+      "valores_distintos": 13,
+      "n_missing": 20673,
+      "percentual_missing": 0.865223,
+      "codigos_especiais_documentados": "09=Ignorado",
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "STDNEPIDEM",
+      "descricao_oficial": "Status de DN epidemiológica.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "0"
+      ],
+      "valores_distintos": 2,
+      "n_missing": 2,
+      "percentual_missing": 8.4e-05,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "contextual",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "STDNNOVA",
+      "descricao_oficial": "Status de DN nova.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "0"
+      ],
+      "valores_distintos": 2,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "contextual",
+      "grupo_temporal_provisorio": null
+    },
+    {
+      "coluna": "CODPAISRES",
+      "descricao_oficial": "Código do país de residência.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1"
+      ],
+      "valores_distintos": 1,
+      "n_missing": 19,
+      "percentual_missing": 0.000795,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "TPROBSON",
+      "descricao_oficial": "Código do grupo de Robson gerado pelo sistema.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "05",
+        "03",
+        "01",
+        "02",
+        "10"
+      ],
+      "valores_distintos": 11,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    },
+    {
+      "coluna": "PARIDADE",
+      "descricao_oficial": "Indicador de nuliparidade ou multiparidade.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "1",
+        "0"
+      ],
+      "valores_distintos": 2,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "X candidato",
+      "grupo_temporal_provisorio": "A. provavelmente pré-tratamento"
+    },
+    {
+      "coluna": "KOTELCHUCK",
+      "descricao_oficial": "Índice de Kotelchuck para avaliação da assistência pré-natal.",
+      "tipo_observado": "texto (VARCHAR; preservado do CSV)",
+      "exemplos_frequentes": [
+        "5",
+        "2",
+        "4",
+        "3",
+        "9"
+      ],
+      "valores_distintos": 6,
+      "n_missing": 0,
+      "percentual_missing": 0.0,
+      "codigos_especiais_documentados": null,
+      "papel_analitico_provisorio": "pós-tratamento",
+      "grupo_temporal_provisorio": "B. provavelmente pós-tratamento/mediadora"
+    }
+  ],
+  "fonte": {
+    "instituicao": "Ministério da Saúde - Portal de Dados Abertos do SUS",
+    "recurso": "Nascidos Vivos - 2024",
+    "url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINASC/csv/SINASC_2024_csv.zip",
+    "zip": {
+      "arquivo": "C:\\GitHub\\data-science-projects\\projetos\\big-data-sinasc-causal-ml\\data\\raw\\SINASC_2024_csv.zip",
+      "bytes": 92289354,
+      "sha256": "27e55de6359e1b1914301dc1d752d78e9535a7a52cc0640931dd94876aca6027"
+    },
+    "csv_interno": "SINASC_2024.csv",
+    "csv_bytes_descompactado": 561812933,
+    "encoding": "utf-8",
+    "separador": ";",
+    "dicionario": {
+      "arquivo": "C:\\GitHub\\data-science-projects\\projetos\\big-data-sinasc-causal-ml\\data\\raw\\SINASC_Estrutura.pdf",
+      "bytes": 146566,
+      "sha256": "0ffc459946872d704cb4073a2e3b2d0f96706e1e18e272d7186f18b077cdcee4"
+    },
+    "limitacao_dicionario": "O PDF oficial descreve a estrutura de 1996 a 2019."
+  },
+  "parquet": {
+    "arquivo": "C:\\GitHub\\data-science-projects\\projetos\\big-data-sinasc-causal-ml\\data\\processed\\sinasc_2024.parquet",
+    "bytes": 56111879,
+    "sha256": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5"
+  },
+  "principais_alertas_qualidade": [
+    "Dicionário oficial disponível cobre 1996-2019, não uma versão específica de 2024.",
+    "Código 99 observado em MESPRENAT não é definido no PDF oficial localizado.",
+    "Registros com MESPRENAT missing ou 99 não entram na definição diagnóstica de T.",
+    "Pesos extremos são sinalizados, mas não excluídos automaticamente.",
+    "Número total de consultas, parto, idade gestacional e características neonatais são pós-tratamento ou mediadoras potenciais.",
+    "Dados observacionais não resolvem, por si, confundimento residual."
+  ],
+  "tratamento_candidato_identificavel": true,
+  "outcome_identificavel": true,
+  "gate_viabilidade": "VIÁVEL_COM_RESSALVAS",
+  "efeito_causal_estimado": false
+}

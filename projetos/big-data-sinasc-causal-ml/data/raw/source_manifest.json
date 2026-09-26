@@ -1,0 +1,32 @@
+{
+  "dataset": "Sistema de Informação sobre Nascidos Vivos - SINASC",
+  "pagina_oficial": "https://dadosabertos.saude.gov.br/dataset/sistema-de-informacao-sobre-nascidos-vivos-sinasc",
+  "fontes": [
+    {
+      "nome": "Nascidos Vivos - 2024",
+      "instituicao": "Ministério da Saúde - Portal de Dados Abertos do SUS",
+      "url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINASC/csv/SINASC_2024_csv.zip",
+      "arquivo": "SINASC_2024_csv.zip",
+      "formato": "ZIP contendo CSV",
+      "observacao": "Recurso atualizado no portal em 08/05/2026; arquivo bruto preservado.",
+      "data_acesso": "2026-09-25",
+      "tamanho_bytes": 92289354,
+      "sha256": "27e55de6359e1b1914301dc1d752d78e9535a7a52cc0640931dd94876aca6027",
+      "arquivo_local": "data/raw/SINASC_2024_csv.zip",
+      "reutilizado": true
+    },
+    {
+      "nome": "Dicionário de Dados - SINASC: Estrutura de 1996 a 2019",
+      "instituicao": "Ministério da Saúde - Portal de Dados Abertos do SUS",
+      "url": "https://diaad.s3.sa-east-1.amazonaws.com/sinasc/SINASC+-+Estrutura.pdf",
+      "arquivo": "SINASC_Estrutura.pdf",
+      "formato": "PDF",
+      "observacao": "Recurso oficial atualizado no portal em 22/02/2024; cobertura documental até 2019.",
+      "data_acesso": "2026-09-25",
+      "tamanho_bytes": 146566,
+      "sha256": "0ffc459946872d704cb4073a2e3b2d0f96706e1e18e272d7186f18b077cdcee4",
+      "arquivo_local": "data/raw/SINASC_Estrutura.pdf",
+      "reutilizado": true
+    }
+  ]
+}
