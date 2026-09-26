@@ -27,6 +27,18 @@
       "sha256": "0ffc459946872d704cb4073a2e3b2d0f96706e1e18e272d7186f18b077cdcee4",
       "arquivo_local": "data/raw/SINASC_Estrutura.pdf",
       "reutilizado": true
+    },
+    {
+      "nome": "Declaração de Nascido Vivo: manual de instruções para preenchimento - 4ª edição",
+      "instituicao": "Ministério da Saúde - Secretaria de Vigilância em Saúde",
+      "url": "https://svs.aids.gov.br/daent/cgiae/coesv/sistemas-informacao/sinasc/documentacao/declaracao-nascido-vivo-manual-instrucoes-preenchimento.pdf",
+      "ano": 2022,
+      "formato": "PDF",
+      "observacao": "Consultado remotamente para confirmar os campos 33-35 da DNV, inclusive MESPRENAT=99 como Ignorado.",
+      "data_acesso": "2026-09-25",
+      "arquivo_local": null,
+      "sha256": null,
+      "baixado": false
     }
   ]
 }

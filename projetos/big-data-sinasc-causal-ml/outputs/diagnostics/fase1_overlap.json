@@ -1,0 +1,134 @@
+{
+  "grupos": {
+    "controle": {
+      "n": 309525,
+      "min": 0.23102766553711998,
+      "max": 0.9739275079419424,
+      "percentis": {
+        "p00": 0.23102766553711998,
+        "p01": 0.5799970290771437,
+        "p05": 0.6767726584145387,
+        "p25": 0.7810649335101683,
+        "p50": 0.8376375426322348,
+        "p75": 0.8827312006913971,
+        "p95": 0.9374384877362368,
+        "p99": 0.9578639820068167,
+        "p100": 0.9739275079419424
+      },
+      "prop_abaixo_0_01": 0.0,
+      "prop_acima_0_99": 0.0,
+      "prop_abaixo_0_05": 0.0,
+      "prop_acima_0_95": 0.02155237864469752
+    },
+    "tratado": {
+      "n": 1942045,
+      "min": 0.30680740211737323,
+      "max": 0.9770503907621768,
+      "percentis": {
+        "p00": 0.30680740211737323,
+        "p01": 0.6627689603883636,
+        "p05": 0.7432181411579298,
+        "p25": 0.8318249326833347,
+        "p50": 0.8783489398323795,
+        "p75": 0.9201610876868661,
+        "p95": 0.955070260390263,
+        "p99": 0.964061364339609,
+        "p100": 0.9770503907621768
+      },
+      "prop_abaixo_0_01": 0.0,
+      "prop_acima_0_99": 0.0,
+      "prop_abaixo_0_05": 0.0,
+      "prop_acima_0_95": 0.07254157344448764
+    }
+  },
+  "suporte_comum_observado": {
+    "inferior": 0.30680740211737323,
+    "superior": 0.9739275079419424
+  },
+  "trimming_diagnostico": [
+    {
+      "regra": "sem_trimming",
+      "limite_inferior": 0.0,
+      "limite_superior": 1.0,
+      "n_total": 2251570,
+      "n_mantido": 2251570,
+      "n_excluido": 0,
+      "n_tratado_mantido": 1942045,
+      "n_controle_mantido": 309525,
+      "n_tratado_excluido": 0,
+      "n_controle_excluido": 0
+    },
+    {
+      "regra": "0.01_0.99",
+      "limite_inferior": 0.01,
+      "limite_superior": 0.99,
+      "n_total": 2251570,
+      "n_mantido": 2251570,
+      "n_excluido": 0,
+      "n_tratado_mantido": 1942045,
+      "n_controle_mantido": 309525,
+      "n_tratado_excluido": 0,
+      "n_controle_excluido": 0
+    },
+    {
+      "regra": "0.05_0.95",
+      "limite_inferior": 0.05,
+      "limite_superior": 0.95,
+      "n_total": 2251570,
+      "n_mantido": 2104020,
+      "n_excluido": 147550,
+      "n_tratado_mantido": 1801166,
+      "n_controle_mantido": 302854,
+      "n_tratado_excluido": 140879,
+      "n_controle_excluido": 6671
+    }
+  ],
+  "status": "CONCLUIDO",
+  "metodo": {
+    "modelo": "regressao logistica L2",
+    "previsoes": "out-of-fold estratificadas",
+    "semente": 20240925,
+    "covariaveis": [
+      "IDADEMAE_NUM",
+      "ESCOLARIDADE_MAE",
+      "RACA_COR_MAE",
+      "SITUACAO_CONJUGAL",
+      "PARIDADE_CAT",
+      "PERDAS_FETAIS_CAT",
+      "UF_RESIDENCIA"
+    ],
+    "outcome_usado": false,
+    "n_folds": 5,
+    "auc_oof": 0.6628730972846343,
+    "convergencia": [
+      {
+        "fold": 1,
+        "n_iter": 54,
+        "convergiu": true
+      },
+      {
+        "fold": 2,
+        "n_iter": 58,
+        "convergiu": true
+      },
+      {
+        "fold": 3,
+        "n_iter": 49,
+        "convergiu": true
+      },
+      {
+        "fold": 4,
+        "n_iter": 51,
+        "convergiu": true
+      },
+      {
+        "fold": 5,
+        "n_iter": 57,
+        "convergiu": true
+      }
+    ],
+    "solver": "lbfgs",
+    "max_iter": 500,
+    "tol": 1e-05
+  }
+}

@@ -1,6 +1,6 @@
 # SINASC 2024: pré-natal precoce, baixo peso e inferência causal
 
-Projeto acadêmico da disciplina **Big Data & Analytics**, em formato de artigo curto. A Fase 0 avalia se os dados oficiais do SINASC 2024 permitem desenvolver com segurança uma análise futura sobre início precoce do pré-natal e baixo peso ao nascer.
+Projeto acadêmico da disciplina **Big Data & Analytics**, em formato de artigo curto. A Fase 1 define a amostra analítica e audita o desenho observacional sobre início precoce do pré-natal e baixo peso ao nascer.
 
 ## Pergunta candidata
 
@@ -20,7 +20,7 @@ Ministério da Saúde, [Portal de Dados Abertos do SUS](https://dadosabertos.sau
 
 ## Status
 
-`FASE_0_AUDITORIA_DADOS` - estruturação, aquisição, preparação, qualidade e gate de viabilidade.
+`FASE_1_DESENHO_E_OVERLAP` concluída — gate `PRONTO_COM_RESSALVAS`; propensity OOF convergente e suporte quantificado. Nenhum efeito causal estimado nesta fase.
 
 ## Estrutura
 
@@ -56,6 +56,16 @@ python -m pytest -q tests
 
 O download é idempotente e não sobrescreve o bruto existente. A preparação mantém os campos originais como texto, preservando zeros à esquerda, e não sobrescreve silenciosamente o Parquet.
 
+## Reprodução da Fase 1
+
+```powershell
+python -m src.executa_fase1
+python -m src.cria_notebook_fase1
+python -m pytest -q tests
+```
+
+O notebook principal é `notebooks/02_amostra_desenho_e_overlap.ipynb`. O propensity score é apenas diagnóstico de suporte e não estima efeito de tratamento.
+
 ## Limite metodológico
 
-Esta fase é descritiva e de qualidade de dados. Não foram executados ATE, ATT, propensity score causal, matching, AIPW, DML, Causal Forest ou qualquer afirmação causal.
+Não foram executados ATE, ATT, ATC, matching, IPW de outcome, AIPW, DML, Causal Forest, CATE/uplift ou qualquer afirmação causal.

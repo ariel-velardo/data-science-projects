@@ -1,0 +1,871 @@
+{
+  "fase": "FASE_1_DESENHO_E_OVERLAP",
+  "efeito_causal_estimado": false,
+  "base": {
+    "granularidade": "um registro por nascido vivo",
+    "chave_tecnica": "contador",
+    "n_registros": 2389325,
+    "n_contador_distinto": 2389325,
+    "n_duplicados_contador": 0,
+    "n_contador_missing": 0
+  },
+  "tratamento": [
+    {
+      "categoria_mesprenat": "1-3 (T=1)",
+      "n": 1992408,
+      "percentual": 83.387902,
+      "n_consprenat_zero": 684
+    },
+    {
+      "categoria_mesprenat": "4-9 (T=0)",
+      "n": 315980,
+      "percentual": 13.224655,
+      "n_consprenat_zero": 414
+    },
+    {
+      "categoria_mesprenat": "99 (ignorado)",
+      "n": 37569,
+      "percentual": 1.572369,
+      "n_consprenat_zero": 6984
+    },
+    {
+      "categoria_mesprenat": "missing",
+      "n": 43368,
+      "percentual": 1.815073,
+      "n_consprenat_zero": 5799
+    }
+  ],
+  "outcome_peso": [
+    {
+      "regra": "P0_peso_positivo",
+      "n_valido": 2389104,
+      "n_excluido": 221,
+      "n_baixo_peso": 226375,
+      "prevalencia_baixo_peso_pct": 9.47531
+    },
+    {
+      "regra": "P1_500_a_6000g",
+      "n_valido": 2385318,
+      "n_excluido": 4007,
+      "n_baixo_peso": 222648,
+      "prevalencia_baixo_peso_pct": 9.334101
+    }
+  ],
+  "gravidez": [
+    {
+      "tipo_gravidez": "1_unica",
+      "n_total": 2333574,
+      "n_y_valido_p1": 2329966,
+      "baixo_peso_pct": 8.081491,
+      "n_t_valido": 2254839,
+      "t1_pct": 86.253564
+    },
+    {
+      "tipo_gravidez": "2_dupla",
+      "n_total": 53468,
+      "n_y_valido_p1": 53107,
+      "baixo_peso_pct": 62.686651,
+      "n_t_valido": 51843,
+      "t1_pct": 88.904963
+    },
+    {
+      "tipo_gravidez": "3_tripla_ou_mais",
+      "n_total": 978,
+      "n_y_valido_p1": 959,
+      "baixo_peso_pct": 95.203337,
+      "n_t_valido": 942,
+      "t1_pct": 90.44586
+    },
+    {
+      "tipo_gravidez": "9_ignorada",
+      "n_total": 61,
+      "n_y_valido_p1": 58,
+      "baixo_peso_pct": 22.413793,
+      "n_t_valido": 21,
+      "t1_pct": 61.904762
+    },
+    {
+      "tipo_gravidez": "missing",
+      "n_total": 1244,
+      "n_y_valido_p1": 1228,
+      "baixo_peso_pct": 10.993485,
+      "n_t_valido": 743,
+      "t1_pct": 77.119785
+    }
+  ],
+  "fluxo_amostra": [
+    {
+      "etapa": "A0",
+      "n_antes": 2389325,
+      "n_excluido": 81079,
+      "motivo": "T conhecido e PESO numerico positivo",
+      "n_restante": 2308246,
+      "percentual_base_inicial": 96.606615
+    },
+    {
+      "etapa": "A1",
+      "n_antes": 2308246,
+      "n_excluido": 3471,
+      "motivo": "A0 + 500 g <= PESO <= 6.000 g",
+      "n_restante": 2304775,
+      "percentual_base_inicial": 96.461344
+    },
+    {
+      "etapa": "A2",
+      "n_antes": 2304775,
+      "n_excluido": 53205,
+      "motivo": "A1 + gestacao unica (GRAVIDEZ=1)",
+      "n_restante": 2251570,
+      "percentual_base_inicial": 94.234564
+    },
+    {
+      "etapa": "A3",
+      "n_antes": 2251570,
+      "n_excluido": 0,
+      "motivo": "A2 + X principal preparado; missing tratado no pipeline",
+      "n_restante": 2251570,
+      "percentual_base_inicial": 94.234564
+    }
+  ],
+  "perfil_tratamento_amostra_principal": [
+    {
+      "tratamento": 1,
+      "n": 1942045,
+      "percentual": 86.252926,
+      "idade_media": 27.95162114204444,
+      "idade_dp": 6.596389950344619,
+      "idade_mediana": 28.0,
+      "baixo_peso_pct_descritivo": 7.699152
+    },
+    {
+      "tratamento": 0,
+      "n": 309525,
+      "percentual": 13.747074,
+      "idade_media": 26.405247615601333,
+      "idade_dp": 6.99953801105676,
+      "idade_mediana": 26.0,
+      "baixo_peso_pct_descritivo": 9.123011
+    }
+  ],
+  "missing_x_principal": [
+    {
+      "variavel": "QTDFILMORT",
+      "n_total": 2251570,
+      "n_missing": 42268,
+      "n_t1": 1942045,
+      "n_missing_t1": 35771,
+      "n_t0": 309525,
+      "n_missing_t0": 6497,
+      "n_y1": 177759,
+      "n_missing_y1": 2522,
+      "n_y0": 2073811,
+      "n_missing_y0": 39746,
+      "pct_total": 1.877268,
+      "pct_t1": 1.841924,
+      "pct_t0": 2.099023,
+      "pct_y1": 1.418775,
+      "pct_y0": 1.916568
+    },
+    {
+      "variavel": "RACACORMAE",
+      "n_total": 2251570,
+      "n_missing": 28150,
+      "n_t1": 1942045,
+      "n_missing_t1": 24063,
+      "n_t0": 309525,
+      "n_missing_t0": 4087,
+      "n_y1": 177759,
+      "n_missing_y1": 2345,
+      "n_y0": 2073811,
+      "n_missing_y0": 25805,
+      "pct_total": 1.250239,
+      "pct_t1": 1.239055,
+      "pct_t0": 1.32041,
+      "pct_y1": 1.319202,
+      "pct_y0": 1.244327
+    },
+    {
+      "variavel": "ESTCIVMAE",
+      "n_total": 2251570,
+      "n_missing": 13758,
+      "n_t1": 1942045,
+      "n_missing_t1": 11366,
+      "n_t0": 309525,
+      "n_missing_t0": 2392,
+      "n_y1": 177759,
+      "n_missing_y1": 1038,
+      "n_y0": 2073811,
+      "n_missing_y0": 12720,
+      "pct_total": 0.61104,
+      "pct_t1": 0.585259,
+      "pct_t0": 0.772797,
+      "pct_y1": 0.583937,
+      "pct_y0": 0.613364
+    },
+    {
+      "variavel": "ESCMAE2010",
+      "n_total": 2251570,
+      "n_missing": 10756,
+      "n_t1": 1942045,
+      "n_missing_t1": 8868,
+      "n_t0": 309525,
+      "n_missing_t0": 1888,
+      "n_y1": 177759,
+      "n_missing_y1": 711,
+      "n_y0": 2073811,
+      "n_missing_y0": 10045,
+      "pct_total": 0.477711,
+      "pct_t1": 0.456632,
+      "pct_t0": 0.609967,
+      "pct_y1": 0.39998,
+      "pct_y0": 0.484374
+    },
+    {
+      "variavel": "IDADEMAE",
+      "n_total": 2251570,
+      "n_missing": 32,
+      "n_t1": 1942045,
+      "n_missing_t1": 19,
+      "n_t0": 309525,
+      "n_missing_t0": 13,
+      "n_y1": 177759,
+      "n_missing_y1": 2,
+      "n_y0": 2073811,
+      "n_missing_y0": 30,
+      "pct_total": 0.001421,
+      "pct_t1": 0.000978,
+      "pct_t0": 0.0042,
+      "pct_y1": 0.001125,
+      "pct_y0": 0.001447
+    },
+    {
+      "variavel": "PARIDADE",
+      "n_total": 2251570,
+      "n_missing": 0,
+      "n_t1": 1942045,
+      "n_missing_t1": 0,
+      "n_t0": 309525,
+      "n_missing_t0": 0,
+      "n_y1": 177759,
+      "n_missing_y1": 0,
+      "n_y0": 2073811,
+      "n_missing_y0": 0,
+      "pct_total": 0.0,
+      "pct_t1": 0.0,
+      "pct_t0": 0.0,
+      "pct_y1": 0.0,
+      "pct_y0": 0.0
+    },
+    {
+      "variavel": "CODMUNRES",
+      "n_total": 2251570,
+      "n_missing": 0,
+      "n_t1": 1942045,
+      "n_missing_t1": 0,
+      "n_t0": 309525,
+      "n_missing_t0": 0,
+      "n_y1": 177759,
+      "n_missing_y1": 0,
+      "n_y0": 2073811,
+      "n_missing_y0": 0,
+      "pct_total": 0.0,
+      "pct_t1": 0.0,
+      "pct_t0": 0.0,
+      "pct_y1": 0.0,
+      "pct_y0": 0.0
+    }
+  ],
+  "balanceamento_bruto": [
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "tipo": "categorica_pior_nivel",
+      "media_t1": null,
+      "media_t0": null,
+      "smd": 0.3752174135817836,
+      "smd_abs": 0.3752174135817836,
+      "nivel_pior_smd": "2",
+      "proporcao_t1": 0.3383021505680867,
+      "proporcao_t0": 0.17701639609078426
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "tipo": "categorica_pior_nivel",
+      "media_t1": null,
+      "media_t0": null,
+      "smd": 0.3305859467388003,
+      "smd_abs": 0.3305859467388003,
+      "nivel_pior_smd": "5",
+      "proporcao_t1": 0.21284985672319642,
+      "proporcao_t0": 0.09512640335998708
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "tipo": "categorica_pior_nivel",
+      "media_t1": null,
+      "media_t0": null,
+      "smd": 0.23097532364604476,
+      "smd_abs": 0.23097532364604476,
+      "nivel_pior_smd": "1",
+      "proporcao_t1": 0.3486850201720352,
+      "proporcao_t0": 0.24391244649059043
+    },
+    {
+      "variavel": "IDADEMAE_NUM",
+      "tipo": "numerica",
+      "media_t1": 27.95162114204444,
+      "media_t0": 26.405247615601333,
+      "smd": 0.22737604315164228,
+      "smd_abs": 0.22737604315164228,
+      "nivel_pior_smd": null,
+      "proporcao_t1": null,
+      "proporcao_t0": null
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "tipo": "categorica_pior_nivel",
+      "media_t1": null,
+      "media_t0": null,
+      "smd": 0.1544419122457686,
+      "smd_abs": 0.1544419122457686,
+      "nivel_pior_smd": "0",
+      "proporcao_t1": 0.3791807089948997,
+      "proporcao_t0": 0.3061012842258299
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "tipo": "categorica_pior_nivel",
+      "media_t1": null,
+      "media_t0": null,
+      "smd": -0.1520396083236929,
+      "smd_abs": 0.1520396083236929,
+      "nivel_pior_smd": "15",
+      "proporcao_t1": 0.04312412946146974,
+      "proporcao_t0": 0.0794927711816493
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "tipo": "categorica_pior_nivel",
+      "media_t1": null,
+      "media_t0": null,
+      "smd": 0.03350347666172077,
+      "smd_abs": 0.03350347666172077,
+      "nivel_pior_smd": "1",
+      "proporcao_t1": 0.1693843345545546,
+      "proporcao_t0": 0.15700508844196753
+    }
+  ],
+  "positividade_perfis": [
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "11",
+      "n": 18782,
+      "n_t1": 15823,
+      "n_t0": 2959,
+      "proporcao_t1": 0.842456,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "12",
+      "n": 11862,
+      "n_t1": 8352,
+      "n_t0": 3510,
+      "proporcao_t1": 0.704097,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "13",
+      "n": 62614,
+      "n_t1": 46367,
+      "n_t0": 16247,
+      "proporcao_t1": 0.740521,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "14",
+      "n": 11105,
+      "n_t1": 7653,
+      "n_t0": 3452,
+      "proporcao_t1": 0.689149,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "15",
+      "n": 108354,
+      "n_t1": 83749,
+      "n_t0": 24605,
+      "proporcao_t1": 0.77292,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "16",
+      "n": 11746,
+      "n_t1": 8600,
+      "n_t0": 3146,
+      "proporcao_t1": 0.732164,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "17",
+      "n": 21119,
+      "n_t1": 18123,
+      "n_t0": 2996,
+      "proporcao_t1": 0.858137,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "21",
+      "n": 86044,
+      "n_t1": 71826,
+      "n_t0": 14218,
+      "proporcao_t1": 0.834759,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "22",
+      "n": 36612,
+      "n_t1": 30625,
+      "n_t0": 5987,
+      "proporcao_t1": 0.836474,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "23",
+      "n": 95379,
+      "n_t1": 82897,
+      "n_t0": 12482,
+      "proporcao_t1": 0.869133,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "24",
+      "n": 34611,
+      "n_t1": 30698,
+      "n_t0": 3913,
+      "proporcao_t1": 0.886943,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "25",
+      "n": 45121,
+      "n_t1": 39831,
+      "n_t0": 5290,
+      "proporcao_t1": 0.88276,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "26",
+      "n": 104748,
+      "n_t1": 87323,
+      "n_t0": 17425,
+      "proporcao_t1": 0.833648,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "27",
+      "n": 43786,
+      "n_t1": 38136,
+      "n_t0": 5650,
+      "proporcao_t1": 0.870963,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "28",
+      "n": 26296,
+      "n_t1": 22703,
+      "n_t0": 3593,
+      "proporcao_t1": 0.863363,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "29",
+      "n": 147071,
+      "n_t1": 122768,
+      "n_t0": 24303,
+      "proporcao_t1": 0.834753,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "31",
+      "n": 204343,
+      "n_t1": 182626,
+      "n_t0": 21717,
+      "proporcao_t1": 0.893723,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "32",
+      "n": 47804,
+      "n_t1": 42192,
+      "n_t0": 5612,
+      "proporcao_t1": 0.882604,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "33",
+      "n": 154987,
+      "n_t1": 131899,
+      "n_t0": 23088,
+      "proporcao_t1": 0.851033,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "35",
+      "n": 449148,
+      "n_t1": 402207,
+      "n_t0": 46941,
+      "proporcao_t1": 0.895489,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "41",
+      "n": 124944,
+      "n_t1": 112139,
+      "n_t0": 12805,
+      "proporcao_t1": 0.897514,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "42",
+      "n": 90688,
+      "n_t1": 79690,
+      "n_t0": 10998,
+      "proporcao_t1": 0.878727,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "43",
+      "n": 107292,
+      "n_t1": 93336,
+      "n_t0": 13956,
+      "proporcao_t1": 0.869925,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "50",
+      "n": 36503,
+      "n_t1": 31400,
+      "n_t0": 5103,
+      "proporcao_t1": 0.860203,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "51",
+      "n": 53061,
+      "n_t1": 46748,
+      "n_t0": 6313,
+      "proporcao_t1": 0.881024,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "52",
+      "n": 85511,
+      "n_t1": 76654,
+      "n_t0": 8857,
+      "proporcao_t1": 0.896423,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "UF_RESIDENCIA",
+      "categoria": "53",
+      "n": 32039,
+      "n_t1": 27680,
+      "n_t0": 4359,
+      "proporcao_t1": 0.863947,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "FAIXA_IDADE_MAE",
+      "categoria": "20-29",
+      "n": 1111506,
+      "n_t1": 956503,
+      "n_t0": 155003,
+      "proporcao_t1": 0.860547,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "FAIXA_IDADE_MAE",
+      "categoria": "30-39",
+      "n": 785227,
+      "n_t1": 699135,
+      "n_t0": 86092,
+      "proporcao_t1": 0.89036,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "FAIXA_IDADE_MAE",
+      "categoria": "40+",
+      "n": 97040,
+      "n_t1": 83932,
+      "n_t0": 13108,
+      "proporcao_t1": 0.864922,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "FAIXA_IDADE_MAE",
+      "categoria": "<20",
+      "n": 257765,
+      "n_t1": 202456,
+      "n_t0": 55309,
+      "proporcao_t1": 0.785429,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "FAIXA_IDADE_MAE",
+      "categoria": "IGNORADO",
+      "n": 32,
+      "n_t1": 19,
+      "n_t0": 13,
+      "proporcao_t1": 0.59375,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": true
+    },
+    {
+      "perfil": "ESCOLARIDADE_MAE",
+      "categoria": "0",
+      "n": 4971,
+      "n_t1": 3088,
+      "n_t0": 1883,
+      "proporcao_t1": 0.621203,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "ESCOLARIDADE_MAE",
+      "categoria": "1",
+      "n": 43866,
+      "n_t1": 33057,
+      "n_t0": 10809,
+      "proporcao_t1": 0.75359,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "ESCOLARIDADE_MAE",
+      "categoria": "2",
+      "n": 378758,
+      "n_t1": 297945,
+      "n_t0": 80813,
+      "proporcao_t1": 0.786637,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "ESCOLARIDADE_MAE",
+      "categoria": "3",
+      "n": 1253913,
+      "n_t1": 1082131,
+      "n_t0": 171782,
+      "proporcao_t1": 0.863003,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "ESCOLARIDADE_MAE",
+      "categoria": "4",
+      "n": 116498,
+      "n_t1": 103592,
+      "n_t0": 12906,
+      "proporcao_t1": 0.889217,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "ESCOLARIDADE_MAE",
+      "categoria": "5",
+      "n": 442808,
+      "n_t1": 413364,
+      "n_t0": 29444,
+      "proporcao_t1": 0.933506,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "ESCOLARIDADE_MAE",
+      "categoria": "IGNORADO",
+      "n": 10756,
+      "n_t1": 8868,
+      "n_t0": 1888,
+      "proporcao_t1": 0.82447,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "RACA_COR_MAE",
+      "categoria": "1",
+      "n": 752659,
+      "n_t1": 677162,
+      "n_t0": 75497,
+      "proporcao_t1": 0.899693,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "RACA_COR_MAE",
+      "categoria": "2",
+      "n": 178771,
+      "n_t1": 149247,
+      "n_t0": 29524,
+      "proporcao_t1": 0.83485,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "RACA_COR_MAE",
+      "categoria": "3",
+      "n": 10390,
+      "n_t1": 9147,
+      "n_t0": 1243,
+      "proporcao_t1": 0.880366,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "RACA_COR_MAE",
+      "categoria": "4",
+      "n": 1254815,
+      "n_t1": 1064187,
+      "n_t0": 190628,
+      "proporcao_t1": 0.848083,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "RACA_COR_MAE",
+      "categoria": "5",
+      "n": 26785,
+      "n_t1": 18239,
+      "n_t0": 8546,
+      "proporcao_t1": 0.680941,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "RACA_COR_MAE",
+      "categoria": "IGNORADO",
+      "n": 28150,
+      "n_t1": 24063,
+      "n_t0": 4087,
+      "proporcao_t1": 0.854813,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "PARIDADE_CAT",
+      "categoria": "0",
+      "n": 831132,
+      "n_t1": 736386,
+      "n_t0": 94746,
+      "proporcao_t1": 0.886004,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    },
+    {
+      "perfil": "PARIDADE_CAT",
+      "categoria": "1",
+      "n": 1420438,
+      "n_t1": 1205659,
+      "n_t0": 214779,
+      "proporcao_t1": 0.848794,
+      "flag_quase_deterministico": false,
+      "flag_celula_pequena": false
+    }
+  ],
+  "x_principal": [
+    "IDADEMAE_NUM",
+    "ESCOLARIDADE_MAE",
+    "RACA_COR_MAE",
+    "SITUACAO_CONJUGAL",
+    "PARIDADE_CAT",
+    "PERDAS_FETAIS_CAT",
+    "UF_RESIDENCIA"
+  ],
+  "variaveis_proibidas_propensity": [
+    "APGAR1",
+    "APGAR5",
+    "CODANOMAL",
+    "CODESTAB",
+    "CONSPRENAT",
+    "CONSULTAS",
+    "DTNASC",
+    "GESTACAO",
+    "HORANASC",
+    "IDANOMAL",
+    "KOTELCHUCK",
+    "LOCNASC",
+    "PARTO",
+    "PESO",
+    "RACACOR",
+    "SEMAGESTAC",
+    "SEXO",
+    "STCESPARTO",
+    "STTRABPART",
+    "TPAPRESENT",
+    "TPMETESTIM",
+    "TPNASCASSI",
+    "TPROBSON",
+    "Y_BAIXO_PESO",
+    "Y_BAIXO_PESO_P0"
+  ],
+  "populacao_principal": "nascidos vivos SINASC 2024, MESPRENAT 1-9, peso 500-6000 g e gestacao unica",
+  "sensibilidades": [
+    "P0: todo peso numerico positivo",
+    "todas as gestacoes validas, com multipla apenas como sensibilidade",
+    "registros CONSPRENAT=0 analisados separadamente, nao incorporados ao controle"
+  ]
+}
