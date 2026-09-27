@@ -1,0 +1,129 @@
+{
+  "gate": "HETEROGENEIDADE_SENSIVEL_A_MODELO",
+  "regra": "Protocolo anterior ao ajuste em HETEROGENEIDADE_FASE4.md",
+  "evidencia": {
+    "spearman_hgb_ridge": 0.7065559527312951,
+    "diferenca_absoluta_media_pp": 0.8817724239028333,
+    "concordancia_sinal": 0.863329587798736,
+    "correlacoes_perfis": [
+      {
+        "particao1": 1,
+        "particao2": 2,
+        "n_categorias": 19,
+        "spearman": 0.15438596491228068
+      },
+      {
+        "particao1": 1,
+        "particao2": 3,
+        "n_categorias": 19,
+        "spearman": 0.15789473684210528
+      },
+      {
+        "particao1": 2,
+        "particao2": 3,
+        "n_categorias": 19,
+        "spearman": 0.6315789473684211
+      }
+    ],
+    "mediana_spearman_perfis": 0.15789473684210528,
+    "contrastes_externos": [
+      {
+        "particao": 1,
+        "n": 756684,
+        "n_q1": 151337,
+        "n_q5": 151336,
+        "contraste_dr_q5_q1_pp": 0.9536593352302818,
+        "se_municipal_pp": 0.4589575381784803,
+        "ic95_inferior_pp": 0.053533354183255,
+        "ic95_superior_pp": 1.8537853162773086,
+        "contraste_cate_q5_q1_pp": 4.2445851588923675,
+        "metodo": "Quintis definidos dentro da partição externa; IC municipal condicional aos modelos fixos."
+      },
+      {
+        "particao": 2,
+        "n": 694101,
+        "n_q1": 138821,
+        "n_q5": 138820,
+        "contraste_dr_q5_q1_pp": 1.672816752589271,
+        "se_municipal_pp": 0.42656601777645897,
+        "ic95_inferior_pp": 0.8362180309620311,
+        "ic95_superior_pp": 2.5094154742165107,
+        "contraste_cate_q5_q1_pp": 4.72729896094346,
+        "metodo": "Quintis definidos dentro da partição externa; IC municipal condicional aos modelos fixos."
+      },
+      {
+        "particao": 3,
+        "n": 800785,
+        "n_q1": 160157,
+        "n_q5": 160157,
+        "contraste_dr_q5_q1_pp": 1.4886264251877845,
+        "se_municipal_pp": 0.40425571660061693,
+        "ic95_inferior_pp": 0.6957835787709542,
+        "ic95_superior_pp": 2.2814692716046148,
+        "contraste_cate_q5_q1_pp": 4.365400066209255,
+        "metodo": "Quintis definidos dentro da partição externa; IC municipal condicional aos modelos fixos."
+      }
+    ],
+    "distribuicao_particao": [
+      {
+        "particao": 1,
+        "n": 756684,
+        "media_pp": -1.5638096182361136,
+        "mediana_pp": -1.5094430892706951,
+        "p05_pp": -4.22982712464991,
+        "p25_pp": -2.2434866218034686,
+        "p75_pp": -0.6191747110974462,
+        "p95_pp": 0.7357116762568325,
+        "amplitude_robusta_pp": 4.965538800906743,
+        "min_pp": -21.855751142252576,
+        "max_pp": 9.998623090835206,
+        "proporcao_negativa": 0.8842713735191969,
+        "proporcao_positiva": 0.11572862648080308,
+        "proporcao_zero": 0.0,
+        "n_fora_limite_teorico": 0,
+        "media_psi_pp": -1.081136635205659,
+        "media_ridge_pp": -1.5671809101307843
+      },
+      {
+        "particao": 2,
+        "n": 694101,
+        "media_pp": -0.9740732181408482,
+        "mediana_pp": -1.0553406387182998,
+        "p05_pp": -3.606282835312314,
+        "p25_pp": -1.7360112828675927,
+        "p75_pp": -0.20490522291699625,
+        "p95_pp": 1.8763536294230423,
+        "amplitude_robusta_pp": 5.482636464735356,
+        "min_pp": -16.92113877970852,
+        "max_pp": 18.772903932805285,
+        "proporcao_negativa": 0.7954418737330734,
+        "proporcao_positiva": 0.20455812626692657,
+        "proporcao_zero": 0.0,
+        "n_fora_limite_teorico": 0,
+        "media_psi_pp": -1.2563405799121776,
+        "media_ridge_pp": -0.9955331808087643
+      },
+      {
+        "particao": 3,
+        "n": 800785,
+        "media_pp": -1.3166367214935093,
+        "mediana_pp": -1.2995662268308794,
+        "p05_pp": -3.893726788431741,
+        "p25_pp": -1.8785048140939782,
+        "p75_pp": -0.44961487127793764,
+        "p95_pp": 1.0289019883010788,
+        "amplitude_robusta_pp": 4.92262877673282,
+        "min_pp": -33.251065533224065,
+        "max_pp": 12.936683465822474,
+        "proporcao_negativa": 0.8560262742184231,
+        "proporcao_positiva": 0.14397372578157683,
+        "proporcao_zero": 0.0,
+        "n_fora_limite_teorico": 0,
+        "media_psi_pp": -1.309626943664716,
+        "media_ridge_pp": -1.3162618417284018
+      }
+    ]
+  },
+  "causalidade_provada": false,
+  "uso": "Exclusivamente exploratório/didático; sem priorização clínica."
+}

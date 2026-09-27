@@ -1,0 +1,3225 @@
+{
+  "populacao": {
+    "cenario": "P1",
+    "n": 2251570,
+    "n_t1": 1942045,
+    "n_t0": 309525,
+    "prevalencia": 0.07894891120418197,
+    "n_clusters": 5581,
+    "n_consprenat_zero": 1064,
+    "codigos_municipio_nao_especificado": {
+      "330000": 17,
+      "130000": 6,
+      "520000": 3,
+      "320000": 3,
+      "350000": 2,
+      "260000": 1,
+      "290000": 1,
+      "270000": 1,
+      "420000": 1,
+      "140000": 1,
+      "410000": 1
+    },
+    "n_multipla": 0,
+    "n_peso_fora_p1": 0,
+    "datas_invalidas": 0,
+    "chave": "contador única, não nula; ordem explícita",
+    "sql": "SELECT contador, tratamento, y_p1 AS Y_BAIXO_PESO, CASE  WHEN ((TRY_CAST(IDADEMAE AS INTEGER) BETWEEN 10 AND 59)) THEN (TRY_CAST(IDADEMAE AS \"DOUBLE\")) ELSE NULL END AS IDADEMAE_NUM, CASE  WHEN (((TRY_CAST(ESCMAE2010 AS INTEGER) = 9) OR (ESCMAE2010 IS NULL))) THEN ('IGNORADO') ELSE CAST(TRY_CAST(ESCMAE2010 AS INTEGER) AS VARCHAR) END AS ESCOLARIDADE_MAE, CASE  WHEN (((TRY_CAST(RACACORMAE AS INTEGER) = 9) OR (RACACORMAE IS NULL))) THEN ('IGNORADO') ELSE CAST(TRY_CAST(RACACORMAE AS INTEGER) AS VARCHAR) END AS RACA_COR_MAE, CASE  WHEN (((TRY_CAST(ESTCIVMAE AS INTEGER) = 9) OR (ESTCIVMAE IS NULL))) THEN ('IGNORADO') ELSE CAST(TRY_CAST(ESTCIVMAE AS INTEGER) AS VARCHAR) END AS SITUACAO_CONJUGAL, CASE  WHEN (((TRY_CAST(PARIDADE AS INTEGER) IN (9, 99)) OR (PARIDADE IS NULL))) THEN ('IGNORADO') ELSE CAST(TRY_CAST(PARIDADE AS INTEGER) AS VARCHAR) END AS PARIDADE_CAT, CASE  WHEN ((TRY_CAST(QTDFILMORT AS INTEGER) = 0)) THEN ('0') WHEN ((TRY_CAST(QTDFILMORT AS INTEGER) = 1)) THEN ('1') WHEN ((TRY_CAST(QTDFILMORT AS INTEGER) BETWEEN 2 AND 98)) THEN ('2_OU_MAIS') ELSE 'IGNORADO' END AS PERDAS_FETAIS_CAT, CASE  WHEN (regexp_full_match(CAST(CODMUNRES AS VARCHAR), '[0-9]{6}')) THEN (substr(CAST(CODMUNRES AS VARCHAR), 1, 2)) ELSE 'IGNORADO' END AS UF_RESIDENCIA, CODMUNRES, try_cast(CONSPRENAT AS INTEGER) AS CONSPRENAT_NUM, gravidez_num, peso_num FROM fase1_base WHERE tratamento IS NOT NULL AND y_p1 IS NOT NULL AND gravidez_num = 1 ORDER BY contador",
+    "sha256_ordem_contador": "2b6d49e6c62e552cff9c8cf00355d0ee55ae737f89a857ba1ed67fdc44d58043"
+  },
+  "metodo": "DR-Learner; três papéis municipais disjuntos e três rotações",
+  "principal": {
+    "n": 2251570,
+    "media_pp": -1.294100493864875,
+    "mediana_pp": -1.2898384905380584,
+    "p05_pp": -3.9238197286829077,
+    "p25_pp": -1.9627840970044819,
+    "p75_pp": -0.4270444838722423,
+    "p95_pp": 1.208079358547171,
+    "amplitude_robusta_pp": 5.131899087230079,
+    "min_pp": -33.251065533224065,
+    "max_pp": 18.772903932805285,
+    "proporcao_negativa": 0.8468419813729975,
+    "proporcao_positiva": 0.15315801862700248,
+    "proporcao_zero": 0.0,
+    "n_fora_limite_teorico": 0
+  },
+  "alternativo": {
+    "n": 2251570,
+    "media_pp": -1.3017157072897685,
+    "mediana_pp": -1.3197231828101066,
+    "p05_pp": -3.23540851732992,
+    "p25_pp": -2.1143406680776584,
+    "p75_pp": -0.5136686266518544,
+    "p95_pp": 0.7111699366337907,
+    "amplitude_robusta_pp": 3.9465784539637103,
+    "min_pp": -20.566269822541294,
+    "max_pp": 22.334354472885543,
+    "proporcao_negativa": 0.8647916786953104,
+    "proporcao_positiva": 0.13520832130468963,
+    "proporcao_zero": 0.0,
+    "n_fora_limite_teorico": 0
+  },
+  "perfis": [
+    {
+      "dimensao": "Faixa etária",
+      "grupo": "20–29",
+      "n": 1111506,
+      "media_pp": -1.1925288399721437,
+      "p05_pp": -2.9391580194791107,
+      "p25_pp": -1.8197069728127642,
+      "mediana_pp": -1.2817012274154094,
+      "p75_pp": -0.5192784492624992,
+      "p95_pp": 0.6521191716987953,
+      "contraste_dr_pp": -1.1417144686627003,
+      "ic95_dr_inferior_pp": -1.310514163157127,
+      "ic95_dr_superior_pp": -0.9729147741682737
+    },
+    {
+      "dimensao": "Faixa etária",
+      "grupo": "30–34",
+      "n": 476754,
+      "media_pp": -1.1882001749773783,
+      "p05_pp": -3.787486830672498,
+      "p25_pp": -1.9854878735087238,
+      "mediana_pp": -1.1567455375890625,
+      "p75_pp": -0.2978251476773637,
+      "p95_pp": 1.369522586764573,
+      "contraste_dr_pp": -1.1348162496665262,
+      "ic95_dr_inferior_pp": -1.4438715168772889,
+      "ic95_dr_superior_pp": -0.8257609824557633
+    },
+    {
+      "dimensao": "Faixa etária",
+      "grupo": "<20",
+      "n": 257765,
+      "media_pp": -1.2144519631339277,
+      "p05_pp": -3.4271928568030914,
+      "p25_pp": -2.0252382096912784,
+      "mediana_pp": -1.37046294768321,
+      "p75_pp": -0.5256352480507553,
+      "p95_pp": 1.390027991722188,
+      "contraste_dr_pp": -1.0961286198517515,
+      "ic95_dr_inferior_pp": -1.4569915213586664,
+      "ic95_dr_superior_pp": -0.7352657183448366
+    },
+    {
+      "dimensao": "Faixa etária",
+      "grupo": "Ausente",
+      "n": 32,
+      "media_pp": -2.5023619164256257,
+      "p05_pp": -6.285188332507687,
+      "p25_pp": -5.2235934762543605,
+      "mediana_pp": -3.4151635702352983,
+      "p75_pp": -0.8526871049632394,
+      "p95_pp": 4.654408358037826,
+      "contraste_dr_pp": -14.508657217149711,
+      "ic95_dr_inferior_pp": -45.089638041166765,
+      "ic95_dr_superior_pp": 16.07232360686734
+    },
+    {
+      "dimensao": "Faixa etária",
+      "grupo": "≥35",
+      "n": 405513,
+      "media_pp": -1.747545494446574,
+      "p05_pp": -6.9654294405271555,
+      "p25_pp": -2.965788469220057,
+      "mediana_pp": -1.4826981848253504,
+      "p75_pp": -0.25418346009614334,
+      "p95_pp": 2.487129494561553,
+      "contraste_dr_pp": -1.5924942465178111,
+      "ic95_dr_inferior_pp": -1.9725838123616577,
+      "ic95_dr_superior_pp": -1.2124046806739646
+    },
+    {
+      "dimensao": "Escolaridade",
+      "grupo": "0",
+      "n": 4971,
+      "media_pp": -2.202996715574204,
+      "p05_pp": -6.938617203100704,
+      "p25_pp": -3.5413522512695006,
+      "mediana_pp": -1.8520446474641579,
+      "p75_pp": -0.5616939291186618,
+      "p95_pp": 1.255067748070168,
+      "contraste_dr_pp": -1.6609271930922023,
+      "ic95_dr_inferior_pp": -3.8906048538439335,
+      "ic95_dr_superior_pp": 0.5687504676595286
+    },
+    {
+      "dimensao": "Escolaridade",
+      "grupo": "1",
+      "n": 43866,
+      "media_pp": -2.795149231654922,
+      "p05_pp": -7.642543333279769,
+      "p25_pp": -4.1022526485648445,
+      "mediana_pp": -2.389918025676347,
+      "p75_pp": -1.048030165029882,
+      "p95_pp": 1.0481987795152885,
+      "contraste_dr_pp": -2.9388247733948587,
+      "ic95_dr_inferior_pp": -3.7398365465255754,
+      "ic95_dr_superior_pp": -2.1378130002641416
+    },
+    {
+      "dimensao": "Escolaridade",
+      "grupo": "2",
+      "n": 378758,
+      "media_pp": -1.4968901846508258,
+      "p05_pp": -3.9932017201081735,
+      "p25_pp": -2.12631859239341,
+      "mediana_pp": -1.4500552461258107,
+      "p75_pp": -0.639633910903389,
+      "p95_pp": 0.7143638835469557,
+      "contraste_dr_pp": -1.5687845940095404,
+      "ic95_dr_inferior_pp": -1.8372496896239359,
+      "ic95_dr_superior_pp": -1.3003194983951447
+    },
+    {
+      "dimensao": "Escolaridade",
+      "grupo": "3",
+      "n": 1253913,
+      "media_pp": -1.3050449656856982,
+      "p05_pp": -3.2990048620298333,
+      "p25_pp": -1.8606058658328257,
+      "mediana_pp": -1.318492483062772,
+      "p75_pp": -0.5625633136978604,
+      "p95_pp": 0.6327763309254001,
+      "contraste_dr_pp": -1.2343793929802076,
+      "ic95_dr_inferior_pp": -1.4109308158852878,
+      "ic95_dr_superior_pp": -1.0578279700751274
+    },
+    {
+      "dimensao": "Escolaridade",
+      "grupo": "4",
+      "n": 116498,
+      "media_pp": -1.1542664930237718,
+      "p05_pp": -4.090124143486711,
+      "p25_pp": -1.8606058658328257,
+      "mediana_pp": -1.0429403395623473,
+      "p75_pp": -0.22988961079961423,
+      "p95_pp": 1.2807053367164145,
+      "contraste_dr_pp": -0.9521493532862826,
+      "ic95_dr_inferior_pp": -1.4965858961241352,
+      "ic95_dr_superior_pp": -0.40771281044843
+    },
+    {
+      "dimensao": "Escolaridade",
+      "grupo": "5",
+      "n": 442808,
+      "media_pp": -0.9446345535397219,
+      "p05_pp": -4.980104627310065,
+      "p25_pp": -2.059333945005756,
+      "mediana_pp": -0.8411160696713031,
+      "p75_pp": 0.20016913625087937,
+      "p95_pp": 2.8828235954140395,
+      "contraste_dr_pp": -0.720762920076332,
+      "ic95_dr_inferior_pp": -1.0870651814355172,
+      "ic95_dr_superior_pp": -0.3544606587171469
+    },
+    {
+      "dimensao": "Escolaridade",
+      "grupo": "IGNORADO",
+      "n": 10756,
+      "media_pp": -2.2370100593670923,
+      "p05_pp": -5.865470767948882,
+      "p25_pp": -3.111221257864598,
+      "mediana_pp": -1.9372724003371014,
+      "p75_pp": -1.0439433374375557,
+      "p95_pp": 0.626312290948477,
+      "contraste_dr_pp": -2.750793650740894,
+      "ic95_dr_inferior_pp": -4.232727860554361,
+      "ic95_dr_superior_pp": -1.2688594409274272
+    },
+    {
+      "dimensao": "Raça/cor",
+      "grupo": "1",
+      "n": 752659,
+      "media_pp": -1.3008646424744748,
+      "p05_pp": -4.065198023363788,
+      "p25_pp": -2.001141796138456,
+      "mediana_pp": -1.3597317583066262,
+      "p75_pp": -0.4367962595750213,
+      "p95_pp": 1.3811884629888884,
+      "contraste_dr_pp": -1.2167724982338295,
+      "ic95_dr_inferior_pp": -1.4715602980941855,
+      "ic95_dr_superior_pp": -0.9619846983734736
+    },
+    {
+      "dimensao": "Raça/cor",
+      "grupo": "2",
+      "n": 178771,
+      "media_pp": -1.4824461490329337,
+      "p05_pp": -4.06200671398375,
+      "p25_pp": -2.0998795095474874,
+      "mediana_pp": -1.4602176537376748,
+      "p75_pp": -0.639828119742252,
+      "p95_pp": 0.7845038374013673,
+      "contraste_dr_pp": -1.4296360369196137,
+      "ic95_dr_inferior_pp": -1.836135602715298,
+      "ic95_dr_superior_pp": -1.0231364711239297
+    },
+    {
+      "dimensao": "Raça/cor",
+      "grupo": "3",
+      "n": 10390,
+      "media_pp": -0.9933076952110171,
+      "p05_pp": -4.648525117041471,
+      "p25_pp": -2.1086859480211,
+      "mediana_pp": -0.9120332695123604,
+      "p75_pp": 0.38006450054122215,
+      "p95_pp": 2.2471276362555312,
+      "contraste_dr_pp": 0.09435251710076221,
+      "ic95_dr_inferior_pp": -1.8729825705136771,
+      "ic95_dr_superior_pp": 2.0616876047152015
+    },
+    {
+      "dimensao": "Raça/cor",
+      "grupo": "4",
+      "n": 1254815,
+      "media_pp": -1.228969803592527,
+      "p05_pp": -3.672702348214322,
+      "p25_pp": -1.878432762638156,
+      "mediana_pp": -1.2137940375803846,
+      "p75_pp": -0.4086468900356025,
+      "p95_pp": 1.1212500597191137,
+      "contraste_dr_pp": -1.1784882699596684,
+      "ic95_dr_inferior_pp": -1.3512708021639916,
+      "ic95_dr_superior_pp": -1.0057057377553453
+    },
+    {
+      "dimensao": "Raça/cor",
+      "grupo": "5",
+      "n": 26785,
+      "media_pp": -1.4100008387424252,
+      "p05_pp": -5.014175317710743,
+      "p25_pp": -2.179084793401014,
+      "mediana_pp": -1.1835946265113588,
+      "p75_pp": -0.3002370453620442,
+      "p95_pp": 1.0218087403206981,
+      "contraste_dr_pp": -1.47144623758414,
+      "ic95_dr_inferior_pp": -2.6101907197106677,
+      "ic95_dr_superior_pp": -0.33270175545761227
+    },
+    {
+      "dimensao": "Raça/cor",
+      "grupo": "IGNORADO",
+      "n": 28150,
+      "media_pp": -2.8211333573151323,
+      "p05_pp": -9.520086550583157,
+      "p25_pp": -4.149643886267723,
+      "mediana_pp": -1.9207352630455792,
+      "p75_pp": -0.6819187483649766,
+      "p95_pp": 1.690526537837325,
+      "contraste_dr_pp": -1.7842379971347628,
+      "ic95_dr_inferior_pp": -3.323103753659772,
+      "ic95_dr_superior_pp": -0.2453722406097536
+    },
+    {
+      "dimensao": "Paridade",
+      "grupo": "0",
+      "n": 831132,
+      "media_pp": -1.471179225575885,
+      "p05_pp": -3.981942217628104,
+      "p25_pp": -2.18624658814205,
+      "mediana_pp": -1.502743335989996,
+      "p75_pp": -0.6284643944384908,
+      "p95_pp": 1.1625310740644508,
+      "contraste_dr_pp": -1.445885460612553,
+      "ic95_dr_inferior_pp": -1.6924431303517224,
+      "ic95_dr_superior_pp": -1.199327790873384
+    },
+    {
+      "dimensao": "Paridade",
+      "grupo": "1",
+      "n": 1420438,
+      "media_pp": -1.1904875234680907,
+      "p05_pp": -3.873163283171688,
+      "p25_pp": -1.8240490162926024,
+      "mediana_pp": -1.1377325695631306,
+      "p75_pp": -0.3357351993647825,
+      "p95_pp": 1.2206197140410548,
+      "contraste_dr_pp": -1.0821408494874811,
+      "ic95_dr_inferior_pp": -1.242217774334877,
+      "ic95_dr_superior_pp": -0.9220639246400852
+    }
+  ],
+  "perfis_por_particao": [
+    {
+      "dimensao": "Faixa etária",
+      "particao": 1,
+      "grupo": "20–29",
+      "n": 370290,
+      "media_pp": -1.2768866504082168,
+      "p05_pp": -2.949901139133941,
+      "p25_pp": -1.931373868058932,
+      "mediana_pp": -1.4023013312634938,
+      "p75_pp": -0.5451413827001718,
+      "p95_pp": 0.6658335111441956
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 1,
+      "grupo": "30–34",
+      "n": 161006,
+      "media_pp": -1.6848304735478457,
+      "p05_pp": -4.0725777084247285,
+      "p25_pp": -2.6726150296323232,
+      "mediana_pp": -1.6368543038204553,
+      "p75_pp": -0.6562610151487649,
+      "p95_pp": 0.43777781556571355
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 1,
+      "grupo": "<20",
+      "n": 84238,
+      "media_pp": -1.4516497498568615,
+      "p05_pp": -3.1260301964587303,
+      "p25_pp": -2.1676289857991424,
+      "mediana_pp": -1.6315902628408696,
+      "p75_pp": -0.8505737896276313,
+      "p95_pp": 0.6294845540749191
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 1,
+      "grupo": "Ausente",
+      "n": 10,
+      "media_pp": -3.2286313426470095,
+      "p05_pp": -7.303656870874444,
+      "p25_pp": -5.239786592466159,
+      "mediana_pp": -4.1457242479950045,
+      "p75_pp": -0.8064557960550254,
+      "p95_pp": 1.6368994818355889
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 1,
+      "grupo": "≥35",
+      "n": 141140,
+      "media_pp": -2.245339281704362,
+      "p05_pp": -7.0282041113631895,
+      "p25_pp": -3.3765095584672653,
+      "mediana_pp": -1.9824667169677568,
+      "p75_pp": -0.6426470576194672,
+      "p95_pp": 1.510034239830338
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 2,
+      "grupo": "20–29",
+      "n": 343275,
+      "media_pp": -1.0461101890873696,
+      "p05_pp": -2.8932647472128323,
+      "p25_pp": -1.5914172818411592,
+      "mediana_pp": -1.0957328738816776,
+      "p75_pp": -0.37981198438205854,
+      "p95_pp": 0.8589401587016354
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 2,
+      "grupo": "30–34",
+      "n": 147670,
+      "media_pp": -0.8308445966217942,
+      "p05_pp": -3.688195017561581,
+      "p25_pp": -1.8149034335302054,
+      "mediana_pp": -0.7909454823450082,
+      "p75_pp": 0.1614929759498758,
+      "p95_pp": 2.272151473062644
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 2,
+      "grupo": "<20",
+      "n": 79884,
+      "media_pp": -0.997000838634027,
+      "p05_pp": -3.276958154567148,
+      "p25_pp": -1.7756397337177363,
+      "mediana_pp": -1.193506043692788,
+      "p75_pp": -0.2778322585619107,
+      "p95_pp": 1.679139885609514
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 2,
+      "grupo": "Ausente",
+      "n": 9,
+      "media_pp": 0.13462212144725133,
+      "p05_pp": -5.603052377085681,
+      "p25_pp": -1.7362394109990649,
+      "mediana_pp": -1.518689486999721,
+      "p75_pp": 1.6173992349873618,
+      "p95_pp": 8.229134965378664
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 2,
+      "grupo": "≥35",
+      "n": 123263,
+      "media_pp": -0.9302685692245022,
+      "p05_pp": -5.451273545560598,
+      "p25_pp": -2.4544941288911986,
+      "mediana_pp": -0.9348646815950431,
+      "p75_pp": 0.2876195076449875,
+      "p95_pp": 3.634110490117224
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 3,
+      "grupo": "20–29",
+      "n": 397941,
+      "media_pp": -1.240337456716948,
+      "p05_pp": -2.9967414072109113,
+      "p25_pp": -1.8105656111213448,
+      "mediana_pp": -1.3414435540677687,
+      "p75_pp": -0.5805814024140161,
+      "p95_pp": 0.4856892760337446
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 3,
+      "grupo": "30–34",
+      "n": 168078,
+      "media_pp": -1.0264314747557397,
+      "p05_pp": -3.0122928311564143,
+      "p25_pp": -1.6904134010409182,
+      "mediana_pp": -1.0785018590969642,
+      "p75_pp": -0.27404425432377755,
+      "p95_pp": 0.9330685080958259
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 3,
+      "grupo": "<20",
+      "n": 93643,
+      "media_pp": -1.1865780000142565,
+      "p05_pp": -3.726813351106846,
+      "p25_pp": -2.2180917391037056,
+      "mediana_pp": -1.197357093096456,
+      "p75_pp": -0.32903548227478513,
+      "p95_pp": 1.6841264606713129
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 3,
+      "grupo": "Ausente",
+      "n": 13,
+      "media_pp": -3.769297460936553,
+      "p05_pp": -5.784539823474654,
+      "p25_pp": -5.656679469147888,
+      "mediana_pp": -5.018809543475062,
+      "p75_pp": -2.678176099701731,
+      "p95_pp": 0.7874233611309428
+    },
+    {
+      "dimensao": "Faixa etária",
+      "particao": 3,
+      "grupo": "≥35",
+      "n": 141110,
+      "media_pp": -1.963557049262547,
+      "p05_pp": -8.155787439319171,
+      "p25_pp": -2.855760023641427,
+      "mediana_pp": -1.542766349853463,
+      "p75_pp": -0.32614694439971276,
+      "p95_pp": 2.2521116195501683
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 1,
+      "grupo": "0",
+      "n": 1576,
+      "media_pp": -2.140135300392464,
+      "p05_pp": -7.289540611553315,
+      "p25_pp": -3.7699301147932984,
+      "mediana_pp": -1.6393532045336792,
+      "p75_pp": 0.03571070942871546,
+      "p95_pp": 1.2540577386014955
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 1,
+      "grupo": "1",
+      "n": 14580,
+      "media_pp": -2.374393127738467,
+      "p05_pp": -7.655244073721583,
+      "p25_pp": -4.004559083995043,
+      "mediana_pp": -1.817015068519587,
+      "p75_pp": -0.32041629461520343,
+      "p95_pp": 1.2323915957131626
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 1,
+      "grupo": "2",
+      "n": 121975,
+      "media_pp": -1.3954186185554243,
+      "p05_pp": -3.9643154342837494,
+      "p25_pp": -2.1077697888174987,
+      "mediana_pp": -1.3072928124617287,
+      "p75_pp": -0.5142768482662738,
+      "p95_pp": 0.7843507624802046
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 1,
+      "grupo": "3",
+      "n": 421043,
+      "media_pp": -1.45122746616998,
+      "p05_pp": -3.4661954823637493,
+      "p25_pp": -2.081979308173948,
+      "mediana_pp": -1.4714679757429672,
+      "p75_pp": -0.6689999862861109,
+      "p95_pp": 0.5361911348596313
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 1,
+      "grupo": "4",
+      "n": 38198,
+      "media_pp": -1.7185752438257835,
+      "p05_pp": -5.048374800951882,
+      "p25_pp": -2.5576900924317107,
+      "mediana_pp": -1.6543645330581256,
+      "p75_pp": -0.4608331033699567,
+      "p95_pp": 0.8893691615123258
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 1,
+      "grupo": "5",
+      "n": 156573,
+      "media_pp": -1.8727766301101443,
+      "p05_pp": -5.074195224574868,
+      "p25_pp": -2.8116603993431997,
+      "mediana_pp": -1.8240490162926024,
+      "p75_pp": -0.6893449867276388,
+      "p95_pp": 1.0319669979153319
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 1,
+      "grupo": "IGNORADO",
+      "n": 2739,
+      "media_pp": -1.902324798356857,
+      "p05_pp": -6.407237321909492,
+      "p25_pp": -2.7269796247228326,
+      "mediana_pp": -1.393810682467507,
+      "p75_pp": -0.47778906088418294,
+      "p95_pp": 1.2022629972704475
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 2,
+      "grupo": "0",
+      "n": 1535,
+      "media_pp": -2.779273268630237,
+      "p05_pp": -7.261646010460178,
+      "p25_pp": -4.481969297859071,
+      "mediana_pp": -3.0000439363268128,
+      "p75_pp": -1.1011286837450274,
+      "p95_pp": 1.4066665904287508
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 2,
+      "grupo": "1",
+      "n": 13803,
+      "media_pp": -2.5499855284522197,
+      "p05_pp": -6.845562656946291,
+      "p25_pp": -4.073147953209621,
+      "mediana_pp": -2.3115172459926883,
+      "p75_pp": -0.9295891851907236,
+      "p95_pp": 1.2131287251573561
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 2,
+      "grupo": "2",
+      "n": 120736,
+      "media_pp": -1.5884044262752133,
+      "p05_pp": -4.032392721211369,
+      "p25_pp": -2.2671757392301592,
+      "mediana_pp": -1.5048330154166158,
+      "p75_pp": -0.7740341972474603,
+      "p95_pp": 0.6024739604924604
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 2,
+      "grupo": "3",
+      "n": 384868,
+      "media_pp": -1.123296450110604,
+      "p05_pp": -3.043608612081361,
+      "p25_pp": -1.6375612349024207,
+      "mediana_pp": -1.125989943552644,
+      "p75_pp": -0.4439706805550725,
+      "p95_pp": 0.6624015528165097
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 2,
+      "grupo": "4",
+      "n": 35790,
+      "media_pp": -0.4840568613347253,
+      "p05_pp": -2.677088878946815,
+      "p25_pp": -1.2149619699000747,
+      "mediana_pp": -0.6619852507016728,
+      "p75_pp": 0.21057305400573822,
+      "p95_pp": 2.3919089513268963
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 2,
+      "grupo": "5",
+      "n": 133381,
+      "media_pp": 0.0884079015470517,
+      "p05_pp": -4.3161939185224165,
+      "p25_pp": -0.9724497616989151,
+      "mediana_pp": -0.1107703110189553,
+      "p75_pp": 1.339658950765691,
+      "p95_pp": 4.473838651945556
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 2,
+      "grupo": "IGNORADO",
+      "n": 3988,
+      "media_pp": -1.757934891001783,
+      "p05_pp": -4.132771190139632,
+      "p25_pp": -2.5714448259246034,
+      "mediana_pp": -1.6993929173471523,
+      "p75_pp": -0.9454728969701957,
+      "p95_pp": 0.5137079239785478
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 3,
+      "grupo": "0",
+      "n": 1860,
+      "media_pp": -1.7806768668566846,
+      "p05_pp": -4.962361205554814,
+      "p25_pp": -2.417850799869094,
+      "mediana_pp": -1.5688397982161095,
+      "p75_pp": -0.7172399572654402,
+      "p95_pp": 1.0263101906125067
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 3,
+      "grupo": "1",
+      "n": 15483,
+      "media_pp": -3.409927930253947,
+      "p05_pp": -8.878745592457133,
+      "p25_pp": -4.215107194344473,
+      "mediana_pp": -2.802952692645575,
+      "p75_pp": -1.8259918627126333,
+      "p95_pp": -0.1371323853737781
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 3,
+      "grupo": "2",
+      "n": 136047,
+      "media_pp": -1.5066510084670428,
+      "p05_pp": -3.9493737468119225,
+      "p25_pp": -1.9930216567476833,
+      "mediana_pp": -1.4837803009025823,
+      "p75_pp": -0.7412112294827635,
+      "p95_pp": 0.8074928775098895
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 3,
+      "grupo": "3",
+      "n": 448002,
+      "media_pp": -1.3237950363121824,
+      "p05_pp": -3.4368544800357523,
+      "p25_pp": -1.8197069728127642,
+      "mediana_pp": -1.3085616482842062,
+      "p75_pp": -0.5766313057875011,
+      "p95_pp": 0.6691025844342914
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 3,
+      "grupo": "4",
+      "n": 42510,
+      "media_pp": -1.2114609662069173,
+      "p05_pp": -3.4875959127401477,
+      "p25_pp": -1.7455096675764767,
+      "mediana_pp": -1.110128641863264,
+      "p75_pp": -0.38037498887485915,
+      "p95_pp": 0.6279103350710216
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 3,
+      "grupo": "5",
+      "n": 152854,
+      "media_pp": -0.8953473013059632,
+      "p05_pp": -4.531330586279035,
+      "p25_pp": -1.761874575963697,
+      "mediana_pp": -0.7569298258849251,
+      "p75_pp": 0.1292111671330301,
+      "p95_pp": 2.4756264270591894
+    },
+    {
+      "dimensao": "Escolaridade",
+      "particao": 3,
+      "grupo": "IGNORADO",
+      "n": 4029,
+      "media_pp": -2.9387362200391913,
+      "p05_pp": -6.7185554639289675,
+      "p25_pp": -4.075062705898402,
+      "mediana_pp": -2.619776980392014,
+      "p75_pp": -1.6264249517501754,
+      "p95_pp": 0.026102620599359413
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 1,
+      "grupo": "1",
+      "n": 270656,
+      "media_pp": -1.7413422139351855,
+      "p05_pp": -4.498899489273741,
+      "p25_pp": -2.3555428675276024,
+      "mediana_pp": -1.68206491238289,
+      "p75_pp": -0.7974003137338328,
+      "p95_pp": 0.6396061858531806
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 1,
+      "grupo": "2",
+      "n": 62986,
+      "media_pp": -1.7243331673416167,
+      "p05_pp": -4.177837002438979,
+      "p25_pp": -2.308803714992138,
+      "mediana_pp": -1.6928414180840914,
+      "p75_pp": -0.8611665293791468,
+      "p95_pp": 0.35592677968542685
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 1,
+      "grupo": "3",
+      "n": 4241,
+      "media_pp": -0.4149720052506273,
+      "p05_pp": -4.00888881546937,
+      "p25_pp": -1.1266845380063006,
+      "mediana_pp": -0.1278919888090357,
+      "p75_pp": 0.7572523043000117,
+      "p95_pp": 2.087510629939432
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 1,
+      "grupo": "4",
+      "n": 404401,
+      "media_pp": -1.4489500410395344,
+      "p05_pp": -4.0398656278986165,
+      "p25_pp": -2.16194175682735,
+      "mediana_pp": -1.4374121316343378,
+      "p75_pp": -0.5192784492624992,
+      "p95_pp": 0.8583641040763791
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 1,
+      "grupo": "5",
+      "n": 7751,
+      "media_pp": -0.7956579483419977,
+      "p05_pp": -2.991795196068657,
+      "p25_pp": -1.421336604272882,
+      "mediana_pp": -0.7666259834935666,
+      "p75_pp": -0.04736430207371363,
+      "p95_pp": 1.1308779796062203
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 1,
+      "grupo": "IGNORADO",
+      "n": 6649,
+      "media_pp": -1.4306306894346956,
+      "p05_pp": -4.183553656746837,
+      "p25_pp": -2.0142068624285887,
+      "mediana_pp": -1.2231954240411027,
+      "p75_pp": -0.6380516488206537,
+      "p95_pp": 0.6521476963161629
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 2,
+      "grupo": "1",
+      "n": 239929,
+      "media_pp": -0.8853245627721686,
+      "p05_pp": -3.8887838275847195,
+      "p25_pp": -1.6692005995243377,
+      "mediana_pp": -0.97897543265509,
+      "p75_pp": -0.03979481476636323,
+      "p95_pp": 2.3224309329284516
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 2,
+      "grupo": "2",
+      "n": 55929,
+      "media_pp": -1.120645949247433,
+      "p05_pp": -3.6840669227158993,
+      "p25_pp": -1.7468363125327049,
+      "mediana_pp": -1.1421503209417099,
+      "p75_pp": -0.3505337946977589,
+      "p95_pp": 1.5956717917348917
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 2,
+      "grupo": "3",
+      "n": 2789,
+      "media_pp": -0.5683541778777321,
+      "p05_pp": -3.5242224926367554,
+      "p25_pp": -1.9030004935002596,
+      "mediana_pp": -0.8966456530168363,
+      "p75_pp": 0.5144295714640255,
+      "p95_pp": 3.2637997409532558
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 2,
+      "grupo": "4",
+      "n": 378320,
+      "media_pp": -0.9814608502487541,
+      "p05_pp": -3.2546228620156716,
+      "p25_pp": -1.7123931988409846,
+      "mediana_pp": -1.0639947799699754,
+      "p75_pp": -0.22638804267109208,
+      "p95_pp": 1.599748075190222
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 2,
+      "grupo": "5",
+      "n": 9551,
+      "media_pp": -1.9293163898275751,
+      "p05_pp": -5.984134467689544,
+      "p25_pp": -3.22123765167823,
+      "mediana_pp": -1.6022099709308235,
+      "p75_pp": -0.21658432196221553,
+      "p95_pp": 0.8822045912712021
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 2,
+      "grupo": "IGNORADO",
+      "n": 7583,
+      "media_pp": -1.2785495134493479,
+      "p05_pp": -4.2513352036965335,
+      "p25_pp": -2.6586895283487717,
+      "mediana_pp": -1.6142342842543793,
+      "p75_pp": -0.22583925852554593,
+      "p95_pp": 2.5648574477011645
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 3,
+      "grupo": "1",
+      "n": 242074,
+      "media_pp": -1.2202373062121985,
+      "p05_pp": -3.5721842608265706,
+      "p25_pp": -1.8755987005004198,
+      "mediana_pp": -1.3509039067286348,
+      "p75_pp": -0.42866360012703864,
+      "p95_pp": 1.1519490148458396
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 3,
+      "grupo": "2",
+      "n": 59856,
+      "media_pp": -1.565973742567592,
+      "p05_pp": -4.254872601111455,
+      "p25_pp": -2.01989608363857,
+      "mediana_pp": -1.4749039410333011,
+      "p75_pp": -0.729464077903115,
+      "p95_pp": 0.6218999329760461
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 3,
+      "grupo": "3",
+      "n": 3360,
+      "media_pp": -2.076021094307608,
+      "p05_pp": -5.516059686181514,
+      "p25_pp": -2.8758136696869556,
+      "mediana_pp": -1.9046903349872066,
+      "p75_pp": -1.0968894741327115,
+      "p95_pp": 0.8084873571426383
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 3,
+      "grupo": "4",
+      "n": 472094,
+      "media_pp": -1.238877489826966,
+      "p05_pp": -3.5778496250354146,
+      "p25_pp": -1.8406407697292713,
+      "mediana_pp": -1.233572193238693,
+      "p75_pp": -0.42353326838187033,
+      "p95_pp": 1.0346606129355056
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 3,
+      "grupo": "5",
+      "n": 9483,
+      "media_pp": -1.3890991109220607,
+      "p05_pp": -3.8282483763611,
+      "p25_pp": -1.9781439331989163,
+      "mediana_pp": -1.2340478872437426,
+      "p75_pp": -0.6850280732424185,
+      "p95_pp": 0.8854519694160194
+    },
+    {
+      "dimensao": "Raça/cor",
+      "particao": 3,
+      "grupo": "IGNORADO",
+      "n": 13918,
+      "media_pp": -4.325865756134745,
+      "p05_pp": -11.144022529918244,
+      "p25_pp": -7.619049421457984,
+      "mediana_pp": -3.728257948142989,
+      "p75_pp": -1.1463055144478893,
+      "p95_pp": 1.0871221024930229
+    },
+    {
+      "dimensao": "Paridade",
+      "particao": 1,
+      "grupo": "0",
+      "n": 280776,
+      "media_pp": -1.8728938184385444,
+      "p05_pp": -4.295250484983752,
+      "p25_pp": -2.4020971342074255,
+      "mediana_pp": -1.8606058658328257,
+      "p75_pp": -1.173081491643682,
+      "p95_pp": 0.5656652368845765
+    },
+    {
+      "dimensao": "Paridade",
+      "particao": 1,
+      "grupo": "1",
+      "n": 475908,
+      "media_pp": -1.3814562528881247,
+      "p05_pp": -4.186186283016706,
+      "p25_pp": -2.014795618085126,
+      "mediana_pp": -1.3169643776543531,
+      "p75_pp": -0.42584369834026625,
+      "p95_pp": 0.8385571548896813
+    },
+    {
+      "dimensao": "Paridade",
+      "particao": 2,
+      "grupo": "0",
+      "n": 256828,
+      "media_pp": -1.079211277356994,
+      "p05_pp": -3.6339790274294876,
+      "p25_pp": -1.7756397337177363,
+      "mediana_pp": -1.1387410070028188,
+      "p75_pp": -0.23105175803637998,
+      "p95_pp": 1.642471479197047
+    },
+    {
+      "dimensao": "Paridade",
+      "particao": 2,
+      "grupo": "1",
+      "n": 437273,
+      "media_pp": -0.9123214121240355,
+      "p05_pp": -3.597688288722108,
+      "p25_pp": -1.6744835177271438,
+      "mediana_pp": -0.9755455124814836,
+      "p75_pp": -0.1843950679479683,
+      "p95_pp": 2.0473505048824028
+    },
+    {
+      "dimensao": "Paridade",
+      "particao": 3,
+      "grupo": "0",
+      "n": 293528,
+      "media_pp": -1.4298766162152137,
+      "p05_pp": -3.9856065283329833,
+      "p25_pp": -2.159566931386562,
+      "mediana_pp": -1.4907140062200006,
+      "p75_pp": -0.5707622872516755,
+      "p95_pp": 1.1520076296823862
+    },
+    {
+      "dimensao": "Paridade",
+      "particao": 3,
+      "grupo": "1",
+      "n": 507257,
+      "media_pp": -1.2511096221771758,
+      "p05_pp": -3.865081858174022,
+      "p25_pp": -1.7913623148471165,
+      "mediana_pp": -1.230905044450436,
+      "p75_pp": -0.4028743959676985,
+      "p95_pp": 0.9539100765307158
+    }
+  ],
+  "quintis": [
+    {
+      "quintil": 1,
+      "n": 450314,
+      "cate_medio_pp": -3.618153163452937,
+      "ridge_medio_pp": -2.4434263360525432,
+      "idade_media": 29.926907753600982,
+      "prevalencia_observada_pct": 9.181593288238874,
+      "proporcao_t1_pct": 86.5305098220353,
+      "cate_min_pp": -33.251065533224065,
+      "cate_max_pp": -2.200364307198276
+    },
+    {
+      "quintil": 2,
+      "n": 450314,
+      "cate_medio_pp": -1.829008217884738,
+      "ridge_medio_pp": -1.9180692758103826,
+      "idade_media": 26.393598216347776,
+      "prevalencia_observada_pct": 8.192283606550097,
+      "proporcao_t1_pct": 86.03774255297415,
+      "cate_min_pp": -2.200364307198276,
+      "cate_max_pp": -1.5376511304358194
+    },
+    {
+      "quintil": 3,
+      "n": 450314,
+      "cate_medio_pp": -1.2733009418081078,
+      "ridge_medio_pp": -1.3023473546539965,
+      "idade_media": 26.392354634120345,
+      "prevalencia_observada_pct": 7.5254155988932165,
+      "proporcao_t1_pct": 85.47413582522417,
+      "cate_min_pp": -1.5376511304358194,
+      "cate_max_pp": -0.9614266580670873
+    },
+    {
+      "quintil": 4,
+      "n": 450314,
+      "cate_medio_pp": -0.6110210065987177,
+      "ridge_medio_pp": -0.7548685474734669,
+      "idade_media": 27.266723367968503,
+      "prevalencia_observada_pct": 7.076617649018241,
+      "proporcao_t1_pct": 85.64401728571619,
+      "cate_min_pp": -0.9614266580670873,
+      "cate_max_pp": -0.23153812086985157
+    },
+    {
+      "quintil": 5,
+      "n": 450314,
+      "cate_medio_pp": 0.860980860420244,
+      "ridge_medio_pp": -0.08986702245844227,
+      "idade_media": 28.71574503616422,
+      "prevalencia_observada_pct": 7.4985454593905585,
+      "proporcao_t1_pct": 87.57822319537034,
+      "cate_min_pp": -0.23153812086985157,
+      "cate_max_pp": 18.772903932805285
+    }
+  ],
+  "quintis_composicao_x": [
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 1,
+      "categoria": "0",
+      "n": 2188,
+      "percentual": 0.48588318373401673
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 1,
+      "categoria": "1",
+      "n": 23581,
+      "percentual": 5.2365682612577
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 1,
+      "categoria": "2",
+      "n": 87805,
+      "percentual": 19.498616520916517
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 1,
+      "categoria": "3",
+      "n": 214817,
+      "percentual": 47.70382444250012
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 1,
+      "categoria": "4",
+      "n": 20921,
+      "percentual": 4.645869326736455
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 1,
+      "categoria": "5",
+      "n": 96304,
+      "percentual": 21.38596623689248
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 1,
+      "categoria": "IGNORADO",
+      "n": 4698,
+      "percentual": 1.0432720279627106
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 2,
+      "categoria": "0",
+      "n": 631,
+      "percentual": 0.14012444649733297
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 2,
+      "categoria": "1",
+      "n": 5821,
+      "percentual": 1.292653570619612
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 2,
+      "categoria": "2",
+      "n": 90977,
+      "percentual": 20.20301389696967
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 2,
+      "categoria": "3",
+      "n": 264165,
+      "percentual": 58.6624000142123
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 2,
+      "categoria": "4",
+      "n": 20350,
+      "percentual": 4.519068916356143
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 2,
+      "categoria": "5",
+      "n": 66479,
+      "percentual": 14.762809950390173
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 2,
+      "categoria": "IGNORADO",
+      "n": 1891,
+      "percentual": 0.4199292049547649
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 3,
+      "categoria": "0",
+      "n": 595,
+      "percentual": 0.13213002482712063
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 3,
+      "categoria": "1",
+      "n": 4128,
+      "percentual": 0.9166936848510151
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 3,
+      "categoria": "2",
+      "n": 67713,
+      "percentual": 15.036840959863563
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 3,
+      "categoria": "3",
+      "n": 308668,
+      "percentual": 68.54505966947508
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 3,
+      "categoria": "4",
+      "n": 20188,
+      "percentual": 4.483094018840187
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 3,
+      "categoria": "5",
+      "n": 47357,
+      "percentual": 10.516439639895717
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 3,
+      "categoria": "IGNORADO",
+      "n": 1665,
+      "percentual": 0.36974200224732073
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 4,
+      "categoria": "0",
+      "n": 557,
+      "percentual": 0.12369146861967427
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 4,
+      "categoria": "1",
+      "n": 4013,
+      "percentual": 0.891155948960059
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 4,
+      "categoria": "2",
+      "n": 79454,
+      "percentual": 17.64413276069587
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 4,
+      "categoria": "3",
+      "n": 259528,
+      "percentual": 57.63267408963523
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 4,
+      "categoria": "4",
+      "n": 25670,
+      "percentual": 5.700466785398633
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 4,
+      "categoria": "5",
+      "n": 79946,
+      "percentual": 17.75338985685544
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 4,
+      "categoria": "IGNORADO",
+      "n": 1146,
+      "percentual": 0.25448908983509283
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 5,
+      "categoria": "0",
+      "n": 1000,
+      "percentual": 0.22206726861700946
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 5,
+      "categoria": "1",
+      "n": 6323,
+      "percentual": 1.4041313394653507
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 5,
+      "categoria": "2",
+      "n": 52809,
+      "percentual": 11.727150388395653
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 5,
+      "categoria": "3",
+      "n": 206735,
+      "percentual": 45.90907677753745
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 5,
+      "categoria": "4",
+      "n": 29369,
+      "percentual": 6.521893612012951
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 5,
+      "categoria": "5",
+      "n": 152722,
+      "percentual": 33.91455739772692
+    },
+    {
+      "variavel": "ESCOLARIDADE_MAE",
+      "quintil": 5,
+      "categoria": "IGNORADO",
+      "n": 1356,
+      "percentual": 0.3011232162446648
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 1,
+      "categoria": "1",
+      "n": 154176,
+      "percentual": 34.23744320629605
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 1,
+      "categoria": "2",
+      "n": 39889,
+      "percentual": 8.85804127786389
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 1,
+      "categoria": "3",
+      "n": 2449,
+      "percentual": 0.5438427408430562
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 1,
+      "categoria": "4",
+      "n": 234214,
+      "percentual": 52.01126325186426
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 1,
+      "categoria": "5",
+      "n": 6600,
+      "percentual": 1.4656439728722626
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 1,
+      "categoria": "IGNORADO",
+      "n": 12986,
+      "percentual": 2.883765550260485
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 2,
+      "categoria": "1",
+      "n": 161311,
+      "percentual": 35.821893167878414
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 2,
+      "categoria": "2",
+      "n": 41438,
+      "percentual": 9.202023476951638
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 2,
+      "categoria": "3",
+      "n": 1354,
+      "percentual": 0.3006790817074308
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 2,
+      "categoria": "4",
+      "n": 239588,
+      "percentual": 53.20465275341206
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 2,
+      "categoria": "5",
+      "n": 3393,
+      "percentual": 0.7534742424175132
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 2,
+      "categoria": "IGNORADO",
+      "n": 3230,
+      "percentual": 0.7172772776329406
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 3,
+      "categoria": "1",
+      "n": 148245,
+      "percentual": 32.92036223612857
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 3,
+      "categoria": "2",
+      "n": 36910,
+      "percentual": 8.19650288465382
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 3,
+      "categoria": "3",
+      "n": 1291,
+      "percentual": 0.2866888437845592
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 3,
+      "categoria": "4",
+      "n": 255633,
+      "percentual": 56.76772207837198
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 3,
+      "categoria": "5",
+      "n": 4912,
+      "percentual": 1.0907944234467506
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 3,
+      "categoria": "IGNORADO",
+      "n": 3323,
+      "percentual": 0.7379295336143225
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 4,
+      "categoria": "1",
+      "n": 132952,
+      "percentual": 29.524287497168643
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 4,
+      "categoria": "2",
+      "n": 33837,
+      "percentual": 7.514090168193749
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 4,
+      "categoria": "3",
+      "n": 1605,
+      "percentual": 0.3564179661303002
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 4,
+      "categoria": "4",
+      "n": 272579,
+      "percentual": 60.530874012355824
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 4,
+      "categoria": "5",
+      "n": 5595,
+      "percentual": 1.242466367912168
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 4,
+      "categoria": "IGNORADO",
+      "n": 3746,
+      "percentual": 0.8318639882393175
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 5,
+      "categoria": "1",
+      "n": 155975,
+      "percentual": 34.63694222253805
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 5,
+      "categoria": "2",
+      "n": 26697,
+      "percentual": 5.928529870268302
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 5,
+      "categoria": "3",
+      "n": 3691,
+      "percentual": 0.8196502884653819
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 5,
+      "categoria": "4",
+      "n": 252801,
+      "percentual": 56.13882757364861
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 5,
+      "categoria": "5",
+      "n": 6285,
+      "percentual": 1.3956927832579045
+    },
+    {
+      "variavel": "RACA_COR_MAE",
+      "quintil": 5,
+      "categoria": "IGNORADO",
+      "n": 4865,
+      "percentual": 1.080357261821751
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 1,
+      "categoria": "1",
+      "n": 264800,
+      "percentual": 58.80341272978411
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 1,
+      "categoria": "2",
+      "n": 115242,
+      "percentual": 25.591476169961403
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 1,
+      "categoria": "3",
+      "n": 1464,
+      "percentual": 0.32510648125530184
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 1,
+      "categoria": "4",
+      "n": 13111,
+      "percentual": 2.911523958837611
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 1,
+      "categoria": "5",
+      "n": 48746,
+      "percentual": 10.824891076004743
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 1,
+      "categoria": "IGNORADO",
+      "n": 6951,
+      "percentual": 1.5435895841568328
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 2,
+      "categoria": "1",
+      "n": 313119,
+      "percentual": 69.53348108208938
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 2,
+      "categoria": "2",
+      "n": 80136,
+      "percentual": 17.79558263789267
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 2,
+      "categoria": "3",
+      "n": 417,
+      "percentual": 0.09260205101329294
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 2,
+      "categoria": "4",
+      "n": 3650,
+      "percentual": 0.8105455304520846
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 2,
+      "categoria": "5",
+      "n": 51249,
+      "percentual": 11.380725449353118
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 2,
+      "categoria": "IGNORADO",
+      "n": 1743,
+      "percentual": 0.3870632491994475
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 3,
+      "categoria": "1",
+      "n": 252214,
+      "percentual": 56.00847408697042
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 3,
+      "categoria": "2",
+      "n": 123623,
+      "percentual": 27.452621948240562
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 3,
+      "categoria": "3",
+      "n": 423,
+      "percentual": 0.093934454624995
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 3,
+      "categoria": "4",
+      "n": 4271,
+      "percentual": 0.9484493042632475
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 3,
+      "categoria": "5",
+      "n": 68343,
+      "percentual": 15.176743339092278
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 3,
+      "categoria": "IGNORADO",
+      "n": 1440,
+      "percentual": 0.31977686680849365
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 4,
+      "categoria": "1",
+      "n": 201827,
+      "percentual": 44.81917062316517
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 4,
+      "categoria": "2",
+      "n": 154962,
+      "percentual": 34.41198807942902
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 4,
+      "categoria": "3",
+      "n": 505,
+      "percentual": 0.11214397065158978
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 4,
+      "categoria": "4",
+      "n": 5150,
+      "percentual": 1.1436464333775986
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 4,
+      "categoria": "5",
+      "n": 86214,
+      "percentual": 19.145307496546852
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 4,
+      "categoria": "IGNORADO",
+      "n": 1656,
+      "percentual": 0.3677433968297677
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 5,
+      "categoria": "1",
+      "n": 137200,
+      "percentual": 30.467629254253698
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 5,
+      "categoria": "2",
+      "n": 237826,
+      "percentual": 52.813370226108894
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 5,
+      "categoria": "3",
+      "n": 835,
+      "percentual": 0.1854261692952029
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 5,
+      "categoria": "4",
+      "n": 12149,
+      "percentual": 2.697895246428048
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 5,
+      "categoria": "5",
+      "n": 60336,
+      "percentual": 13.398650719275883
+    },
+    {
+      "variavel": "SITUACAO_CONJUGAL",
+      "quintil": 5,
+      "categoria": "IGNORADO",
+      "n": 1968,
+      "percentual": 0.43702838463827465
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "quintil": 1,
+      "categoria": "0",
+      "n": 205816,
+      "percentual": 45.70499695767842
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "quintil": 1,
+      "categoria": "1",
+      "n": 244498,
+      "percentual": 54.29500304232158
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "quintil": 2,
+      "categoria": "0",
+      "n": 200646,
+      "percentual": 44.55690917892848
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "quintil": 2,
+      "categoria": "1",
+      "n": 249668,
+      "percentual": 55.44309082107152
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "quintil": 3,
+      "categoria": "0",
+      "n": 157584,
+      "percentual": 34.99424845774282
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "quintil": 3,
+      "categoria": "1",
+      "n": 292730,
+      "percentual": 65.00575154225719
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "quintil": 4,
+      "categoria": "0",
+      "n": 125196,
+      "percentual": 27.801933761775118
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "quintil": 4,
+      "categoria": "1",
+      "n": 325118,
+      "percentual": 72.19806623822488
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "quintil": 5,
+      "categoria": "0",
+      "n": 141890,
+      "percentual": 31.509124744067474
+    },
+    {
+      "variavel": "PARIDADE_CAT",
+      "quintil": 5,
+      "categoria": "1",
+      "n": 308424,
+      "percentual": 68.49087525593252
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 1,
+      "categoria": "0",
+      "n": 327720,
+      "percentual": 72.77588527116635
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 1,
+      "categoria": "1",
+      "n": 93250,
+      "percentual": 20.707772798536134
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 1,
+      "categoria": "2_OU_MAIS",
+      "n": 21291,
+      "percentual": 4.728034216124748
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 1,
+      "categoria": "IGNORADO",
+      "n": 8053,
+      "percentual": 1.7883077141727772
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 2,
+      "categoria": "0",
+      "n": 376204,
+      "percentual": 83.54259472279342
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 2,
+      "categoria": "1",
+      "n": 56778,
+      "percentual": 12.608535377536564
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 2,
+      "categoria": "2_OU_MAIS",
+      "n": 11796,
+      "percentual": 2.6195055006062438
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 2,
+      "categoria": "IGNORADO",
+      "n": 5536,
+      "percentual": 1.2293643990637644
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 3,
+      "categoria": "0",
+      "n": 372346,
+      "percentual": 82.68585920046901
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 3,
+      "categoria": "1",
+      "n": 61238,
+      "percentual": 13.598955395568426
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 3,
+      "categoria": "2_OU_MAIS",
+      "n": 10551,
+      "percentual": 2.3430317511780667
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 3,
+      "categoria": "IGNORADO",
+      "n": 6179,
+      "percentual": 1.3721536527845015
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 4,
+      "categoria": "0",
+      "n": 346485,
+      "percentual": 76.94297756676453
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 4,
+      "categoria": "1",
+      "n": 79854,
+      "percentual": 17.732959668142673
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 4,
+      "categoria": "2_OU_MAIS",
+      "n": 15500,
+      "percentual": 3.4420426635636465
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 4,
+      "categoria": "IGNORADO",
+      "n": 8475,
+      "percentual": 1.882020101529155
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 5,
+      "categoria": "0",
+      "n": 308325,
+      "percentual": 68.46889059633945
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 5,
+      "categoria": "1",
+      "n": 86429,
+      "percentual": 19.19305195929951
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 5,
+      "categoria": "2_OU_MAIS",
+      "n": 41535,
+      "percentual": 9.223564002007489
+    },
+    {
+      "variavel": "PERDAS_FETAIS_CAT",
+      "quintil": 5,
+      "categoria": "IGNORADO",
+      "n": 14025,
+      "percentual": 3.1144934423535577
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "11",
+      "n": 5053,
+      "percentual": 1.1221059083217488
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "12",
+      "n": 604,
+      "percentual": 0.13412863024467372
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "13",
+      "n": 3953,
+      "percentual": 0.8778319128430384
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "14",
+      "n": 5909,
+      "percentual": 1.312195490257909
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "15",
+      "n": 13962,
+      "percentual": 3.100503204430686
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "16",
+      "n": 381,
+      "percentual": 0.08460762934308061
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "17",
+      "n": 4012,
+      "percentual": 0.8909338816914419
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "21",
+      "n": 4680,
+      "percentual": 1.0392748171276043
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "22",
+      "n": 13919,
+      "percentual": 3.0909543118801546
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "23",
+      "n": 27246,
+      "percentual": 6.05044480073904
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "24",
+      "n": 1750,
+      "percentual": 0.3886177200797666
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "25",
+      "n": 4279,
+      "percentual": 0.9502258424121836
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "26",
+      "n": 24356,
+      "percentual": 5.408670394435883
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "27",
+      "n": 5125,
+      "percentual": 1.1380947516621736
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "28",
+      "n": 4851,
+      "percentual": 1.077248320061113
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "29",
+      "n": 20967,
+      "percentual": 4.656084421092838
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "31",
+      "n": 55643,
+      "percentual": 12.356489027656258
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "32",
+      "n": 16196,
+      "percentual": 3.5966014825210855
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "33",
+      "n": 33234,
+      "percentual": 7.380183605217693
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "35",
+      "n": 123866,
+      "percentual": 27.506584294514493
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "41",
+      "n": 18860,
+      "percentual": 4.188188686116798
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "42",
+      "n": 13075,
+      "percentual": 2.903529537167399
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "43",
+      "n": 5893,
+      "percentual": 1.3086424139600368
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "50",
+      "n": 19477,
+      "percentual": 4.325204190853493
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "51",
+      "n": 4134,
+      "percentual": 0.9180260884627172
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "52",
+      "n": 16642,
+      "percentual": 3.6956434843242714
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 1,
+      "categoria": "53",
+      "n": 2247,
+      "percentual": 0.49898515258242027
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "11",
+      "n": 3602,
+      "percentual": 0.7998863015584681
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "12",
+      "n": 547,
+      "percentual": 0.12147079593350418
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "13",
+      "n": 4656,
+      "percentual": 1.033945202680796
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "14",
+      "n": 3021,
+      "percentual": 0.6708652184919855
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "15",
+      "n": 15754,
+      "percentual": 3.498447749792367
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "16",
+      "n": 997,
+      "percentual": 0.22140106681115843
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "17",
+      "n": 3517,
+      "percentual": 0.7810105837260223
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "21",
+      "n": 6368,
+      "percentual": 1.4141243665531162
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "22",
+      "n": 8197,
+      "percentual": 1.8202854008536267
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "23",
+      "n": 9580,
+      "percentual": 2.1274044333509505
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "24",
+      "n": 1025,
+      "percentual": 0.2276189503324347
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "25",
+      "n": 5363,
+      "percentual": 1.1909467615930218
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "26",
+      "n": 27501,
+      "percentual": 6.107071954236377
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "27",
+      "n": 3564,
+      "percentual": 0.7914477453510217
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "28",
+      "n": 4336,
+      "percentual": 0.9628836767233531
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "29",
+      "n": 17183,
+      "percentual": 3.815781876646074
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "31",
+      "n": 51077,
+      "percentual": 11.342529879150993
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "32",
+      "n": 11638,
+      "percentual": 2.5844188721647563
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "33",
+      "n": 39674,
+      "percentual": 8.810296815111233
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "35",
+      "n": 153357,
+      "percentual": 34.05557011329872
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "41",
+      "n": 28477,
+      "percentual": 6.323809608406578
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "42",
+      "n": 6441,
+      "percentual": 1.430335277162158
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "43",
+      "n": 9746,
+      "percentual": 2.164267599941374
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "50",
+      "n": 5771,
+      "percentual": 1.2815502071887617
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "51",
+      "n": 3781,
+      "percentual": 0.8396363426409128
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "52",
+      "n": 17904,
+      "percentual": 3.9758923773189374
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 2,
+      "categoria": "53",
+      "n": 7237,
+      "percentual": 1.6071008229812975
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "11",
+      "n": 1732,
+      "percentual": 0.3846205092446604
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "12",
+      "n": 1347,
+      "percentual": 0.2991246108271117
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "13",
+      "n": 24668,
+      "percentual": 5.47795538224439
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "14",
+      "n": 1190,
+      "percentual": 0.26426004965424127
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "15",
+      "n": 25295,
+      "percentual": 5.617191559667255
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "16",
+      "n": 1257,
+      "percentual": 0.2791385566515809
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "17",
+      "n": 2164,
+      "percentual": 0.4805535692872085
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "21",
+      "n": 10923,
+      "percentual": 2.425640775103594
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "22",
+      "n": 6511,
+      "percentual": 1.4458799859653486
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "23",
+      "n": 18932,
+      "percentual": 4.2041775294572235
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "24",
+      "n": 2002,
+      "percentual": 0.44457867177125293
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "25",
+      "n": 6540,
+      "percentual": 1.452319936755242
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "26",
+      "n": 17361,
+      "percentual": 3.8553098504599013
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "27",
+      "n": 9460,
+      "percentual": 2.1007563611169093
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "28",
+      "n": 3763,
+      "percentual": 0.8356391318058066
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "29",
+      "n": 33186,
+      "percentual": 7.369524376324076
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "31",
+      "n": 43277,
+      "percentual": 9.610405183938319
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "32",
+      "n": 11621,
+      "percentual": 2.580643728598267
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "33",
+      "n": 24071,
+      "percentual": 5.345381222880035
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "35",
+      "n": 106246,
+      "percentual": 23.59375902148279
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "41",
+      "n": 32772,
+      "percentual": 7.2775885271166345
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "42",
+      "n": 18350,
+      "percentual": 4.074934379122124
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "43",
+      "n": 15871,
+      "percentual": 3.524429620220557
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "50",
+      "n": 4468,
+      "percentual": 0.9921965561807983
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "51",
+      "n": 8008,
+      "percentual": 1.7783146870850117
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "52",
+      "n": 11123,
+      "percentual": 2.470054228826996
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 3,
+      "categoria": "53",
+      "n": 8176,
+      "percentual": 1.8156219882126694
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "11",
+      "n": 2320,
+      "percentual": 0.5151960631914619
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "12",
+      "n": 2473,
+      "percentual": 0.5491723552898644
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "13",
+      "n": 13897,
+      "percentual": 3.0860688319705805
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "14",
+      "n": 624,
+      "percentual": 0.1385699756170139
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "15",
+      "n": 40409,
+      "percentual": 8.973516257544736
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "16",
+      "n": 2159,
+      "percentual": 0.47944323294412344
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "17",
+      "n": 5007,
+      "percentual": 1.1118908139653665
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "21",
+      "n": 31896,
+      "percentual": 7.083057599808134
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "22",
+      "n": 4361,
+      "percentual": 0.9684353584387783
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "23",
+      "n": 20147,
+      "percentual": 4.473989260826889
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "24",
+      "n": 5384,
+      "percentual": 1.1956101742339789
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "25",
+      "n": 10686,
+      "percentual": 2.3730108324413632
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "26",
+      "n": 18485,
+      "percentual": 4.10491346038542
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "27",
+      "n": 11303,
+      "percentual": 2.510026337178058
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "28",
+      "n": 5141,
+      "percentual": 1.1416478279600457
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "29",
+      "n": 45464,
+      "percentual": 10.096066300403718
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "31",
+      "n": 27320,
+      "percentual": 6.066877778616699
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "32",
+      "n": 4832,
+      "percentual": 1.0730290419573898
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "33",
+      "n": 27618,
+      "percentual": 6.133053824664567
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "35",
+      "n": 44616,
+      "percentual": 9.907753256616495
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "41",
+      "n": 22506,
+      "percentual": 4.997845947494415
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "42",
+      "n": 21260,
+      "percentual": 4.721150130797621
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "43",
+      "n": 31940,
+      "percentual": 7.092828559627282
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "50",
+      "n": 5546,
+      "percentual": 1.2315850717499346
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "51",
+      "n": 16751,
+      "percentual": 3.7198488166035255
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "52",
+      "n": 16906,
+      "percentual": 3.754269243239162
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 4,
+      "categoria": "53",
+      "n": 11263,
+      "percentual": 2.5011436464333774
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "11",
+      "n": 6075,
+      "percentual": 1.3490586568483325
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "12",
+      "n": 6891,
+      "percentual": 1.5302655480398122
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "13",
+      "n": 15440,
+      "percentual": 3.428718627446626
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "14",
+      "n": 361,
+      "percentual": 0.08016628397074042
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "15",
+      "n": 12934,
+      "percentual": 2.8722180522924003
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "16",
+      "n": 6952,
+      "percentual": 1.5438116514254498
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "17",
+      "n": 6419,
+      "percentual": 1.4254497972525837
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "21",
+      "n": 32177,
+      "percentual": 7.145458502289514
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "22",
+      "n": 3624,
+      "percentual": 0.8047717814680423
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "23",
+      "n": 19474,
+      "percentual": 4.324537989047642
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "24",
+      "n": 24450,
+      "percentual": 5.429544717685881
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "25",
+      "n": 18253,
+      "percentual": 4.0533938540662735
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "26",
+      "n": 17045,
+      "percentual": 3.7851365935769263
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "27",
+      "n": 14334,
+      "percentual": 3.183112228356214
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "28",
+      "n": 8205,
+      "percentual": 1.8220619390025627
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "29",
+      "n": 30271,
+      "percentual": 6.722198288305494
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "31",
+      "n": 27026,
+      "percentual": 6.001590001643298
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "32",
+      "n": 3517,
+      "percentual": 0.7810105837260223
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "33",
+      "n": 30390,
+      "percentual": 6.748624293270917
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "35",
+      "n": 21063,
+      "percentual": 4.677402878880071
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "41",
+      "n": 22329,
+      "percentual": 4.958540040949204
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "42",
+      "n": 31562,
+      "percentual": 7.008887132090052
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "43",
+      "n": 43842,
+      "percentual": 9.73587319070693
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "50",
+      "n": 1241,
+      "percentual": 0.2755854803537087
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "51",
+      "n": 20387,
+      "percentual": 4.527285405294972
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "52",
+      "n": 22936,
+      "percentual": 5.093334872999729
+    },
+    {
+      "variavel": "UF_RESIDENCIA",
+      "quintil": 5,
+      "categoria": "53",
+      "n": 3116,
+      "percentual": 0.6919616090106014
+    }
+  ],
+  "estabilidade": {
+    "spearman_hgb_ridge": 0.7065559527312951,
+    "diferenca_absoluta_media_pp": 0.8817724239028333,
+    "concordancia_sinal": 0.863329587798736,
+    "correlacoes_perfis": [
+      {
+        "particao1": 1,
+        "particao2": 2,
+        "n_categorias": 19,
+        "spearman": 0.15438596491228068
+      },
+      {
+        "particao1": 1,
+        "particao2": 3,
+        "n_categorias": 19,
+        "spearman": 0.15789473684210528
+      },
+      {
+        "particao1": 2,
+        "particao2": 3,
+        "n_categorias": 19,
+        "spearman": 0.6315789473684211
+      }
+    ],
+    "mediana_spearman_perfis": 0.15789473684210528,
+    "contrastes_externos": [
+      {
+        "particao": 1,
+        "n": 756684,
+        "n_q1": 151337,
+        "n_q5": 151336,
+        "contraste_dr_q5_q1_pp": 0.9536593352302818,
+        "se_municipal_pp": 0.4589575381784803,
+        "ic95_inferior_pp": 0.053533354183255,
+        "ic95_superior_pp": 1.8537853162773086,
+        "contraste_cate_q5_q1_pp": 4.2445851588923675,
+        "metodo": "Quintis definidos dentro da partição externa; IC municipal condicional aos modelos fixos."
+      },
+      {
+        "particao": 2,
+        "n": 694101,
+        "n_q1": 138821,
+        "n_q5": 138820,
+        "contraste_dr_q5_q1_pp": 1.672816752589271,
+        "se_municipal_pp": 0.42656601777645897,
+        "ic95_inferior_pp": 0.8362180309620311,
+        "ic95_superior_pp": 2.5094154742165107,
+        "contraste_cate_q5_q1_pp": 4.72729896094346,
+        "metodo": "Quintis definidos dentro da partição externa; IC municipal condicional aos modelos fixos."
+      },
+      {
+        "particao": 3,
+        "n": 800785,
+        "n_q1": 160157,
+        "n_q5": 160157,
+        "contraste_dr_q5_q1_pp": 1.4886264251877845,
+        "se_municipal_pp": 0.40425571660061693,
+        "ic95_inferior_pp": 0.6957835787709542,
+        "ic95_superior_pp": 2.2814692716046148,
+        "contraste_cate_q5_q1_pp": 4.365400066209255,
+        "metodo": "Quintis definidos dentro da partição externa; IC municipal condicional aos modelos fixos."
+      }
+    ],
+    "distribuicao_particao": [
+      {
+        "particao": 1,
+        "n": 756684,
+        "media_pp": -1.5638096182361136,
+        "mediana_pp": -1.5094430892706951,
+        "p05_pp": -4.22982712464991,
+        "p25_pp": -2.2434866218034686,
+        "p75_pp": -0.6191747110974462,
+        "p95_pp": 0.7357116762568325,
+        "amplitude_robusta_pp": 4.965538800906743,
+        "min_pp": -21.855751142252576,
+        "max_pp": 9.998623090835206,
+        "proporcao_negativa": 0.8842713735191969,
+        "proporcao_positiva": 0.11572862648080308,
+        "proporcao_zero": 0.0,
+        "n_fora_limite_teorico": 0,
+        "media_psi_pp": -1.081136635205659,
+        "media_ridge_pp": -1.5671809101307843
+      },
+      {
+        "particao": 2,
+        "n": 694101,
+        "media_pp": -0.9740732181408482,
+        "mediana_pp": -1.0553406387182998,
+        "p05_pp": -3.606282835312314,
+        "p25_pp": -1.7360112828675927,
+        "p75_pp": -0.20490522291699625,
+        "p95_pp": 1.8763536294230423,
+        "amplitude_robusta_pp": 5.482636464735356,
+        "min_pp": -16.92113877970852,
+        "max_pp": 18.772903932805285,
+        "proporcao_negativa": 0.7954418737330734,
+        "proporcao_positiva": 0.20455812626692657,
+        "proporcao_zero": 0.0,
+        "n_fora_limite_teorico": 0,
+        "media_psi_pp": -1.2563405799121776,
+        "media_ridge_pp": -0.9955331808087643
+      },
+      {
+        "particao": 3,
+        "n": 800785,
+        "media_pp": -1.3166367214935093,
+        "mediana_pp": -1.2995662268308794,
+        "p05_pp": -3.893726788431741,
+        "p25_pp": -1.8785048140939782,
+        "p75_pp": -0.44961487127793764,
+        "p95_pp": 1.0289019883010788,
+        "amplitude_robusta_pp": 4.92262877673282,
+        "min_pp": -33.251065533224065,
+        "max_pp": 12.936683465822474,
+        "proporcao_negativa": 0.8560262742184231,
+        "proporcao_positiva": 0.14397372578157683,
+        "proporcao_zero": 0.0,
+        "n_fora_limite_teorico": 0,
+        "media_psi_pp": -1.309626943664716,
+        "media_ridge_pp": -1.3162618417284018
+      }
+    ]
+  },
+  "histograma": {
+    "contagens": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      2,
+      1,
+      11,
+      7,
+      7,
+      4,
+      14,
+      7,
+      27,
+      86,
+      57,
+      68,
+      70,
+      93,
+      93,
+      127,
+      299,
+      315,
+      306,
+      625,
+      876,
+      851,
+      1193,
+      1800,
+      2683,
+      4184,
+      4558,
+      5900,
+      7557,
+      9843,
+      18664,
+      30282,
+      57065,
+      122747,
+      256588,
+      596981,
+      495218,
+      353577,
+      137375,
+      64363,
+      33219,
+      17086,
+      9320,
+      7054,
+      3925,
+      1897,
+      1164,
+      767,
+      670,
+      448,
+      316,
+      347,
+      173,
+      226,
+      146,
+      93,
+      103,
+      50,
+      15,
+      20,
+      4,
+      0,
+      1
+    ],
+    "limites_pp": [
+      -33.251065533224065,
+      -32.50786596942365,
+      -31.764666405623228,
+      -31.021466841822807,
+      -30.278267278022387,
+      -29.535067714221967,
+      -28.79186815042155,
+      -28.04866858662113,
+      -27.30546902282071,
+      -26.562269459020293,
+      -25.819069895219872,
+      -25.075870331419452,
+      -24.332670767619035,
+      -23.58947120381861,
+      -22.846271640018195,
+      -22.103072076217774,
+      -21.359872512417354,
+      -20.616672948616937,
+      -19.873473384816517,
+      -19.130273821016097,
+      -18.38707425721568,
+      -17.64387469341526,
+      -16.90067512961484,
+      -16.15747556581442,
+      -15.414276002014002,
+      -14.671076438213582,
+      -13.927876874413162,
+      -13.184677310612745,
+      -12.441477746812325,
+      -11.698278183011904,
+      -10.955078619211484,
+      -10.211879055411067,
+      -9.468679491610647,
+      -8.725479927810227,
+      -7.98228036400981,
+      -7.23908080020939,
+      -6.4958812364089695,
+      -5.752681672608549,
+      -5.0094821088081325,
+      -4.266282545007712,
+      -3.523082981207292,
+      -2.779883417406875,
+      -2.036683853606455,
+      -1.2934842898060346,
+      -0.5502847260056143,
+      0.19291483779480245,
+      0.9361144015952263,
+      1.679313965395643,
+      2.42251352919606,
+      3.1657130929964836,
+      3.9089126567969004,
+      4.652112220597317,
+      5.395311784397741,
+      6.138511348198158,
+      6.881710911998574,
+      7.624910475798998,
+      8.368110039599415,
+      9.111309603399832,
+      9.854509167200256,
+      10.597708731000672,
+      11.340908294801096,
+      12.084107858601513,
+      12.82730742240193,
+      13.570506986202354,
+      14.31370655000277,
+      15.056906113803187,
+      15.80010567760361,
+      16.543305241404028,
+      17.286504805204444,
+      18.029704369004868,
+      18.772903932805285
+    ]
+  },
+  "media_psi_pp": -1.2164115077986166,
+  "diferenca_media_cate_psi_pp": -0.0776889860662584,
+  "gate": "HETEROGENEIDADE_SENSIVEL_A_MODELO",
+  "causalidade_provada": false,
+  "politica_clinica_recomendada": false,
+  "limitacao_ic": "ICs municipais de contrastes DR com funções fixas; não são ICs do CATE previsto nem incorporam toda a incerteza de aprendizagem.",
+  "n_predicoes_distintas": 128204,
+  "sem_recorte_ou_winsorizacao": true,
+  "ate_fase2_c2_pp": -1.2314558359825436
+}

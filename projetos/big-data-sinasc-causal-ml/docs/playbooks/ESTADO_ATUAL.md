@@ -1,7 +1,7 @@
 # Estado Atual
 
-STATUS = FASE_3_AUDITADA_COM_RESSALVAS
-FASE_ATUAL = FASE_3_ROBUSTEZ_METODOLOGICA
+STATUS = FASE_4_HETEROGENEIDADE_SENSIVEL
+FASE_ATUAL = FASE_4_HETEROGENEIDADE_EXPLORATORIA
 DATA_INICIO = 2026-09-25
 DATA_ATUALIZACAO = 2026-09-26
 GATE_FASE_0 = VIAVEL_COM_RESSALVAS
@@ -11,6 +11,20 @@ MODELO_CAUSAL_EXECUTADO = SIM
 CAUSALIDADE_PROVADA = NAO
 GATE_FASE_2 = RESULTADO_NAO_INTERPRETAVEL
 GATE_FASE_3 = GATE_FASE2_EXCESSIVAMENTE_CONSERVADOR
+GATE_FASE_4 = HETEROGENEIDADE_SENSIVEL_A_MODELO
+
+## Resultado da Fase 4
+
+- Sequência cumprida: Fase 3 publicada em `48ce06b`, padronização PT-BR publicada em `1d27ab4`, seguida de DR-Learner exploratório.
+- N=2.251.570; T, Y, regras de qualidade e sete X preservados. Três partições municipais independentes de T/Y, com rotação dos papéis de ajuste auxiliar, treino do CATE e avaliação. Nenhum município compartilhado entre papéis na mesma rodada; cada registro avaliado uma vez.
+- Principal HGBRegressor: CATE médio −1,294100 pp; mediana −1,289838 pp; p5 −3,923820; p25 −1,962784; p75 −0,427044; p95 +1,208079 pp. Previsões negativas: 84,684%; isso não é frequência de benefício individual verdadeiro.
+- Ridge: média −1,301716 pp; Spearman com HGB 0,706556. Correlação mediana das médias dos grandes perfis entre partições: 0,157895, abaixo do critério exploratório 0,5. Instabilidade também pode refletir composição geográfica.
+- Separação prevista Q5−Q1: aproximadamente 4,24–4,73 pp; contraste DR externo: 0,95–1,67 pp. Há ordenação parcial, com magnitude excessiva e baixa estabilidade de perfis. Critério final: `HETEROGENEIDADE_SENSIVEL_A_MODELO`.
+- CATE não foi recentrado para coincidir com ATE. Média psi externa −1,216412 pp; C2 histórico −1,231456 pp, preservado. Idade ausente (N=32) é muito imprecisa; UF 53 é categoria nova na rodada de sua avaliação.
+- Resultados, protocolo prévio e limitações: [HETEROGENEIDADE_FASE4.md](../methodology/HETEROGENEIDADE_FASE4.md). Sem política clínica, ROI, Causal Forest, artigo completo ou Fase 5.
+- Validação final: 86 testes aprovados, `pip check` sem inconsistências e cinco notebooks executados sem erros. Notebook 05: dez células de código executadas; gráficos finais inspecionados e auditoria de idioma aprovada.
+- Recuperação do checkpoint pelo repositório: 22 linhas da Fase 3 e seis resultados históricos da Fase 2 reconciliados novamente a partir dos artefatos, sem refazer ajustes pesados. A validação da Fase 4 confirmou cobertura única, separação municipal, pseudo-desfechos, quintis, perfis e preservação das Fases 0–3. As únicas mudanças históricas de apresentação continuam documentadas no manifesto da etapa PT-BR.
+- Entregas computacionais e documentais autorizadas concluídas. Esta atualização integra o commit separado da Fase 4; o histórico Git registra sua publicação.
 
 ## Auditoria metodológica da Fase 3
 
@@ -22,7 +36,7 @@ GATE_FASE_3 = GATE_FASE2_EXCESSIVAMENTE_CONSERVADOR
 - Confundimento residual, seleção de nascidos vivos e temporalidade de covariáveis continuam limitantes. O estimando observável é uma associação padronizada na população selecionada; sua interpretação causal exige hipóteses não verificadas.
 - Validação: 22 linhas da Fase 3 reconciliadas, 65 testes aprovados e `pip check` sem inconsistências. Notebook 04 executado integralmente; registros em `outputs/diagnostics/fase3_validacao.json`.
 - Evidências e limitações: [relatório completo](../methodology/ROBUSTEZ_FASE3.md), [literatura](../literature/AUDITORIA_GATE_INFLUENCIA.md) e [estimando](../methodology/AUDITORIA_ESTIMANDO_FASE3.md).
-- Próxima sequência autorizada: concluir commit/push desta fase; padronizar e reexecutar notebooks 01–04 em português; depois executar a Fase 4 exclusivamente como exercício didático exploratório. Não há autorização para Fase 5 ou artigo completo.
+- Sequência posterior já cumprida: publicação da Fase 3, padronização e reexecução dos notebooks 01–04 em português e execução da Fase 4 exclusivamente como exercício didático exploratório. Não há autorização para Fase 5 ou artigo completo.
 
 ## Objetivo
 
@@ -89,9 +103,9 @@ Entre gestantes comparáveis em características observáveis, iniciar o pré-na
 - Possível viés de seleção ao excluir registros sem informação válida.
 - Risco de leakage ao usar consultas, idade gestacional, parto ou características neonatais como X.
 
-## Próxima etapa
+## Recomendações metodológicas após a entrega
 
-1. Revisar substantivamente o gate de concentração de influência com orientação acadêmica, sem reinterpretá-lo como teste universal de invalidade.
+1. Discutir com orientação acadêmica a revisão do gate de concentração de influência concluída na Fase 3, sem reinterpretá-lo como teste universal de invalidade.
 2. Avaliar seleção, confundimento não observado e incerteza por dependência geográfica antes de promover conclusões causais.
 3. Usar os notebooks como material do trabalho, mantendo resultados condicionais e limitações explícitas.
 

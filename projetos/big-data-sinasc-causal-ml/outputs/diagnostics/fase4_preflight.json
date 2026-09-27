@@ -1,0 +1,82 @@
+{
+  "status": "APROVADO",
+  "amostra": {
+    "cenario": "P1",
+    "n": 2251570,
+    "n_t1": 1942045,
+    "n_t0": 309525,
+    "prevalencia": 0.07894891120418197,
+    "n_clusters": 5581,
+    "n_consprenat_zero": 1064,
+    "codigos_municipio_nao_especificado": {
+      "330000": 17,
+      "130000": 6,
+      "520000": 3,
+      "320000": 3,
+      "350000": 2,
+      "260000": 1,
+      "290000": 1,
+      "270000": 1,
+      "420000": 1,
+      "140000": 1,
+      "410000": 1
+    },
+    "n_multipla": 0,
+    "n_peso_fora_p1": 0,
+    "datas_invalidas": 0,
+    "chave": "contador única, não nula; ordem explícita",
+    "sql": "SELECT contador, tratamento, y_p1 AS Y_BAIXO_PESO, CASE  WHEN ((TRY_CAST(IDADEMAE AS INTEGER) BETWEEN 10 AND 59)) THEN (TRY_CAST(IDADEMAE AS \"DOUBLE\")) ELSE NULL END AS IDADEMAE_NUM, CASE  WHEN (((TRY_CAST(ESCMAE2010 AS INTEGER) = 9) OR (ESCMAE2010 IS NULL))) THEN ('IGNORADO') ELSE CAST(TRY_CAST(ESCMAE2010 AS INTEGER) AS VARCHAR) END AS ESCOLARIDADE_MAE, CASE  WHEN (((TRY_CAST(RACACORMAE AS INTEGER) = 9) OR (RACACORMAE IS NULL))) THEN ('IGNORADO') ELSE CAST(TRY_CAST(RACACORMAE AS INTEGER) AS VARCHAR) END AS RACA_COR_MAE, CASE  WHEN (((TRY_CAST(ESTCIVMAE AS INTEGER) = 9) OR (ESTCIVMAE IS NULL))) THEN ('IGNORADO') ELSE CAST(TRY_CAST(ESTCIVMAE AS INTEGER) AS VARCHAR) END AS SITUACAO_CONJUGAL, CASE  WHEN (((TRY_CAST(PARIDADE AS INTEGER) IN (9, 99)) OR (PARIDADE IS NULL))) THEN ('IGNORADO') ELSE CAST(TRY_CAST(PARIDADE AS INTEGER) AS VARCHAR) END AS PARIDADE_CAT, CASE  WHEN ((TRY_CAST(QTDFILMORT AS INTEGER) = 0)) THEN ('0') WHEN ((TRY_CAST(QTDFILMORT AS INTEGER) = 1)) THEN ('1') WHEN ((TRY_CAST(QTDFILMORT AS INTEGER) BETWEEN 2 AND 98)) THEN ('2_OU_MAIS') ELSE 'IGNORADO' END AS PERDAS_FETAIS_CAT, CASE  WHEN (regexp_full_match(CAST(CODMUNRES AS VARCHAR), '[0-9]{6}')) THEN (substr(CAST(CODMUNRES AS VARCHAR), 1, 2)) ELSE 'IGNORADO' END AS UF_RESIDENCIA, CODMUNRES, try_cast(CONSPRENAT AS INTEGER) AS CONSPRENAT_NUM, gravidez_num, peso_num FROM fase1_base WHERE tratamento IS NOT NULL AND y_p1 IS NOT NULL AND gravidez_num = 1 ORDER BY contador",
+    "sha256_ordem_contador": "2b6d49e6c62e552cff9c8cf00355d0ee55ae737f89a857ba1ed67fdc44d58043"
+  },
+  "contrato": {
+    "dados_sha256": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5",
+    "chaves_sha256": "2b6d49e6c62e552cff9c8cf00355d0ee55ae737f89a857ba1ed67fdc44d58043",
+    "x": [
+      "IDADEMAE_NUM",
+      "ESCOLARIDADE_MAE",
+      "RACA_COR_MAE",
+      "SITUACAO_CONJUGAL",
+      "PARIDADE_CAT",
+      "PERDAS_FETAIS_CAT",
+      "UF_RESIDENCIA"
+    ],
+    "n": 2251570,
+    "semente": 20240925,
+    "particoes": [
+      {
+        "particao": 1,
+        "n": 756684,
+        "n_t1": 656380,
+        "n_t0": 100304,
+        "n_y1": 60203,
+        "n_municipios": 1861
+      },
+      {
+        "particao": 2,
+        "n": 694101,
+        "n_t1": 598189,
+        "n_t0": 95912,
+        "n_y1": 54412,
+        "n_municipios": 1860
+      },
+      {
+        "particao": 3,
+        "n": 800785,
+        "n_t1": 687476,
+        "n_t0": 113309,
+        "n_y1": 63144,
+        "n_municipios": 1860
+      }
+    ],
+    "codigo": {
+      "heterogeneidade_dr.py": "4575f397d540f38b0f838f769b6b127cd6fa565e66853a4fc44a21a65b0a3500",
+      "modelagem_preditiva.py": "c75dd05af8da95a6d88ad070fe2964d89f5e20c91005777b56713fe8e33d3752",
+      "estima_aipw.py": "f5090b57189f10f77d35ac7cec3156d89fbae93542ad009058fd6081480fa09f",
+      "diagnostica_overlap.py": "88fc96718128308bee1ffcf506b3eab0f74181ad4328872430fc9df444954f08",
+      "audita_covariaveis.py": "7f3c95a768c24f46e32072d6373bf04b4dbb69339fce15a9cede3bae2eff5284"
+    }
+  },
+  "sem_novas_features": true,
+  "municipio_somente_separacao": true,
+  "particoes_independentes_de_t_y": true
+}
