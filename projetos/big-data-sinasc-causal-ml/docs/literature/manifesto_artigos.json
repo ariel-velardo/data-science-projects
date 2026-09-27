@@ -1,0 +1,160 @@
+[
+  {
+    "id": "vale2021",
+    "origem": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10208735/",
+    "url": "https://www.thieme-connect.com/products/ejournals/pdf/10.1055/s-0041-1728779.pdf",
+    "arquivo": "",
+    "disponivel": false,
+    "motivo": "Resposta não é PDF (HTML/desafio de acesso).",
+    "tentativas": [
+      {
+        "url": "https://www.thieme-connect.com/products/ejournals/pdf/10.1055/s-0041-1728779.pdf",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "id": "falcao2020",
+    "origem": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7491100/",
+    "url": "https://bmcpregnancychildbirth.biomedcentral.com/counter/pdf/10.1186/s12884-020-03226-x.pdf",
+    "arquivo": "pdfs/falcao2020.pdf",
+    "disponivel": true,
+    "motivo": "PDF público obtido; identidade conferida pelo texto extraído.",
+    "tentativas": [
+      {
+        "url": "https://bmcpregnancychildbirth.biomedcentral.com/counter/pdf/10.1186/s12884-020-03226-x.pdf",
+        "status": 200
+      }
+    ],
+    "bytes": 1542600,
+    "paginas": 11,
+    "sha256": "ff3cd8fa0e9cee90eaaec21e0994b1aa271fabd381867318cd57916bbbfaccde"
+  },
+  {
+    "id": "bonilha2018",
+    "origem": "https://www.scielo.br/j/ress/a/Vqsdk5khwLbWBNDc9RZvqPb/",
+    "url": "https://www.scielo.br/j/ress/a/Vqsdk5khwLbWBNDc9RZvqPb/?format=pdf&lang=en",
+    "arquivo": "",
+    "disponivel": false,
+    "motivo": "HTTPSConnectionPool(host='www.scielo.br', port=443): Read timed out. (read timeout=35)",
+    "tentativas": []
+  },
+  {
+    "id": "ranjbar2023",
+    "origem": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10662167/",
+    "url": "https://bmcpregnancychildbirth.biomedcentral.com/counter/pdf/10.1186/s12884-023-06128-w.pdf",
+    "arquivo": "pdfs/ranjbar2023.pdf",
+    "disponivel": true,
+    "motivo": "PDF público obtido; identidade conferida pelo texto extraído.",
+    "tentativas": [
+      {
+        "url": "https://bmcpregnancychildbirth.biomedcentral.com/counter/pdf/10.1186/s12884-023-06128-w.pdf",
+        "status": 200
+      }
+    ],
+    "bytes": 1086188,
+    "paginas": 7,
+    "sha256": "1284187f8a463ad5b3093ed8662ac1ae87c16d6c9fe2707e6544f62141097ad5"
+  },
+  {
+    "id": "funk2011",
+    "origem": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3070495/",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3070495/pdf/kwq439.pdf",
+    "arquivo": "",
+    "disponivel": false,
+    "motivo": "Resposta não é PDF (HTML/desafio de acesso).",
+    "tentativas": [
+      {
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3070495/pdf/kwq439.pdf",
+        "status": 200
+      }
+    ]
+  },
+  {
+    "id": "petersen2012",
+    "origem": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4107929/",
+    "url": "",
+    "arquivo": "",
+    "disponivel": false,
+    "motivo": "Página pública não forneceu link PDF; possível desafio de acesso. Nenhum bloqueio contornado.",
+    "tentativas": []
+  },
+  {
+    "id": "austin2015",
+    "origem": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4626409/",
+    "url": "",
+    "arquivo": "",
+    "disponivel": false,
+    "motivo": "Página pública não forneceu link PDF; possível desafio de acesso. Nenhum bloqueio contornado.",
+    "tentativas": []
+  },
+  {
+    "id": "chernozhukov2018",
+    "origem": "https://www.nber.org/papers/w23564",
+    "url": "https://www.nber.org/papers/w23564.pdf",
+    "arquivo": "pdfs/chernozhukov2018.pdf",
+    "disponivel": true,
+    "motivo": "PDF público obtido; identidade conferida pelo texto extraído.",
+    "tentativas": [
+      {
+        "url": "https://www.nber.org/papers/w23564.pdf",
+        "status": 200
+      }
+    ],
+    "bytes": 847136,
+    "paginas": 73,
+    "sha256": "79ff2f1a13d407050a79e7b9e77ee600c5d9da363dc1518366806249139a5997"
+  },
+  {
+    "id": "kennedy2023",
+    "origem": "https://arxiv.org/abs/2004.14497v5",
+    "url": "https://arxiv.org/pdf/2004.14497v5",
+    "arquivo": "pdfs/kennedy2023.pdf",
+    "disponivel": true,
+    "motivo": "PDF público obtido; identidade conferida pelo texto extraído.",
+    "tentativas": [
+      {
+        "url": "https://arxiv.org/pdf/2004.14497v5",
+        "status": 200
+      }
+    ],
+    "bytes": 1232479,
+    "paginas": 41,
+    "sha256": "435e4cdf6dd6620daff98f3c0255c93d45916fffc6da4860ed5c6840170f46dd"
+  },
+  {
+    "id": "chiang2022",
+    "origem": "https://arxiv.org/abs/1909.03489",
+    "url": "https://arxiv.org/pdf/1909.03489",
+    "arquivo": "pdfs/chiang2022.pdf",
+    "disponivel": true,
+    "motivo": "PDF público obtido; identidade conferida pelo texto extraído.",
+    "tentativas": [
+      {
+        "url": "https://arxiv.org/pdf/1909.03489",
+        "status": 200
+      }
+    ],
+    "bytes": 475940,
+    "paginas": 52,
+    "sha256": "116dedfe3f81635bb382e44114a3cefab6a2ed394c02ce5d7840960762622596"
+  },
+  {
+    "id": "cameron2015",
+    "origem": "https://escholarship.org/uc/item/1jq5d0pq",
+    "url": "https://cameron.econ.ucdavis.edu/research/Cameron_Miller_JHR_2015_February.pdf",
+    "arquivo": "",
+    "disponivel": false,
+    "motivo": "HTTPSConnectionPool(host='cameron.econ.ucdavis.edu', port=443): Max retries exceeded with url: /research/Cameron_Miller_JHR_2015_February.pdf (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1006)')))",
+    "tentativas": []
+  },
+  {
+    "id": "snowden2018",
+    "origem": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6510491/",
+    "url": "",
+    "arquivo": "",
+    "disponivel": false,
+    "motivo": "Página pública não forneceu link PDF; possível desafio de acesso. Nenhum bloqueio contornado.",
+    "tentativas": []
+  }
+]

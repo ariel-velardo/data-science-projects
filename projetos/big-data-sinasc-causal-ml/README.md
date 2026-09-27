@@ -1,128 +1,60 @@
-# SINASC 2024: pré-natal precoce, baixo peso e inferência causal
+# SINASC 2024 — pré-natal, baixo peso e aprendizado de máquina
 
-Projeto acadêmico da disciplina **Big Data & Analytics**, em formato de artigo curto. A Fase 1 define a amostra analítica e audita o desenho observacional sobre início precoce do pré-natal e baixo peso ao nascer.
+Trabalho acadêmico de **Big Data & Analytics**. Fases 0–4 concluídas; Fase 5 consolida a entrega sem novos modelos.
 
-## Pergunta candidata
+## Pergunta
 
 Entre gestantes comparáveis em características observáveis, iniciar o pré-natal até o terceiro mês de gestação está associado a uma redução no risco de baixo peso ao nascer?
 
-Estrutura conceitual candidata:
+O início precoce apresenta menor risco ajustado na população selecionada. A estabilidade numérica não comprova causalidade: confundimento residual, seleção de nascidos vivos e temporalidade das covariáveis continuam limitantes.
 
-- **X**: características observáveis anteriores ao tratamento;
-- **T**: início do pré-natal até o terceiro mês;
-- **Y**: peso ao nascer inferior a 2.500 g.
+## Comece aqui
 
-As definições foram congeladas na Fase 1. A Fase 2 estimou AIPW sob hipóteses observacionais, auditadas na Fase 3; causalidade não foi provada.
+- Abra [o relatório interativo](apresentacao/relatorio_interativo_sinasc_2024.html) com dois cliques após baixar o arquivo. Funciona offline, sem Python ou servidor. O GitHub pode exibir o código em vez de renderizar.
+- Leia a [síntese executiva](docs/SINTESE_EXECUTIVA.md), os [resultados](docs/RESULTADOS_PRINCIPAIS.md) e a [metodologia](docs/METODOLOGIA_DO_PROJETO.md).
+- Consulte o [dicionário das 62 colunas](docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md), o [fluxo](docs/dados/FLUXO_DOS_DADOS.md), as [referências](docs/literature/REFERENCIAS_CENTRAIS.md) e o [esqueleto do artigo](docs/artigo/ESQUELETO_ARTIGO.md).
 
-## Fonte
+## Números centrais
 
-Ministério da Saúde, [Portal de Dados Abertos do SUS](https://dadosabertos.saude.gov.br/dataset/sistema-de-informacao-sobre-nascidos-vivos-sinasc), recurso **Nascidos Vivos - 2024**. A provenance completa está em `data/raw/source_manifest.json`.
+| Indicador | Resultado |
+| --- | --- |
+| Registros brutos | <span data-metrica="bruto">2.389.325</span> |
+| Colunas originais | <span data-metrica="colunas">62</span> |
+| Registros analíticos | <span data-metrica="n">2.251.570</span> |
+| T=1: início até o terceiro mês | <span data-metrica="n_t1">1.942.045</span> |
+| T=0: início após o terceiro mês | <span data-metrica="n_t0">309.525</span> |
+| Baixo peso na população analítica (%) | <span data-metrica="prevalencia">7,894891</span> |
+| UFs de residência | <span data-metrica="ufs">27</span> |
+| C1 AIPW: estimativa (pp) | <span data-metrica="C1_estimativa_pp">-1,340527</span> |
+| C2 AIPW: estimativa (pp) | <span data-metrica="C2_estimativa_pp">-1,231456</span> |
+| CATE HGB média (pp) | <span data-metrica="cate_media_pp">-1,294100</span> |
+| Gate da Fase 4 | <span data-metrica="gate4">HETEROGENEIDADE_SENSIVEL_A_MODELO</span> |
 
-## Status
+## Fonte e arquitetura
 
-Fase 4 executada: `HETEROGENEIDADE_SENSIVEL_A_MODELO`. O DR-Learner mostra ordenação parcial, com magnitude excessiva e perfis instáveis entre partições. Uso exclusivamente exploratório; ver [heterogeneidade](docs/methodology/HETEROGENEIDADE_FASE4.md).
+Ministério da Saúde, [SINASC — dados abertos](https://dadosabertos.saude.gov.br/dataset/sistema-de-informacao-sobre-nascidos-vivos-sinasc), recurso Nascidos Vivos 2024. [Documentação oficial](docs/sources/FONTES_OFICIAIS.md).
 
-Histórico preservado: Fase 3 (`48ce06b`), `GATE_FASE2_EXCESSIVAMENTE_CONSERVADOR`; Fase 2, `RESULTADO_NAO_INTERPRETAVEL`. A auditoria revisou a heurística como veto automático sem certificar causalidade. Ver [robustez](docs/methodology/ROBUSTEZ_FASE3.md) e [estado atual](docs/playbooks/ESTADO_ATUAL.md).
+`data/raw/` preserva o ZIP e o dicionário; `data/processed/` guarda o Parquet; `src/` contém pipelines; `outputs/diagnostics/` registra números e contratos; `notebooks/` apresenta as fases; `docs/` consolida métodos/literatura; `apresentacao/` contém o HTML. Dados grandes e caches ficam locais.
 
-## Estrutura
+## Notebooks e reprodução
 
-- `data/raw/`: ZIP e dicionário oficiais, ignorados pelo Git, mais manifesto versionável;
-- `data/processed/`: Parquet reproduzível, ignorado pelo Git;
-- `src/`: aquisição, leitura, preparação, auditoria e tema visual;
-- `tests/`: testes unitários com dados sintéticos;
-- `notebooks/`: narrativa acadêmica executável;
-- `outputs/diagnostics/`: diagnósticos pequenos em JSON;
-- `docs/`: fontes, metodologia e estado do projeto.
+Sequência: 01 auditoria → 02 amostra/overlap → 03 predição/AIPW → 04 robustez → 05 heterogeneidade. Veja [entradas, objetivos e saídas](docs/REPRODUCAO.md). Os cinco notebooks já estão executados.
 
-## Como executar o projeto localmente
-
-No PowerShell, a partir da raiz do repositório `data-science-projects`:
+No PowerShell, dentro deste projeto:
 
 ```powershell
-cd projetos\big-data-sinasc-causal-ml
-$env:PYTHONUTF8 = '1'
-if (-not (Test-Path .venv\Scripts\python.exe)) { py -3.11 -m venv .venv }
 .\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python -m pip check
+$env:PYTHONUTF8 = "1"
 python -m pytest -q tests
+python -m src.entrega_fase5
+python -m src.entrega_fase5 --validar
+Start-Process .\apresentacao\relatorio_interativo_sinasc_2024.html
 ```
 
-A `.venv` existente está válida e não precisa ser recriada: Python 3.11.9, NumPy 2.4.6, Pandas 3.0.6, DuckDB 1.5.5, scikit-learn 1.8.0, Plotly 6.9.0 e Kaleido 1.4.0. `pip check` passou. O ambiente está ignorado pelo Git. Os requisitos têm intervalos de versões; igualdade numérica exata entre versões distintas não é garantida.
+Para configurar um ambiente novo e reproduzir as fases, siga [REPRODUCAO.md](docs/REPRODUCAO.md). Abrir o HTML não exige reinstalar ou recalcular.
 
-Use `.venv\Scripts\python.exe` no comando **Python: Select Interpreter** do VS Code e selecione esse mesmo ambiente no seletor de kernel do notebook. Para abrir o Jupyter, execute `python -m jupyter lab` com a `.venv` ativada. Os notebooks usam o kernel `python3`. Nenhum script auxiliar de instalação foi necessário.
+## Estado e limites
 
-## Reprodução da Fase 0
+Gates preservados: Fase 0 `VIAVEL_COM_RESSALVAS`; Fase 1 `PRONTO_COM_RESSALVAS`; Fase 2 `RESULTADO_NAO_INTERPRETAVEL`; Fase 3 `GATE_FASE2_EXCESSIVAMENTE_CONSERVADOR`; Fase 4 `HETEROGENEIDADE_SENSIVEL_A_MODELO`. A revisão da Fase 3 questiona o veto pela concentração de influência, sem apagar o gate histórico nem certificar identificação causal.
 
-```powershell
-python -m src.baixa_dados_sinasc
-python -m src.prepara_sinasc_2024
-python -m src.audita_sinasc_2024
-python -m pytest -q tests
-.\.venv\Scripts\jupyter-nbconvert.exe --execute --to notebook --inplace `
-  --ExecutePreprocessor.kernel_name=python3 `
-  --ExecutePreprocessor.timeout=600 notebooks/01_auditoria_sinasc_2024.ipynb
-```
-
-O download é idempotente e não sobrescreve o bruto existente. A preparação mantém os campos originais como texto, preservando zeros à esquerda, e não sobrescreve silenciosamente o Parquet.
-
-## Reprodução da Fase 1
-
-```powershell
-python -m src.executa_fase1
-python -m src.cria_notebook_fase1
-python -m pytest -q tests
-```
-
-O notebook principal é `notebooks/02_amostra_desenho_e_overlap.ipynb`. O propensity score é apenas diagnóstico de suporte e não estima efeito de tratamento.
-
-## Reprodução das Fases 2 e 3 e dos notebooks
-
-Depois de preparar os dados locais e executar a Fase 1:
-
-```powershell
-python -m src.executa_fase2
-python -m src.valida_resultados_fase2
-python -m src.executa_robustez_fase3
-python -m src.valida_resultados_fase3
-python -m src.resume_auditoria_fase3
-python -m src.cria_notebook_auditoria
-python -m src.cria_notebook_fase1
-python -m src.cria_notebook_fase2
-python -m src.cria_notebook_fase3
-python -m src.apresentacao_pt
-Get-ChildItem notebooks\0[1-4]*.ipynb | Sort-Object Name | ForEach-Object {
-    python -m nbconvert --execute --to notebook --inplace `
-        --ExecutePreprocessor.kernel_name=python3 `
-        --ExecutePreprocessor.timeout=600 $_.FullName
-    if ($LASTEXITCODE -ne 0) { throw "Falha ao executar $($_.Name)" }
-}
-python -m src.valida_apresentacao
-git diff --check
-```
-
-Os ajustes integrais são executados pelos módulos de cada fase; notebooks 02–04 consomem seus artefatos locais. Dados brutos, Parquet e predições grandes não são versionados. Os contratos de cache recusam dados/código incompatíveis. A reprodução histórica exata da Fase 3 está no checkpoint `48ce06b`; a tradução posterior mantém o manifesto original e documenta as duas exceções de apresentação em `outputs/diagnostics/apresentacao_preservacao.json`. Metadados voláteis de execução do notebook 03 são permitidos somente quando as fontes de todas as células permanecem iguais; a validação de apresentação reconcilia separadamente seus números exibidos.
-
-## Reprodução da Fase 4
-
-Após as fases anteriores e na mesma `.venv`:
-
-```powershell
-python -m src.executa_fase4
-python -m src.resume_fase4
-python -m src.valida_resultados_fase4
-python -m src.documenta_fase4
-python -m src.cria_notebook_fase4
-python -m nbconvert --execute --to notebook --inplace `
-    --ExecutePreprocessor.kernel_name=python3 `
-    --ExecutePreprocessor.timeout=600 notebooks/05_heterogeneidade_causal.ipynb
-python -m src.apresentacao_pt
-python -m pytest -q tests
-python -m pip check
-```
-
-O notebook apresenta as saídas locais; o executor realiza os ajustes e verifica os contratos. Os três papéis municipais são disjuntos em cada rodada. O CATE é exploratório e não sustenta indicação individual de cuidado.
-
-## Limite metodológico
-
-A Fase 2 executou AIPW com ajuste cruzado para a diferença média de risco na população selecionada, sob hipóteses observacionais explícitas. A Fase 3 auditou robustez; a Fase 4 explorou CATE com resultados sensíveis. Os critérios históricos e as limitações estão documentados; causalidade não foi provada. Causal Forest, artigo completo e Fase 5 não foram executados.
+[Estado atual e histórico](docs/playbooks/ESTADO_ATUAL.md). `CAUSALIDADE_PROVADA = NAO`. A modelagem terminou; o artigo completo ainda não foi escrito. Uma versão Streamlit pode ser desenvolvida futuramente para portfólio.

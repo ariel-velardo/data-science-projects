@@ -1,9 +1,9 @@
 # Estado Atual
 
-STATUS = FASE_4_HETEROGENEIDADE_SENSIVEL
-FASE_ATUAL = FASE_4_HETEROGENEIDADE_EXPLORATORIA
+STATUS = FASE_5_CONSOLIDADA_COM_RESSALVA_VISUAL
+FASE_ATUAL = FASE_5_ENTREGA_ACADEMICA
 DATA_INICIO = 2026-09-25
-DATA_ATUALIZACAO = 2026-09-26
+DATA_ATUALIZACAO = 2026-09-27
 GATE_FASE_0 = VIAVEL_COM_RESSALVAS
 GATE_FASE_1 = PRONTO_COM_RESSALVAS
 EFEITO_CAUSAL_ESTIMADO = SIM
@@ -12,6 +12,22 @@ CAUSALIDADE_PROVADA = NAO
 GATE_FASE_2 = RESULTADO_NAO_INTERPRETAVEL
 GATE_FASE_3 = GATE_FASE2_EXCESSIVAMENTE_CONSERVADOR
 GATE_FASE_4 = HETEROGENEIDADE_SENSIVEL_A_MODELO
+
+MODELAGEM_CONCLUIDA = SIM
+ARTIGO_COMPLETO = NAO
+RELATORIO_HTML = SIM
+
+## Consolidação acadêmica — Fase 5
+
+- Estado inicial reconstruído: fetch concluído; branch main; HEAD e origin/main em `07e9b7be28d3561a702f7f498c8a6632a9fde4e2`. Histórico confirmado: `48ce06b` → `1d27ab4` → `07e9b7b`. Projeto inicialmente limpo; uma pasta não rastreada em outro projeto foi preservada.
+- Suíte inicial: 86 testes aprovados. Cinco notebooks com 7, 12, 13, 21 e 10 células de código executadas, sem saídas de erro. Nenhuma modelagem das Fases 0–4 foi refeita.
+- Entregas: dicionário 62/62 em Markdown/CSV/JSON, fluxo, metodologia, resultados, síntese, reprodução, esqueleto do artigo e dez gráficos no HTML autocontido. [README](../../README.md), [métodos](../METODOLOGIA_DO_PROJETO.md) e [relatório](../../apresentacao/relatorio_interativo_sinasc_2024.html).
+- Literatura: 12 referências centrais, cinco PDFs públicos obtidos e sete tentativas sem PDF. Fichas distinguem leitura dirigida de PDF e síntese limitada a fontes públicas. PDFs/textos ficam locais, fora do staging. [Manifesto](../literature/MANIFESTO_ARTIGOS.md).
+- Validação histórica: seis resultados da Fase 2 e 22 linhas da Fase 3 reconciliados; Fase 4 aprovada, incluindo pseudo-desfechos, cobertura única, partições e preservação. Auditoria de apresentação e pip check aprovados. Validação da entrega confere números, séries dos gráficos, dicionário, links e notebooks.
+- Ressalva: a política de segurança do navegador bloqueou a URL local do HTML. Não houve tentativa de contorno. Verificação estática concluída; abertura e controles no navegador permanecem para conferência manual. Figuras exportadas separadamente para inspeção.
+- Rastreabilidade: `outputs/diagnostics/fase5_validacao.json` e `fase5_links_externos.json`. HTML e dois JSONs pequenos em diretórios ignorados recebem staging explícito; `.gitignore` preservado.
+- Suíte final: 93 testes aprovados. [Auditoria da Fase 5](../AUDITORIA_FASE5.md) registra evidências, comandos, PDFs e a pendência de inspeção do HTML no navegador.
+- Registros abaixo são históricos: proibições de iniciar Fase 5 descrevem autorizações antigas, superadas pelo pedido desta sessão. Artigo completo e Fase 6 permanecem fora do escopo.
 
 ## Resultado da Fase 4
 
