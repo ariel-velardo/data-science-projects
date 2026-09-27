@@ -1,0 +1,122 @@
+[
+  {
+    "url": "https://arxiv.org/abs/1909.03489",
+    "status_http": 200,
+    "url_final": "https://arxiv.org/abs/1909.03489"
+  },
+  {
+    "url": "https://arxiv.org/abs/2004.14497v5",
+    "status_http": 200,
+    "url_final": "https://arxiv.org/abs/2004.14497v5"
+  },
+  {
+    "url": "https://doi.org/10.1002/sim.6607",
+    "status_http": 403,
+    "url_final": "https://onlinelibrary.wiley.com/doi/10.1002/sim.6607"
+  },
+  {
+    "url": "https://doi.org/10.1007/s40471-018-0172-x",
+    "status_http": 200,
+    "url_final": "https://link.springer.com/article/10.1007/s40471-018-0172-x"
+  },
+  {
+    "url": "https://doi.org/10.1055/s-0041-1728779",
+    "status_http": 200,
+    "url_final": "https://journalrbgo.org/article/association-between-prenatal-care-adequacy-indexes-and-low-birth-weight-outcome/"
+  },
+  {
+    "url": "https://doi.org/10.1093/aje/kwq439",
+    "status_http": 403,
+    "url_final": "https://academic.oup.com/aje/article-lookup/doi/10.1093/aje/kwq439"
+  },
+  {
+    "url": "https://doi.org/10.1111/ectj.12097",
+    "status_http": 403,
+    "url_final": "https://academic.oup.com/ectj/article/21/1/C1/5056401"
+  },
+  {
+    "url": "https://doi.org/10.1177/0962280210386207",
+    "status_http": 403,
+    "url_final": "https://journals.sagepub.com/doi/10.1177/0962280210386207"
+  },
+  {
+    "url": "https://doi.org/10.1186/s12884-020-03226-x",
+    "status_http": 200,
+    "url_final": "https://link.springer.com/article/10.1186/s12884-020-03226-x"
+  },
+  {
+    "url": "https://doi.org/10.1186/s12884-023-06128-w",
+    "status_http": 200,
+    "url_final": "https://link.springer.com/article/10.1186/s12884-023-06128-w"
+  },
+  {
+    "url": "https://doi.org/10.3368/jhr.50.2.317",
+    "status_http": 200,
+    "url_final": "https://jhr.uwpress.org/content/50/2/317"
+  },
+  {
+    "url": "https://doi.org/10.48550/arXiv.1909.03489",
+    "status_http": 200,
+    "url_final": "https://arxiv.org/abs/1909.03489"
+  },
+  {
+    "url": "https://doi.org/10.48550/arXiv.2004.14497",
+    "status_http": 200,
+    "url_final": "https://arxiv.org/abs/2004.14497"
+  },
+  {
+    "url": "https://doi.org/10.5123/S1679-49742018000100011",
+    "status_http": null,
+    "erro": "HTTPConnectionPool(host='www.scielo.br', port=80): Read timed out. (read timeout=15)"
+  },
+  {
+    "url": "https://escholarship.org/uc/item/1jq5d0pq",
+    "status_http": 202,
+    "url_final": "https://escholarship.org/uc/item/1jq5d0pq"
+  },
+  {
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10208735/",
+    "status_http": 200,
+    "url_final": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10208735/"
+  },
+  {
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10662167/",
+    "status_http": 200,
+    "url_final": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10662167/"
+  },
+  {
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3070495/",
+    "status_http": 200,
+    "url_final": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3070495/"
+  },
+  {
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4107929/",
+    "status_http": 200,
+    "url_final": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4107929/"
+  },
+  {
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4626409/",
+    "status_http": 200,
+    "url_final": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4626409/"
+  },
+  {
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6510491/",
+    "status_http": 200,
+    "url_final": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6510491/"
+  },
+  {
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7491100/",
+    "status_http": 200,
+    "url_final": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7491100/"
+  },
+  {
+    "url": "https://www.nber.org/papers/w23564",
+    "status_http": 200,
+    "url_final": "https://www.nber.org/papers/w23564"
+  },
+  {
+    "url": "https://www.scielo.br/j/ress/a/Vqsdk5khwLbWBNDc9RZvqPb/",
+    "status_http": null,
+    "erro": "HTTPSConnectionPool(host='www.scielo.br', port=443): Read timed out. (read timeout=15)"
+  }
+]

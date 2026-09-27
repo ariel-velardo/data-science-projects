@@ -1,0 +1,34 @@
+{
+  "status": "APROVADO_COM_RESSALVA_VISUAL",
+  "colunas": 62,
+  "notebooks": [
+    {
+      "nome": "01_auditoria_sinasc_2024.ipynb",
+      "celulas_executadas": 7
+    },
+    {
+      "nome": "02_amostra_desenho_e_overlap.ipynb",
+      "celulas_executadas": 12
+    },
+    {
+      "nome": "03_ml_preditivo_e_aipw.ipynb",
+      "celulas_executadas": 13
+    },
+    {
+      "nome": "04_robustez_e_auditoria_metodologica.ipynb",
+      "celulas_executadas": 21
+    },
+    {
+      "nome": "05_heterogeneidade_causal.ipynb",
+      "celulas_executadas": 10
+    }
+  ],
+  "links_internos": "APROVADO",
+  "metricas": "APROVADO",
+  "series_graficos": "APROVADO",
+  "dicionario_html": "APROVADO",
+  "html_bytes": 4942994,
+  "html_sha256": "fc7a2dc74a8bf8192b29c3599465802d99b91f0bdaa7d0adbc4203719e291051",
+  "modelagem_nova": false,
+  "inspecao_html": "Bloqueada pela política de URL local do navegador; abertura e controles exigem conferência manual."
+}
