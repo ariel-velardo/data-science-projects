@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.prepara_sinasc_2024 import converter_zip_para_parquet
+from src.sinasc import converter_zip_para_parquet
 
 
 def test_converte_zip_para_parquet_preservando_texto(tmp_path: Path) -> None:

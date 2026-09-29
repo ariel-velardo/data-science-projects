@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 import pytest
-from src.heterogeneidade_dr import (pseudo_desfecho,particoes_municipais,rotacoes,
+from src.heterogeneidade import (pseudo_desfecho,particoes_municipais,rotacoes,
     criar_regressor,ajustar_regressor,prever_regressor,quintis,resumo_distribuicao,
     resumir_grupos,ajuste_honesto)
-from src.audita_covariaveis import COLUNAS_PROPENSITY_PRINCIPAL
+from src.diagnosticos import COLUNAS_PROPENSITY_PRINCIPAL
 
 
 def x_sintetico(n=6000):
@@ -76,7 +76,7 @@ def test_guarda_x_nao_admite_desfecho():
 
 
 def test_rota_real_nao_usa_y_validacao(monkeypatch):
-    import src.heterogeneidade_dr as h
+    import src.heterogeneidade as h
     x=x_sintetico(90); t=np.tile([0,1],45); y=np.tile([0,0,1],30)
     f=np.repeat([1,2,3],30); grupos=np.arange(90)
     eventos=[]
@@ -114,7 +114,7 @@ def test_dr_bernoulli_constante_com_avaliacao_externa():
 
 
 def test_contraste_externo_conhecido():
-    from src.resume_fase4 import contraste_extremos
+    from src.heterogeneidade import contraste_extremos
     cate=np.repeat(np.arange(5),20)*.01
     r=contraste_extremos(cate,cate,np.arange(100))
     assert r['contraste_dr_q5_q1_pp']==pytest.approx(4.)
@@ -127,6 +127,6 @@ def test_contraste_externo_conhecido():
     (.9,1.,(.5,1.5),'HETEROGENEIDADE_EXPLORATORIA_ESTAVEL'),
 ])
 def test_gate_exige_avaliacao(rho,delta,ic,esperado):
-    from src.resume_fase4 import classificar
+    from src.heterogeneidade import classificar
     r=dict(contraste_dr_q5_q1_pp=delta,ic95_inferior_pp=ic[0],ic95_superior_pp=ic[1])
     assert classificar(dict(contrastes_externos=[r]*3,spearman_hgb_ridge=rho,mediana_spearman_perfis=.9))==esperado

@@ -56,4 +56,4 @@ Múltiplas e peso positivo definem outros alvos. ICs são condicionais e aproxim
 
 Gates preservados: Fase 0 `VIAVEL_COM_RESSALVAS`; Fase 1 `PRONTO_COM_RESSALVAS`; Fase 2 `RESULTADO_NAO_INTERPRETAVEL`; Fase 3 `GATE_FASE2_EXCESSIVAMENTE_CONSERVADOR`; Fase 4 `HETEROGENEIDADE_SENSIVEL_A_MODELO`. A revisão da Fase 3 questiona o veto pela concentração de influência, sem apagar o gate histórico nem certificar identificação causal.
 
-Fonte: JSONs históricos em `outputs/diagnostics/`; geração por `python -m src.entrega_fase5`. [Metodologia](METODOLOGIA_DO_PROJETO.md).
+Fonte: JSONs históricos em `outputs/diagnostics/`; geração por `python -m src.entrega`. [Metodologia](METODOLOGIA_DO_PROJETO.md).

@@ -1,7 +1,7 @@
 """Contratos da entrega: detectar divergência, links quebrados e exposição indevida."""
 import pytest
 
-from src.entrega_fase5 import verificar_metricas, links_quebrados, validar_dicionario
+from src.validacao import verificar_metricas, links_quebrados, validar_dicionario
 
 
 def test_detecta_numero_publicado_divergente():
@@ -39,3 +39,10 @@ def test_detecta_ancora_inexistente(tmp_path):
     p.write_text('[ruim](alvo.md#nao-existe)', encoding='utf-8')
     (tmp_path / 'alvo.md').write_text('# Seção\n', encoding='utf-8')
     assert links_quebrados(p) == ['alvo.md#nao-existe']
+
+
+def test_links_em_bloco_codigo_sao_dados_mas_links_renderizados_sao_validados(tmp_path):
+    p = tmp_path / 'baseline.md'
+    p.write_text('```json\n{"fonte": "[histórico](ausente.md)"}\n```\n'
+                 '[navegável](tambem-ausente.md)\n', encoding='utf-8')
+    assert links_quebrados(p) == ['tambem-ausente.md']

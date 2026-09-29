@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.estima_aipw import calcular_aipw, gerar_folds, cross_fitting
+from src.inferencia_causal import calcular_aipw, gerar_folds, cross_fitting
 
 
 def test_aipw_efeito_zero_e_ic():
@@ -38,14 +38,14 @@ def test_dupla_robustez_outcome_correto_propensity_errado():
 
 
 def test_pesos_ess_e_influencia_simples():
-    from src.estima_aipw import diagnosticos_influencia
+    from src.inferencia_causal import diagnosticos_influencia
     d = diagnosticos_influencia(np.tile([-1., 1.], 50), np.tile([0, 1], 50), np.full(100, .5))
     assert d['pesos_por_grupo']['0']['ess'] == pytest.approx(50)
     assert d['frac_variancia_top1pct'] == pytest.approx(.01)
 
 
 def test_gate_respeita_criterios_pre_especificados():
-    from src.executa_fase2 import classificar_gate
+    from src.inferencia_causal import classificar_gate
     linhas = [dict(especificacao=s, populacao='sem_trimming', estimativa_pp=v) for s,v in [('C1',-1.3),('C2',-1.2)]]
     assert classificar_gate(linhas, {'d': {'frac_variancia_top1pct': .8}}) == 'RESULTADO_NAO_INTERPRETAVEL'
     assert classificar_gate(linhas, {'d': {'frac_variancia_top1pct': .2}}) == 'RESULTADO_EXPLORATORIO_ESTAVEL'
@@ -92,7 +92,7 @@ def test_folds_nao_truncam_tratamento_fracionario():
 
 
 def test_cross_fitting_rejeita_tratamento_fracionario_antes_de_converter():
-    from src.audita_covariaveis import COLUNAS_PROPENSITY_PRINCIPAL
+    from src.diagnosticos import COLUNAS_PROPENSITY_PRINCIPAL
     x = pd.DataFrame({c: [1]*40 for c in COLUNAS_PROPENSITY_PRINCIPAL})
     with pytest.raises(ValueError, match='T/Y'):
         cross_fitting(x, np.tile([.5, 1], 20), np.tile([0, 1], 20), 2)

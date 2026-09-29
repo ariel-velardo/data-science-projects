@@ -1,4 +1,4 @@
-"""Entrega acadêmica offline. Consome agregados históricos; nunca ajusta modelos."""
+"""Entrega acadêmica offline baseada em agregados."""
 from __future__ import annotations
 
 import argparse
@@ -12,68 +12,28 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-DIAG = ROOT / 'outputs/diagnostics'
 
+DIAG = ROOT / 'outputs/diagnostics'
 
 def ler(nome):
     return json.loads((DIAG / nome).read_text(encoding='utf-8'))
-
 
 def gravar(caminho, texto):
     p = ROOT / caminho
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(texto, encoding='utf-8')
 
-
 def numero(valor, casas=6):
     return f'{valor:,.{casas}f}'.replace(',', '_').replace('.', ',').replace('_', '.')
 
-
-def verificar_metricas(texto, esperadas):
-    encontradas = re.findall(r'<span data-metrica="([^"]+)">([^<]+)</span>', texto)
-    for chave, valor in encontradas:
-        if chave not in esperadas or html.unescape(valor) != esperadas[chave]:
-            raise ValueError(f'Métrica divergente: {chave} = {valor}')
-    ausentes = set(esperadas) - {c for c, _ in encontradas}
-    if ausentes:
-        raise ValueError(f'Métrica ausente: {sorted(ausentes)}')
-
-
-def links_quebrados(arquivo):
-    texto = arquivo.read_text(encoding='utf-8')
-    destinos = re.findall(r'\]\(([^)]+)\)', texto)
-    destinos += re.findall(r'(?:href|src)="([^"]+)"', texto) if arquivo.suffix == '.html' else []
-    erros = []
-    for destino in destinos:
-        u = urlsplit(destino.strip('<>'))
-        if u.scheme:
-            continue
-        alvo = arquivo.parent / unquote(u.path) if u.path else arquivo
-        if not alvo.exists():
-            erros.append(destino)
-        elif u.fragment and alvo.suffix in {'.md', '.html'}:
-            conteudo = alvo.read_text(encoding='utf-8')
-            ids = set(re.findall(r'id="([^"]+)"', conteudo))
-            for titulo in re.findall(r'^#+\s+(.+)$', conteudo, re.M):
-                slug = re.sub(r'[^\w -]', '', titulo.lower()).replace(' ', '-')
-                ids.add(slug)
-                ids.add(''.join(c for c in unicodedata.normalize('NFD', slug) if not unicodedata.combining(c)))
-            if unquote(u.fragment) not in ids:
-                erros.append(destino)
-    return sorted(set(erros))
-
-
-def validar_dicionario(linhas, colunas):
-    nomes = [r['nome'] for r in linhas]
-    if nomes != colunas or len(nomes) != len(set(nomes)):
-        raise ValueError('Cobertura, ordem ou unicidade do dicionário inválida')
-
-
 def auditar_dicionario():
+    from src.validacao import validar_dicionario
     """Única leitura nova do Parquet: frequências de códigos documentados, sem modelagem."""
     import duckdb
     from pypdf import PdfReader
-    from src.dicionario_sinasc import CODIGOS_ESPECIAIS_DOCUMENTADOS, X_PROVAVEL_PRE_TRATAMENTO, POS_TRATAMENTO
+    from src.sinasc import CODIGOS_ESPECIAIS_DOCUMENTADOS
+    from src.sinasc import X_PROVAVEL_PRE_TRATAMENTO
+    from src.sinasc import POS_TRATAMENTO
 
     schema = ler('auditoria_schema_sinasc_2024.json')
     pdf = '\n'.join(p.extract_text() for p in PdfReader(ROOT / 'data/raw/SINASC_Estrutura.pdf').pages)
@@ -142,7 +102,6 @@ def auditar_dicionario():
         w = csv.DictWriter(f, fieldnames=list(linhas[0])); w.writeheader(); w.writerows(linhas)
     return linhas
 
-
 def metricas():
     a, c, p, r = (ler(n) for n in ['fase1_amostra.json','fase2_aipw.json','fase2_modelagem_preditiva.json','fase4_resultados.json'])
     valores = {}; rotulos = {}
@@ -176,24 +135,20 @@ def metricas():
     incluir('gate4','Gate da Fase 4',r['gate'])
     return valores, rotulos
 
-
 def marcador(chave, valores):
     return f'<span data-metrica="{chave}">{html.escape(valores[chave])}</span>'
-
 
 def tabela_md(cabecalhos, linhas):
     return '\n'.join(['| '+' | '.join(cabecalhos)+' |', '| '+' | '.join(['---']*len(cabecalhos))+' |'] +
         ['| '+' | '.join(str(x).replace('|',' / ').replace('\n',' ') for x in r)+' |' for r in linhas])+'\n'
 
-
 def tabela_html(cabecalhos, linhas, id_tabela=''):
     return '<div class="tabela"><table '+(f'id="{id_tabela}"' if id_tabela else '')+'><thead><tr>'+''.join('<th>'+html.escape(c)+'</th>' for c in cabecalhos)+'</tr></thead><tbody>'+''.join('<tr>'+''.join('<td>'+str(v)+'</td>' for v in r)+'</tr>' for r in linhas)+'</tbody></table></div>'
-
 
 def figuras():
     import pandas as pd
     import plotly.graph_objects as go
-    from src.visualizacao_ipt import aplicar_tema_ipt
+    from src.visualizacao import aplicar_tema_base as aplicar_tema_ipt
     a=ler('fase1_amostra.json'); c=ler('fase2_aipw.json'); p=ler('fase2_modelagem_preditiva.json'); r=ler('fase4_resultados.json')
     saida=[]
     def add(id_,titulo,fig,fonte,nota):
@@ -239,7 +194,6 @@ def figuras():
     add('perfis','Perfis de idade: exercício exploratório',f,'fase4_resultados.json','32 idades ausentes ficam fora deste gráfico, mas permanecem no N integral. Não indica prioridade clínica.')
     return saida
 
-
 def linhas_robustez():
     """Todos os cenários previstos, sem selecionar especificação pela estimativa."""
     rows=[]
@@ -253,8 +207,8 @@ def linhas_robustez():
                              numero(s['se_cluster_pp']),numero(s['ic95_cluster_inferior_pp'])+' a '+numero(s['ic95_cluster_superior_pp'])])
     return rows
 
-
 def gerar():
+    from src.validacao import validar_dicionario
     valores, rotulos = metricas(); m=lambda k:marcador(k,valores)
     d=json.loads((ROOT/'outputs/tables/dicionario_analitico_sinasc_2024.json').read_text(encoding='utf-8'))
     validar_dicionario(d,[s['coluna'] for s in ler('auditoria_schema_sinasc_2024.json')])
@@ -265,7 +219,7 @@ def gerar():
     # Tabela adicional pequena, gerada de todas as sensibilidades relevantes, sem seleção por sinal.
     robustez=linhas_robustez()
     rcab=['Cenário','Modelo','N','Estimativa (pp)','EP municipal (pp)','IC95% municipal (pp)']
-    gravar('docs/RESULTADOS_PRINCIPAIS.md','# Resultados principais — SINASC 2024\n\n'+causal+'\n\n'+tabela+'\n## Robustez\n\n'+tabela_md(rcab,robustez)+'\nMúltiplas e peso positivo definem outros alvos. ICs são condicionais e aproximados. Percentis de CATE são dispersão prevista, não confiança individual.\n\n'+gates+'\n\nFonte: JSONs históricos em `outputs/diagnostics/`; geração por `python -m src.entrega_fase5`. [Metodologia](METODOLOGIA_DO_PROJETO.md).\n')
+    gravar('docs/RESULTADOS_PRINCIPAIS.md','# Resultados principais — SINASC 2024\n\n'+causal+'\n\n'+tabela+'\n## Robustez\n\n'+tabela_md(rcab,robustez)+'\nMúltiplas e peso positivo definem outros alvos. ICs são condicionais e aproximados. Percentis de CATE são dispersão prevista, não confiança individual.\n\n'+gates+'\n\nFonte: JSONs históricos em `outputs/diagnostics/`; geração por `python -m src.entrega`. [Metodologia](METODOLOGIA_DO_PROJETO.md).\n')
     fluxo=ler('fase1_amostra.json')['fluxo_amostra']
     gravar('docs/dados/FLUXO_DOS_DADOS.md','# Fluxo dos dados\n\nSINASC bruto → Parquet textual → filtros → população principal → X/T/Y → propensity → AIPW → robustez → DR-Learner.\n\nBruto: '+valores['bruto']+' registros.\n\n'+tabela_md(['Etapa','Regra','Excluídos','Restantes'],[[x['etapa'],x['motivo'],numero(x['n_excluido'],0),numero(x['n_restante'],0)] for x in fluxo])+'\nUnidade: nascido vivo; chave `contador`, única nesta extração. Não há identificador longitudinal de mãe. T: meses 1–3 versus 4–9; Y: peso <2.500 g. X: idade, escolaridade, raça/cor, situação conjugal, paridade, perdas fetais e UF maternas.\n\nO tempo zero é conceitual (início da gestação); o mês é retrospectivo. Outcome medido ao nascer em 2024. Consultas acumuladas, idade gestacional, parto e Apgar não entram em X. A amostra é selecionada por informação, sobrevivência e peso.\n\nPropensity de cinco partições diagnostica suporte (Fase 1). AIPW usa três partições (Fase 2). Auditoria e partições municipais compõem a Fase 3. DR-Learner usa três papéis municipais disjuntos por rodada (Fase 4). Nada foi reestimado na Fase 5.\n\nFonte: `fase1_amostra.json`, campo `fluxo_amostra`. [Contrato e limitações](../METODOLOGIA_DO_PROJETO.md).\n')
     dcab=['Campo','Descrição','Tipo','Domínio / códigos','Ausente (%)','Ignorado (%)','Ausente + ignorado (%)','Exemplos frequentes','Papel','Fases','Observação']
@@ -278,7 +232,7 @@ def gerar():
     essenciais=['bruto','colunas','n','n_t1','n_t0','prevalencia','ufs','C1_estimativa_pp','C2_estimativa_pp','cate_media_pp','gate4']
     resumo=tabela_md(cab,[[rotulos[k],m(k)] for k in essenciais])
     gravar('docs/SINTESE_EXECUTIVA.md','# Síntese executiva — Big Data & Analytics\n\n## Problema e dados\n\nInvestigar se início precoce do pré-natal está associado a menor risco de baixo peso entre registros comparáveis em características observáveis. Fonte: SINASC 2024, Ministério da Saúde.\n\n'+resumo+'\n## O que o trabalho entrega\n\nO volume nacional exige leitura seletiva, agregações e contratos reproduzíveis: DuckDB executa SQL sobre Parquet e Pandas materializa resumos. Big Data aqui é disciplina de processamento e veracidade, sem alegação de infraestrutura distribuída.\n\nA predição compara logística e HGB com as mesmas sete características maternas. A discriminação é modesta; prever risco não responde se mudar o início do cuidado mudaria o desfecho.\n\n'+causal+' O AIPW combina regressões de risco com o escore de propensão e avalia cada registro fora do treino. A auditoria municipal amplia a incerteza e mantém estimativas próximas.\n\nO DR-Learner produz ordenação parcial, mas exagera a separação entre extremos e apresenta instabilidade de perfis. CATE previsto não é benefício individual conhecido. Não há recomendação clínica ou ROI.\n\n## Conclusão\n\nA contribuição é uma análise nacional reproduzível que distingue descrição, predição e estimativas sob hipóteses causais. Os resultados justificam discussão acadêmica; não demonstram que antecipar o pré-natal cause a redução estimada.\n\n'+gates+'\n\n`MODELAGEM_CONCLUIDA = SIM`; `ARTIGO_COMPLETO = NAO`; `RELATORIO_HTML = SIM`; `CAUSALIDADE_PROVADA = NAO`.\n\n[Resultados e ICs](RESULTADOS_PRINCIPAIS.md) · [Métodos](METODOLOGIA_DO_PROJETO.md) · [Referências](literature/REFERENCIAS_CENTRAIS.md).\n')
-    gravar('README.md','# SINASC 2024 — pré-natal, baixo peso e aprendizado de máquina\n\nTrabalho acadêmico de **Big Data & Analytics**. Fases 0–4 concluídas; Fase 5 consolida a entrega sem novos modelos.\n\n## Pergunta\n\nEntre gestantes comparáveis em características observáveis, iniciar o pré-natal até o terceiro mês de gestação está associado a uma redução no risco de baixo peso ao nascer?\n\n'+causal+'\n\n## Comece aqui\n\n- Abra [o relatório interativo](apresentacao/relatorio_interativo_sinasc_2024.html) com dois cliques após baixar o arquivo. Funciona offline, sem Python ou servidor. O GitHub pode exibir o código em vez de renderizar.\n- Leia a [síntese executiva](docs/SINTESE_EXECUTIVA.md), os [resultados](docs/RESULTADOS_PRINCIPAIS.md) e a [metodologia](docs/METODOLOGIA_DO_PROJETO.md).\n- Consulte o [dicionário das 62 colunas](docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md), o [fluxo](docs/dados/FLUXO_DOS_DADOS.md), as [referências](docs/literature/REFERENCIAS_CENTRAIS.md) e o [esqueleto do artigo](docs/artigo/ESQUELETO_ARTIGO.md).\n\n## Números centrais\n\n'+resumo+'\n## Fonte e arquitetura\n\nMinistério da Saúde, [SINASC — dados abertos](https://dadosabertos.saude.gov.br/dataset/sistema-de-informacao-sobre-nascidos-vivos-sinasc), recurso Nascidos Vivos 2024. [Documentação oficial](docs/sources/FONTES_OFICIAIS.md).\n\n`data/raw/` preserva o ZIP e o dicionário; `data/processed/` guarda o Parquet; `src/` contém pipelines; `outputs/diagnostics/` registra números e contratos; `notebooks/` apresenta as fases; `docs/` consolida métodos/literatura; `apresentacao/` contém o HTML. Dados grandes e caches ficam locais.\n\n## Notebooks e reprodução\n\nSequência: 01 auditoria → 02 amostra/overlap → 03 predição/AIPW → 04 robustez → 05 heterogeneidade. Veja [entradas, objetivos e saídas](docs/REPRODUCAO.md). Os cinco notebooks já estão executados.\n\nNo PowerShell, dentro deste projeto:\n\n```powershell\n.\\.venv\\Scripts\\Activate.ps1\n$env:PYTHONUTF8 = "1"\npython -m pytest -q tests\npython -m src.entrega_fase5\npython -m src.entrega_fase5 --validar\nStart-Process .\\apresentacao\\relatorio_interativo_sinasc_2024.html\n```\n\nPara configurar um ambiente novo e reproduzir as fases, siga [REPRODUCAO.md](docs/REPRODUCAO.md). Abrir o HTML não exige reinstalar ou recalcular.\n\n## Estado e limites\n\n'+gates+'\n\n[Estado atual e histórico](docs/playbooks/ESTADO_ATUAL.md). `CAUSALIDADE_PROVADA = NAO`. A modelagem terminou; o artigo completo ainda não foi escrito. Uma versão Streamlit pode ser desenvolvida futuramente para portfólio.\n')
+    gravar('README.md','# SINASC 2024 — pré-natal, baixo peso e aprendizado de máquina\n\nTrabalho acadêmico de **Big Data & Analytics**. Fases 0–4 concluídas; Fase 5 consolida a entrega sem novos modelos.\n\n## Pergunta\n\nEntre gestantes comparáveis em características observáveis, iniciar o pré-natal até o terceiro mês de gestação está associado a uma redução no risco de baixo peso ao nascer?\n\n'+causal+'\n\n## Comece aqui\n\n- Abra [o relatório interativo](apresentacao/relatorio_interativo_sinasc_2024.html) com dois cliques após baixar o arquivo. Funciona offline, sem Python ou servidor. O GitHub pode exibir o código em vez de renderizar.\n- Leia a [síntese executiva](docs/SINTESE_EXECUTIVA.md), os [resultados](docs/RESULTADOS_PRINCIPAIS.md) e a [metodologia](docs/METODOLOGIA_DO_PROJETO.md).\n- Consulte o [dicionário das 62 colunas](docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md), o [fluxo](docs/dados/FLUXO_DOS_DADOS.md), as [referências](docs/literature/REFERENCIAS_CENTRAIS.md) e o [esqueleto do artigo](docs/artigo/ESQUELETO_ARTIGO.md).\n\n## Números centrais\n\n'+resumo+'\n## Fonte e arquitetura\n\nMinistério da Saúde, [SINASC — dados abertos](https://dadosabertos.saude.gov.br/dataset/sistema-de-informacao-sobre-nascidos-vivos-sinasc), recurso Nascidos Vivos 2024. [Documentação oficial](docs/sources/FONTES_OFICIAIS.md).\n\n`data/raw/` preserva o ZIP e o dicionário; `data/processed/` guarda o Parquet; `src/` contém módulos conceituais; `scripts/` orquestra execução e validação; `outputs/diagnostics/` registra números e contratos; `notebooks/` contém cinco artefatos-fonte executáveis; `docs/` consolida métodos/literatura; `apresentacao/` contém o HTML. Dados grandes e caches ficam locais. [Arquitetura e módulos](docs/architecture/ARQUITETURA_FINAL.md).\n\n## Notebooks e reprodução\n\nSequência: 01 auditoria → 02 amostra/overlap → 03 predição/AIPW → 04 robustez → 05 heterogeneidade. Veja [entradas, objetivos e saídas](docs/REPRODUCAO.md). Os cinco notebooks já estão executados.\n\nNo PowerShell, dentro deste projeto:\n\n```powershell\n.\\.venv\\Scripts\\Activate.ps1\n$env:PYTHONUTF8 = "1"\npython -m pytest -q tests\npython -m src.entrega\npython scripts/validar_projeto.py --rapida\nStart-Process .\\apresentacao\\relatorio_interativo_sinasc_2024.html\n```\n\nPara configurar um ambiente novo e reproduzir as fases, siga [REPRODUCAO.md](docs/REPRODUCAO.md). Abrir o HTML não exige reinstalar ou recalcular.\n\n## Estado e limites\n\n'+gates+'\n\n[Estado atual e histórico](docs/playbooks/ESTADO_ATUAL.md). `CAUSALIDADE_PROVADA = NAO`. A modelagem terminou; o artigo completo ainda não foi escrito. Uma versão Streamlit pode ser desenvolvida futuramente para portfólio.\n')
     fs=figuras()
     refs=json.loads((ROOT/'docs/literature/referencias_centrais.json').read_text(encoding='utf-8'))
     # Um único runtime Plotly embutido; apenas agregados nos gráficos.
@@ -310,60 +264,15 @@ def gerar():
     gravar('outputs/diagnostics/fase5_metricas.json',json.dumps(valores,ensure_ascii=False,indent=2)+'\n')
     print('Entrega gerada; execute --validar para conferir os artefatos.')
 
-
-def validar():
-    valores,_=metricas(); essenciais=['bruto','colunas','n','n_t1','n_t0','prevalencia','ufs','C1_estimativa_pp','C2_estimativa_pp','cate_media_pp','gate4']
-    for nome in ['README.md','docs/SINTESE_EXECUTIVA.md','docs/RESULTADOS_PRINCIPAIS.md','apresentacao/relatorio_interativo_sinasc_2024.html']:
-        texto=(ROOT/nome).read_text(encoding='utf-8')
-        verificar_metricas(texto,valores if 'RESULTADOS' in nome or nome.endswith('.html') else {k:valores[k] for k in essenciais})
-        if '\ufffd' in texto or 'Ã§' in texto or 'Ã£' in texto: raise ValueError('Codificação inválida: '+nome)
-    erros={}
-    for p in [ROOT/'README.md', *ROOT.joinpath('docs').rglob('*.md')]:
-        problemas=links_quebrados(p)
-        if problemas: erros[str(p.relative_to(ROOT))]=problemas
-    if erros: raise ValueError(f'Links locais quebrados: {erros}')
-    notebooks=[]
-    for p in sorted(ROOT.joinpath('notebooks').glob('0[1-5]*.ipynb')):
-        n=json.loads(p.read_text(encoding='utf-8')); cells=[c for c in n['cells'] if c['cell_type']=='code']
-        assert all(c.get('execution_count') is not None for c in cells)
-        assert not any(o.get('output_type')=='error' for c in cells for o in c.get('outputs',[]))
-        notebooks.append(dict(nome=p.name,celulas_executadas=len(cells)))
-    d=json.loads((ROOT/'outputs/tables/dicionario_analitico_sinasc_2024.json').read_text(encoding='utf-8'))
-    validar_dicionario(d,[s['coluna'] for s in ler('auditoria_schema_sinasc_2024.json')])
-    pagina=ROOT/'apresentacao/relatorio_interativo_sinasc_2024.html'; texto=pagina.read_text(encoding='utf-8')
-    assert not re.search(r'<(?:script|link)[^>]+(?:src|href)="https?://',texto)
-    assert texto.count('<section id=')==14 and texto.count('<figure>')==10
-    assert pagina.stat().st_size<15_000_000
-    assert not re.search(r'"(?:contador|m0_C1|m1_C1|fold_id)"\s*:\s*\[',texto)
-    resultado_md=(ROOT/'docs/RESULTADOS_PRINCIPAIS.md').read_text(encoding='utf-8')
-    for row in linhas_robustez():
-        assert '| '+' | '.join(row)+' |' in resultado_md, 'Tabela de robustez divergente'
-        assert '<tr>'+''.join('<td>'+v+'</td>' for v in row)+'</tr>' in texto, 'Robustez HTML divergente'
-    for x in d:
-        pct=lambda v:'Não confirmado' if v is None else numero(v)
-        row=[x['nome'],x['descricao'],x['tipo'],x['dominio'],pct(x['missing_pct']),pct(x['ignorado_pct']),pct(x['missing_ignorado_pct']),x['exemplos'],x['papel'],x['fases'],x['observacao']]
-        assert '<tr>'+''.join('<td>'+html.escape(str(v))+'</td>' for v in row)+'</tr>' in texto, 'Dicionário HTML divergente: '+x['nome']
-    # Reconciliar séries e layouts incorporados com as figuras dos agregados atuais.
-    decoder=json.JSONDecoder()
-    for f in figuras():
-        padrao=r'Plotly\.newPlot\(\s*"fig-'+re.escape(f['id'])+r'",\s*'
-        inicio=re.search(padrao,texto)
-        assert inicio, f['id']
-        trecho=texto[inicio.end():]
-        dados,fim=decoder.raw_decode(trecho)
-        layout,_=decoder.raw_decode(trecho[fim:].lstrip(' ,\n\r\t'))
-        esperado=json.loads(f['fig'].to_json())
-        assert dados==esperado['data'] and layout==esperado['layout'], 'Gráfico divergente: '+f['id']
-    resultado=dict(status='APROVADO_COM_RESSALVA_VISUAL',colunas=len(d),notebooks=notebooks,links_internos='APROVADO',metricas='APROVADO',series_graficos='APROVADO',dicionario_html='APROVADO',html_bytes=pagina.stat().st_size,html_sha256=hashlib.sha256(pagina.read_bytes()).hexdigest(),modelagem_nova=False,inspecao_html='Bloqueada pela política de URL local do navegador; abertura e controles exigem conferência manual.')
-    gravar('outputs/diagnostics/fase5_validacao.json',json.dumps(resultado,ensure_ascii=False,indent=2)+'\n')
-    print(json.dumps(resultado,ensure_ascii=False,indent=2))
-
-
-if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--auditar-dicionario',action='store_true')
-    parser.add_argument('--validar',action='store_true')
-    args=parser.parse_args()
-    if args.auditar_dicionario: auditar_dicionario()
-    elif args.validar: validar()
-    else: gerar()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--auditar-dicionario', action='store_true')
+    parser.add_argument('--validar', action='store_true')
+    args = parser.parse_args()
+    if args.auditar_dicionario:
+        auditar_dicionario()
+    elif args.validar:
+        from src.validacao import validar_entrega
+        validar_entrega()
+    else:
+        gerar()

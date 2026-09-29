@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.valida_resultados_fase3 import validar_folds_persistidos, comparar_linha
+from src.validacao import validar_folds_persistidos, comparar_linha
 
 
 def test_validacao_detecta_cluster_em_dois_folds():

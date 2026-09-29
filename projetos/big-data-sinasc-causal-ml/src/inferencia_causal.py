@@ -1,11 +1,29 @@
-"""AIPW transparente com predições OOF e SE por função de influência."""
+"""AIPW, ajuste cruzado e sensibilidade ao suporte."""
+from __future__ import annotations
+
 import hashlib
 import numpy as np
 from sklearn.model_selection import StratifiedKFold
-
-from src.modelagem_preditiva import (SEED, validar_x, criar_modelo, ajustar_modelo,
-                                     predizer, avaliar_probabilidades)
-
+from src.modelagem_preditiva import SEED
+from src.modelagem_preditiva import validar_x
+from src.modelagem_preditiva import criar_modelo
+from src.modelagem_preditiva import ajustar_modelo
+from src.modelagem_preditiva import predizer
+from src.modelagem_preditiva import avaliar_probabilidades
+import json
+import platform
+import time
+from pathlib import Path
+import duckdb
+import pandas as pd
+import sklearn
+from sklearn.metrics import roc_auc_score
+from src.amostra import _criar_views
+from src.sinasc import _salvar_json
+from src.sinasc import _markdown_tabela
+from src.diagnosticos import COLUNAS_PROPENSITY_PRINCIPAL
+from src.modelagem_preditiva import benchmark
+from src.diagnosticos import resumir_overlap
 
 def calcular_aipw(y, t, e, m0, m1):
     vetores = [np.asarray(v, dtype=float) for v in (y, t, e, m0, m1)]
@@ -28,7 +46,6 @@ def calcular_aipw(y, t, e, m0, m1):
         r[campo+'_pp'] = 100*r[campo]
     return r, psi
 
-
 def gerar_folds(t, y, n_folds=3, seed=SEED):
     t, y = np.asarray(t), np.asarray(y)
     if set(np.unique(t)) != {0, 1} or not set(np.unique(y)).issubset({0, 1}) or len(t) != len(y):
@@ -37,7 +54,6 @@ def gerar_folds(t, y, n_folds=3, seed=SEED):
     if np.unique(estratos, return_counts=True)[1].min() < n_folds:
         raise ValueError('Poucas observações por estrato para cross-fitting.')
     return list(StratifiedKFold(n_splits=n_folds, shuffle=True, random_state=seed).split(np.zeros(len(t)), estratos))
-
 
 def cross_fitting(x, t, y, n_folds=3):
     validar_x(x)
@@ -75,7 +91,6 @@ def cross_fitting(x, t, y, n_folds=3):
         calcular_aipw(y, t, r['e'], r[f'm0_{spec}'], r[f'm1_{spec}'])
     return r
 
-
 def diagnosticos_influencia(psi, t, e):
     psi, t, e = map(np.asarray, (psi, t, e))
     influencia = psi - psi.mean()
@@ -95,7 +110,6 @@ def diagnosticos_influencia(psi, t, e):
             'if_percentis': dict(zip(map(str, q), np.quantile(influencia, q).tolist())),
             'max_contribuicao_individual_pp': float(100*np.max(np.abs(influencia))/len(psi))}
 
-
 def resumir_especificacoes(y, t, predicoes):
     e = predicoes['e']
     linhas = []
@@ -108,3 +122,55 @@ def resumir_especificacoes(y, t, predicoes):
             linhas.append(r)
             diagnosticos[f'{spec}_{regra}'] = diagnosticos_influencia(psi, t[mask], e[mask])
     return linhas, diagnosticos
+
+
+def classificar_gate(linhas, diagnosticos):
+    if any(d['frac_variancia_top1pct'] > .5 for d in diagnosticos.values()):
+        return 'RESULTADO_NAO_INTERPRETAVEL'
+    principal = {r['especificacao']: r['estimativa_pp'] for r in linhas if r['populacao'] == 'sem_trimming'}
+    if principal['C1']*principal['C2'] < 0 or abs(principal['C1']-principal['C2']) > .25:
+        return 'RESULTADO_SENSIVEL_A_ESPECIFICACAO'
+    if any(abs(r['estimativa_pp']-principal[r['especificacao']]) > .5 for r in linhas):
+        return 'RESULTADO_SENSIVEL_A_ESPECIFICACAO'
+    return 'RESULTADO_EXPLORATORIO_ESTAVEL'
+
+
+def executar_causal(raiz):
+    """Executa somente a estimação causal congelada e suas sensibilidades."""
+    from src.amostra import carregar_exercicio
+    inicio = time.time()
+    pasta = raiz/"outputs/diagnostics"
+    dados, x, t, y, provenance = carregar_exercicio(raiz)
+    bruto = {'rotulo': 'ASSOCIAÇÃO BRUTA — NÃO CAUSAL',
+             'risco_t1': float(y[t==1].mean()), 'risco_t0': float(y[t==0].mean()),
+             'diferenca_pp': float(100*(y[t==1].mean()-y[t==0].mean()))}
+    pred = cross_fitting(x, t, y, n_folds=3)
+    # Arquivo grande apenas local, sob política de ignore existente.
+    np.savez_compressed(raiz/'outputs/tables/fase2_predicoes_oof.npz',
+                        **{k:v for k,v in pred.items() if isinstance(v, np.ndarray)})
+    linhas, diagnosticos = resumir_especificacoes(y, t, pred)
+    nuisance = {}
+    for spec in ('C1', 'C2'):
+        nuisance[spec] = {f'm{g}_grupo_observado': avaliar_probabilidades(y[t==g], pred[f'm{g}_{spec}'][t==g]) for g in (0, 1)}
+    gate = classificar_gate(linhas, diagnosticos)
+    resultado = {'provenance': provenance, 'associacao_bruta': bruto,
+                 'efeito_causal_estimado': True, 'causalidade_provada': False,
+                 'n_folds': 3, 'folds': pred['folds'], 'nuisance_oof': nuisance,
+                 'auc_propensity_oof': float(roc_auc_score(t, pred['e'])),
+                 'overlap': resumir_overlap(pred['e'], t),
+                 'resultados': linhas, 'diagnosticos': diagnosticos, 'gate': gate,
+                 'segundos_execucao': time.time()-inicio,
+                 'negative_control': 'não identificado placebo/negative control adequado',
+                 'incerteza': 'IF iid; IC aproximado condicional ao suporte aprendido; não inclui confundimento ou seleção',
+                 'heterogeneidade': 'omitida para manter escopo parcimonioso'}
+    _salvar_json(pasta/'fase2_aipw.json', resultado)
+    _salvar_json(pasta/'fase2_sensibilidades.json', {'resultados': linhas, 'gate': gate,
+        'mesmo_propensity_C1_C2': True, 'clipping': False,
+        'nota': 'Trimming define populações diferentes; N pode variar frente à Fase 1 de 5 folds.'})
+    tabela = pd.DataFrame(linhas)[['especificacao', 'populacao', 'n', 'n_t1', 'n_t0', 'estimativa_pp', 'se_pp', 'ic95_inferior_pp', 'ic95_superior_pp']]
+    (pasta/'RESULTADOS_FASE2.md').write_text(
+        '# Resultados exploratórios da Fase 2\n\n'+_markdown_tabela(tabela)+
+        '\nUnidade: pontos percentuais. Hipóteses observacionais não provadas.\n\nGate: '+gate+'\n', encoding='utf-8')
+    print(tabela.to_string(index=False), flush=True)
+    print('Gate:', gate, flush=True)
+    return resultado

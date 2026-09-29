@@ -5,10 +5,11 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.audita_influencia import aipw_independente, concentracao, ess_grupos
-from src.inferencia_cluster import resumo_cluster, bootstrap_cluster, leave_one_out, folds_agrupados
-from src.simulacao_gate_influencia import simular
-from src.executa_robustez_fase3 import carregar_amostra, salvar_fase3, crossfit_auditoria
+from src.robustez import aipw_independente, concentracao, ess_grupos
+from src.robustez import resumo_cluster, bootstrap_cluster, leave_one_out, folds_agrupados
+from src.robustez import simular
+from src.amostra import carregar_amostra
+from src.robustez import salvar_fase3, crossfit_auditoria
 
 
 def test_aipw_analitico_sinal_media_e_normalizacao():
@@ -126,7 +127,7 @@ def test_c3_rejeita_municipio_em_x_e_outcome():
 
 
 def test_resumo_integra_estimativa_cluster_e_nuisances():
-    from src.executa_robustez_fase3 import resumo_predicoes
+    from src.robustez import resumo_predicoes
     dados=pd.DataFrame({'tratamento':np.tile([0,0,1,1],30),
                         'Y_BAIXO_PESO':np.tile([0,1,0,1],30),
                         'CODMUNRES':np.repeat(np.arange(30),4)})
@@ -137,7 +138,7 @@ def test_resumo_integra_estimativa_cluster_e_nuisances():
 
 
 def test_c3_fit_real_prediz_somente_registros_fora_do_treino(monkeypatch):
-    import src.executa_robustez_fase3 as modulo
+    import src.robustez as modulo
     rng=np.random.default_rng(110)
     n=600
     x=pd.DataFrame({'IDADEMAE_NUM':rng.normal(28,5,n)})

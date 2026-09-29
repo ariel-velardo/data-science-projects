@@ -1,15 +1,62 @@
-"""Camada de apresentação PT-BR; não altera dados ou chaves analíticas."""
-import ast
-import builtins
-import io
-import re
-import tokenize
-from pathlib import Path
+"""Tema IPT e apresentação PT-BR."""
+from __future__ import annotations
 
-import nbformat
+import plotly.graph_objects as go
+import plotly.io as pio
+import builtins
+import re
+from pathlib import Path
 import pandas as pd
 from IPython.display import display as _display, Markdown
-from src.visualizacao_ipt import aplicar_tema_ipt as _tema
+
+CORES_IPT = {
+    "AZUL_PRINCIPAL": "#00598E",
+    "AZUL_ESCURO": "#133C5A",
+    "CIANO": "#04B4E3",
+    "AZUL_MEDIO": "#226986",
+    "AZUL_CLARO": "#82B0C6",
+    "BRANCO": "#FFFFFF",
+    "CINZA_FUNDO": "#F5F7F9",
+    "CINZA_GRADE": "#D9E7EE",
+}
+
+PALETA_IPT = [
+    CORES_IPT["AZUL_PRINCIPAL"],
+    CORES_IPT["CIANO"],
+    CORES_IPT["AZUL_MEDIO"],
+    CORES_IPT["AZUL_CLARO"],
+    CORES_IPT["AZUL_ESCURO"],
+]
+
+TEMPLATE_PLOTLY_IPT = go.layout.Template(
+    layout=go.Layout(
+        paper_bgcolor=CORES_IPT["BRANCO"],
+        plot_bgcolor=CORES_IPT["BRANCO"],
+        font={"family": "Arial", "color": CORES_IPT["AZUL_ESCURO"], "size": 13},
+        colorway=PALETA_IPT,
+        title={"font": {"color": CORES_IPT["AZUL_ESCURO"], "size": 20}, "x": 0.02},
+        margin={"l": 65, "r": 35, "t": 75, "b": 60},
+        legend={"orientation": "h", "y": -0.2, "x": 0},
+        xaxis={"showline": True, "linecolor": CORES_IPT["CINZA_GRADE"], "gridcolor": CORES_IPT["CINZA_GRADE"], "zeroline": False},
+        yaxis={"showline": True, "linecolor": CORES_IPT["CINZA_GRADE"], "gridcolor": CORES_IPT["CINZA_GRADE"], "zeroline": False},
+    )
+)
+
+def configurar_plotly() -> None:
+    """Registra e ativa o tema comum do projeto."""
+
+    pio.templates["ipt_academico"] = TEMPLATE_PLOTLY_IPT
+    pio.templates.default = "ipt_academico"
+    pio.renderers.default = "png"
+
+def aplicar_tema_base(figura: go.Figure, titulo: str | None = None) -> go.Figure:
+    """Aplica o tema e um título opcional a uma figura Plotly."""
+
+    figura.update_layout(template=TEMPLATE_PLOTLY_IPT)
+    if titulo:
+        figura.update_layout(title=titulo)
+    return figura
+
 
 TERMOS = {
     'tl;dr':'Resumo executivo', 'Context & Methods':'Contexto e métodos',
@@ -33,8 +80,10 @@ TERMOS = {
     'one-hot sparse':'codificação indicadora esparsa', 'sandwich':'sanduíche',
     'proxy':'aproximação', 'provenance':'procedência',
 }
+
 TECNICOS = ('AIPW','ROC-AUC','PR-AUC','Python','scikit-learn','HistGradientBoosting',
             'SINASC','DR-Learner','CATE','ATE','bootstrap','Monte Carlo','OOF','DAG','ESS')
+
 ROTULOS = {'sem_trimming':'Sem recorte de suporte','0.01_0.99':'Suporte 0,01–0,99',
            '0.05_0.95':'Suporte 0,05–0,95','<MISSING>':'Ausente',
            'aleatorio':'Aleatório','agrupado':'Agrupado', 'iid':'Independência individual',
@@ -43,7 +92,6 @@ ROTULOS = {'sem_trimming':'Sem recorte de suporte','0.01_0.99':'Suporte 0,01–0
            'se_pp':'EP (pp)','se_iid_pp':'EP individual (pp)','se_cluster_pp':'EP municipal (pp)',
            'estimativa_pp':'Estimativa (pp)', 'n':'N','n_t1':'N tratado','n_t0':'N controle',
            'convergence_warning':'Alerta de convergência','n_iter':'Iterações'}
-
 
 def traduzir(texto):
     """Traduz prosa; trechos entre crases e URLs preservam identificadores reais."""
@@ -55,14 +103,12 @@ def traduzir(texto):
             partes[i]=re.sub(r'(?<!\w)'+re.escape(termo)+r'(?!\w)',substituir,partes[i],flags=re.I)
     return ''.join(partes)
 
-
 def rotulo(valor):
     if not isinstance(valor,str): return valor
     if valor in ROTULOS: return ROTULOS[valor]
     # Colunas SINASC e identificadores de decisões históricas ficam literais.
     if valor.isupper() or '/' in valor or '\\' in valor: return traduzir(valor)
     return traduzir(valor.replace('_',' '))
-
 
 def tabela_pt(tabela):
     resultado=tabela.copy()
@@ -79,19 +125,16 @@ def tabela_pt(tabela):
             resultado[c]=resultado[c].map(rotulo)
     return resultado
 
-
 def exibir_pt(*objetos,**kwargs):
     objetos=[tabela_pt(o) if isinstance(o,pd.DataFrame) else
              Markdown(traduzir(o.data)) if isinstance(o,Markdown) else o for o in objetos]
     return _display(*objetos,**kwargs)
 
-
 def imprimir_pt(*objetos,**kwargs):
     return builtins.print(*[traduzir(o) if isinstance(o,str) else o for o in objetos],**kwargs)
 
-
 def aplicar_tema_ipt(fig,titulo):
-    _tema(fig,traduzir(titulo))
+    aplicar_tema_base(fig,traduzir(titulo))
     for eixo in list(fig.select_xaxes())+list(fig.select_yaxes()):
         if eixo.title.text: eixo.title.text=traduzir(eixo.title.text)
         if eixo.ticktext is not None: eixo.ticktext=[rotulo(v) for v in eixo.ticktext]
@@ -104,36 +147,6 @@ def aplicar_tema_ipt(fig,titulo):
                 setattr(tr,eixo,[traduzir(v.replace('sem_trimming','Sem recorte de suporte')) for v in vals])
     return fig
 
-
-def preparar_notebook(nb):
-    """Aplicada pelo gerador antes de gravar. Traduz só literais de prosa em código."""
-    nb.metadata.kernelspec={'display_name':'Python (SINASC .venv)','language':'python','name':'python3'}
-    primeira=True
-    for cell in nb.cells:
-        if cell.cell_type=='markdown': cell.source=traduzir(cell.source)
-        elif cell.cell_type=='code':
-            tokens=[]
-            for tok in tokenize.generate_tokens(io.StringIO(cell.source).readline):
-                if tok.type==tokenize.COMMENT:
-                    tok=tok._replace(string=traduzir(tok.string))
-                elif tok.type==tokenize.STRING and '\n' not in tok.string:
-                    try: valor=ast.literal_eval(tok.string)
-                    except (ValueError,SyntaxError): valor=None
-                    # Chaves, caminhos, expressões SQL e f-strings não são reescritos.
-                    if isinstance(valor,str) and ' ' in valor and not any(s in valor for s in ('SELECT ','FROM ','/','\\','<','>')):
-                        tok=tok._replace(string=repr(traduzir(valor)))
-                tokens.append(tok)
-            cell.source=tokenize.untokenize(tokens)
-            if primeira:
-                # Inserção depois dos imports do tema original, antes de qualquer exibição.
-                marcador='configurar_plotly()'
-                acrescimo='from src.apresentacao_pt import exibir_pt as display, imprimir_pt as print, aplicar_tema_ipt\n'
-                if marcador in cell.source:
-                    cell.source=cell.source.replace(marcador,acrescimo+marcador,1)
-                primeira=False
-    return nb
-
-
 def auditar_idioma(nb):
     erros=[]
     for i,c in enumerate(nb.cells):
@@ -142,10 +155,3 @@ def auditar_idioma(nb):
         for termo in TERMOS:
             if re.search(r'(?<!\w)'+re.escape(termo)+r'(?!\w)',texto,re.I): erros.append((i,termo))
     return erros
-
-
-if __name__=='__main__':
-    for p in sorted((Path(__file__).resolve().parents[1]/'notebooks').glob('*.ipynb')):
-        erros=auditar_idioma(nbformat.read(p,as_version=4))
-        if erros: raise ValueError(f'{p.name}: {erros}')
-        builtins.print(p.name, 'PT-BR aprovado')

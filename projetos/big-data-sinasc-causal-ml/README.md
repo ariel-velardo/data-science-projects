@@ -34,7 +34,7 @@ O início precoce apresenta menor risco ajustado na população selecionada. A e
 
 Ministério da Saúde, [SINASC — dados abertos](https://dadosabertos.saude.gov.br/dataset/sistema-de-informacao-sobre-nascidos-vivos-sinasc), recurso Nascidos Vivos 2024. [Documentação oficial](docs/sources/FONTES_OFICIAIS.md).
 
-`data/raw/` preserva o ZIP e o dicionário; `data/processed/` guarda o Parquet; `src/` contém pipelines; `outputs/diagnostics/` registra números e contratos; `notebooks/` apresenta as fases; `docs/` consolida métodos/literatura; `apresentacao/` contém o HTML. Dados grandes e caches ficam locais.
+`data/raw/` preserva o ZIP e o dicionário; `data/processed/` guarda o Parquet; `src/` contém módulos conceituais; `scripts/` orquestra execução e validação; `outputs/diagnostics/` registra números e contratos; `notebooks/` contém cinco artefatos-fonte executáveis; `docs/` consolida métodos/literatura; `apresentacao/` contém o HTML. Dados grandes e caches ficam locais. [Arquitetura e módulos](docs/architecture/ARQUITETURA_FINAL.md).
 
 ## Notebooks e reprodução
 
@@ -46,8 +46,8 @@ No PowerShell, dentro deste projeto:
 .\.venv\Scripts\Activate.ps1
 $env:PYTHONUTF8 = "1"
 python -m pytest -q tests
-python -m src.entrega_fase5
-python -m src.entrega_fase5 --validar
+python -m src.entrega
+python scripts/validar_projeto.py --rapida
 Start-Process .\apresentacao\relatorio_interativo_sinasc_2024.html
 ```
 

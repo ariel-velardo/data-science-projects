@@ -1,0 +1,470 @@
+{
+  "checkpoint": "5ae8e272dd82016928b84dd3629decbecc1bff82",
+  "baseline_sha256": "7dbcd5919af84278355359f7fd66e69fc4922d63f23755ee623d87e624a16d0f",
+  "motivo": "Refatoração estrutural autorizada; cálculos e JSONs históricos preservados; fontes de notebooks alteradas somente em imports/comandos.",
+  "migracoes": {
+    "src/apresentacao_pt.py": {
+      "hashes_anteriores": [
+        "bc58fdc87f61a72a215417cf5d0340a70c99ebafd0fe91ebfcfdd3da02859bd9"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/visualizacao.py": "c8f756b159aac1be8b7a333d3594449a5917d150a697a2cb9c267cd3f2e52865"
+      }
+    },
+    "src/audita_covariaveis.py": {
+      "hashes_anteriores": [
+        "7f3c95a768c24f46e32072d6373bf04b4dbb69339fce15a9cede3bae2eff5284"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/diagnosticos.py": "ceb18407cf9e6c1a0274b7cfebfa48f09add8fd1259f0acd00410bbba567b490"
+      }
+    },
+    "src/audita_influencia.py": {
+      "hashes_anteriores": [
+        "272b2db4f15d245c50400fdacc7f8d8e9391ad5c77b9c5b7de9994e704e7df3b"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/robustez.py": "a4aa5d97390fe2b9ef9e0fed421f4bf3bc646d295a9d99827c51ee500c8fb1f2"
+      }
+    },
+    "src/audita_sinasc_2024.py": {
+      "hashes_anteriores": [
+        "be3ef486b4fe578194bd1c48fce4a406be4440561b9e163dc5297d7076ed46e7"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/auditoria_dados.py": "9c6dbbc2f522e2c83efc0efd64319f60f972bf6c28410ba441885ed2244a82e0"
+      }
+    },
+    "src/baixa_dados_sinasc.py": {
+      "hashes_anteriores": [
+        "fc3c997cf954ddac3403f187aa2a4699cc42f208df56e2d477fdec8e9e097150"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/sinasc.py": "9bb8af54382dc39517929dbffc56e3c9bf5c134f3c41d919c76482efe318165f"
+      }
+    },
+    "src/carrega_sinasc.py": {
+      "hashes_anteriores": [
+        "a5ef50e088e83b91842bfd12526f6f10d841acfa5ebd5196fa213c2393e38ed9"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/sinasc.py": "9bb8af54382dc39517929dbffc56e3c9bf5c134f3c41d919c76482efe318165f"
+      }
+    },
+    "src/constroi_amostra_analitica.py": {
+      "hashes_anteriores": [
+        "f9dd458fcc3023e1d717ec2c389a6521c4446dca64fb8409fcdecc8f3ab6547c"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/amostra.py": "3a3b7d441a1e18e41fb4d676dc0433b1d598593e1f8b532116353ae5e59a0ee0"
+      }
+    },
+    "src/cria_notebook_auditoria.py": {
+      "hashes_anteriores": [
+        "696f8627000510b13248886e501542d56126c5b7baabaa2d8fbec92131f7387d"
+      ],
+      "removido": true,
+      "destinos": {
+        "notebooks/01_auditoria_sinasc_2024.ipynb": "d4c2cb956d1342d7b56f3f82e3b72978cbb470ac6bddb96ad57b5c3e08ce94f9",
+        "src/visualizacao.py": "c8f756b159aac1be8b7a333d3594449a5917d150a697a2cb9c267cd3f2e52865"
+      }
+    },
+    "src/cria_notebook_fase1.py": {
+      "hashes_anteriores": [
+        "7050086ef924deb34e90eac5409da33c4cd10bec86410416fd49b0646ead9921"
+      ],
+      "removido": true,
+      "destinos": {
+        "notebooks/02_amostra_desenho_e_overlap.ipynb": "19ac8ffcbe012baa1cf6101140527796f39d98f975436b54e9ab4b5512dc21a2",
+        "src/visualizacao.py": "c8f756b159aac1be8b7a333d3594449a5917d150a697a2cb9c267cd3f2e52865"
+      }
+    },
+    "src/cria_notebook_fase2.py": {
+      "hashes_anteriores": [
+        "b3f0b0c522ecc44fec5448cf3b2f2b008ac5c0cab83f7eb6d787f665bf84f659",
+        "5e93267422632f8a76103a3aaeb5b298039dded4a7d61c0f19c81286257afa89"
+      ],
+      "removido": true,
+      "destinos": {
+        "notebooks/03_ml_preditivo_e_aipw.ipynb": "45155c3ea6ba4186916715ea1d3c178f4698211c8e60ae014a505a1c6cb18188",
+        "src/visualizacao.py": "c8f756b159aac1be8b7a333d3594449a5917d150a697a2cb9c267cd3f2e52865"
+      }
+    },
+    "src/cria_notebook_fase3.py": {
+      "hashes_anteriores": [
+        "6e08a9ad3ab3a36ce5b000d12a9b05ef1ccb743496fe111d4a2f962d3bd7061d"
+      ],
+      "removido": true,
+      "destinos": {
+        "notebooks/04_robustez_e_auditoria_metodologica.ipynb": "735bcf9b33fed9b7aa123a00a8e08e02fcb5112067cfd498d46be47910dadcf0",
+        "src/visualizacao.py": "c8f756b159aac1be8b7a333d3594449a5917d150a697a2cb9c267cd3f2e52865"
+      }
+    },
+    "src/cria_notebook_fase4.py": {
+      "hashes_anteriores": [
+        "d20ca264f830eedcd7983bb72f11333628d8455f5f345310a7378c1fdcf07029"
+      ],
+      "removido": true,
+      "destinos": {
+        "notebooks/05_heterogeneidade_causal.ipynb": "ac4800785ece13da1151f4196aceb6d1dcf9b19fbdc27dd45ed0e0e94d192392",
+        "src/visualizacao.py": "c8f756b159aac1be8b7a333d3594449a5917d150a697a2cb9c267cd3f2e52865"
+      }
+    },
+    "src/diagnostica_overlap.py": {
+      "hashes_anteriores": [
+        "88fc96718128308bee1ffcf506b3eab0f74181ad4328872430fc9df444954f08"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/diagnosticos.py": "ceb18407cf9e6c1a0274b7cfebfa48f09add8fd1259f0acd00410bbba567b490"
+      }
+    },
+    "src/dicionario_sinasc.py": {
+      "hashes_anteriores": [
+        "3cf802e14eccb699fbb6bd2de1367cf92c7dcdbf763332a2cfe452d9f8306798"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/sinasc.py": "9bb8af54382dc39517929dbffc56e3c9bf5c134f3c41d919c76482efe318165f"
+      }
+    },
+    "src/documenta_fase4.py": {
+      "hashes_anteriores": [
+        "2a6bdde18509d59834c91d404af083ba4a7a74f4941095fcbc1e2fd89ca87dc5"
+      ],
+      "removido": true,
+      "destinos": {
+        "docs/methodology/HETEROGENEIDADE_FASE4.md": "8104f9f6a188349342d87cd5e8c466f5aae97dbe843f32e3f5a488c2d063897d",
+        "src/entrega.py": "602264f4d3191768e5abc3437db963a4e9ed7ff91b18b88140e73212942a0786"
+      }
+    },
+    "src/entrega_fase5.py": {
+      "hashes_anteriores": [
+        "4daaff3836a5fb7a72276146079eea81746095fdda0cb89967f2122043a4f66d"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/entrega.py": "602264f4d3191768e5abc3437db963a4e9ed7ff91b18b88140e73212942a0786"
+      }
+    },
+    "src/estima_aipw.py": {
+      "hashes_anteriores": [
+        "f5090b57189f10f77d35ac7cec3156d89fbae93542ad009058fd6081480fa09f"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/inferencia_causal.py": "92f9b8136b512c8e4f70a8dc6a938658038f41401d128e611a2098d6770b1707"
+      }
+    },
+    "src/executa_fase1.py": {
+      "hashes_anteriores": [
+        "ec9fc8bac40bea2bfdde89d3d6bd71a9632656a2e932b6c4007a4dc860bf5eed"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/amostra.py": "3a3b7d441a1e18e41fb4d676dc0433b1d598593e1f8b532116353ae5e59a0ee0",
+        "src/auditoria_dados.py": "9c6dbbc2f522e2c83efc0efd64319f60f972bf6c28410ba441885ed2244a82e0",
+        "src/sinasc.py": "9bb8af54382dc39517929dbffc56e3c9bf5c134f3c41d919c76482efe318165f",
+        "scripts/executar_pipeline.py": "0496514f8793c0d193c839ea3f249d4cb69930f115d71a3a0c35efd72dd2960b"
+      }
+    },
+    "src/executa_fase2.py": {
+      "hashes_anteriores": [
+        "fff8da73458a4b07a79c7a21144dc0bd9b11ab4c3cb28f019cd0d87cf4a23215"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/amostra.py": "3a3b7d441a1e18e41fb4d676dc0433b1d598593e1f8b532116353ae5e59a0ee0",
+        "src/modelagem_preditiva.py": "4bb5826b8da92cedc91d76bc14229dee9f2539f234771849cc2692435ae450ca",
+        "src/inferencia_causal.py": "92f9b8136b512c8e4f70a8dc6a938658038f41401d128e611a2098d6770b1707",
+        "scripts/executar_pipeline.py": "0496514f8793c0d193c839ea3f249d4cb69930f115d71a3a0c35efd72dd2960b"
+      }
+    },
+    "src/executa_fase4.py": {
+      "hashes_anteriores": [
+        "681a4b175cd3cb824d657d3397d0def14a2e7f31cbaa9d993b24a1866dbc8883"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/heterogeneidade.py": "8a7de1050e2cd79f8e8bfa422f022e9b830d701d65ded62009e9becc1c4ddb34",
+        "src/validacao.py": "c00d1d79dd9d20f225e40c9c8ba27e18ee204b2644ccf3f30c9cdcf28afacd78",
+        "scripts/executar_pipeline.py": "0496514f8793c0d193c839ea3f249d4cb69930f115d71a3a0c35efd72dd2960b"
+      }
+    },
+    "src/executa_robustez_fase3.py": {
+      "hashes_anteriores": [
+        "2a3ef9896d849fd2fb51cd731ef4bc5cb4a876236b33483ffed27c25fe03df71"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/amostra.py": "3a3b7d441a1e18e41fb4d676dc0433b1d598593e1f8b532116353ae5e59a0ee0",
+        "src/robustez.py": "a4aa5d97390fe2b9ef9e0fed421f4bf3bc646d295a9d99827c51ee500c8fb1f2",
+        "src/validacao.py": "c00d1d79dd9d20f225e40c9c8ba27e18ee204b2644ccf3f30c9cdcf28afacd78",
+        "scripts/executar_pipeline.py": "0496514f8793c0d193c839ea3f249d4cb69930f115d71a3a0c35efd72dd2960b"
+      }
+    },
+    "src/heterogeneidade_dr.py": {
+      "hashes_anteriores": [
+        "4575f397d540f38b0f838f769b6b127cd6fa565e66853a4fc44a21a65b0a3500"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/heterogeneidade.py": "8a7de1050e2cd79f8e8bfa422f022e9b830d701d65ded62009e9becc1c4ddb34"
+      }
+    },
+    "src/inferencia_cluster.py": {
+      "hashes_anteriores": [
+        "25eafedc22ea518286c475dd61de10e3104334d1708e5b6c74788db52856fc9b"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/robustez.py": "a4aa5d97390fe2b9ef9e0fed421f4bf3bc646d295a9d99827c51ee500c8fb1f2"
+      }
+    },
+    "src/literatura_fase5.py": {
+      "hashes_anteriores": [
+        "2f2edc421fd23d573544545654374707eb204f8baddc96140a7733f1d9351916"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/literatura.py": "afc93e65edce987e940d86d91e98cbdd2074f3df8e3ca05edc40a51deefd91cb"
+      }
+    },
+    "src/modelagem_preditiva.py": {
+      "hashes_anteriores": [
+        "c75dd05af8da95a6d88ad070fe2964d89f5e20c91005777b56713fe8e33d3752"
+      ],
+      "removido": false,
+      "destinos": {
+        "src/modelagem_preditiva.py": "4bb5826b8da92cedc91d76bc14229dee9f2539f234771849cc2692435ae450ca"
+      }
+    },
+    "src/prepara_sinasc_2024.py": {
+      "hashes_anteriores": [
+        "d944c7eae0cb73ee6a3a2a7327a5465339f119689b0a9ec256431e3abc683719"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/sinasc.py": "9bb8af54382dc39517929dbffc56e3c9bf5c134f3c41d919c76482efe318165f"
+      }
+    },
+    "src/resume_auditoria_fase3.py": {
+      "hashes_anteriores": [
+        "3e6c7378f2dacf3cb8cadca97727131838af66dca8a4fc57006addf3e6e6fef2"
+      ],
+      "removido": true,
+      "destinos": {
+        "docs/methodology/ROBUSTEZ_FASE3.md": "6785124110d44259d3a3ada627530641162389994812f2ddf8b34ccb648b8637",
+        "src/entrega.py": "602264f4d3191768e5abc3437db963a4e9ed7ff91b18b88140e73212942a0786"
+      }
+    },
+    "src/resume_fase4.py": {
+      "hashes_anteriores": [
+        "bc4e5c920ced42df140f9a8d784c06c4093a2c85971a86abe34f9eecc2af6137"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/heterogeneidade.py": "8a7de1050e2cd79f8e8bfa422f022e9b830d701d65ded62009e9becc1c4ddb34"
+      }
+    },
+    "src/simulacao_gate_influencia.py": {
+      "hashes_anteriores": [
+        "77b7e9e1d8c0a6dc2dfa37688322173f51c390f8d46b0910f7213784b5398dff"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/robustez.py": "a4aa5d97390fe2b9ef9e0fed421f4bf3bc646d295a9d99827c51ee500c8fb1f2"
+      }
+    },
+    "src/valida_apresentacao.py": {
+      "hashes_anteriores": [
+        "2eabdf3bf1c36f76dcaa1b662d98542e84797cf0850b4cbd1209da380fda0ed8"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/validacao.py": "c00d1d79dd9d20f225e40c9c8ba27e18ee204b2644ccf3f30c9cdcf28afacd78"
+      }
+    },
+    "src/valida_resultados_fase2.py": {
+      "hashes_anteriores": [
+        "5b9159077d79ef96b6383e83363d27e894d3a77e42693519feb5df4d6e524984"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/validacao.py": "c00d1d79dd9d20f225e40c9c8ba27e18ee204b2644ccf3f30c9cdcf28afacd78"
+      }
+    },
+    "src/valida_resultados_fase3.py": {
+      "hashes_anteriores": [
+        "e3e24243382aaf2e0c83182dd0f9c647cbc21fa7ad2f3b1dc3ba75096d890aba"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/validacao.py": "c00d1d79dd9d20f225e40c9c8ba27e18ee204b2644ccf3f30c9cdcf28afacd78"
+      }
+    },
+    "src/valida_resultados_fase4.py": {
+      "hashes_anteriores": [
+        "733ca16303db109e36944d7ea5545a3a8131a54fc81e390eb0055d76b5290d61"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/validacao.py": "c00d1d79dd9d20f225e40c9c8ba27e18ee204b2644ccf3f30c9cdcf28afacd78"
+      }
+    },
+    "src/visualizacao_ipt.py": {
+      "hashes_anteriores": [
+        "ddb8f02bee109f7145400fec9b51c4e655c37d23c96fdb726548e19c59652fba"
+      ],
+      "removido": true,
+      "destinos": {
+        "src/visualizacao.py": "c8f756b159aac1be8b7a333d3594449a5917d150a697a2cb9c267cd3f2e52865"
+      }
+    },
+    "notebooks/01_auditoria_sinasc_2024.ipynb": {
+      "hashes_anteriores": [
+        "de000c062a3a725e8273f6470c760a02d7b5b0f9a46853ee2dd167cb7ecb39c2"
+      ],
+      "removido": false,
+      "destinos": {
+        "notebooks/01_auditoria_sinasc_2024.ipynb": "d4c2cb956d1342d7b56f3f82e3b72978cbb470ac6bddb96ad57b5c3e08ce94f9"
+      }
+    },
+    "notebooks/02_amostra_desenho_e_overlap.ipynb": {
+      "hashes_anteriores": [
+        "06c5e17cea85840d0dca4fca5a72f25785ea5afe0336c3c98557d2855fda897d"
+      ],
+      "removido": false,
+      "destinos": {
+        "notebooks/02_amostra_desenho_e_overlap.ipynb": "19ac8ffcbe012baa1cf6101140527796f39d98f975436b54e9ab4b5512dc21a2"
+      }
+    },
+    "notebooks/03_ml_preditivo_e_aipw.ipynb": {
+      "hashes_anteriores": [
+        "d729a697bd4293da81dd0fbf0f7bccf3d9afe4137f6c63d7ae0df240be069de2",
+        "3a18ec835697787707e748ea10fe409df948f70a5c89e6269c07b76d6d854870"
+      ],
+      "removido": false,
+      "destinos": {
+        "notebooks/03_ml_preditivo_e_aipw.ipynb": "45155c3ea6ba4186916715ea1d3c178f4698211c8e60ae014a505a1c6cb18188"
+      }
+    },
+    "notebooks/04_robustez_e_auditoria_metodologica.ipynb": {
+      "hashes_anteriores": [
+        "0ed64f40a6505a98d804839d4519b834d9e907c24e6de25c792853def1648fc1"
+      ],
+      "removido": false,
+      "destinos": {
+        "notebooks/04_robustez_e_auditoria_metodologica.ipynb": "735bcf9b33fed9b7aa123a00a8e08e02fcb5112067cfd498d46be47910dadcf0"
+      }
+    },
+    "notebooks/05_heterogeneidade_causal.ipynb": {
+      "hashes_anteriores": [
+        "2dbfb8a73cddba5ce8726eae7803cd3d95cdd7797aebb4930a2f5269b9278457"
+      ],
+      "removido": false,
+      "destinos": {
+        "notebooks/05_heterogeneidade_causal.ipynb": "ac4800785ece13da1151f4196aceb6d1dcf9b19fbdc27dd45ed0e0e94d192392"
+      }
+    }
+  },
+  "excecoes_historicas": {
+    "data/raw/source_manifest.json": {
+      "hash_baseline_nao_reproduzido": "6e63e6ab0022edc5860672dc9d52a07123e6a3680ad080fd996ce5431f9674ea",
+      "hash_atual_aprovado": "c1fdc4277225e1a604c1277d0267100dd9d12957e4f2b71ac25461eb9f470eca",
+      "hash_git_acessivel": "c1ee5347021950cb66c82aac4e674de0325557061edf82d7af8b52b887cfc67b",
+      "commit_git": "caf14463e85021db4128fd0bf197b6c0e5e74c3c",
+      "blob_git": "f443b468d4997501a103f3671c3913dd48e3765d",
+      "autoridade": "Este registro é documental. A aceitação exige que ele concorde com a âncora fixa EXCECAO_SOURCE_MANIFEST em src/validacao.py e que o blob real do commit fixo (lido via git cat-file, ancestral de HEAD) tenha o hash_git_acessivel e coincida com o arquivo atual normalizado CRLF->LF.",
+      "tipo_evidencia": "A normalização CRLF->LF do conteúdo atual reproduz exatamente o blob Git da última versão versionada deste arquivo (commit caf14463e85021db4128fd0bf197b6c0e5e74c3c, blob f443b468d4997501a103f3671c3913dd48e3765d). O hash baseline 6e63e6ab... NÃO foi reproduzido por essa nem por nenhuma outra normalização testada.",
+      "limitacao": "Os bytes correspondentes ao hash baseline 6e63e6ab... permanecem desconhecidos; esse hash não corresponde a nenhum blob alcançável no histórico do Git deste arquivo (os commits f43b5ca e caf14463 produzem 55c9c8c9... e c1ee5347...). Esta exceção não afirma equivalência com o baseline; documenta a lacuna e ancora o estado atual ao blob Git versionado.",
+      "justificativa": "Sem os bytes originais do baseline não é possível provar nem refutar equivalência; fabricar uma reprodução seria falsificar proveniência. A exceção fica restrita a este único arquivo e aos hashes e ao commit fixados em código. O objetivo é detectar mudanças acidentais ou não reconciliadas e preservar uma cadeia de evidência auditável, não resistir a quem reescreve simultaneamente validador, testes e contratos."
+    }
+  },
+  "evolucoes_autorizadas": {
+    "src/validacao.py": [
+      {
+        "ordem": 1,
+        "hash_anterior": "c00d1d79dd9d20f225e40c9c8ba27e18ee204b2644ccf3f30c9cdcf28afacd78",
+        "hash_novo": "370a8b8e71d367c9bdd0e3d82d22824496a050277665ab2994024536aeb4c183",
+        "tipo": "correcao_guarda_preservacao",
+        "motivo": "Normalização CRLF->LF restrita a quatro caminhos exatos e exceção histórica para data/raw/source_manifest.json.",
+        "escopo": "Somente funções de hash de preservação e exceção histórica; nenhum cálculo científico alterado.",
+        "relacao_patch_preservacao": "Patch 1 de preservação (LF/CRLF e source_manifest).",
+        "evidencia_hash_anterior": "Valor registrado nos destinos das migrações antes do patch 1 e reproduzido revertendo em memória as edições do patch 1."
+      },
+      {
+        "ordem": 2,
+        "hash_anterior": "370a8b8e71d367c9bdd0e3d82d22824496a050277665ab2994024536aeb4c183",
+        "hash_novo": "a9191a94298aa90a35c837a3d213bbfb22b5ef07f695652ed3e3a0d86648ebce",
+        "tipo": "correcao_contrato_preservacao",
+        "motivo": "Âncora independente (código + blob Git do commit fixo) para a exceção do source_manifest; restauração dos destinos históricos das migrações e validação por cadeia de evoluções.",
+        "escopo": "Somente contrato de preservação; nenhum cálculo científico alterado.",
+        "relacao_patch_preservacao": "Patch 2 de preservação, corrige o PROBLEMA_DE_CONTRATO da auditoria independente.",
+        "evidencia_hash_anterior": "Hash medido de src/validacao.py imediatamente antes deste patch."
+      },
+      {
+        "ordem": 3,
+        "hash_anterior": "a9191a94298aa90a35c837a3d213bbfb22b5ef07f695652ed3e3a0d86648ebce",
+        "hash_novo": "d732740d4955117fb72bfc636090cae556aad58cd91e15ea52825c4878237a51",
+        "tipo": "fechamento_contratual",
+        "motivo": "Bloqueio de evolucoes autorizadas somente por JSON; ancoras independentes para codigo_atual, baseline e CSVs promovidos.",
+        "escopo": "Somente validacao de preservacao; nenhum calculo cientifico alterado.",
+        "relacao_patch_preservacao": "Rodada de fechamento tecnico pre-commit.",
+        "evidencia_hash_anterior": "Hash SHA-256 medido de src/validacao.py no snapshot inicial desta rodada."
+      },
+      {
+        "ordem": 4,
+        "hash_anterior": "d732740d4955117fb72bfc636090cae556aad58cd91e15ea52825c4878237a51",
+        "hash_novo": "832357a35fa369e5431dd37aac283ffc1ce98c0765fbe20f5f8a1165fd25af33",
+        "tipo": "normalizacao_eol_portavel",
+        "motivo": "Normalização de src/validacao.py para CRLF homogêneo e política Git local derivada do mapa completo de hashes protegidos.",
+        "escopo": "Somente portabilidade de bytes e contrato de preservação; nenhum cálculo científico alterado.",
+        "relacao_patch_preservacao": "Correção final de portabilidade pré-staging.",
+        "evidencia_hash_anterior": "Hash SHA-256 do estado misto legado, medido antes da normalização EOL."
+      }
+    ]
+  },
+  "artefatos_reconstruidos_promovidos": {
+    "outputs/tables/distribuicao_peso_250g.csv": {
+      "sha256": "0e36635c74dc5a1b044b9dc594d57c2a3b93c5b35e4b83c62e7e5de05aaf19af",
+      "status": "RECONSTRUCAO_VALIDADA_PROMOVIDA"
+    },
+    "outputs/tables/histograma_propensity.csv": {
+      "sha256": "5032b1050978973f874b6ca92881ca296307c0504e4338eb528844a63be1c418",
+      "status": "RECONSTRUCAO_VALIDADA_PROMOVIDA"
+    }
+  },
+  "notebooks": {
+    "notebooks/01_auditoria_sinasc_2024.ipynb": "d4c2cb956d1342d7b56f3f82e3b72978cbb470ac6bddb96ad57b5c3e08ce94f9",
+    "notebooks/02_amostra_desenho_e_overlap.ipynb": "19ac8ffcbe012baa1cf6101140527796f39d98f975436b54e9ab4b5512dc21a2",
+    "notebooks/03_ml_preditivo_e_aipw.ipynb": "45155c3ea6ba4186916715ea1d3c178f4698211c8e60ae014a505a1c6cb18188",
+    "notebooks/04_robustez_e_auditoria_metodologica.ipynb": "735bcf9b33fed9b7aa123a00a8e08e02fcb5112067cfd498d46be47910dadcf0",
+    "notebooks/05_heterogeneidade_causal.ipynb": "ac4800785ece13da1151f4196aceb6d1dcf9b19fbdc27dd45ed0e0e94d192392"
+  },
+  "codigo_atual": {
+    "src/amostra.py": "3a3b7d441a1e18e41fb4d676dc0433b1d598593e1f8b532116353ae5e59a0ee0",
+    "src/auditoria_dados.py": "9c6dbbc2f522e2c83efc0efd64319f60f972bf6c28410ba441885ed2244a82e0",
+    "src/diagnosticos.py": "ceb18407cf9e6c1a0274b7cfebfa48f09add8fd1259f0acd00410bbba567b490",
+    "src/entrega.py": "602264f4d3191768e5abc3437db963a4e9ed7ff91b18b88140e73212942a0786",
+    "src/heterogeneidade.py": "8a7de1050e2cd79f8e8bfa422f022e9b830d701d65ded62009e9becc1c4ddb34",
+    "src/inferencia_causal.py": "92f9b8136b512c8e4f70a8dc6a938658038f41401d128e611a2098d6770b1707",
+    "src/literatura.py": "afc93e65edce987e940d86d91e98cbdd2074f3df8e3ca05edc40a51deefd91cb",
+    "src/modelagem_preditiva.py": "4bb5826b8da92cedc91d76bc14229dee9f2539f234771849cc2692435ae450ca",
+    "src/robustez.py": "a4aa5d97390fe2b9ef9e0fed421f4bf3bc646d295a9d99827c51ee500c8fb1f2",
+    "src/sinasc.py": "9bb8af54382dc39517929dbffc56e3c9bf5c134f3c41d919c76482efe318165f",
+    "src/validacao.py": "832357a35fa369e5431dd37aac283ffc1ce98c0765fbe20f5f8a1165fd25af33",
+    "src/visualizacao.py": "c8f756b159aac1be8b7a333d3594449a5917d150a697a2cb9c267cd3f2e52865",
+    "src/__init__.py": "a201846f476fdaf53ee015a0d7af8ba31168f61909623b35a09631d58d76ea78",
+    "scripts/baixar_dados.py": "56ed488300e786a5e99a3ccc5294ce0785ad544761218ed6a2ccbaef7cd6226c",
+    "scripts/executar_pipeline.py": "0496514f8793c0d193c839ea3f249d4cb69930f115d71a3a0c35efd72dd2960b",
+    "scripts/validar_projeto.py": "5ce9ff64523fc40734a27671597ff3aefdedc56661cab5485b9daf9b0856904c"
+  }
+}

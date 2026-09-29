@@ -1,0 +1,14 @@
+.gitattributes text eol=lf
+
+*.py text eol=crlf
+*.md text eol=crlf
+*.json text eol=crlf
+*.ipynb text eol=crlf
+*.csv text eol=crlf
+*.html text eol=crlf
+
+data/raw/.gitkeep text eol=lf
+docs/methodology/PLANO_ESTIMACAO_FASE2.md text eol=lf
+docs/methodology/RESULTADOS_E_LIMITACOES_FASE2.md text eol=lf
+outputs/diagnostics/VALIDACAO_FASE2.md text eol=lf
+outputs/diagnostics/fase3_gate.json text eol=lf

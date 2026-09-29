@@ -4,24 +4,24 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.audita_covariaveis import (
+from src.diagnosticos import (
     COLUNAS_PROPENSITY_PRINCIPAL,
     VARIAVEIS_PROIBIDAS_PROPENSITY,
     calcular_smd,
     validar_colunas_propensity,
 )
-from src.constroi_amostra_analitica import (
+from src.amostra import (
     construir_cenarios_amostra,
     construir_outcome_baixo_peso,
     construir_tratamento,
     derivar_uf_residencia,
     identificar_gestacao_unica,
 )
-from src.diagnostica_overlap import diagnosticar_trimming
+from src.diagnosticos import diagnosticar_trimming
 
 
 def test_pipeline_rejeita_outcome_e_oof_cobre_todos():
-    from src.diagnostica_overlap import construir_pipeline_propensity, estimar_propensity_oof
+    from src.diagnosticos import construir_pipeline_propensity, estimar_propensity_oof
     with pytest.raises(ValueError, match="proibidas"):
         construir_pipeline_propensity(["PESO"], [])
     x = pd.DataFrame({"idade": np.tile([20., 30., 40., 50.], 10)})

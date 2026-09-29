@@ -3,7 +3,7 @@ from __future__ import annotations
 import pandas as pd
 from pathlib import Path
 
-from src.audita_sinasc_2024 import (
+from src.auditoria_dados import (
     construir_baixo_peso_candidato,
     construir_tratamento_candidato,
     gerar_auditoria_parquet,

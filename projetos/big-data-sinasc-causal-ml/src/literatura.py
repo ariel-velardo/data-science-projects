@@ -1,4 +1,6 @@
-"""Organiza referências revisadas e tenta obter PDFs públicos, sem contornar bloqueios."""
+"""Referências e PDFs públicos."""
+from __future__ import annotations
+
 import argparse
 import hashlib
 import io
@@ -6,10 +8,13 @@ import json
 import re
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urljoin
-
 import requests
 from pypdf import PdfReader
-from src.entrega_fase5 import ROOT, gravar, tabela_md
+from src.entrega import ROOT
+from src.entrega import gravar
+from src.entrega import tabela_md
+
+"""Organiza referências revisadas e tenta obter PDFs públicos, sem contornar bloqueios."""
 
 
 def obter(ref):
