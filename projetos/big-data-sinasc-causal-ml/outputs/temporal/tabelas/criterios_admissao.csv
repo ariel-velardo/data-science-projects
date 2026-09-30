@@ -1,0 +1,166 @@
+ano,criterio,resultado,evidencia,resultado_v1_estrito
+2014,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2014,C02_esquema_identificavel,OK,"61 colunas, nomes únicos por caixa",OK
+2014,C03_desfecho_presente,OK,PESO,OK
+2014,C04_tratamento_presente,OK,MESPRENAT,OK
+2014,C05_covariaveis_presentes,OK,todas,OK
+2014,C06_codificacao_compativel,OK,MESPRENAT: 2607 (0.0875%) ['10'],OK
+2014,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2014,C08_contador_utilizavel,HARMONIZACAO,"ausentes=0, duplicados=2353572; H1: chave (ano, substr(CODMUNRES, 1, 2), CONTADOR) única (27 sequências iniciadas em 1)",FALHA
+2014,C09_tratamento_dominio,OK,"T=1: 2113992, T=0: 577127",OK
+2014,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 186427, Y=0: 2504692",OK
+2014,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2014,C12_ignorados_quantificados,ALERTA,diferenças > 5.0 p.p. vs 2024: {'QTDFILMORT': 6.49},ALERTA
+2014,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2014,C14_fluxo_reconciliavel,OK,"bruto=2979259, A0=2753067, A1=2750060, A2=2691119, A3=2691119",OK
+2014,C15_dado_consolidado,OK,sem qualificador preliminar,OK
+2015,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2015,C02_esquema_identificavel,OK,"61 colunas, nomes únicos por caixa",OK
+2015,C03_desfecho_presente,OK,PESO,OK
+2015,C04_tratamento_presente,OK,MESPRENAT,OK
+2015,C05_covariaveis_presentes,OK,todas,OK
+2015,C06_codificacao_compativel,OK,nenhum valor fora do domínio,OK
+2015,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2015,C08_contador_utilizavel,HARMONIZACAO,"ausentes=0, duplicados=2383642; H1: chave (ano, substr(CODMUNRES, 1, 2), CONTADOR) única (27 sequências iniciadas em 1)",FALHA
+2015,C09_tratamento_dominio,OK,"T=1: 2180251, T=0: 565595",OK
+2015,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 191788, Y=0: 2554058",OK
+2015,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2015,C12_ignorados_quantificados,ALERTA,diferenças > 5.0 p.p. vs 2024: {'QTDFILMORT': 6.04},ALERTA
+2015,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2015,C14_fluxo_reconciliavel,OK,"bruto=3017668, A0=2810036, A1=2806673, A2=2745846, A3=2745846",OK
+2015,C15_dado_consolidado,OK,sem qualificador preliminar,OK
+2016,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2016,C02_esquema_identificavel,OK,"61 colunas, nomes únicos por caixa",OK
+2016,C03_desfecho_presente,OK,PESO,OK
+2016,C04_tratamento_presente,OK,MESPRENAT,OK
+2016,C05_covariaveis_presentes,OK,todas,OK
+2016,C06_codificacao_compativel,OK,nenhum valor fora do domínio,OK
+2016,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2016,C08_contador_utilizavel,HARMONIZACAO,"ausentes=0, duplicados=2256363; H1: chave (ano, substr(CODMUNRES, 1, 2), CONTADOR) única (27 sequências iniciadas em 1)",FALHA
+2016,C09_tratamento_dominio,OK,"T=1: 2108284, T=0: 518310",OK
+2016,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 184929, Y=0: 2441665",OK
+2016,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2016,C12_ignorados_quantificados,ALERTA,diferenças > 5.0 p.p. vs 2024: {'QTDFILMORT': 5.25},ALERTA
+2016,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2016,C14_fluxo_reconciliavel,OK,"bruto=2857800, A0=2687322, A1=2683708, A2=2626594, A3=2626594",OK
+2016,C15_dado_consolidado,OK,sem qualificador preliminar,OK
+2017,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2017,C02_esquema_identificavel,OK,"61 colunas, nomes únicos por caixa",OK
+2017,C03_desfecho_presente,OK,PESO,OK
+2017,C04_tratamento_presente,OK,MESPRENAT,OK
+2017,C05_covariaveis_presentes,OK,todas,OK
+2017,C06_codificacao_compativel,OK,nenhum valor fora do domínio,OK
+2017,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2017,C08_contador_utilizavel,HARMONIZACAO,"ausentes=0, duplicados=2311732; H1: chave (ano, substr(CODMUNRES, 1, 2), CONTADOR) única (27 sequências iniciadas em 1)",FALHA
+2017,C09_tratamento_dominio,OK,"T=1: 2183909, T=0: 511767",OK
+2017,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 189571, Y=0: 2506105",OK
+2017,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2017,C12_ignorados_quantificados,OK,diferenças > 5.0 p.p. vs 2024: nenhuma,OK
+2017,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2017,C14_fluxo_reconciliavel,OK,"bruto=2923535, A0=2758710, A1=2755024, A2=2695676, A3=2695676",OK
+2017,C15_dado_consolidado,OK,sem qualificador preliminar,OK
+2018,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2018,C02_esquema_identificavel,OK,"61 colunas, nomes únicos por caixa",OK
+2018,C03_desfecho_presente,OK,PESO,OK
+2018,C04_tratamento_presente,OK,MESPRENAT,OK
+2018,C05_covariaveis_presentes,OK,todas,OK
+2018,C06_codificacao_compativel,OK,nenhum valor fora do domínio,OK
+2018,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2018,C08_contador_utilizavel,OK,"ausentes=0, duplicados=0",OK
+2018,C09_tratamento_dominio,OK,"T=1: 2235022, T=0: 499451",OK
+2018,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 191912, Y=0: 2542561",OK
+2018,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2018,C12_ignorados_quantificados,OK,diferenças > 5.0 p.p. vs 2024: nenhuma,OK
+2018,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2018,C14_fluxo_reconciliavel,OK,"bruto=2944932, A0=2799585, A1=2796015, A2=2734473, A3=2734473",OK
+2018,C15_dado_consolidado,OK,sem qualificador preliminar,OK
+2019,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2019,C02_esquema_identificavel,OK,"61 colunas, nomes únicos por caixa",OK
+2019,C03_desfecho_presente,OK,PESO,OK
+2019,C04_tratamento_presente,OK,MESPRENAT,OK
+2019,C05_covariaveis_presentes,OK,todas,OK
+2019,C06_codificacao_compativel,OK,nenhum valor fora do domínio,OK
+2019,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2019,C08_contador_utilizavel,OK,"ausentes=0, duplicados=0",OK
+2019,C09_tratamento_dominio,OK,"T=1: 2179790, T=0: 465593",OK
+2019,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 190306, Y=0: 2455077",OK
+2019,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2019,C12_ignorados_quantificados,OK,diferenças > 5.0 p.p. vs 2024: nenhuma,OK
+2019,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2019,C14_fluxo_reconciliavel,OK,"bruto=2849146, A0=2709082, A1=2705304, A2=2645383, A3=2645383",OK
+2019,C15_dado_consolidado,OK,sem qualificador preliminar,OK
+2020,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2020,C02_esquema_identificavel,OK,"61 colunas, nomes únicos por caixa",OK
+2020,C03_desfecho_presente,OK,PESO,OK
+2020,C04_tratamento_presente,OK,MESPRENAT,OK
+2020,C05_covariaveis_presentes,OK,todas,OK
+2020,C06_codificacao_compativel,OK,nenhum valor fora do domínio,OK
+2020,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2020,C08_contador_utilizavel,OK,"ausentes=0, duplicados=0",OK
+2020,C09_tratamento_dominio,OK,"T=1: 2091024, T=0: 444287",OK
+2020,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 179703, Y=0: 2355608",OK
+2020,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2020,C12_ignorados_quantificados,OK,diferenças > 5.0 p.p. vs 2024: nenhuma,OK
+2020,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2020,C14_fluxo_reconciliavel,OK,"bruto=2730145, A0=2595917, A1=2592309, A2=2535311, A3=2535311",OK
+2020,C15_dado_consolidado,OK,sem qualificador preliminar,OK
+2021,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2021,C02_esquema_identificavel,OK,"61 colunas, nomes únicos por caixa",OK
+2021,C03_desfecho_presente,OK,PESO,OK
+2021,C04_tratamento_presente,OK,MESPRENAT,OK
+2021,C05_covariaveis_presentes,OK,todas,OK
+2021,C06_codificacao_compativel,OK,nenhum valor fora do domínio,OK
+2021,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2021,C08_contador_utilizavel,OK,"ausentes=0, duplicados=0",OK
+2021,C09_tratamento_dominio,OK,"T=1: 2082095, T=0: 399172",OK
+2021,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 182878, Y=0: 2298389",OK
+2021,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2021,C12_ignorados_quantificados,OK,diferenças > 5.0 p.p. vs 2024: nenhuma,OK
+2021,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2021,C14_fluxo_reconciliavel,OK,"bruto=2677101, A0=2541071, A1=2537630, A2=2481267, A3=2481267",OK
+2021,C15_dado_consolidado,OK,sem qualificador preliminar,OK
+2022,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2022,C02_esquema_identificavel,OK,"61 colunas, nomes únicos por caixa",OK
+2022,C03_desfecho_presente,OK,PESO,OK
+2022,C04_tratamento_presente,OK,MESPRENAT,OK
+2022,C05_covariaveis_presentes,OK,todas,OK
+2022,C06_codificacao_compativel,OK,nenhum valor fora do domínio,OK
+2022,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2022,C08_contador_utilizavel,OK,"ausentes=0, duplicados=0",OK
+2022,C09_tratamento_dominio,OK,"T=1: 2018419, T=0: 379207",OK
+2022,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 188129, Y=0: 2209497",OK
+2022,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2022,C12_ignorados_quantificados,OK,diferenças > 5.0 p.p. vs 2024: nenhuma,OK
+2022,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2022,C14_fluxo_reconciliavel,OK,"bruto=2561922, A0=2457548, A1=2453885, A2=2397626, A3=2397626",OK
+2022,C15_dado_consolidado,OK,sem qualificador preliminar,OK
+2023,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2023,C02_esquema_identificavel,OK,"62 colunas, nomes únicos por caixa",OK
+2023,C03_desfecho_presente,OK,PESO,OK
+2023,C04_tratamento_presente,OK,MESPRENAT,OK
+2023,C05_covariaveis_presentes,OK,todas,OK
+2023,C06_codificacao_compativel,OK,nenhum valor fora do domínio,OK
+2023,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2023,C08_contador_utilizavel,OK,"ausentes=0, duplicados=0",OK
+2023,C09_tratamento_dominio,OK,"T=1: 2036323, T=0: 353023",OK
+2023,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 188558, Y=0: 2200788",OK
+2023,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2023,C12_ignorados_quantificados,OK,diferenças > 5.0 p.p. vs 2024: nenhuma,OK
+2023,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2023,C14_fluxo_reconciliavel,OK,"bruto=2537576, A0=2449449, A1=2445752, A2=2389346, A3=2389346",OK
+2023,C15_dado_consolidado,OK,sem qualificador preliminar,OK
+2024,C01_arquivo_integro,OK,SHA-256 e CRC conferidos,OK
+2024,C02_esquema_identificavel,OK,"62 colunas, nomes únicos por caixa",OK
+2024,C03_desfecho_presente,OK,PESO,OK
+2024,C04_tratamento_presente,OK,MESPRENAT,OK
+2024,C05_covariaveis_presentes,OK,todas,OK
+2024,C06_codificacao_compativel,OK,nenhum valor fora do domínio,OK
+2024,C07_datas_do_ano,OK,"inválidas=0, fora do ano=0",OK
+2024,C08_contador_utilizavel,OK,"ausentes=0, duplicados=0",OK
+2024,C09_tratamento_dominio,OK,"T=1: 1942045, T=0: 309525",OK
+2024,C10_desfecho_dominio,OK,"PESO não inteiro=0; Y=1: 177759, Y=0: 2073811",OK
+2024,C11_categorias_covariaveis,OK,categorias novas=nenhuma; município malformado na principal=0,OK
+2024,C12_ignorados_quantificados,OK,diferenças > 5.0 p.p. vs 2024: nenhuma,OK
+2024,C13_baseline_protegido,OK,hashes de 2024 inalterados; caminhos próprios,OK
+2024,C14_fluxo_reconciliavel,OK,"bruto=2389325, A0=2308246, A1=2304775, A2=2251570, A3=2251570",OK
+2024,C15_dado_consolidado,OK,sem qualificador preliminar,OK

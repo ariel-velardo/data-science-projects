@@ -1,0 +1,130 @@
+{
+  "contratos": {
+    "v1": {
+      "versao": "1 (fixada em 2026-09-29, antes da leitura dos arquivos completos)",
+      "harmonizacoes": []
+    },
+    "v1.1": {
+      "versao": "1.1 = v1 + H1 (H1 identificada em 2026-09-29 após a leitura completa; aprovada em revisão humana em 2026-09-30; antes de qualquer estimação causal multianual)",
+      "harmonizacoes": [
+        "H1"
+      ]
+    }
+  },
+  "janelas": {
+    "principal": {
+      "anos": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "contrato": "v1.1"
+    },
+    "sensibilidade": {
+      "anos": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "contrato": "v1",
+      "obrigatoria_em": [
+        "08",
+        "09"
+      ]
+    }
+  },
+  "harmonizacoes": [
+    {
+      "id": "H1",
+      "tipo": "harmonização de identificador",
+      "variavel": "CONTADOR",
+      "anos": [
+        2014,
+        2015,
+        2016,
+        2017
+      ],
+      "valor_original": "CONTADOR único apenas dentro da UF de residência (reinicia em 1 em cada UF)",
+      "valor_harmonizado": "chave (ano, substr(CODMUNRES, 1, 2), CONTADOR)",
+      "justificativa": "Contador técnico por UF no arquivo publicado (27 sequências); linhas completas distintas e N bruto correto; a chave composta é verificada única no ano.",
+      "nao_altera": [
+        "tratamento",
+        "desfecho",
+        "covariáveis",
+        "regras de inclusão",
+        "frequências",
+        "valores científicos"
+      ],
+      "identificada_em": "2026-09-29, após a leitura dos arquivos completos",
+      "aprovada_em": "2026-09-30, revisão humana, antes de qualquer estimação causal multianual"
+    }
+  ],
+  "chave_temporal": {
+    "colunas": [
+      "ano",
+      "UF_RESIDENCIA_CHAVE",
+      "CONTADOR"
+    ],
+    "uf_residencia_chave": "substr(CAST(CODMUNRES AS VARCHAR), 1, 2)",
+    "nota": "Identifica registros; não define ordem de processamento; o contrato certificado de 2024 continua usando CONTADOR."
+  },
+  "vereditos": {
+    "2014": {
+      "v1": "NAO_APROVADO",
+      "v1.1": "APROVADO_COM_HARMONIZACAO"
+    },
+    "2015": {
+      "v1": "NAO_APROVADO",
+      "v1.1": "APROVADO_COM_HARMONIZACAO"
+    },
+    "2016": {
+      "v1": "NAO_APROVADO",
+      "v1.1": "APROVADO_COM_HARMONIZACAO"
+    },
+    "2017": {
+      "v1": "NAO_APROVADO",
+      "v1.1": "APROVADO_COM_HARMONIZACAO"
+    },
+    "2018": {
+      "v1": "APROVADO",
+      "v1.1": "APROVADO"
+    },
+    "2019": {
+      "v1": "APROVADO",
+      "v1.1": "APROVADO"
+    },
+    "2020": {
+      "v1": "APROVADO",
+      "v1.1": "APROVADO"
+    },
+    "2021": {
+      "v1": "APROVADO",
+      "v1.1": "APROVADO"
+    },
+    "2022": {
+      "v1": "APROVADO",
+      "v1.1": "APROVADO"
+    },
+    "2023": {
+      "v1": "APROVADO",
+      "v1.1": "APROVADO"
+    },
+    "2024": {
+      "v1": "APROVADO",
+      "v1.1": "APROVADO"
+    }
+  },
+  "escolha_entre_janelas": "proibida com base em resultados futuros; ambas são reportadas nos notebooks 08 e 09"
+}
