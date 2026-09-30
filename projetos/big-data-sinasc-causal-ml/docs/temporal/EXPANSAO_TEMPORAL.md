@@ -105,7 +105,7 @@ A camada temporal usa a chave uniforme `(ano, UF_res, CONTADOR)`, com `UF_res = 
 |---|---|---|---|
 | 06_auditoria_historica_sinasc | — | disponibilidade, esquema, códigos, janela e critérios | criado |
 | 07_descritiva_temporal_sinasc | A | N, fluxo A0–A3, ausentes/ignorados, prevalência de Y, proporção de T, covariáveis e UF por ano | criado |
-| 08_estabilidade_temporal_overlap | B | SMD, composição, escore de propensão, suporte comum e positividade por ano | planejado |
+| 08_estabilidade_temporal_overlap | B | SMD, composição, escore de propensão, suporte comum e positividade por ano | criado e executado |
 | 09_estabilidade_temporal_estimativas | C | AIPW independente por ano com C1/C2 congeladas | planejado |
 | (eventual) | D | análise empilhada, só se A–C justificarem; não é automaticamente a principal | não planejado |
 
@@ -125,6 +125,22 @@ python -m nbconvert --execute --to notebook --inplace --ExecutePreprocessor.kern
 Os ZIPs oficiais de 2014–2023 foram baixados um ano por vez (≈1,15 GB), com retomada por HTTP Range, verificação de tamanho e CRC, e convertidos para Parquet textual com a mesma rotina de 2024. Os SHA-256 de ZIP e Parquet estão nos manifestos por ano. A auditoria aplicada ao Parquet certificado de 2024 reproduz exatamente o fluxo A0–A3 e os ausentes de `fase1_amostra.json`.
 
 Resumo descritivo (sem inferência): a prevalência do tratamento cresce de 78,6% (2014) para 86,3% (2024); o baixo peso fica em 6,9–7,2% até 2020 e apresenta uma **mudança de nível descritiva** por volta de 2021–2022, para ~7,9% em 2022–2024 (**possível mudança temporal a investigar**, sem atribuição causal a COVID-19 ou Zika); a associação bruta T=1 versus T=0 é negativa em todos os anos e passa de −0,72 p.p. para −1,42 p.p. 2024 está no extremo recente das tendências observadas e é semelhante em direção a 2022–2023. Detalhes no [notebook 07](../../notebooks/07_descritiva_temporal_sinasc.ipynb).
+
+## Estabilidade temporal, suporte e positividade (notebook 08)
+
+O notebook 08 foi executado na `.venv` do projeto para 2014–2024, com a janela 2018–2024 como sensibilidade obrigatória. A análise é diagnóstica: não estima AIPW, CATE, efeitos causais nem modelos empilhados. O pipeline anual de propensão replica o contrato certificado de 2024 (mesmas sete covariáveis pré-tratamento, pré-processamento, regressão logística, 5 folds estratificados e seed `20240925`). A comparação positiva de 2024 reproduziu exatamente N, grupos, AUC, quantis, suporte comum, caudas e histograma do artefato certificado.
+
+Principais achados:
+
+- há desequilíbrio bruto persistente entre tratamento e controle: o pior `|SMD|` anual cai de 0,441 em 2014 para 0,375 em 2024, mas permanece acima do limite diagnóstico de 0,10;
+- a composição converge gradualmente para 2024; o pior `|SMD|` temporal fica abaixo de 0,10 somente a partir de 2022;
+- não há perfis marginais com proporção de tratamento ≤1% ou ≥99%; células menores que 100 registros aparecem apenas na categoria `FAIXA_IDADE_MAE=IGNORADO`;
+- nenhum registro fica fora de `[0,01; 0,99]`, enquanto 3,86%–6,55% ficam fora de `[0,05; 0,95]`; essas caudas são predominantemente tratadas e não devem ser somadas entre dimensões de perfil porque se sobrepõem;
+- o ESS relativo melhora no período, mas o número absoluto de controles cai de aproximadamente 577 mil para 309 mil e o ESS de T=0 de aproximadamente 400 mil para 233 mil;
+- os diagnósticos ao redor de 2021–2022 não mostram uma deterioração conjunta capaz de explicar, sozinha, a mudança descritiva do desfecho no notebook 07;
+- a janela de sensibilidade 2018–2024 preserva as mesmas conclusões qualitativas.
+
+Conclusão operacional: a fase C pode ser planejada com estimações independentes por ano, ambas as janelas congeladas e reporte obrigatório de N, caudas, suporte e ESS. Isso é uma autorização para **planejar** o notebook 09, não uma validação causal antecipada. Resultados, contrato diagnóstico e benchmarks estão em `outputs/temporal/`; caches locais com fingerprint ficam em `data/interim/temporal_overlap/`. Detalhes no [notebook 08](../../notebooks/08_estabilidade_temporal_overlap.ipynb).
 
 Para reproduzir o preparo dos dados (reutiliza arquivos íntegros; não toca 2024):
 

@@ -711,3 +711,252 @@ def test_tabelas_versionadas_registram_os_dois_contratos():
     assert contrato['janelas']['principal']['anos'] == list(range(2014, 2025))
     assert contrato['vereditos']['2015'] == {'v1': 'NAO_APROVADO', 'v1.1': 'APROVADO_COM_HARMONIZACAO'}
     assert contrato['vereditos']['2024'] == {'v1': 'APROVADO', 'v1.1': 'APROVADO'}
+
+
+# --- notebook 08: comparabilidade, suporte e positividade temporal ---
+
+def _dados_diagnostico_temporal():
+    import pandas as pd
+
+    return pd.DataFrame({
+        'contador': ['4', '1', '3', '2', '8', '5', '7', '6'],
+        'tratamento': [0, 0, 1, 1, 0, 1, 0, 1],
+        'Y_BAIXO_PESO': [0, 1, 0, 1, 0, 0, 1, 0],
+        'IDADEMAE_NUM': [18., 24., 31., 42., 19., 28., 36., 45.],
+        'ESCOLARIDADE_MAE': ['1', '2', '2', '3', '1', '2', '3', '3'],
+        'RACA_COR_MAE': ['1', '1', '2', '2', '1', '2', '2', '1'],
+        'SITUACAO_CONJUGAL': ['1', '2', '1', '2', '1', '2', '1', '2'],
+        'PARIDADE_CAT': ['0', '1', '1', '2', '0', '1', '2', '2'],
+        'PERDAS_FETAIS_CAT': ['0', '0', '1', '1', '0', '1', '0', '1'],
+        'UF_RESIDENCIA': ['35', '33', '35', '33', '35', '33', '35', '33'],
+    })
+
+
+def test_limites_do_notebook_08_estao_congelados_antes_dos_resultados():
+    assert tp.LIMITES_DIAGNOSTICO_TEMPORAL == {
+        'smd_abs': 0.10,
+        'celula_minima_por_grupo': 100,
+        'tratamento_extremo_inferior': 0.01,
+        'tratamento_extremo_superior': 0.99,
+        'faixas_propensity': ((0.01, 0.99), (0.05, 0.95)),
+    }
+    assert tp.SEMENTE_PROPENSITY_TEMPORAL == 20240925
+    assert tp.N_FOLDS_PROPENSITY_TEMPORAL == 5
+
+
+def test_ordem_certificada_2024_e_preservada_e_novos_anos_usam_chave_temporal(tmp_path):
+    registros = _linhas_ano(2024, n=4)
+    for registro, contador, municipio in zip(registros, ['20', '3', '11', '2'],
+                                             ['355030', '330455', '355030', '330455']):
+        registro['contador'] = contador
+        registro['CODMUNRES'] = municipio
+    parquet_2024 = _parquet_ano(tmp_path, 2024, registros)
+    dados_2024, contrato_2024 = tp.carregar_amostra_temporal(parquet_2024, 2024)
+    assert dados_2024.contador.astype(str).tolist() == ['20', '3', '11', '2']
+    assert contrato_2024['regra_ordenacao'] == tp.ORDEM_2024_CERTIFICADA
+
+    parquet_2023 = _parquet_ano(tmp_path, 2023, [dict(r, DTNASC='01012023') for r in registros])
+    dados_2023, contrato_2023 = tp.carregar_amostra_temporal(parquet_2023, 2023)
+    assert list(zip(dados_2023.UF_RESIDENCIA, dados_2023.contador.astype(str))) == [
+        ('33', '2'), ('33', '3'), ('35', '11'), ('35', '20')]
+    assert contrato_2023['regra_ordenacao'] == tp.ORDEM_CHAVE_TEMPORAL
+    assert contrato_2023['sha256_sequencia_chave'] != contrato_2024['sha256_sequencia_chave']
+
+
+def test_carregador_temporal_normaliza_nome_fisico_contador_em_caixa_alta(tmp_path):
+    import pandas as pd
+
+    registros = _linhas_ano(2014, n=4)
+    tabela = pd.DataFrame(registros, dtype='string').rename(columns={'contador': 'CONTADOR'})
+    parquet = tmp_path / 'sinasc_2014_contador_maiusculo.parquet'
+    tabela.to_parquet(parquet, index=False)
+    dados, contrato = tp.carregar_amostra_temporal(parquet, 2014)
+    assert 'contador' in dados.columns and 'CONTADOR' not in dados.columns
+    assert dados.contador.astype(str).tolist() == ['1', '2', '3', '4']
+    assert contrato['n'] == 4
+
+
+def test_smd_intra_ano_retorna_niveis_sinal_e_flag_sem_misturar_composicao():
+    dados = _dados_diagnostico_temporal()
+    smd = tp.smd_intra_ano(dados, 2020, numericas=['IDADEMAE_NUM'],
+                           categoricas=['ESCOLARIDADE_MAE'])
+    assert list(smd.columns) == ['ano', 'variavel', 'nivel', 'smd', 'abs_smd', 'sinalizado_010']
+    assert set(smd.loc[smd.variavel == 'ESCOLARIDADE_MAE', 'nivel']) == {'1', '2', '3'}
+    assert (smd.abs_smd == smd.smd.abs()).all()
+    assert (smd.sinalizado_010 == smd.abs_smd.gt(0.10)).all()
+
+
+def test_smd_temporal_compara_populacoes_com_2024_em_funcao_separada():
+    atual = _dados_diagnostico_temporal().iloc[:6].copy()
+    referencia = _dados_diagnostico_temporal().copy()
+    comp = tp.smd_composicao_vs_referencia(
+        atual, referencia, 2019, numericas=['IDADEMAE_NUM'], categoricas=['RACA_COR_MAE'])
+    assert list(comp.columns) == [
+        'ano', 'ano_referencia', 'variavel', 'nivel', 'smd_temporal', 'abs_smd_temporal',
+        'sinalizado_010']
+    assert comp.ano.eq(2019).all() and comp.ano_referencia.eq(2024).all()
+    assert 'tratamento' not in comp.columns
+
+
+def test_smd_temporal_por_resumos_reproduz_calculo_em_memoria():
+    atual = _dados_diagnostico_temporal().iloc[:6].copy()
+    referencia = _dados_diagnostico_temporal().copy()
+    direto = tp.smd_composicao_vs_referencia(
+        atual, referencia, 2019, numericas=['IDADEMAE_NUM'], categoricas=['RACA_COR_MAE'])
+    compacto = tp.smd_composicao_resumida_vs_referencia(
+        tp.resumir_composicao(atual, ['IDADEMAE_NUM'], ['RACA_COR_MAE']),
+        tp.resumir_composicao(referencia, ['IDADEMAE_NUM'], ['RACA_COR_MAE']),
+        2019)
+    cols = ['variavel', 'nivel', 'smd_temporal', 'abs_smd_temporal', 'sinalizado_010']
+    pd = pytest.importorskip('pandas')
+    pd.testing.assert_frame_equal(
+        direto[cols].sort_values(['variavel', 'nivel'], na_position='first').reset_index(drop=True),
+        compacto[cols].sort_values(['variavel', 'nivel'], na_position='first').reset_index(drop=True),
+        check_dtype=False)
+
+
+def test_distribuicao_tratamento_e_positividade_aplicam_limites_pre_especificados():
+    dados = _dados_diagnostico_temporal()
+    tratamento = tp.distribuicao_tratamento(dados, 2022)
+    assert set(tratamento.granularidade) == {'ano', 'ano_uf'}
+    assert tratamento.loc[tratamento.granularidade == 'ano', 'n'].item() == len(dados)
+    assert tratamento.n_t0.add(tratamento.n_t1).eq(tratamento.n).all()
+
+    positividade = tp.positividade_perfis(dados, 2022)
+    assert set(positividade.perfil) == {
+        'UF_RESIDENCIA', 'FAIXA_IDADE_MAE', 'ESCOLARIDADE_MAE', 'RACA_COR_MAE', 'PARIDADE_CAT'}
+    assert positividade.flag_celula_pequena.all()
+    assert (positividade.flag_tratamento_extremo ==
+            (positividade.proporcao_t1.le(0.01) | positividade.proporcao_t1.ge(0.99))).all()
+
+
+def test_propensity_temporal_em_fixture_e_deterministico_e_estratificado():
+    import numpy as np
+    import pandas as pd
+
+    rng = np.random.default_rng(20240925)
+    n = 100
+    dados = pd.DataFrame({
+        'IDADEMAE_NUM': rng.integers(15, 46, n).astype(float),
+        'ESCOLARIDADE_MAE': rng.choice(['1', '2', '3'], n),
+        'RACA_COR_MAE': rng.choice(['1', '2'], n),
+        'SITUACAO_CONJUGAL': rng.choice(['1', '2'], n),
+        'PARIDADE_CAT': rng.choice(['0', '1', '2'], n),
+        'PERDAS_FETAIS_CAT': rng.choice(['0', '1'], n),
+        'UF_RESIDENCIA': rng.choice(['33', '35'], n),
+    })
+    tratamento = pd.Series(np.tile([0, 1], n // 2), name='tratamento')
+    p1, m1 = tp.ajustar_propensity_temporal(dados, tratamento, n_folds=5)
+    p2, m2 = tp.ajustar_propensity_temporal(dados, tratamento, n_folds=5)
+    assert np.array_equal(p1, p2)
+    assert np.isfinite(p1).all() and ((p1 > 0) & (p1 < 1)).all()
+    assert m1['n_folds'] == m2['n_folds'] == 5 and len(m1['tempo_por_fold_segundos']) == 5
+    assert all(f['n_validacao'] == 20 for f in m1['folds'])
+
+
+def test_metricas_propensity_overlap_ess_e_fracoes_fora_de_suporte():
+    import numpy as np
+
+    propensity = np.array([0.02, 0.70, 0.30, 0.98])
+    tratamento = np.array([0, 0, 1, 1])
+    resumo = tp.resumir_propensity_ano(propensity, tratamento, 2021, auc_oof=0.75)
+    assert resumo['ano'] == 2021 and resumo['auc_oof'] == 0.75
+    assert resumo['suporte_comum_inferior'] == pytest.approx(0.30)
+    assert resumo['suporte_comum_superior'] == pytest.approx(0.70)
+    assert resumo['fora_005_095_n'] == 2 and resumo['fora_005_095_fracao'] == pytest.approx(0.5)
+    assert resumo['fora_005_095_t0_fracao'] == pytest.approx(0.5)
+    assert resumo['fora_005_095_t1_fracao'] == pytest.approx(0.5)
+    assert 0 < resumo['ess_t0'] <= 2 and 0 < resumo['ess_t1'] <= 2
+
+
+def test_controle_positivo_compara_todos_os_componentes_e_detecta_divergencia():
+    import numpy as np
+
+    propensity = np.array([0.02, 0.70, 0.30, 0.98])
+    tratamento = np.array([0, 0, 1, 1])
+    resumo = tp.resumir_propensity_ano(propensity, tratamento, 2024, auc_oof=0.75)
+    certificado = {
+        'grupos': {
+            'controle': {'n': 2, 'min': 0.02, 'max': 0.70,
+                         'percentis': {f'p{int(p * 100):02d}': float(np.quantile(propensity[tratamento == 0], p))
+                                        for p in [0, .01, .05, .25, .5, .75, .95, .99, 1]}},
+            'tratado': {'n': 2, 'min': 0.30, 'max': 0.98,
+                        'percentis': {f'p{int(p * 100):02d}': float(np.quantile(propensity[tratamento == 1], p))
+                                       for p in [0, .01, .05, .25, .5, .75, .95, .99, 1]}},
+        },
+        'suporte_comum_observado': {'inferior': 0.30, 'superior': 0.70},
+        'trimming_diagnostico': [{'regra': '0.05_0.95', 'n_excluido': 2}],
+        'metodo': {'auc_oof': 0.75},
+    }
+    controle = tp.comparar_controle_positivo_2024(resumo, certificado)
+    assert controle['aprovado'] and all(controle['checks'].values())
+    divergente = tp.comparar_controle_positivo_2024({**resumo, 'auc_oof': 0.70}, certificado)
+    assert not divergente['aprovado'] and not divergente['checks']['auc_oof']
+
+
+def test_cache_temporal_e_deterministico_validado_e_invalidado_por_contrato(tmp_path):
+    import numpy as np
+
+    base = tp.criar_contrato_cache(
+        ano=2020, parquet_sha256='a' * 64, codigo_sha256='b' * 64,
+        chave_sha256='c' * 64, regra_ordenacao=tp.ORDEM_CHAVE_TEMPORAL,
+        n=4, n_t0=2, n_t1=2)
+    caminhos = tp.salvar_cache_propensity(tmp_path, base, np.array([0.1, 0.2, 0.8, 0.9]))
+    assert caminhos['metadados'].exists() and caminhos['predicoes'].exists()
+    carregado = tp.carregar_cache_propensity(tmp_path, base)
+    assert np.array_equal(carregado, np.array([0.1, 0.2, 0.8, 0.9]))
+    assert 'timestamp' not in json.loads(caminhos['metadados'].read_text(encoding='utf-8'))
+
+    alterado = {**base, 'parquet_sha256': 'd' * 64}
+    with pytest.raises(ValueError, match='contrato'):
+        tp.validar_contrato_cache(base, alterado)
+    assert tp.carregar_cache_propensity(tmp_path, alterado) is None
+
+
+def test_perfis_fora_de_suporte_sao_agregados_sem_registros_individuais():
+    import numpy as np
+
+    dados = _dados_diagnostico_temporal()
+    propensity = np.array([0.001, 0.02, 0.50, 0.97, 0.999, 0.60, 0.40, 0.80])
+    perfis = tp.perfis_fora_suporte(dados, propensity, 2018)
+    assert set(perfis.faixa) == {'fora_001_099', 'fora_005_095'}
+    assert set(perfis.perfil) == {
+        'UF_RESIDENCIA', 'FAIXA_IDADE_MAE', 'ESCOLARIDADE_MAE', 'RACA_COR_MAE', 'PARIDADE_CAT'}
+    assert {'ano', 'faixa', 'perfil', 'categoria', 'n', 'n_t0', 'n_t1', 'proporcao_no_perfil'} <= set(perfis)
+    assert 'contador' not in perfis.columns
+
+
+def test_recortes_principal_e_sensibilidade_reutilizam_os_mesmos_resultados_anuais():
+    import pandas as pd
+
+    tabela = pd.DataFrame({'ano': range(2014, 2025), 'auc_oof': range(11)})
+    recortes = tp.recortar_janelas(tabela)
+    assert recortes['principal'].ano.tolist() == list(range(2014, 2025))
+    assert recortes['sensibilidade'].ano.tolist() == list(range(2018, 2025))
+    assert recortes['sensibilidade'].set_index('ano').auc_oof.equals(
+        tabela[tabela.ano >= 2018].set_index('ano').auc_oof)
+
+
+def test_notebook_08_tem_contrato_diagnostico_e_nao_estima_efeitos_causais():
+    import nbformat
+    import re
+
+    caminho = RAIZ_REAL / 'notebooks/08_estabilidade_temporal_overlap.ipynb'
+    assert caminho.exists()
+    nb = nbformat.read(caminho, as_version=4)
+    nbformat.validate(nb)
+    fonte = '\n'.join(c.source for c in nb.cells)
+    for secao in ('controle positivo 2024', 'SMD intra-ano', 'composiÃ§Ã£o versus 2024',
+                  'sensibilidade 2018â€“2024', '2021â€“2022', 'critÃ©rios para o notebook 09'):
+        for _ in range(3):
+            try:
+                reparada = secao.encode('cp1252').decode('utf-8')
+            except (UnicodeEncodeError, UnicodeDecodeError):
+                break
+            if reparada == secao:
+                break
+            secao = reparada
+        assert secao.casefold() in fonte.casefold()
+    codigo = '\n'.join(c.source for c in nb.cells if c.cell_type == 'code')
+    for proibido in ('calcular_aipw', 'aipw_independente', 'ajuste_honesto', 'CATE', 'pooled'):
+        assert re.search(rf'\b{re.escape(proibido)}\b', codigo, flags=re.IGNORECASE) is None

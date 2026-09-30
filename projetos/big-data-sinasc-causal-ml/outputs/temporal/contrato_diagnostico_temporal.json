@@ -1,0 +1,71 @@
+{
+  "fase": "notebook 08 - comparabilidade, suporte e positividade temporal",
+  "estima_efeito_causal": false,
+  "limites_pre_especificados": {
+    "smd_abs": 0.1,
+    "celula_minima_por_grupo": 100,
+    "tratamento_extremo_inferior": 0.01,
+    "tratamento_extremo_superior": 0.99,
+    "faixas_propensity": [
+      [
+        0.01,
+        0.99
+      ],
+      [
+        0.05,
+        0.95
+      ]
+    ]
+  },
+  "janelas": {
+    "principal": {
+      "anos": [
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "contrato": "v1.1"
+    },
+    "sensibilidade": {
+      "anos": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "contrato": "v1",
+      "obrigatoria_em": [
+        "08",
+        "09"
+      ]
+    }
+  },
+  "propensity": {
+    "features": [
+      "IDADEMAE_NUM",
+      "ESCOLARIDADE_MAE",
+      "RACA_COR_MAE",
+      "SITUACAO_CONJUGAL",
+      "PARIDADE_CAT",
+      "PERDAS_FETAIS_CAT",
+      "UF_RESIDENCIA"
+    ],
+    "n_folds": 5,
+    "semente": 20240925,
+    "modelo": "LogisticRegression L2; C=1; lbfgs; max_iter=500; tol=1e-5"
+  },
+  "ordem_2024": "ordem fisica certificada do Parquet 2024; sem ORDER BY",
+  "ordem_2014_2023": "ORDER BY UF_RESIDENCIA, CAST(CONTADOR AS VARCHAR)",
+  "codigo_relevante_sha256": "ffe3b0b16ec6eacf5eb5a742dd0ed783a3c5e9d76274f591bc957e98c93002e1"
+}

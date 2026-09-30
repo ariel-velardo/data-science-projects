@@ -9,10 +9,12 @@ função aqui estima efeito causal.
 from __future__ import annotations
 
 import csv
+import hashlib
 import io
 import json
 import struct
 import time
+import warnings
 import zipfile
 import zlib
 from collections import Counter
@@ -23,6 +25,7 @@ from pathlib import Path
 from typing import Any
 
 import duckdb
+import numpy as np
 import pandas as pd
 import pyarrow.parquet as pq
 import requests
@@ -34,6 +37,23 @@ from src.sinasc import calcular_sha256
 from src.sinasc import converter_zip_para_parquet
 from src.sinasc import detectar_formato_csv
 from src.sinasc import verificar_arquivo_existente
+
+
+# Contrato prÃ©-especificado do notebook 08. Estes limites sÃ£o exclusivamente
+# diagnÃ³sticos e nÃ£o excluem anos automaticamente.
+SEMENTE_PROPENSITY_TEMPORAL = 20240925
+N_FOLDS_PROPENSITY_TEMPORAL = 5
+LIMITES_DIAGNOSTICO_TEMPORAL = {
+    "smd_abs": 0.10,
+    "celula_minima_por_grupo": 100,
+    "tratamento_extremo_inferior": 0.01,
+    "tratamento_extremo_superior": 0.99,
+    "faixas_propensity": ((0.01, 0.99), (0.05, 0.95)),
+}
+ORDEM_2024_CERTIFICADA = "ordem fisica certificada do Parquet 2024; sem ORDER BY"
+ORDEM_CHAVE_TEMPORAL = "ORDER BY UF_RESIDENCIA, CAST(CONTADOR AS VARCHAR)"
+DEFINICAO_TRATAMENTO_TEMPORAL = "MESPRENAT entre 1-3 (T=1) versus 4-9 (T=0)"
+VERSAO_CACHE_PROPENSITY_TEMPORAL = "propensity-temporal-v1"
 
 ANO_BASELINE = 2024
 ANO_MINIMO_PUBLICADO = 1996
@@ -1060,3 +1080,839 @@ def comparar_com_referencia(
     for c in colunas:
         saida[f"{c}_menos_{ano_referencia}"] = saida[c] - saida.pop(f"{c}_ref")
     return saida
+
+
+# --- Notebook 08: comparabilidade, suporte e positividade (sem efeitos causais) ---
+
+def _sha256_texto_linhas(valores: Iterable[str]) -> str:
+    digest = hashlib.sha256()
+    for valor in valores:
+        digest.update(str(valor).encode("utf-8"))
+        digest.update(b"\n")
+    return digest.hexdigest()
+
+
+def carregar_amostra_temporal(
+    parquet: str | Path, ano: int
+) -> tuple[pd.DataFrame, dict[str, Any]]:
+    """Materializa a populaÃ§Ã£o principal com a ordem contratada para o ano.
+
+    O controle positivo de 2024 preserva a ordem fÃ­sica usada por
+    ``auditoria_dados._executar_propensity``. Anos novos sÃ£o explicitamente
+    ordenados pela chave temporal congelada. Nenhuma variÃ¡vel de outcome entra
+    em ``X``; ela Ã© carregada apenas para auditoria descritiva da populaÃ§Ã£o.
+    """
+
+    ano = validar_ano(ano)
+    caminho = Path(parquet)
+    with duckdb.connect() as conexao:
+        _criar_views(conexao, caminho)
+        ordem = "" if ano == ANO_BASELINE else " ORDER BY UF_RESIDENCIA, CAST(contador AS VARCHAR)"
+        dados = conexao.execute(
+            "SELECT contador AS \"contador\", tratamento, Y_BAIXO_PESO, IDADEMAE_NUM, "
+            "ESCOLARIDADE_MAE, RACA_COR_MAE, SITUACAO_CONJUGAL, PARIDADE_CAT, "
+            "PERDAS_FETAIS_CAT, UF_RESIDENCIA FROM amostra_principal" + ordem
+        ).df()
+    if dados.empty or set(dados["tratamento"].astype(int).unique()) != {0, 1}:
+        raise ValueError(f"Ano {ano} sem populaÃ§Ã£o principal vÃ¡lida com T=0 e T=1.")
+    chaves = (
+        f"{ano}|{uf}|{contador}"
+        for uf, contador in zip(dados["UF_RESIDENCIA"], dados["contador"], strict=True)
+    )
+    contrato = {
+        "ano": ano,
+        "regra_ordenacao": ORDEM_2024_CERTIFICADA if ano == ANO_BASELINE else ORDEM_CHAVE_TEMPORAL,
+        "definicao_chave": "(ano, UF_RESIDENCIA, CONTADOR)",
+        "sha256_sequencia_chave": _sha256_texto_linhas(chaves),
+        "n": int(len(dados)),
+        "n_t0": int(dados["tratamento"].eq(0).sum()),
+        "n_t1": int(dados["tratamento"].eq(1).sum()),
+    }
+    return dados, contrato
+
+
+def _smd_numerico_duas_populacoes(atual: pd.Series, referencia: pd.Series) -> float:
+    a = pd.to_numeric(atual, errors="coerce").dropna()
+    r = pd.to_numeric(referencia, errors="coerce").dropna()
+    if a.empty or r.empty:
+        return float("nan")
+    variancia_pooled = (a.var(ddof=1) + r.var(ddof=1)) / 2
+    if pd.isna(variancia_pooled) or variancia_pooled == 0:
+        return 0.0 if a.mean() == r.mean() else float("inf")
+    return float((a.mean() - r.mean()) / np.sqrt(variancia_pooled))
+
+
+def _smd_categorico_por_nivel(
+    atual: pd.Series, referencia: pd.Series
+) -> list[tuple[str, float]]:
+    a = atual.fillna("IGNORADO").astype("string")
+    r = referencia.fillna("IGNORADO").astype("string")
+    niveis = sorted(set(a.astype(str)) | set(r.astype(str)))
+    saida: list[tuple[str, float]] = []
+    for nivel in niveis:
+        p_a = float(a.eq(nivel).mean())
+        p_r = float(r.eq(nivel).mean())
+        variancia_pooled = (p_a * (1 - p_a) + p_r * (1 - p_r)) / 2
+        smd = (0.0 if p_a == p_r else float("inf")) if variancia_pooled == 0 else \
+            float((p_a - p_r) / np.sqrt(variancia_pooled))
+        saida.append((nivel, smd))
+    return saida
+
+
+def smd_intra_ano(
+    dados: pd.DataFrame,
+    ano: int,
+    numericas: Sequence[str] = ("IDADEMAE_NUM",),
+    categoricas: Sequence[str] = (
+        "ESCOLARIDADE_MAE", "RACA_COR_MAE", "SITUACAO_CONJUGAL",
+        "PARIDADE_CAT", "PERDAS_FETAIS_CAT", "UF_RESIDENCIA",
+    ),
+) -> pd.DataFrame:
+    """SMD T=1 versus T=0 por nÃ­vel, com a convenÃ§Ã£o certificada de 2024."""
+
+    if "tratamento" not in dados or set(dados["tratamento"].astype(int).unique()) != {0, 1}:
+        raise ValueError("SMD intra-ano requer T=0 e T=1.")
+    t1, t0 = dados[dados.tratamento.eq(1)], dados[dados.tratamento.eq(0)]
+    linhas: list[dict[str, Any]] = []
+    for variavel in numericas:
+        smd = _smd_numerico_duas_populacoes(t1[variavel], t0[variavel])
+        linhas.append({"ano": ano, "variavel": variavel, "nivel": None, "smd": smd})
+    for variavel in categoricas:
+        for nivel, smd in _smd_categorico_por_nivel(t1[variavel], t0[variavel]):
+            linhas.append({"ano": ano, "variavel": variavel, "nivel": nivel, "smd": smd})
+    saida = pd.DataFrame(linhas)
+    saida["abs_smd"] = saida["smd"].abs()
+    saida["sinalizado_010"] = saida["abs_smd"].gt(LIMITES_DIAGNOSTICO_TEMPORAL["smd_abs"])
+    return saida[["ano", "variavel", "nivel", "smd", "abs_smd", "sinalizado_010"]]
+
+
+def smd_composicao_vs_referencia(
+    dados_ano: pd.DataFrame,
+    dados_referencia: pd.DataFrame,
+    ano: int,
+    ano_referencia: int = ANO_BASELINE,
+    numericas: Sequence[str] = ("IDADEMAE_NUM",),
+    categoricas: Sequence[str] = (
+        "ESCOLARIDADE_MAE", "RACA_COR_MAE", "SITUACAO_CONJUGAL",
+        "PARIDADE_CAT", "PERDAS_FETAIS_CAT", "UF_RESIDENCIA",
+    ),
+) -> pd.DataFrame:
+    """SMD populacional do ano versus 2024; nÃ£o Ã© balanÃ§o de tratamento."""
+
+    if dados_ano.empty or dados_referencia.empty:
+        raise ValueError("SMD temporal requer as duas populaÃ§Ãµes nÃ£o vazias.")
+    linhas: list[dict[str, Any]] = []
+    for variavel in numericas:
+        smd = _smd_numerico_duas_populacoes(dados_ano[variavel], dados_referencia[variavel])
+        linhas.append({"ano": ano, "ano_referencia": ano_referencia, "variavel": variavel,
+                       "nivel": None, "smd_temporal": smd})
+    for variavel in categoricas:
+        for nivel, smd in _smd_categorico_por_nivel(
+            dados_ano[variavel], dados_referencia[variavel]
+        ):
+            linhas.append({"ano": ano, "ano_referencia": ano_referencia,
+                           "variavel": variavel, "nivel": nivel, "smd_temporal": smd})
+    saida = pd.DataFrame(linhas)
+    saida["abs_smd_temporal"] = saida["smd_temporal"].abs()
+    saida["sinalizado_010"] = saida["abs_smd_temporal"].gt(
+        LIMITES_DIAGNOSTICO_TEMPORAL["smd_abs"]
+    )
+    return saida[["ano", "ano_referencia", "variavel", "nivel", "smd_temporal",
+                  "abs_smd_temporal", "sinalizado_010"]]
+
+
+def resumir_composicao(
+    dados: pd.DataFrame,
+    numericas: Sequence[str] = ("IDADEMAE_NUM",),
+    categoricas: Sequence[str] = (
+        "ESCOLARIDADE_MAE", "RACA_COR_MAE", "SITUACAO_CONJUGAL",
+        "PARIDADE_CAT", "PERDAS_FETAIS_CAT", "UF_RESIDENCIA",
+    ),
+) -> dict[str, Any]:
+    """Compacta estatÃ­sticas suficientes para SMD temporal sem reter milhÃµes de linhas."""
+
+    resumo: dict[str, Any] = {"n": int(len(dados)), "numericas": {}, "categoricas": {}}
+    for variavel in numericas:
+        valores = pd.to_numeric(dados[variavel], errors="coerce").dropna()
+        resumo["numericas"][variavel] = {
+            "n": int(len(valores)), "media": float(valores.mean()),
+            "variancia": float(valores.var(ddof=1)),
+        }
+    for variavel in categoricas:
+        valores = dados[variavel].fillna("IGNORADO").astype("string")
+        resumo["categoricas"][variavel] = {
+            "n": int(len(valores)),
+            "contagens": {str(k): int(v) for k, v in valores.value_counts(dropna=False).items()},
+        }
+    return resumo
+
+
+def smd_composicao_resumida_vs_referencia(
+    resumo_ano: Mapping[str, Any], resumo_referencia: Mapping[str, Any], ano: int,
+    ano_referencia: int = ANO_BASELINE,
+) -> pd.DataFrame:
+    """Calcula o mesmo SMD temporal a partir de estatÃ­sticas suficientes compactas."""
+
+    linhas: list[dict[str, Any]] = []
+    for variavel, atual in resumo_ano["numericas"].items():
+        referencia = resumo_referencia["numericas"][variavel]
+        variancia_pooled = (atual["variancia"] + referencia["variancia"]) / 2
+        if pd.isna(variancia_pooled) or variancia_pooled == 0:
+            smd = 0.0 if atual["media"] == referencia["media"] else float("inf")
+        else:
+            smd = float((atual["media"] - referencia["media"]) / np.sqrt(variancia_pooled))
+        linhas.append({"ano": ano, "ano_referencia": ano_referencia,
+                       "variavel": variavel, "nivel": None, "smd_temporal": smd})
+    for variavel, atual in resumo_ano["categoricas"].items():
+        referencia = resumo_referencia["categoricas"][variavel]
+        niveis = sorted(set(atual["contagens"]) | set(referencia["contagens"]))
+        for nivel in niveis:
+            p_a = atual["contagens"].get(nivel, 0) / atual["n"]
+            p_r = referencia["contagens"].get(nivel, 0) / referencia["n"]
+            variancia_pooled = (p_a * (1 - p_a) + p_r * (1 - p_r)) / 2
+            smd = (0.0 if p_a == p_r else float("inf")) if variancia_pooled == 0 else \
+                float((p_a - p_r) / np.sqrt(variancia_pooled))
+            linhas.append({"ano": ano, "ano_referencia": ano_referencia,
+                           "variavel": variavel, "nivel": nivel, "smd_temporal": smd})
+    saida = pd.DataFrame(linhas)
+    saida["abs_smd_temporal"] = saida.smd_temporal.abs()
+    saida["sinalizado_010"] = saida.abs_smd_temporal.gt(
+        LIMITES_DIAGNOSTICO_TEMPORAL["smd_abs"]
+    )
+    return saida[["ano", "ano_referencia", "variavel", "nivel", "smd_temporal",
+                  "abs_smd_temporal", "sinalizado_010"]]
+
+
+def _faixa_idade_materna(idade: pd.Series) -> pd.Series:
+    numerica = pd.to_numeric(idade, errors="coerce")
+    return pd.Series(
+        np.select(
+            [numerica.lt(20), numerica.lt(30), numerica.lt(40), numerica.ge(40)],
+            ["<20", "20-29", "30-39", "40+"],
+            default="IGNORADO",
+        ), index=idade.index, dtype="string",
+    )
+
+
+def _flags_positividade(tabela: pd.DataFrame) -> pd.DataFrame:
+    minimo = LIMITES_DIAGNOSTICO_TEMPORAL["celula_minima_por_grupo"]
+    inferior = LIMITES_DIAGNOSTICO_TEMPORAL["tratamento_extremo_inferior"]
+    superior = LIMITES_DIAGNOSTICO_TEMPORAL["tratamento_extremo_superior"]
+    tabela["flag_celula_pequena"] = tabela["n_t0"].lt(minimo) | tabela["n_t1"].lt(minimo)
+    tabela["flag_tratamento_extremo"] = (
+        tabela["proporcao_t1"].le(inferior) | tabela["proporcao_t1"].ge(superior)
+    )
+    return tabela
+
+
+def distribuicao_tratamento(dados: pd.DataFrame, ano: int) -> pd.DataFrame:
+    """DistribuiÃ§Ã£o de T no ano e por UF, com flags prÃ©-especificadas."""
+
+    def resumir(sub: pd.DataFrame, granularidade: str, uf: str) -> dict[str, Any]:
+        n_t1 = int(sub["tratamento"].eq(1).sum())
+        n_t0 = int(sub["tratamento"].eq(0).sum())
+        n = n_t0 + n_t1
+        return {"ano": ano, "granularidade": granularidade, "UF_RESIDENCIA": uf,
+                "n": n, "n_t0": n_t0, "n_t1": n_t1,
+                "proporcao_t1": n_t1 / n if n else float("nan")}
+
+    linhas = [resumir(dados, "ano", "TODAS")]
+    linhas.extend(
+        resumir(grupo, "ano_uf", str(uf))
+        for uf, grupo in dados.groupby("UF_RESIDENCIA", dropna=False, sort=True)
+    )
+    return _flags_positividade(pd.DataFrame(linhas))
+
+
+def positividade_perfis(dados: pd.DataFrame, ano: int) -> pd.DataFrame:
+    """DiagnÃ³stico marginal de positividade nos cinco perfis prÃ©-especificados."""
+
+    trabalho = dados.copy()
+    trabalho["FAIXA_IDADE_MAE"] = _faixa_idade_materna(trabalho["IDADEMAE_NUM"])
+    perfis = ("UF_RESIDENCIA", "FAIXA_IDADE_MAE", "ESCOLARIDADE_MAE",
+              "RACA_COR_MAE", "PARIDADE_CAT")
+    linhas: list[dict[str, Any]] = []
+    for perfil in perfis:
+        for categoria, grupo in trabalho.groupby(perfil, dropna=False, sort=True):
+            n_t1 = int(grupo.tratamento.eq(1).sum())
+            n_t0 = int(grupo.tratamento.eq(0).sum())
+            n = n_t0 + n_t1
+            linhas.append({"ano": ano, "perfil": perfil,
+                           "categoria": "IGNORADO" if pd.isna(categoria) else str(categoria),
+                           "n": n, "n_t0": n_t0, "n_t1": n_t1,
+                           "proporcao_t1": n_t1 / n if n else float("nan")})
+    return _flags_positividade(pd.DataFrame(linhas))
+
+
+def ajustar_propensity_temporal(
+    x: pd.DataFrame,
+    tratamento: pd.Series | np.ndarray,
+    n_folds: int = N_FOLDS_PROPENSITY_TEMPORAL,
+) -> tuple[np.ndarray, dict[str, Any]]:
+    """OOF anual usando exatamente o pipeline certificado, com cronÃ´metro por fold."""
+
+    from sklearn.base import clone
+    from sklearn.exceptions import ConvergenceWarning
+    from sklearn.metrics import roc_auc_score
+    from sklearn.model_selection import StratifiedKFold
+    from src.auditoria_dados import CATEGORICAS_PROPENSITY, NUMERICAS_PROPENSITY
+    from src.diagnosticos import COLUNAS_PROPENSITY_PRINCIPAL, construir_pipeline_propensity
+
+    colunas = list(COLUNAS_PROPENSITY_PRINCIPAL)
+    if list(x.columns) != colunas:
+        raise ValueError(f"X deve respeitar exatamente a ordem congelada: {colunas}.")
+    t = np.asarray(tratamento, dtype=int)
+    if len(t) != len(x) or set(np.unique(t)) != {0, 1}:
+        raise ValueError("Propensity anual requer X/T compatÃ­veis e ambos os grupos.")
+    pipeline = construir_pipeline_propensity(NUMERICAS_PROPENSITY, CATEGORICAS_PROPENSITY)
+    folds = StratifiedKFold(
+        n_splits=n_folds, shuffle=True, random_state=SEMENTE_PROPENSITY_TEMPORAL
+    )
+    oof = np.empty(len(x), dtype=float)
+    cobertura = np.zeros(len(x), dtype=np.uint8)
+    logs: list[dict[str, Any]] = []
+    inicio_total = time.perf_counter()
+    for fold, (treino, validacao) in enumerate(folds.split(x, t), 1):
+        inicio_fold = time.perf_counter()
+        modelo = clone(pipeline)
+        with warnings.catch_warnings(record=True) as avisos:
+            warnings.simplefilter("always", ConvergenceWarning)
+            modelo.fit(x.iloc[treino], t[treino])
+        if any(issubclass(aviso.category, ConvergenceWarning) for aviso in avisos):
+            raise RuntimeError(f"Propensity nÃ£o convergiu no fold {fold}; rever max_iter.")
+        oof[validacao] = modelo.predict_proba(x.iloc[validacao])[:, 1]
+        cobertura[validacao] += 1
+        segundos = time.perf_counter() - inicio_fold
+        log = {"fold": fold, "n_treino": int(len(treino)), "n_validacao": int(len(validacao)),
+               "n_iter": int(modelo["modelo"].n_iter_.max()), "convergiu": True,
+               "segundos": segundos}
+        logs.append(log)
+        print(f"Propensity temporal fold {fold}/{n_folds}: {segundos:.1f} s", flush=True)
+    if not np.all(cobertura == 1) or not np.isfinite(oof).all():
+        raise ValueError("PrediÃ§Ãµes OOF invÃ¡lidas ou cobertura incompleta.")
+    return oof, {
+        "n_folds": n_folds,
+        "seed": SEMENTE_PROPENSITY_TEMPORAL,
+        "auc_oof": float(roc_auc_score(t, oof)),
+        "tempo_total_segundos": time.perf_counter() - inicio_total,
+        "tempo_por_fold_segundos": [linha["segundos"] for linha in logs],
+        "folds": logs,
+        "solver": "lbfgs", "penalizacao": "L2", "C": 1.0,
+        "max_iter": 500, "tol": 1e-5,
+    }
+
+
+def resumir_propensity_ano(
+    propensity: Sequence[float], tratamento: Sequence[int], ano: int, auc_oof: float
+) -> dict[str, Any]:
+    """Achata overlap, caudas e ESS para uma linha anual versionÃ¡vel."""
+
+    from src.diagnosticos import resumir_overlap
+    from src.robustez import ess_grupos
+
+    e = np.asarray(propensity, dtype=float)
+    t = np.asarray(tratamento, dtype=int)
+    if len(e) != len(t) or not len(e) or not np.isfinite(e).all() or np.any((e <= 0) | (e >= 1)):
+        raise ValueError("Propensity/T invÃ¡lidos para resumo anual.")
+    overlap = resumir_overlap(e, t)
+    ess = ess_grupos(t, e)
+    linha: dict[str, Any] = {
+        "ano": ano, "n": int(len(e)), "n_t0": int((t == 0).sum()),
+        "n_t1": int((t == 1).sum()), "auc_oof": float(auc_oof),
+        "propensity_min": float(e.min()), "propensity_max": float(e.max()),
+        "suporte_comum_inferior": overlap["suporte_comum_observado"]["inferior"],
+        "suporte_comum_superior": overlap["suporte_comum_observado"]["superior"],
+        "ess_t0": ess["0"]["ess"], "ess_t1": ess["1"]["ess"],
+        "ess_t0_sobre_n": ess["0"]["ess"] / ess["0"]["n"],
+        "ess_t1_sobre_n": ess["1"]["ess"] / ess["1"]["n"],
+    }
+    for grupo, nome in ((0, "t0"), (1, "t1")):
+        valores = e[t == grupo]
+        linha[f"{nome}_min"] = float(valores.min())
+        linha[f"{nome}_max"] = float(valores.max())
+        for p in (0.01, 0.05, 0.25, 0.5, 0.75, 0.95, 0.99):
+            linha[f"{nome}_p{int(p * 100):02d}"] = float(np.quantile(valores, p))
+    for inferior, superior in LIMITES_DIAGNOSTICO_TEMPORAL["faixas_propensity"]:
+        rotulo = f"{int(inferior * 100):03d}_{int(superior * 100):03d}"
+        fora = (e < inferior) | (e > superior)
+        linha[f"fora_{rotulo}_n"] = int(fora.sum())
+        linha[f"fora_{rotulo}_fracao"] = float(fora.mean())
+        for grupo, nome in ((0, "t0"), (1, "t1")):
+            mascara = t == grupo
+            linha[f"fora_{rotulo}_{nome}_n"] = int((fora & mascara).sum())
+            linha[f"fora_{rotulo}_{nome}_fracao"] = float(fora[mascara].mean())
+    return linha
+
+
+def comparar_controle_positivo_2024(
+    observado: Mapping[str, Any], certificado: Mapping[str, Any], atol: float = 1e-12,
+) -> dict[str, Any]:
+    """Compara o OOF de 2024 com o artefato oficial, nÃ£o apenas com trÃªs nÃºmeros."""
+
+    checks: dict[str, bool] = {}
+    checks["ano"] = int(observado["ano"]) == ANO_BASELINE
+    checks["auc_oof"] = bool(np.isclose(
+        observado["auc_oof"], certificado["metodo"]["auc_oof"], rtol=0, atol=atol
+    ))
+    checks["n"] = int(observado["n"]) == sum(
+        int(certificado["grupos"][grupo]["n"]) for grupo in ("controle", "tratado")
+    )
+    checks["n_t0"] = int(observado["n_t0"]) == int(certificado["grupos"]["controle"]["n"])
+    checks["n_t1"] = int(observado["n_t1"]) == int(certificado["grupos"]["tratado"]["n"])
+    checks["suporte_inferior"] = bool(np.isclose(
+        observado["suporte_comum_inferior"],
+        certificado["suporte_comum_observado"]["inferior"], rtol=0, atol=atol))
+    checks["suporte_superior"] = bool(np.isclose(
+        observado["suporte_comum_superior"],
+        certificado["suporte_comum_observado"]["superior"], rtol=0, atol=atol))
+    for grupo, prefixo in (("controle", "t0"), ("tratado", "t1")):
+        esperado = certificado["grupos"][grupo]
+        checks[f"{prefixo}_min"] = bool(np.isclose(
+            observado[f"{prefixo}_min"], esperado["min"], rtol=0, atol=atol))
+        checks[f"{prefixo}_max"] = bool(np.isclose(
+            observado[f"{prefixo}_max"], esperado["max"], rtol=0, atol=atol))
+        for nome, valor in esperado.get("percentis", {}).items():
+            if nome == "p00":
+                observado_percentil = observado[f"{prefixo}_min"]
+            elif nome == "p100":
+                observado_percentil = observado[f"{prefixo}_max"]
+            else:
+                observado_percentil = observado[f"{prefixo}_{nome}"]
+            checks[f"{prefixo}_{nome}"] = bool(np.isclose(
+                observado_percentil, valor, rtol=0, atol=atol))
+    por_regra = {linha["regra"]: linha for linha in certificado.get("trimming_diagnostico", [])}
+    for regra, rotulo in (("0.01_0.99", "001_099"), ("0.05_0.95", "005_095")):
+        if regra in por_regra:
+            checks[f"n_excluido_{rotulo}"] = (
+                int(observado[f"fora_{rotulo}_n"]) == int(por_regra[regra]["n_excluido"])
+            )
+    divergencias = sorted(chave for chave, passou in checks.items() if not passou)
+    return {"aprovado": not divergencias, "checks": checks, "divergencias": divergencias,
+            "tolerancia_absoluta": atol}
+
+
+def criar_contrato_cache(
+    *, ano: int, parquet_sha256: str, codigo_sha256: str, chave_sha256: str,
+    regra_ordenacao: str, n: int, n_t0: int, n_t1: int,
+    features: Sequence[str] | None = None,
+) -> dict[str, Any]:
+    """Contrato cientÃ­fico determinÃ­stico do cache; sem timestamp volÃ¡til."""
+
+    from src.diagnosticos import COLUNAS_PROPENSITY_PRINCIPAL
+
+    contrato = {
+        "versao_cache": VERSAO_CACHE_PROPENSITY_TEMPORAL,
+        "ano": int(ano),
+        "parquet_sha256": parquet_sha256,
+        "definicao_chave": "(ano, UF_RESIDENCIA, CONTADOR)",
+        "definicao_chave_sha256": chave_sha256,
+        "codigo_relevante_sha256": codigo_sha256,
+        "features": list(features or COLUNAS_PROPENSITY_PRINCIPAL),
+        "tratamento": DEFINICAO_TRATAMENTO_TEMPORAL,
+        "modelo": "LogisticRegression L2",
+        "hiperparametros": {"C": 1.0, "solver": "lbfgs", "max_iter": 500, "tol": 1e-5},
+        "n_folds": N_FOLDS_PROPENSITY_TEMPORAL,
+        "semente": SEMENTE_PROPENSITY_TEMPORAL,
+        "regra_ordenacao": regra_ordenacao,
+        "n": int(n), "n_t0": int(n_t0), "n_t1": int(n_t1),
+    }
+    contrato["fingerprint"] = fingerprint_contrato_cache(contrato)
+    return contrato
+
+
+def fingerprint_contrato_cache(contrato: Mapping[str, Any]) -> str:
+    cientifico = {k: v for k, v in contrato.items()
+                  if k not in {"fingerprint", "predicoes_sha256", "cache_bytes", "metricas_ajuste"}}
+    serializado = json.dumps(cientifico, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(serializado.encode("utf-8")).hexdigest()
+
+
+def validar_contrato_cache(observado: Mapping[str, Any], esperado: Mapping[str, Any]) -> None:
+    """Recusa cache se qualquer componente cientÃ­fico do contrato divergir."""
+
+    chaves = set(esperado) - {"fingerprint", "predicoes_sha256", "cache_bytes", "metricas_ajuste"}
+    divergencias = {chave: (observado.get(chave), esperado.get(chave))
+                    for chave in sorted(chaves) if observado.get(chave) != esperado.get(chave)}
+    if divergencias:
+        raise ValueError(f"Cache incompatÃ­vel com o contrato cientÃ­fico: {divergencias}")
+    if observado.get("fingerprint") != fingerprint_contrato_cache(esperado):
+        raise ValueError("Fingerprint do contrato de cache incompatÃ­vel.")
+
+
+def _caminhos_cache_propensity(
+    pasta: str | Path, contrato: Mapping[str, Any]
+) -> dict[str, Path]:
+    fingerprint = fingerprint_contrato_cache(contrato)
+    base = Path(pasta) / f"propensity_{int(contrato['ano'])}_{fingerprint[:16]}"
+    return {"metadados": base.with_suffix(".json"), "predicoes": base.with_suffix(".npz")}
+
+
+def salvar_cache_propensity(
+    pasta: str | Path, contrato: Mapping[str, Any], propensity: Sequence[float],
+    metricas_ajuste: Mapping[str, Any] | None = None,
+) -> dict[str, Path]:
+    """Salva cache identificado pelo contrato; versÃµes antigas nÃ£o sÃ£o apagadas."""
+
+    e = np.asarray(propensity, dtype=np.float64)
+    if len(e) != int(contrato["n"]) or not np.isfinite(e).all() or np.any((e <= 0) | (e >= 1)):
+        raise ValueError("PrediÃ§Ãµes incompatÃ­veis com N/intervalo do contrato.")
+    caminhos = _caminhos_cache_propensity(pasta, contrato)
+    caminhos["metadados"].parent.mkdir(parents=True, exist_ok=True)
+    np.savez_compressed(caminhos["predicoes"], propensity=e)
+    metadados = dict(contrato)
+    metadados["fingerprint"] = fingerprint_contrato_cache(contrato)
+    metadados["predicoes_sha256"] = hashlib.sha256(e.astype("<f8", copy=False).tobytes()).hexdigest()
+    metadados["cache_bytes"] = caminhos["predicoes"].stat().st_size
+    if metricas_ajuste is not None:
+        metadados["metricas_ajuste"] = dict(metricas_ajuste)
+    caminhos["metadados"].write_text(
+        json.dumps(metadados, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return caminhos
+
+
+def carregar_cache_propensity(
+    pasta: str | Path, contrato: Mapping[str, Any]
+) -> np.ndarray | None:
+    """Carrega apenas o cache de fingerprint exato; contrato diferente Ã© cache miss."""
+
+    caminhos = _caminhos_cache_propensity(pasta, contrato)
+    if not caminhos["metadados"].exists() or not caminhos["predicoes"].exists():
+        return None
+    metadados = json.loads(caminhos["metadados"].read_text(encoding="utf-8"))
+    validar_contrato_cache(metadados, contrato)
+    with np.load(caminhos["predicoes"], allow_pickle=False) as arquivo:
+        e = arquivo["propensity"].astype(np.float64, copy=False)
+    if len(e) != int(contrato["n"]):
+        raise ValueError("N do cache incompatÃ­vel com o contrato.")
+    if hashlib.sha256(e.astype("<f8", copy=False).tobytes()).hexdigest() != metadados["predicoes_sha256"]:
+        raise ValueError("SHA-256 das prediÃ§Ãµes do cache divergiu.")
+    if not np.isfinite(e).all() or np.any((e <= 0) | (e >= 1)):
+        raise ValueError("Cache contÃ©m propensity invÃ¡lido.")
+    return e
+
+
+def perfis_fora_suporte(
+    dados: pd.DataFrame, propensity: Sequence[float], ano: int
+) -> pd.DataFrame:
+    """Agrega perfis que concentram escores extremos; nunca exporta registros."""
+
+    e = np.asarray(propensity, dtype=float)
+    if len(e) != len(dados):
+        raise ValueError("Dados e propensity devem ter o mesmo N.")
+    trabalho = dados.copy()
+    trabalho["FAIXA_IDADE_MAE"] = _faixa_idade_materna(trabalho["IDADEMAE_NUM"])
+    trabalho["_propensity"] = e
+    perfis = ("UF_RESIDENCIA", "FAIXA_IDADE_MAE", "ESCOLARIDADE_MAE",
+              "RACA_COR_MAE", "PARIDADE_CAT")
+    linhas: list[dict[str, Any]] = []
+    for inferior, superior in LIMITES_DIAGNOSTICO_TEMPORAL["faixas_propensity"]:
+        rotulo = f"fora_{int(inferior * 100):03d}_{int(superior * 100):03d}"
+        fora = trabalho[(trabalho._propensity < inferior) | (trabalho._propensity > superior)]
+        for perfil in perfis:
+            denominadores = trabalho.groupby(perfil, dropna=False).size()
+            for categoria, grupo in fora.groupby(perfil, dropna=False, sort=True):
+                chave = categoria
+                denominador = int(denominadores.loc[chave])
+                linhas.append({
+                    "ano": ano, "faixa": rotulo, "perfil": perfil,
+                    "categoria": "IGNORADO" if pd.isna(categoria) else str(categoria),
+                    "n": int(len(grupo)), "n_t0": int(grupo.tratamento.eq(0).sum()),
+                    "n_t1": int(grupo.tratamento.eq(1).sum()),
+                    "proporcao_no_perfil": len(grupo) / denominador,
+                })
+    colunas = ["ano", "faixa", "perfil", "categoria", "n", "n_t0", "n_t1",
+               "proporcao_no_perfil"]
+    return pd.DataFrame(linhas, columns=colunas)
+
+
+def recortar_janelas(tabela: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    """Recorta os mesmos diagnÃ³sticos anuais nas duas janelas congeladas."""
+
+    if "ano" not in tabela:
+        raise ValueError("Tabela anual deve conter a coluna ano.")
+    return {
+        nome: tabela[tabela["ano"].isin(contrato["anos"])].copy().reset_index(drop=True)
+        for nome, contrato in JANELAS.items()
+    }
+
+
+def sha256_codigo_relevante_temporal(raiz_projeto: str | Path) -> str:
+    """Hash composto dos mÃ³dulos que definem populaÃ§Ã£o, X/T, modelo e diagnÃ³sticos."""
+
+    raiz = Path(raiz_projeto)
+    arquivos = ("src/amostra.py", "src/diagnosticos.py", "src/robustez.py", "src/temporal.py")
+    digest = hashlib.sha256()
+    for relativo in arquivos:
+        caminho = raiz / relativo
+        digest.update(relativo.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(caminho.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def executar_propensity_temporal_ano(
+    raiz_projeto: str | Path, ano: int, pasta_cache: str | Path | None = None,
+) -> dict[str, Any]:
+    """Carrega, ajusta/reutiliza e valida o propensity OOF de exatamente um ano."""
+
+    from sklearn.metrics import roc_auc_score
+    from src.diagnosticos import COLUNAS_PROPENSITY_PRINCIPAL
+
+    raiz = Path(raiz_projeto).resolve()
+    cache = Path(pasta_cache) if pasta_cache is not None else raiz / "data/interim/temporal_overlap"
+    parquet = caminhos_ano(raiz, ano).parquet
+    dados, ordem = carregar_amostra_temporal(parquet, ano)
+    contrato = criar_contrato_cache(
+        ano=ano,
+        parquet_sha256=calcular_sha256(parquet),
+        codigo_sha256=sha256_codigo_relevante_temporal(raiz),
+        chave_sha256=ordem["sha256_sequencia_chave"],
+        regra_ordenacao=ordem["regra_ordenacao"],
+        n=ordem["n"], n_t0=ordem["n_t0"], n_t1=ordem["n_t1"],
+        features=COLUNAS_PROPENSITY_PRINCIPAL,
+    )
+    propensity = carregar_cache_propensity(cache, contrato)
+    caminhos_cache = _caminhos_cache_propensity(cache, contrato)
+    reutilizado = propensity is not None
+    if reutilizado:
+        metadados = json.loads(caminhos_cache["metadados"].read_text(encoding="utf-8"))
+        metricas_ajuste = metadados.get("metricas_ajuste", {})
+    else:
+        x = dados.loc[:, list(COLUNAS_PROPENSITY_PRINCIPAL)]
+        propensity, metricas_ajuste = ajustar_propensity_temporal(
+            x, dados["tratamento"], n_folds=N_FOLDS_PROPENSITY_TEMPORAL
+        )
+        caminhos_cache = salvar_cache_propensity(cache, contrato, propensity, metricas_ajuste)
+        validado = carregar_cache_propensity(cache, contrato)
+        if validado is None or not np.array_equal(validado, propensity):
+            raise ValueError(f"Cache recÃ©m-salvo de {ano} nÃ£o foi validado.")
+    auc_oof = float(roc_auc_score(dados["tratamento"].to_numpy(dtype=int), propensity))
+    resumo = resumir_propensity_ano(
+        propensity, dados["tratamento"].to_numpy(dtype=int), ano, auc_oof
+    )
+    benchmark = {
+        "ano": ano, "n": len(dados), "origem": "cache" if reutilizado else "ajuste",
+        "tempo_total_segundos": metricas_ajuste.get("tempo_total_segundos"),
+        "tempo_por_fold_segundos": json.dumps(
+            metricas_ajuste.get("tempo_por_fold_segundos", []), separators=(",", ":")),
+        "memoria_aproximada_mb": None,
+        "memoria_nota": "RSS por fold indisponivel sem instrumentacao externa; cache e vetor medidos",
+        "cache_bytes": caminhos_cache["predicoes"].stat().st_size,
+        "predicoes_bytes": propensity.nbytes,
+        "fingerprint_cache": fingerprint_contrato_cache(contrato),
+    }
+    return {"dados": dados, "propensity": propensity, "contrato_cache": contrato,
+            "caminhos_cache": caminhos_cache, "cache_reutilizado": reutilizado,
+            "metricas_ajuste": metricas_ajuste, "resumo_propensity": resumo,
+            "benchmark": benchmark, "ordem": ordem}
+
+
+def executar_controle_positivo_2024(
+    raiz_projeto: str | Path, pasta_cache: str | Path | None = None,
+    gravar: bool = True,
+) -> dict[str, Any]:
+    """Executa primeiro 2024 e exige equivalÃªncia com os artefatos certificados."""
+
+    raiz = Path(raiz_projeto).resolve()
+    resultado = executar_propensity_temporal_ano(raiz, ANO_BASELINE, pasta_cache)
+    certificado = json.loads(
+        (raiz / "outputs/diagnostics/fase1_overlap.json").read_text(encoding="utf-8")
+    )
+    comparacao = comparar_controle_positivo_2024(resultado["resumo_propensity"], certificado)
+    oficial = pd.read_csv(raiz / "outputs/tables/histograma_propensity.csv")
+    limites = np.linspace(0, 1, 101)
+    observado = []
+    t = resultado["dados"]["tratamento"].to_numpy(dtype=int)
+    for grupo, nome in ((0, "T=0"), (1, "T=1")):
+        contagens, _ = np.histogram(resultado["propensity"][t == grupo], bins=limites)
+        observado.extend({"grupo": nome, "limite_inferior": limites[i],
+                          "limite_superior": limites[i + 1], "n": int(n)}
+                         for i, n in enumerate(contagens))
+    hist = pd.DataFrame(observado)
+    hist_ok = (
+        oficial[["grupo", "n"]].equals(hist[["grupo", "n"]])
+        and np.allclose(oficial["limite_inferior"], hist["limite_inferior"], rtol=0, atol=1e-15)
+        and np.allclose(oficial["limite_superior"], hist["limite_superior"], rtol=0, atol=1e-15)
+    )
+    comparacao["checks"]["histograma_100_bins"] = bool(hist_ok)
+    comparacao["divergencias"] = sorted(
+        chave for chave, passou in comparacao["checks"].items() if not passou
+    )
+    comparacao["aprovado"] = not comparacao["divergencias"]
+    comparacao.update({
+        "status": "CONTROLE_POSITIVO_2024_APROVADO" if comparacao["aprovado"]
+                  else "CONTROLE_POSITIVO_2024_COM_DIVERGENCIA",
+        "sha256_sequencia_chave": resultado["ordem"]["sha256_sequencia_chave"],
+        "sha256_predicoes": hashlib.sha256(
+            resultado["propensity"].astype("<f8", copy=False).tobytes()).hexdigest(),
+        "cache_reutilizado": resultado["cache_reutilizado"],
+        "benchmark": resultado["benchmark"],
+        "resumo_observado": resultado["resumo_propensity"],
+    })
+    if gravar:
+        destino = raiz / "outputs/temporal/controle_positivo_2024.json"
+        destino.parent.mkdir(parents=True, exist_ok=True)
+        destino.write_text(json.dumps(comparacao, ensure_ascii=False, indent=2) + "\n",
+                           encoding="utf-8")
+    return {**resultado, "controle": comparacao}
+
+
+def _salvar_csv_temporal(tabela: pd.DataFrame, caminho: Path) -> None:
+    caminho.parent.mkdir(parents=True, exist_ok=True)
+    tabela.to_csv(caminho, index=False, float_format="%.12g", lineterminator="\n")
+
+
+def _resumo_pior_smd(smd: pd.DataFrame, coluna: str, saida: str) -> pd.DataFrame:
+    indice = smd.groupby(["ano", "variavel"], dropna=False)[coluna].idxmax()
+    por_variavel = smd.loc[indice, ["ano", "variavel", "nivel", coluna]].copy()
+    por_variavel = por_variavel.rename(columns={coluna: saida})
+    pior_ano = por_variavel.groupby("ano")[saida].max().rename(f"pior_{saida}")
+    return por_variavel.merge(pior_ano, on="ano", how="left")
+
+
+def _comparacao_janelas(
+    propensity: pd.DataFrame, smd_resumo: pd.DataFrame, composicao_resumo: pd.DataFrame,
+    tratamento: pd.DataFrame, positividade: pd.DataFrame,
+) -> pd.DataFrame:
+    base = propensity.copy()
+    base = base.merge(
+        smd_resumo.groupby("ano").pior_abs_smd.max().rename("pior_abs_smd").reset_index(),
+        on="ano", how="left")
+    base = base.merge(
+        composicao_resumo.groupby("ano").pior_abs_smd_temporal.max()
+        .rename("pior_abs_smd_temporal").reset_index(), on="ano", how="left")
+    anual_t = tratamento[tratamento.granularidade.eq("ano")][["ano", "proporcao_t1"]]
+    base = base.merge(anual_t, on="ano", how="left")
+    pos = positividade.groupby("ano").agg(
+        perfis_celula_pequena=("flag_celula_pequena", "sum"),
+        perfis_tratamento_extremo=("flag_tratamento_extremo", "sum"),
+    ).reset_index()
+    base = base.merge(pos, on="ano", how="left")
+    return pd.concat(
+        [recorte.assign(janela=nome, contrato=JANELAS[nome]["contrato"])
+         for nome, recorte in recortar_janelas(base).items()], ignore_index=True
+    )
+
+
+def _transicao_2021_2022(comparacao_principal: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+    colunas = ["auc_oof", "pior_abs_smd", "pior_abs_smd_temporal", "fora_005_095_fracao",
+               "ess_t0_sobre_n", "ess_t1_sobre_n", "proporcao_t1",
+               "perfis_celula_pequena", "perfis_tratamento_extremo"]
+    anual = comparacao_principal.sort_values("ano").copy()
+    anual["periodo"] = np.select(
+        [anual.ano.le(2020), anual.ano.eq(2021), anual.ano.eq(2022), anual.ano.ge(2023)],
+        ["2014-2020", "2021", "2022", "2023-2024"], default="fora"
+    )
+    for coluna in colunas:
+        anual[f"{coluna}_variacao_ano"] = anual[coluna].diff()
+    periodos = anual.groupby("periodo", sort=False)[colunas].mean().reset_index()
+    return anual, periodos
+
+
+def executar_diagnostico_temporal(
+    raiz_projeto: str | Path, anos: Sequence[int] = JANELAS["principal"]["anos"],
+    pasta_cache: str | Path | None = None,
+) -> dict[str, Any]:
+    """Executa 2024 primeiro e, se aprovado, processa os demais anos sequencialmente."""
+
+    import gc
+
+    raiz = Path(raiz_projeto).resolve()
+    anos_validos = [validar_ano(int(ano)) for ano in anos]
+    if ANO_BASELINE not in anos_validos:
+        raise ValueError("O controle positivo de 2024 Ã© obrigatÃ³rio antes dos demais anos.")
+    controle = executar_controle_positivo_2024(raiz, pasta_cache, gravar=True)
+    if not controle["controle"]["aprovado"]:
+        raise RuntimeError("ORDEM_2024_CERTIFICADA_NAO_REPRODUZIVEL: controle positivo divergiu.")
+    referencia = resumir_composicao(controle["dados"])
+    acumulado: dict[str, list[pd.DataFrame | dict[str, Any]]] = {
+        "smd": [], "composicao": [], "tratamento": [], "positividade": [],
+        "propensity": [], "perfis": [], "benchmark": [],
+    }
+    pasta_tabelas = raiz / "outputs/temporal/tabelas"
+    ordem_execucao = [ANO_BASELINE] + sorted(ano for ano in anos_validos if ano != ANO_BASELINE)
+    resultados_cache = {ANO_BASELINE: controle}
+    for posicao, ano in enumerate(ordem_execucao, 1):
+        inicio = time.perf_counter()
+        resultado = resultados_cache.pop(ano, None) or executar_propensity_temporal_ano(
+            raiz, ano, pasta_cache
+        )
+        dados, propensity = resultado["dados"], resultado["propensity"]
+        acumulado["smd"].append(smd_intra_ano(dados, ano))
+        acumulado["composicao"].append(smd_composicao_resumida_vs_referencia(
+            resumir_composicao(dados), referencia, ano))
+        acumulado["tratamento"].append(distribuicao_tratamento(dados, ano))
+        acumulado["positividade"].append(positividade_perfis(dados, ano))
+        acumulado["propensity"].append(resultado["resumo_propensity"])
+        acumulado["perfis"].append(perfis_fora_suporte(dados, propensity, ano))
+        benchmark = dict(resultado["benchmark"])
+        benchmark["tempo_diagnosticos_total_segundos"] = time.perf_counter() - inicio
+        acumulado["benchmark"].append(benchmark)
+        print(f"Ano {ano} concluÃ­do: N={len(dados):,}; cache={'reutilizado' if resultado['cache_reutilizado'] else 'salvo'}; "
+              f"restantes={len(ordem_execucao) - posicao}", flush=True)
+        del dados, propensity, resultado
+        gc.collect()
+
+        # Checkpoint agregado pequeno apÃ³s cada ano; caches OOF ficam em data/interim.
+        for chave, nome in (("smd", "smd_intra_ano"), ("composicao", "composicao_vs_2024"),
+                            ("tratamento", "tratamento_anual"),
+                            ("positividade", "positividade_perfis"),
+                            ("perfis", "perfis_fora_suporte")):
+            _salvar_csv_temporal(pd.concat(acumulado[chave], ignore_index=True),
+                                 pasta_tabelas / f"{nome}.csv")
+        _salvar_csv_temporal(pd.DataFrame(acumulado["propensity"]),
+                             pasta_tabelas / "propensity_anual.csv")
+        _salvar_csv_temporal(pd.DataFrame(acumulado["benchmark"]),
+                             pasta_tabelas / "benchmark_propensity_anual.csv")
+
+    tabelas = {
+        "smd_intra_ano": pd.concat(acumulado["smd"], ignore_index=True),
+        "composicao_vs_2024": pd.concat(acumulado["composicao"], ignore_index=True),
+        "tratamento_anual": pd.concat(acumulado["tratamento"], ignore_index=True),
+        "positividade_perfis": pd.concat(acumulado["positividade"], ignore_index=True),
+        "propensity_anual": pd.DataFrame(acumulado["propensity"]).sort_values("ano"),
+        "perfis_fora_suporte": pd.concat(acumulado["perfis"], ignore_index=True),
+        "benchmark_propensity_anual": pd.DataFrame(acumulado["benchmark"]),
+    }
+    tabelas["smd_intra_ano_resumo"] = _resumo_pior_smd(
+        tabelas["smd_intra_ano"], "abs_smd", "abs_smd")
+    tabelas["composicao_vs_2024_resumo"] = _resumo_pior_smd(
+        tabelas["composicao_vs_2024"], "abs_smd_temporal", "abs_smd_temporal")
+    tabelas["positividade_resumo"] = tabelas["positividade_perfis"].groupby(
+        ["ano", "perfil"], as_index=False).agg(
+            n_celulas=("categoria", "size"),
+            n_celulas_pequenas=("flag_celula_pequena", "sum"),
+            n_celulas_extremas=("flag_tratamento_extremo", "sum"),
+            menor_n_t0=("n_t0", "min"), menor_n_t1=("n_t1", "min"),
+            menor_proporcao_t1=("proporcao_t1", "min"),
+            maior_proporcao_t1=("proporcao_t1", "max"))
+    tabelas["comparacao_janelas"] = _comparacao_janelas(
+        tabelas["propensity_anual"], tabelas["smd_intra_ano_resumo"],
+        tabelas["composicao_vs_2024_resumo"], tabelas["tratamento_anual"],
+        tabelas["positividade_perfis"])
+    principal = tabelas["comparacao_janelas"].query("janela == 'principal'")
+    transicao_anual, transicao_periodos = _transicao_2021_2022(principal)
+    tabelas["transicao_2021_2022_anual"] = transicao_anual
+    tabelas["transicao_2021_2022_periodos"] = transicao_periodos
+    for nome, tabela in tabelas.items():
+        _salvar_csv_temporal(tabela, pasta_tabelas / f"{nome}.csv")
+    contrato = {
+        "fase": "notebook 08 - comparabilidade, suporte e positividade temporal",
+        "estima_efeito_causal": False,
+        "limites_pre_especificados": LIMITES_DIAGNOSTICO_TEMPORAL,
+        "janelas": {k: {**v, "anos": list(v["anos"])} for k, v in JANELAS.items()},
+        "propensity": {"features": list(__import__("src.diagnosticos", fromlist=["COLUNAS_PROPENSITY_PRINCIPAL"])
+                                               .COLUNAS_PROPENSITY_PRINCIPAL),
+                       "n_folds": N_FOLDS_PROPENSITY_TEMPORAL,
+                       "semente": SEMENTE_PROPENSITY_TEMPORAL,
+                       "modelo": "LogisticRegression L2; C=1; lbfgs; max_iter=500; tol=1e-5"},
+        "ordem_2024": ORDEM_2024_CERTIFICADA,
+        "ordem_2014_2023": ORDEM_CHAVE_TEMPORAL,
+        "codigo_relevante_sha256": sha256_codigo_relevante_temporal(raiz),
+    }
+    (raiz / "outputs/temporal/contrato_diagnostico_temporal.json").write_text(
+        json.dumps(contrato, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return {"controle_2024": controle["controle"], "tabelas": tabelas, "contrato": contrato}
