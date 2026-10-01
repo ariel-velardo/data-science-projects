@@ -1,5 +1,15 @@
 # Estado Atual
 
+## Estado temporal vigente — 01/10/2026
+
+- **V1 histórica:** contraste observacional padronizado de baixo peso ao nascer entre início do pré-natal nos meses 1–3 e 4–9, na população selecionada de nascidos vivos elegíveis. O notebook 09 produziu estimativas anuais; isso não estabelece o efeito causal de uma intervenção bem definida.
+- **09b:** `EFEITO_E_INFERENCIA_SENSIVEIS_A_CLUSTERS`. O ponto C1 mudou pouco no LOCO individual (máximo 0,0346 p.p.). A inferência apresenta concentração em alguns clusters, e exclusões conjuntas de grandes municípios alteram moderadamente o ponto (Top 10 até 0,1205 p.p.), em uma população observada diferente e com até ~13% dos registros removidos. Nenhum sinal mudou; nenhum IC municipal passou a incluir zero; 2021–2022 não foi explicado pelos clusters mais influentes. As exclusões não são estimandos alternativos.
+- **09c:** `AUDITORIA_PRE_V2_CONCLUIDA`. B e C podem avançar para discussão e estimação futura sob seus contratos; D landmark permanece pendente. A auditoria não estimou efeitos V2.
+- **09d:** `DECISAO_V2_PRE_ESTIMACAO_CONGELADA` e `SUPORTE_V2_SINALIZADO`. A é a V1 histórica (1–3 vs 4–9); B é a V2 principal (1–3 vs 4–6); C é a sensibilidade (1–3 vs 4–5); D está pendente. A restrição do comparador muda população e estimando. B tem 2024 `SINALIZADO` por caudas acima de 10%; C tem 2017–2024 `SINALIZADOS` por caudas. Nenhum ano está `BLOQUEADO`. Nenhum efeito V2 foi estimado. O suporte sinalizado exige leitura por ano, sem excluir automaticamente 2024.
+- **Semântica documental:** `MESPRENAT=99` é `CODIFICACAO_OPERACIONAL_OBSERVADA`; não há suporte literal encontrado no Manual DNV 2022 para atribuir oficialmente o significado “99=ignorado”. A exclusão operacional de `99` de T continua. Ver [erratas históricas](../temporal/ERRATAS_NOTEBOOKS_HISTORICOS.md), [contrato V2](../temporal/CONTRATO_V2_PRE_ESTIMACAO.md) e [mapa dos notebooks](../MAPA_NOTEBOOKS.md).
+
+Os registros abaixo descrevem fases anteriores e são preservados como histórico; suas afirmações sobre `MESPRENAT=99` devem ser lidas com a errata acima.
+
 STATUS = FASE_5_CONSOLIDADA_COM_RESSALVA_VISUAL
 FASE_ATUAL = FASE_5_ENTREGA_ACADEMICA
 DATA_INICIO = 2026-09-25
