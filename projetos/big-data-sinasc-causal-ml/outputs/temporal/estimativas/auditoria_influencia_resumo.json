@@ -1,0 +1,37 @@
+{
+  "contrato": "auditoria descritiva, sem refit ou novo estimando causal",
+  "origem": [
+    "aipw_anual.csv",
+    "diagnosticos_nuisance_anual.csv",
+    "execucao_anos.csv",
+    "ano_2014.json ... ano_2023.json",
+    "manifesto_notebook_09.json",
+    "caches OOF v2 e caches certificados de 2024"
+  ],
+  "n_linhas_influencia": 66,
+  "n_linhas_especificacoes": 22,
+  "anos_sinalizados_apenas_por_influencia": [
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "anos_bloqueados": [],
+  "limiar_top1_if2_pre_especificado": 0.5,
+  "definicao_top1_if2": "soma dos maiores 1% de (psi_i - media(psi))^2 dividida pela soma total",
+  "definicao_concentracao_municipal": "U_g = soma_{i em g}(psi_i) - n_g*media(psi); participacoes top k de U_g^2/soma_g U_g^2, conforme resumo_cluster existente",
+  "reconciliacao": "top1_if2, AIPW, SE iid e SE municipal reproduzidos sem refit",
+  "arquivos_fonte_preservados": true,
+  "distincao_2024": {
+    "top1_if2_acima_050_em_C1_C2_C3_e_ambos_trimmings": true,
+    "aviso_anual_registrado": false,
+    "motivo": "controle positivo 2024 e tratado antes do loop historico que chama sinalizacoes; aprovacao do controle nao equivale a ausencia de concentracao"
+  },
+  "decomposicao_c1_sem_trimming": "auditoria_composicao_top1_c1.csv; top1 reconstituido com a mesma definicao e efeito AIPW original"
+}
