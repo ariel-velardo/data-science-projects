@@ -1,0 +1,384 @@
+{
+  "hash_contrato": "2174989c33b338f7215270050969efda1d3d8e09661aee97b1da547185927d0b",
+  "hash_criterios": "84754340982770be7a6c2d545ed5013f36bdcfc7fbbeed071ce9ee57d106e516",
+  "avaliado_em": "2026-10-01T15:16:38",
+  "por_ano": [
+    {
+      "formulacao": "A_V1",
+      "ano": 2014,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "A_V1",
+      "ano": 2015,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "A_V1",
+      "ano": 2016,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "A_V1",
+      "ano": 2017,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "A_V1",
+      "ano": 2018,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "A_V1",
+      "ano": 2019,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "A_V1",
+      "ano": 2020,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "A_V1",
+      "ano": 2021,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "A_V1",
+      "ano": 2022,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "A_V1",
+      "ano": 2023,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "A_V1",
+      "ano": 2024,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2014,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2015,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2016,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2017,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2018,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2019,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2020,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2021,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2022,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2023,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "B",
+      "ano": 2024,
+      "status": "SINALIZADO",
+      "motivo": "S2_caudas",
+      "bloqueios": "",
+      "sinais": "S2_caudas"
+    },
+    {
+      "formulacao": "C",
+      "ano": 2014,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "C",
+      "ano": 2015,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "C",
+      "ano": 2016,
+      "status": "APROVADO",
+      "motivo": "nenhuma condição acionada",
+      "bloqueios": "",
+      "sinais": ""
+    },
+    {
+      "formulacao": "C",
+      "ano": 2017,
+      "status": "SINALIZADO",
+      "motivo": "S2_caudas",
+      "bloqueios": "",
+      "sinais": "S2_caudas"
+    },
+    {
+      "formulacao": "C",
+      "ano": 2018,
+      "status": "SINALIZADO",
+      "motivo": "S2_caudas",
+      "bloqueios": "",
+      "sinais": "S2_caudas"
+    },
+    {
+      "formulacao": "C",
+      "ano": 2019,
+      "status": "SINALIZADO",
+      "motivo": "S2_caudas",
+      "bloqueios": "",
+      "sinais": "S2_caudas"
+    },
+    {
+      "formulacao": "C",
+      "ano": 2020,
+      "status": "SINALIZADO",
+      "motivo": "S2_caudas",
+      "bloqueios": "",
+      "sinais": "S2_caudas"
+    },
+    {
+      "formulacao": "C",
+      "ano": 2021,
+      "status": "SINALIZADO",
+      "motivo": "S2_caudas",
+      "bloqueios": "",
+      "sinais": "S2_caudas"
+    },
+    {
+      "formulacao": "C",
+      "ano": 2022,
+      "status": "SINALIZADO",
+      "motivo": "S2_caudas",
+      "bloqueios": "",
+      "sinais": "S2_caudas"
+    },
+    {
+      "formulacao": "C",
+      "ano": 2023,
+      "status": "SINALIZADO",
+      "motivo": "S2_caudas",
+      "bloqueios": "",
+      "sinais": "S2_caudas"
+    },
+    {
+      "formulacao": "C",
+      "ano": 2024,
+      "status": "SINALIZADO",
+      "motivo": "S2_caudas",
+      "bloqueios": "",
+      "sinais": "S2_caudas"
+    }
+  ],
+  "por_formulacao": {
+    "A_V1": {
+      "principal": {
+        "status": "APROVADO",
+        "anos_aprovados": [
+          2014,
+          2015,
+          2016,
+          2017,
+          2018,
+          2019,
+          2020,
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "anos_sinalizados": [],
+        "anos_bloqueados": []
+      },
+      "sensibilidade": {
+        "status": "APROVADO",
+        "anos_aprovados": [
+          2018,
+          2019,
+          2020,
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "anos_sinalizados": [],
+        "anos_bloqueados": []
+      }
+    },
+    "B": {
+      "principal": {
+        "status": "SINALIZADO",
+        "anos_aprovados": [
+          2014,
+          2015,
+          2016,
+          2017,
+          2018,
+          2019,
+          2020,
+          2021,
+          2022,
+          2023
+        ],
+        "anos_sinalizados": [
+          2024
+        ],
+        "anos_bloqueados": []
+      },
+      "sensibilidade": {
+        "status": "SINALIZADO",
+        "anos_aprovados": [
+          2018,
+          2019,
+          2020,
+          2021,
+          2022,
+          2023
+        ],
+        "anos_sinalizados": [
+          2024
+        ],
+        "anos_bloqueados": []
+      }
+    },
+    "C": {
+      "principal": {
+        "status": "SINALIZADO",
+        "anos_aprovados": [
+          2014,
+          2015,
+          2016
+        ],
+        "anos_sinalizados": [
+          2017,
+          2018,
+          2019,
+          2020,
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "anos_bloqueados": []
+      },
+      "sensibilidade": {
+        "status": "SINALIZADO",
+        "anos_aprovados": [],
+        "anos_sinalizados": [
+          2018,
+          2019,
+          2020,
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "anos_bloqueados": []
+      }
+    }
+  },
+  "SUPORTE_V2": "SUPORTE_V2_SINALIZADO",
+  "SUPORTE_SENSIBILIDADE_C": "SUPORTE_SENSIBILIDADE_C_SINALIZADO",
+  "PRONTIDAO": "PRONTO_PARA_REVISAO_HUMANA_ANTES_DOS_EFEITOS",
+  "NENHUM_EFEITO_V2_ESTIMADO": true,
+  "V1_PRESERVADA": true,
+  "SEM_RESULT_SHOPPING": true
+}

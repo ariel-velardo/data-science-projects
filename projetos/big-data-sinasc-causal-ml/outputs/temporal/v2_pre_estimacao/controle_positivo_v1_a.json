@@ -1,0 +1,18 @@
+[
+ {
+  "ano":2014,
+  "n":2691119,
+  "max_dif_abs_vs_notebook08":0.0,
+  "aprovado":true,
+  "origem_referencia":"cache do notebook 08 (somente leitura)",
+  "segundos":48.1174463001
+ },
+ {
+  "ano":2024,
+  "n":2251570,
+  "max_dif_abs_vs_notebook08":0.0,
+  "aprovado":true,
+  "origem_referencia":"cache do notebook 08 (somente leitura)",
+  "segundos":37.3121669001
+ }
+]
