@@ -2,7 +2,7 @@
 
 **Estado:** `DECISAO_V2_PRE_ESTIMACAO_CONGELADA` · `SUPORTE_V2_SINALIZADO` · `NENHUM_EFEITO_V2_ESTIMADO` · `V1_PRESERVADA` · `SEM_RESULT_SHOPPING` · `PRONTO_PARA_REVISAO_HUMANA_ANTES_DOS_EFEITOS`.
 
-Documento complementar. A fonte de verdade das decisões é o notebook [09d_contrato_v2_pre_estimacao.ipynb](../../notebooks/09d_contrato_v2_pre_estimacao.ipynb). Este texto as resume para revisão e não acrescenta decisões. **Não houve commit**: o congelamento é documental e de artefatos, e a revisão humana decide sobre o commit.
+Documento complementar. A fonte de verdade das decisões é o notebook [09d_contrato_v2_pre_estimacao.ipynb](../../notebooks/09d_contrato_v2_pre_estimacao.ipynb). Este texto as resume para revisão e não acrescenta decisões. O congelamento foi originalmente realizado sem commit, antes de qualquer efeito B/C; após revisão humana, os artefatos foram versionados nos commits registrados na seção de clarificações pós-congelamento.
 
 ## 1. Registro
 
@@ -117,7 +117,7 @@ A V1 (`T=1` MESPRENAT 1–3; `T=0` 4–9) classifica o tratamento com o mês de 
 - Ajustar por IG ou restringir a termo.
 - Tratar `99` ou vazio como "sem pré-natal"; usar `KOTELCHUCK`.
 - Remover anos sinalizados.
-- Commit ou push nesta rodada.
+- Commit ou push na rodada original de congelamento.
 
 ## 9. Documentos que precisarão de correção futura (não editados)
 
@@ -138,7 +138,21 @@ Documentos a corrigir, com revisão humana:
 
 ## 10. Próxima fase (após revisão humana)
 
-1. Decidir o commit.
+1. Decidir o versionamento dos artefatos após revisão humana (etapa posteriormente concluída; ver seção de clarificações pós-congelamento).
 2. Retomar a frente 09b, pausada e preservada.
 3. Implementar o AIPW V2 reproduzindo primeiro a V1 (A) em 2024 e, depois, estimar B e C ano a ano com C1/C2/C3. Anos `BLOQUEADO` não são estimados; os `SINALIZADO` (B 2024; C 2017–2024) são estimados e reportados com a sinalização.
 4. Seguir o roadmap: sem perdas fetais, E-value, subgrupos, COVID-19, quebras temporais, D, PIG, CATE e meta-learners.
+
+## Clarificações operacionais pós-congelamento — pré-flight
+
+Estas instruções orientam a futura implementação AIPW V2; não modificam a decisão científica, o timestamp nem o hash do contrato congelado. Nenhum efeito B/C existia no momento do congelamento.
+
+- **Controle positivo A/2024:** reproduzir primeiro o contrato AIPW histórico do notebook 09. Ordenar pela chave histórica baseada em `contador`, usar três folds estratificados por `2*T+Y` com seed `20240925` e reconciliar os índices de treino/validação e os folds históricos. Conferir hashes de entrada e sequência, N, T0, T1, C1/C2/C3, resultados sem trimming e com `[0,05; 0,95]`, SE iid e SE municipal. Discrepância no controle positivo interrompe a execução de B/C. `ORDER BY file_row_number` e os cinco folds estratificados somente por T pertencem ao diagnóstico pré-V2/09d e não devem ser reutilizados no AIPW.
+- **Cache AIPW V2:** criar um cache novo e exclusivo da estimação futura. Não reutilizar OOF ou predições da V1, propensities diagnósticos do 09d nem checkpoints de `data/interim/v2_pre_estimacao/`. Cada contrato de cache deve conter, no mínimo, formulação A/B/C, ano, fold, features, seed, ordem, hash do Parquet, hashes da sequência de chaves, T e Y, índices de treino e validação, modelo, hiperparâmetros, pré-processamento, versões e hash do código. Cache incompatível, incompleto ou pertencente a outra formulação deve falhar. Nenhum cache AIPW V2 é criado nesta clarificação.
+
+O versionamento posterior ao congelamento ocorreu, nesta ordem:
+
+1. `c2635b3022f8658d84780f0317dbe507e282b831` — V1/09b;
+2. `bbf745b699cc836009987fb6f6961af2004c81f6` — auditoria 09c;
+3. `635fc274f001dd41570a82adc6235c2b3ac96164` — contrato e suporte 09d;
+4. `5c28d4ec12e59908eeceea9a764d7712a719d711` — mapa, estado e erratas.
