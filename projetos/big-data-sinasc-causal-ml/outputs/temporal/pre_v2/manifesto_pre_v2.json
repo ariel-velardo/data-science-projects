@@ -1,0 +1,559 @@
+{
+  "artefato": "auditoria pré-V2 da temporalidade de MESPRENAT (notebook 09c)",
+  "versao": "pre-v2-1 (critérios fixados em 2026-10-01 antes das agregações D1-D8)",
+  "hash_criterios": "306043e9779a7bc09eb23be1bc90ab09fad4819a9cbc9051b95aab319ddfc701",
+  "git_branch": "feature/expansao-temporal-sinasc",
+  "git_head": "61efda505592ed80a352322b3dee9d80f894f6ef",
+  "executado_em": "2026-10-01T13:00:51",
+  "python": "3.11.9",
+  "duckdb": "1.5.5",
+  "pandas": "3.0.6",
+  "anos": [
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "registros_brutos": {
+    "2014": 2979259,
+    "2015": 3017668,
+    "2016": 2857800,
+    "2017": 2923535,
+    "2018": 2944932,
+    "2019": 2849146,
+    "2020": 2730145,
+    "2021": 2677101,
+    "2022": 2561922,
+    "2023": 2537576,
+    "2024": 2389325
+  },
+  "parquets_sha256": {
+    "2014": "b201bf9ecda6f6694b75bc437e89fbd32cd33a00f524f889beb4081140ffb2c4",
+    "2015": "d6f1384db37cd277fddc7396e5af1890e18a7625185d46388d752a7c02ceb000",
+    "2016": "483b1036809e49ced46093338d61e16f47269ff793dad9a547c4e53af34f4d0b",
+    "2017": "7e28ea30b56d59c674a79e1ce4f7faf44916c25d2f0ef0c773661d1cd96b015a",
+    "2018": "cfff334ad6ec45eecaee60709120463272782a84c656d871ddf0925f1afc44ad",
+    "2019": "c0ada054bbffb03f600ede0a7a72b29e8e259bc8b660fc15c1768950b085a8b6",
+    "2020": "cb271925a648c69669a33ea494bc1199008acd0930a4ccb70c09b51b0f96c054",
+    "2021": "fc349f75802c4b69e2ac5c243375923ac49645f937f562ff8582e97733c05769",
+    "2022": "a357f6785672e19f0b1d3034b405b37389e0862bdf9ada7a9b25688b1bb20dc6",
+    "2023": "66ad723138fced4de6206ca204efd3a5297662cb69a877e4bb9332baac662347",
+    "2024": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5"
+  },
+  "populacoes": {
+    "BRUTA": "todos os registros",
+    "ELEGIVEL": "GRAVIDEZ=1 e PESO 500-6000 g",
+    "V1": "ELEGIVEL e MESPRENAT 01-09 (idêntica ao notebook 08)"
+  },
+  "fontes_documentais": [
+    {
+      "fonte": "SINASC: Estrutura de 1996 a 2019 - Dicionário de Dados (MS/SVS/CGIAE)",
+      "url": "https://diaad.s3.sa-east-1.amazonaws.com/sinasc/SINASC+-+Estrutura.pdf",
+      "local": "data/raw/SINASC_Estrutura.pdf",
+      "acesso": "2026-09-25 (projeto)"
+    },
+    {
+      "fonte": "Declaração de Nascido Vivo: manual de instruções para preenchimento, 4ª ed., MS, 2022",
+      "url": "https://svs.aids.gov.br/daent/cgiae/coesv/sistemas-informacao/sinasc/documentacao/declaracao-nascido-vivo-manual-instrucoes-preenchimento.pdf",
+      "local": "não versionado (cópia temporária fora do repositório)",
+      "sha256_copia_consultada": "5956ea4d8e89ee6c3720b9769c83be09e6017cf2d1c3aa18a55898ee32e4deaf",
+      "acesso": "2026-10-01",
+      "trechos": "p. 31-32 (campos 32-34) e p. 79 (caso clínico do campo 34)"
+    },
+    {
+      "fonte": "SINASC - Notas técnicas, Secretaria Municipal de Saúde de Campinas",
+      "url": "https://portal-adm.campinas.sp.gov.br/sites/default/files/secretarias/arquivos-avulsos/125/2026/05/13-093624/NT_SINASC.pdf",
+      "acesso": "2026-10-01",
+      "resultado": "sem definição de KOTELCHUCK"
+    },
+    {
+      "fonte": "Dicionário de dados SINASC, SES-ES",
+      "url": "https://app.wiki.saude.es.gov.br/vigilancia/microdados/dicionario-de-dados_sinasc.pdf",
+      "acesso": "2026-10-01",
+      "resultado": "sem códigos de KOTELCHUCK; MESPRENAT sem lista de códigos"
+    },
+    {
+      "fonte": "TabNet DATASUS - notas técnicas SINASC",
+      "url": "http://tabnet.datasus.gov.br/cgi/sinasc/nvdescr.htm",
+      "acesso": "2026-10-01",
+      "resultado": "conexão recusada; não consultado"
+    }
+  ],
+  "gates": {
+    "G1": "SINALIZADO",
+    "G2": "SINALIZADO",
+    "G3": "SINALIZADO",
+    "G4": "SINALIZADO",
+    "G5": "APROVADO",
+    "G6": "APROVADO",
+    "G7": "SINALIZADO"
+  },
+  "formulacoes_g7": {
+    "B_4_6": "SINALIZADO",
+    "C_4_5": "SINALIZADO",
+    "D_landmark": "PENDENTE"
+  },
+  "tempos_segundos": {
+    "total_notebook": 72.1,
+    "agregacao_duckdb": 28.9,
+    "por_etapa_agregacao": {
+      "leitura_derivacao": 13.38,
+      "ig_uf": 1.31,
+      "semanas": 0.96,
+      "gestacao": 1.15,
+      "consprenat": 1.02,
+      "processo": 1.16,
+      "kotelchuck": 0.9,
+      "perfil_categorico": 6.1,
+      "perfil_numerico": 0.62,
+      "total_ano": 28.92
+    },
+    "pos_processamento_por_diagnostico": {
+      "D1": 0.294,
+      "D2": 0.115,
+      "D3": 0.438,
+      "D4": 0.688,
+      "D5": 0.09,
+      "D6": 0.364,
+      "D7": 0.336,
+      "D8": 0.065,
+      "gates": 0.148
+    }
+  },
+  "memoria_mb": {
+    "rss_max_medido": 771.0,
+    "pico_processo": 934.0
+  },
+  "saidas": {
+    "schema_pre_v2.csv": {
+      "descricao": "Presença, nome original, caixa e tipo dos campos por ano",
+      "granularidade": "ano x campo",
+      "chave": "ano, campo",
+      "linhas": 231,
+      "limitacao": "nomes comparados sem diferenciar caixa",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 13863,
+      "sha256": "768008ac6cc2535341abaec2cd7242b06e44bdcbb6e239323ca9156504b98165"
+    },
+    "dominios_codigos_pre_v2.csv": {
+      "descricao": "Códigos distintos observados (sem frequências)",
+      "granularidade": "ano x campo",
+      "chave": "ano, campo",
+      "linhas": 55,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 1989,
+      "sha256": "42311f9a9993e03332b50fc9deed8a00c94bd3c559e9df80728a95a9dd407b03"
+    },
+    "semantica_codigos_pre_v2.csv": {
+      "descricao": "Procedência semântica dos códigos usados",
+      "granularidade": "código",
+      "chave": "codigo",
+      "linhas": 7,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 640,
+      "sha256": "fa707e4fecb3bbfd664cbd93d1ad7409011ae9f6e35b72ba486651c4d3acbe7e"
+    },
+    "criterios_gates_pre_v2.json": {
+      "descricao": "Critérios G1-G7 pré-registrados",
+      "granularidade": "gate",
+      "chave": "gate",
+      "linhas": 7,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 7322,
+      "sha256": "86bd1133623043b824ba6c4074e01927d52764e60eb0cab3f764a2bbcd9909ef"
+    },
+    "d1_mesprenat_idade_gestacional_brasil.csv": {
+      "descricao": "MESPRENAT x faixa de SEMAGESTAC, ELEGIVEL, Brasil por ano e 2014-2024",
+      "granularidade": "ano x mês x faixa",
+      "chave": "ano, mes, faixa_ig",
+      "linhas": 876,
+      "limitacao": "faixas descritivas, não meses oficiais; SEMAGESTAC com erro",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 64000,
+      "sha256": "bc5299b03edfc1264d5cad072d083cca4ea70c570f5036e4333e53d1f99961b7"
+    },
+    "d1_mesprenat_idade_gestacional_uf.csv": {
+      "descricao": "Idem por UF",
+      "granularidade": "ano x UF x mês x faixa",
+      "chave": "ano, uf, mes, faixa_ig",
+      "linhas": 19864,
+      "limitacao": "faixas descritivas, não meses oficiais; SEMAGESTAC com erro",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 1069486,
+      "sha256": "fc5bd80f19ac4dbfb3f11668bae5303b409be8930fdb072e3fb039028c51bab4"
+    },
+    "d1_mesprenat_gestacao_oficial.csv": {
+      "descricao": "MESPRENAT x GESTACAO oficial, ELEGIVEL",
+      "granularidade": "ano x mês x GESTACAO",
+      "chave": "ano, mes, gestacao",
+      "linhas": 915,
+      "limitacao": "faixas descritivas, não meses oficiais; SEMAGESTAC com erro",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 44083,
+      "sha256": "26ba9293d1b3f9ebc22f6cc3225689b7640b501c8013292b8bcac4d924986ca4"
+    },
+    "d1_gestacao_oficial_x_faixa_semagestac.csv": {
+      "descricao": "Consistência GESTACAO x faixa SEMAGESTAC",
+      "granularidade": "ano x GESTACAO x faixa",
+      "chave": "ano, gestacao, faixa_ig",
+      "linhas": 160,
+      "limitacao": "faixas descritivas, não meses oficiais; SEMAGESTAC com erro",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 3904,
+      "sha256": "ff8f5df6b5cda046e851f2987a9e1467344b2b02d871b539658e1c54e80ab1ae"
+    },
+    "d1_padrao_truncamento.csv": {
+      "descricao": "Evidência auxiliar P1: proporção 07-09 por faixa",
+      "granularidade": "ano x faixa",
+      "chave": "ano, faixa_ig",
+      "linhas": 60,
+      "limitacao": "faixas descritivas, não meses oficiais; SEMAGESTAC com erro",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 2340,
+      "sha256": "11ed9ac36b1d22fbaaa95337e2732817a03db5777a86b3430af3e2e1932a466a"
+    },
+    "figuras/fig1_d1_mesprenat_por_faixa_ig.png": {
+      "descricao": "D1 | Mês de início do pré-natal por duração da gestação, 2014–2024 (descritivo)",
+      "granularidade": "figura",
+      "chave": "-",
+      "linhas": 0,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 177370,
+      "sha256": "7952c66930de79b2c608771cc9e6a396a48238a37aed36916ac5bd6440c0a0f7"
+    },
+    "d2_consistencia_mesprenat_semagestac.csv": {
+      "descricao": "Matriz semana x mês com status diagnóstico e regra",
+      "granularidade": "ano x semana x mês",
+      "chave": "ano, semanas, mes",
+      "linhas": 2546,
+      "limitacao": "leituras mês-semana são convenções; nada é impossível",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 1070062,
+      "sha256": "17a51e65d3a3b275f37beab4f38f876a8ada7868fb1b099ab2f672bc6acaf75a"
+    },
+    "d2_resumo_status_por_mes.csv": {
+      "descricao": "N por status diagnóstico e mês",
+      "granularidade": "ano x mês x status",
+      "chave": "ano, mes, status_diagnostico",
+      "linhas": 169,
+      "limitacao": "leituras mês-semana são convenções; nada é impossível",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 9872,
+      "sha256": "9552890173396e001573e142275cd61d58eb2cfc2ad29872e1d85b064ee5cc44"
+    },
+    "figuras/fig2_d2_heatmap_semagestac_mes.png": {
+      "descricao": "D2 | Distribuição de SEMAGESTAC dentro de cada mês de início, 2014–2024 (escala log)",
+      "granularidade": "figura",
+      "chave": "-",
+      "linhas": 0,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 132202,
+      "sha256": "eed6db5b59765ea9abce8dc9362d7474de4113044fa4eeee941eff087fe48c2a"
+    },
+    "d3_consprenat_mesprenat.csv": {
+      "descricao": "CONSPRENAT x grupo MESPRENAT com três denominadores",
+      "granularidade": "população x ano x UF/Brasil x CONSPRENAT x grupo",
+      "chave": "populacao, ano, uf, consprenat, grupo_mesprenat",
+      "linhas": 20978,
+      "limitacao": "não demonstra validade de CONSPRENAT=0",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 2022130,
+      "sha256": "3700c2664a5e0f5c031a6489dd52aa85901df8a5c18ee25dad83420703bb8d22"
+    },
+    "d3_consprenat0_mesprenat.csv": {
+      "descricao": "Recorte CONSPRENAT=0",
+      "granularidade": "população x ano x UF/Brasil x grupo",
+      "chave": "populacao, ano, uf, grupo_mesprenat",
+      "linhas": 3207,
+      "limitacao": "não demonstra validade de CONSPRENAT=0",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 299517,
+      "sha256": "e8ef82f8d903f540be69213b798260f71f86015c5253b4ff6bda2c16442ba741"
+    },
+    "figuras/fig3_d3_consprenat0_mesprenat.png": {
+      "descricao": "D3 | Mês de início informado quando CONSPRENAT=0 (ELEGIVEL, Brasil)",
+      "granularidade": "figura",
+      "chave": "-",
+      "linhas": 0,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 108862,
+      "sha256": "0e12618f0eb3f7b9f4106d542f6aeac8aa480c9c290d26411cb9823b4c01ef5d"
+    },
+    "d4_perfil_mesprenat_desconhecido.csv": {
+      "descricao": "Perfil categórico por grupo de MESPRENAT (ELEGIVEL)",
+      "granularidade": "ano x grupo x variável x nível",
+      "chave": "ano, grupo, variavel, nivel",
+      "linhas": 2388,
+      "limitacao": "SMD de seleção/missingness; não é balanceamento causal",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 198611,
+      "sha256": "6db629927d1e6a1f55a30951610e5a3c822afb2d4c7db1e9e79661ee533ca4cc"
+    },
+    "d4_perfil_numerico.csv": {
+      "descricao": "N, idade materna e prevalência de BPN por grupo",
+      "granularidade": "ano x grupo",
+      "chave": "ano, grupo",
+      "linhas": 38,
+      "limitacao": "SMD de seleção/missingness; não é balanceamento causal",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 5359,
+      "sha256": "98bf401a6f748f112fbabd78baf0aee928906d85df28363e7a4b76ef8c0c22f5"
+    },
+    "d4_smd_missingness.csv": {
+      "descricao": "SMD grupo desconhecido vs conhecido - seleção/missingness, não balanceamento",
+      "granularidade": "ano x grupo x variável x nível",
+      "chave": "ano, grupo, variavel, nivel",
+      "linhas": 1430,
+      "limitacao": "SMD de seleção/missingness; não é balanceamento causal",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 233286,
+      "sha256": "e05b4c9f5d72dc8cd5a260a9b9c362e5dab264c1b991402f86e7221a4d09f59d"
+    },
+    "figuras/fig4_d4_smd_missingness.png": {
+      "descricao": "D4 | Seleção por ausência de MESPRENAT, 2014–2024 (diagnóstico, não balanceamento)",
+      "granularidade": "figura",
+      "chave": "-",
+      "linhas": 0,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 122603,
+      "sha256": "423a7fb533323a6dcceab304b2aa3ffc6c86730f4630da9a220bcdab71d4afd9"
+    },
+    "d5_missing_mesprenat_ano_uf.csv": {
+      "descricao": "N, denominador e proporções de 99, vazio e outros inválidos",
+      "granularidade": "população x ano x UF/Brasil",
+      "chave": "populacao, ano, uf",
+      "linhas": 616,
+      "limitacao": "triagem de discrepância é convenção descritiva",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 70528,
+      "sha256": "ea253795dc276f669d92132040eba6b3094cef9e3f9334dbfb3d873f6abcb840"
+    },
+    "figuras/fig5_d5_missing_uf_ano.png": {
+      "descricao": "D5 | MESPRENAT desconhecido (99 + vazio + inválido) por UF e ano, todos os registros",
+      "granularidade": "figura",
+      "chave": "-",
+      "linhas": 0,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 249579,
+      "sha256": "5187f583cbb470aa7992edff41ffc0662a80490d75fff850a7665cee1db47738"
+    },
+    "d6_heaping_mesprenat.csv": {
+      "descricao": "Distribuição de MESPRENAT 1-9",
+      "granularidade": "população x ano x UF/Brasil x mês",
+      "chave": "populacao, ano, uf, mes",
+      "linhas": 5544,
+      "limitacao": "sem distribuição de referência verdadeira",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 235819,
+      "sha256": "75af0e15555561476118536135ed2ea4715a5dffd8bdffe86d700e865cdadcf9"
+    },
+    "d6_indicadores_heaping.csv": {
+      "descricao": "Indicadores locais pré-especificados",
+      "granularidade": "população x ano x UF/Brasil",
+      "chave": "populacao, ano, uf",
+      "linhas": 616,
+      "limitacao": "sem distribuição de referência verdadeira",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 56869,
+      "sha256": "4aa45cc70519a160451b0646a91863f6e79b324522dca3a172343bbe2da5855c"
+    },
+    "d6_indicadores_por_dum.csv": {
+      "descricao": "Indicadores por presença de DTULTMENST",
+      "granularidade": "população x ano x DUM",
+      "chave": "populacao, ano, dum",
+      "linhas": 44,
+      "limitacao": "sem distribuição de referência verdadeira",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 4619,
+      "sha256": "6dc3f1021f8f4767bf1b2c7ee263106c116609ee6c8813ec01ad8c9586863a05"
+    },
+    "d6_indicadores_por_tpmetestim.csv": {
+      "descricao": "Indicadores por TPMETESTIM",
+      "granularidade": "população x ano x TPMETESTIM",
+      "chave": "populacao, ano, tpmetestim",
+      "linhas": 110,
+      "limitacao": "sem distribuição de referência verdadeira",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 10271,
+      "sha256": "a642f17c7efe9f90b91a6df0ed072bc1658ac3cca5712bab13eead18492ad0cd"
+    },
+    "d6_dum_tpmetestim_semagestac.csv": {
+      "descricao": "Processo de mensuração da IG: DUM x TPMETESTIM x SEMAGESTAC",
+      "granularidade": "população x ano x DUM x TPMETESTIM x status",
+      "chave": "populacao, ano, dum, tpmetestim, semanas_status",
+      "linhas": 134,
+      "limitacao": "sem distribuição de referência verdadeira",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 7443,
+      "sha256": "9ac718beeddc7c285092f82ed3d1ef074523d6287e1b4abfd829e817c3ddf300"
+    },
+    "figuras/fig6_d6_distribuicao_mesprenat.png": {
+      "descricao": "D6 | Distribuição do mês de início do pré-natal por ano (todos os registros)",
+      "granularidade": "figura",
+      "chave": "-",
+      "linhas": 0,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 220636,
+      "sha256": "51d61fdb6f790f1462c48b99bd7e19866195037902b72e4f032d6d66de793c05"
+    },
+    "populacoes_candidatas_pre_v2.csv": {
+      "descricao": "Controles mantidos/excluídos, frações e M1 por alternativa",
+      "granularidade": "ano x alternativa",
+      "chave": "ano, alternativa",
+      "linhas": 36,
+      "limitacao": "nenhum efeito estimado; M1 depende de L1/L2",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 6443,
+      "sha256": "f2faece1c77c1afc99b5dfc6889cb69ee68b63caac6be533f7f8c4d6620fc674"
+    },
+    "d7_idade_gestacional_controles.csv": {
+      "descricao": "Faixa de IG dos controles mantidos",
+      "granularidade": "ano x alternativa x faixa",
+      "chave": "ano, alternativa, faixa_ig",
+      "linhas": 252,
+      "limitacao": "perfil bruto, sem comparação com T=1",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 10520,
+      "sha256": "328502fad150642ab5c106b94bde150921c18dd279b7901fce766558435104c9"
+    },
+    "d7_mesprenat_controles.csv": {
+      "descricao": "MESPRENAT dos controles mantidos",
+      "granularidade": "ano x alternativa x mês",
+      "chave": "ano, alternativa, mes",
+      "linhas": 132,
+      "limitacao": "perfil bruto, sem comparação com T=1",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 5008,
+      "sha256": "7f0c0314cb654b4041947681924d9536448e418386aa06281e3bbe3708bfe4ce"
+    },
+    "d7_controle_v1_mes_ig.csv": {
+      "descricao": "Controle V1 por mês e faixa de IG",
+      "granularidade": "ano x mês x faixa",
+      "chave": "ano, mes, faixa_ig",
+      "linhas": 446,
+      "limitacao": "perfil bruto, sem comparação com T=1",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 10273,
+      "sha256": "4f6df86df8d338450bc86181d39d47e49ae590e2251a27d11aefa284a0db4045"
+    },
+    "d7_perfil_controles.csv": {
+      "descricao": "Perfil X/Y descritivo dos controles mantidos (sem comparação com T=1)",
+      "granularidade": "ano x alternativa x variável x nível",
+      "chave": "ano, alternativa, variavel, nivel",
+      "linhas": 2376,
+      "limitacao": "perfil bruto, sem comparação com T=1",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 315072,
+      "sha256": "695da09b0ca2282e57d5091e76f36561f3922ec016f73fdee19ccfe9cc9e6e48"
+    },
+    "figuras/fig7_d7_populacoes_abc.png": {
+      "descricao": "D7 | Controles da V1 e das alternativas B e C (descritivo; nada estimado)",
+      "granularidade": "figura",
+      "chave": "-",
+      "linhas": 0,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 166815,
+      "sha256": "eac710c6c2b7260d1e60caf0f8a3e7305da440a6737a953aab16619c05635975"
+    },
+    "kotelchuck_x_consprenat.csv": {
+      "descricao": "KOTELCHUCK x categoria de CONSPRENAT",
+      "granularidade": "população x ano x KOTELCHUCK x CONSPRENAT",
+      "chave": "populacao, ano, kotelchuck, consprenat",
+      "linhas": 330,
+      "limitacao": "códigos não confirmados documentalmente",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 17641,
+      "sha256": "212df26fd4ba9c2229634d010cc5bc08201c8d7076013e40aa53cc9d47d1a05c"
+    },
+    "kotelchuck_x_mesprenat.csv": {
+      "descricao": "KOTELCHUCK x grupo de MESPRENAT",
+      "granularidade": "população x ano x KOTELCHUCK x grupo",
+      "chave": "populacao, ano, kotelchuck, grupo_mesprenat",
+      "linhas": 356,
+      "limitacao": "códigos não confirmados documentalmente",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 18947,
+      "sha256": "b1b232405646c66132c124ac70c0f3e0cbfe5059fe5b50b32eea8f199eddc0f6"
+    },
+    "figuras/fig8_d8_kotelchuck.png": {
+      "descricao": "D8 | KOTELCHUCK observado versus consultas e mês de início, 2014–2024 (ELEGIVEL)",
+      "granularidade": "figura",
+      "chave": "-",
+      "linhas": 0,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 149313,
+      "sha256": "2ca9ad4845e5d82bd4d580edf279b64024492198a41c78d419fe731d963d1c67"
+    },
+    "gates_pre_v2_resultados.json": {
+      "descricao": "Status e evidência de G1-G7",
+      "granularidade": "gate",
+      "chave": "gate",
+      "linhas": 7,
+      "limitacao": "diagnóstico descritivo",
+      "validacao": "soma das agregações = registros do Parquet; população V1 = notebook 08",
+      "proximo_passo": "avaliação metodológica humana das formulações B, C e D antes de qualquer estimação",
+      "bytes": 30183,
+      "sha256": "df8acd73fa4c4333f69289b9e68328e47d285978032e89715743886f2fec8a41"
+    }
+  },
+  "arquivos_reservados_inalterados": 801,
+  "NENHUMA_NOVA_ESTIMATIVA_CAUSAL": true,
+  "V1_PRESERVADA": true,
+  "V2_NAO_ESCOLHIDA": true,
+  "microdados_salvos": false
+}

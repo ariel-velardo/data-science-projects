@@ -1,0 +1,1146 @@
+{
+  "hash_criterios": "306043e9779a7bc09eb23be1bc90ab09fad4819a9cbc9051b95aab319ddfc701",
+  "avaliado_em": "2026-10-01T13:00:49",
+  "gates": {
+    "G1": {
+      "status": "SINALIZADO",
+      "C1_documental": true,
+      "C2_ignorado_distinto": true,
+      "C3_contradicao_minoritaria": true,
+      "C4_estabilidade_temporal": false,
+      "C5_estabilidade_uf": false,
+      "fracao_contraditoria_por_ano": {
+        "2014": 0.06231806570427137,
+        "2015": 0.05974541034990085,
+        "2016": 0.058715234400683804,
+        "2017": 0.05445243025947131,
+        "2018": 0.05407239819004525,
+        "2019": 0.057927205428747686,
+        "2020": 0.05162591977213387,
+        "2021": 0.05570977917981072,
+        "2022": 0.06420630221695942,
+        "2023": 0.0736366090712743,
+        "2024": 0.07864005912786401
+      },
+      "categoria_dominante_por_ano": {
+        "2014": "VAZIO",
+        "2015": "VAZIO",
+        "2016": "VAZIO",
+        "2017": "VAZIO",
+        "2018": "99",
+        "2019": "VAZIO",
+        "2020": "99",
+        "2021": "99",
+        "2022": "99",
+        "2023": "99",
+        "2024": "99"
+      },
+      "n_uf_anos_avaliados": 261,
+      "n_uf_anos_divergentes": 113,
+      "uf_anos_divergentes": [
+        {
+          "ano": "2014",
+          "uf": "24",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2014",
+          "uf": "29",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2014",
+          "uf": "32",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2014",
+          "uf": "35",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2014",
+          "uf": "41",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2014",
+          "uf": "42",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2014",
+          "uf": "50",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2014",
+          "uf": "51",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2014",
+          "uf": "52",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2014",
+          "uf": "53",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2015",
+          "uf": "25",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2015",
+          "uf": "29",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2015",
+          "uf": "31",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2015",
+          "uf": "33",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2015",
+          "uf": "41",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2015",
+          "uf": "42",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2015",
+          "uf": "50",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2015",
+          "uf": "51",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2015",
+          "uf": "52",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2015",
+          "uf": "53",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "13",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "21",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "22",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "24",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "25",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "26",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "29",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "31",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "33",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "42",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "50",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "51",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "52",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2016",
+          "uf": "53",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "13",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "21",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "22",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "24",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "25",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "29",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "31",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "33",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "42",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "50",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "51",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "52",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2017",
+          "uf": "53",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2018",
+          "uf": "12",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2018",
+          "uf": "15",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2018",
+          "uf": "17",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2018",
+          "uf": "23",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2018",
+          "uf": "24",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2018",
+          "uf": "25",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2018",
+          "uf": "26",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2018",
+          "uf": "29",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2018",
+          "uf": "35",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2018",
+          "uf": "43",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2019",
+          "uf": "13",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "16",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "21",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "22",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "27",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "29",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "32",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "33",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "41",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "42",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "43",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "50",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "51",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "52",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2019",
+          "uf": "53",
+          "dominante_uf": "99",
+          "dominante_brasil": "VAZIO"
+        },
+        {
+          "ano": "2020",
+          "uf": "12",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2020",
+          "uf": "13",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2020",
+          "uf": "15",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2020",
+          "uf": "17",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2020",
+          "uf": "24",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2020",
+          "uf": "25",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2020",
+          "uf": "26",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2020",
+          "uf": "31",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2020",
+          "uf": "35",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2020",
+          "uf": "43",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "13",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "15",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "17",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "22",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "25",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "26",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "29",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "31",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "35",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "43",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2021",
+          "uf": "52",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2022",
+          "uf": "12",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2022",
+          "uf": "13",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2022",
+          "uf": "15",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2022",
+          "uf": "21",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2022",
+          "uf": "26",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2022",
+          "uf": "31",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2022",
+          "uf": "35",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2022",
+          "uf": "43",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2022",
+          "uf": "52",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2023",
+          "uf": "12",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2023",
+          "uf": "13",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2023",
+          "uf": "31",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2023",
+          "uf": "33",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2023",
+          "uf": "35",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2023",
+          "uf": "43",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2023",
+          "uf": "52",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2024",
+          "uf": "31",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2024",
+          "uf": "35",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2024",
+          "uf": "43",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        },
+        {
+          "ano": "2024",
+          "uf": "52",
+          "dominante_uf": "VAZIO",
+          "dominante_brasil": "99"
+        }
+      ]
+    },
+    "G2": {
+      "status": "SINALIZADO",
+      "n_potencialmente_incompativel_L1_ou_tolerancia": 38,
+      "n_potencialmente_incompativel_mesmo_com_tolerancia": 12,
+      "n_potencialmente_incompativel_somente_L2": 28,
+      "n_total_avaliado": 27920977,
+      "maior_fracao_L1_em_um_mes_ano": 0.0003274394237066143,
+      "mes_ano_da_maior_fracao": [
+        "2020",
+        "09"
+      ],
+      "codigos_fora_do_dominio_oficial": {
+        "2014": 2607
+      }
+    },
+    "G3": {
+      "status": "SINALIZADO",
+      "diferencial_por_Y": true,
+      "diferencial_por_X": true,
+      "n_comparacoes": 1265,
+      "n_comparacoes_acima_referencia": 615,
+      "grupos_avaliados": [
+        "99",
+        "OUTRO_INVALIDO",
+        "VAZIO"
+      ],
+      "pior_por_grupo_variavel": [
+        {
+          "ano": "2021",
+          "grupo": "VAZIO",
+          "variavel": "ESCOLARIDADE_MAE",
+          "nivel": "IGNORADO",
+          "smd": 1.1422113318286735
+        },
+        {
+          "ano": "2019",
+          "grupo": "VAZIO",
+          "variavel": "RACA_COR_MAE",
+          "nivel": "IGNORADO",
+          "smd": 1.1174585412906117
+        },
+        {
+          "ano": "2019",
+          "grupo": "VAZIO",
+          "variavel": "PERDAS_FETAIS_CAT",
+          "nivel": "IGNORADO",
+          "smd": 0.5437374017829423
+        },
+        {
+          "ano": "2017",
+          "grupo": "VAZIO",
+          "variavel": "UF_RESIDENCIA",
+          "nivel": "35",
+          "smd": -0.5172575176100613
+        },
+        {
+          "ano": "2018",
+          "grupo": "99",
+          "variavel": "UF_RESIDENCIA",
+          "nivel": "33",
+          "smd": 0.4232133089505239
+        },
+        {
+          "ano": "2014",
+          "grupo": "OUTRO_INVALIDO",
+          "variavel": "UF_RESIDENCIA",
+          "nivel": "35",
+          "smd": -0.40473040013688194
+        },
+        {
+          "ano": "2024",
+          "grupo": "99",
+          "variavel": "RACA_COR_MAE",
+          "nivel": "1",
+          "smd": -0.37161680106780953
+        },
+        {
+          "ano": "2020",
+          "grupo": "99",
+          "variavel": "ESCOLARIDADE_MAE",
+          "nivel": "IGNORADO",
+          "smd": 0.3384884922088876
+        },
+        {
+          "ano": "2019",
+          "grupo": "99",
+          "variavel": "SITUACAO_CONJUGAL",
+          "nivel": "1",
+          "smd": 0.316381117279629
+        },
+        {
+          "ano": "2014",
+          "grupo": "OUTRO_INVALIDO",
+          "variavel": "RACA_COR_MAE",
+          "nivel": "1",
+          "smd": -0.30829104164031046
+        },
+        {
+          "ano": "2020",
+          "grupo": "99",
+          "variavel": "PERDAS_FETAIS_CAT",
+          "nivel": "IGNORADO",
+          "smd": 0.2523213777928548
+        },
+        {
+          "ano": "2016",
+          "grupo": "VAZIO",
+          "variavel": "SITUACAO_CONJUGAL",
+          "nivel": "2",
+          "smd": -0.24928555508466924
+        },
+        {
+          "ano": "2014",
+          "grupo": "OUTRO_INVALIDO",
+          "variavel": "SITUACAO_CONJUGAL",
+          "nivel": "2",
+          "smd": -0.22953988580482737
+        },
+        {
+          "ano": "2024",
+          "grupo": "99",
+          "variavel": "Y_BAIXO_PESO",
+          "nivel": "1",
+          "smd": 0.22655768264232606
+        },
+        {
+          "ano": "2014",
+          "grupo": "OUTRO_INVALIDO",
+          "variavel": "ESCOLARIDADE_MAE",
+          "nivel": "5",
+          "smd": -0.2072443068996135
+        },
+        {
+          "ano": "2014",
+          "grupo": "OUTRO_INVALIDO",
+          "variavel": "Y_BAIXO_PESO",
+          "nivel": "1",
+          "smd": -0.1908551582065075
+        },
+        {
+          "ano": "2024",
+          "grupo": "99",
+          "variavel": "PARIDADE_CAT",
+          "nivel": "0",
+          "smd": -0.1730327441041576
+        },
+        {
+          "ano": "2014",
+          "grupo": "OUTRO_INVALIDO",
+          "variavel": "IDADEMAE_NUM",
+          "nivel": "media",
+          "smd": -0.17290462124766082
+        },
+        {
+          "ano": "2022",
+          "grupo": "VAZIO",
+          "variavel": "Y_BAIXO_PESO",
+          "nivel": "1",
+          "smd": 0.156550203063943
+        },
+        {
+          "ano": "2014",
+          "grupo": "OUTRO_INVALIDO",
+          "variavel": "PERDAS_FETAIS_CAT",
+          "nivel": "IGNORADO",
+          "smd": 0.15495785976565696
+        },
+        {
+          "ano": "2020",
+          "grupo": "VAZIO",
+          "variavel": "IDADEMAE_NUM",
+          "nivel": "media",
+          "smd": -0.1488177188842843
+        },
+        {
+          "ano": "2024",
+          "grupo": "99",
+          "variavel": "IDADEMAE_NUM",
+          "nivel": "media",
+          "smd": -0.13877671934612634
+        },
+        {
+          "ano": "2022",
+          "grupo": "VAZIO",
+          "variavel": "PARIDADE_CAT",
+          "nivel": "0",
+          "smd": -0.12453121280124527
+        },
+        {
+          "ano": "2014",
+          "grupo": "OUTRO_INVALIDO",
+          "variavel": "PARIDADE_CAT",
+          "nivel": "0",
+          "smd": -0.09048753259585135
+        },
+        {
+          "ano": "2021",
+          "grupo": "VAZIO",
+          "variavel": "IDADE_AUSENTE",
+          "nivel": "1",
+          "smd": 0.02335575497064353
+        },
+        {
+          "ano": "2019",
+          "grupo": "99",
+          "variavel": "IDADE_AUSENTE",
+          "nivel": "1",
+          "smd": 0.022178950153805884
+        },
+        {
+          "ano": "2014",
+          "grupo": "OUTRO_INVALIDO",
+          "variavel": "IDADE_AUSENTE",
+          "nivel": "1",
+          "smd": -0.007108999602655781
+        }
+      ]
+    },
+    "G4": {
+      "status": "SINALIZADO",
+      "fracao_controle_7_9": {
+        "2014": 0.13055358699211786,
+        "2014-2024": 0.13156310987512188,
+        "2015": 0.12831442993661543,
+        "2016": 0.12688738399799349,
+        "2017": 0.12671391473072707,
+        "2018": 0.12423641157991475,
+        "2019": 0.12594691071386382,
+        "2020": 0.1333664950808824,
+        "2021": 0.1388449089615504,
+        "2022": 0.14074370989986998,
+        "2023": 0.13942717613299982,
+        "2024": 0.1433034488328891
+      },
+      "fracao_controle_6": {
+        "2014": 0.13371233714589684,
+        "2014-2024": 0.1339544823003203,
+        "2015": 0.1296917405564052,
+        "2016": 0.13131137736103876,
+        "2017": 0.1326795201722659,
+        "2018": 0.13250148663232228,
+        "2019": 0.13283060527112736,
+        "2020": 0.13549124777452412,
+        "2021": 0.13615433948272926,
+        "2022": 0.13907707399916142,
+        "2023": 0.1389427884302156,
+        "2024": 0.13575640093691949
+      },
+      "fracao_controle_4_5": {
+        "2014": 0.7357340758619854,
+        "2014-2024": 0.7344824078245579,
+        "2015": 0.7419938295069793,
+        "2016": 0.7418012386409678,
+        "2017": 0.7406065650970071,
+        "2018": 0.743262101787763,
+        "2019": 0.7412224840150088,
+        "2020": 0.7311422571445935,
+        "2021": 0.7250007515557203,
+        "2022": 0.7201792161009686,
+        "2023": 0.7216300354367846,
+        "2024": 0.7209401502301914
+      },
+      "fracao_controle_4_6": {
+        "2014": 0.8694464130078822,
+        "2014-2024": 0.8684368901248781,
+        "2015": 0.8716855700633845,
+        "2016": 0.8731126160020065,
+        "2017": 0.873286085269273,
+        "2018": 0.8757635884200853,
+        "2019": 0.8740530892861361,
+        "2020": 0.8666335049191176,
+        "2021": 0.8611550910384496,
+        "2022": 0.85925629010013,
+        "2023": 0.8605728238670002,
+        "2024": 0.8566965511671109
+      },
+      "P1_padrao_truncamento_anos_verdadeiro": 0,
+      "P1_anos_avaliados": 11
+    },
+    "G5": {
+      "status": "APROVADO",
+      "i_estrutural_ultimo_mes_B_antes_de_22_semanas": true,
+      "ii_M1_B_menor_que_A_todos_os_anos": true,
+      "M1": {
+        "L1": {
+          "A": {
+            "2014": 0.01345831571086529,
+            "2015": 0.013259382466829768,
+            "2016": 0.013351225623065116,
+            "2017": 0.013440540705499892,
+            "2018": 0.013120991465895388,
+            "2019": 0.013135825389007249,
+            "2020": 0.013239170551578259,
+            "2021": 0.013400807411043191,
+            "2022": 0.013825069006229538,
+            "2023": 0.013926524873420222,
+            "2024": 0.014065056398584588
+          },
+          "B": {
+            "2014": 7.927898593682809e-05,
+            "2015": 7.525623703484852e-05,
+            "2016": 8.55379146806822e-05,
+            "2017": 7.067205915893825e-05,
+            "2018": 7.704301827686575e-05,
+            "2019": 5.7560540573623575e-05,
+            "2020": 6.385635361216007e-05,
+            "2021": 6.082119459799321e-05,
+            "2022": 7.38919836484712e-05,
+            "2023": 6.8019702089997e-05,
+            "2024": 8.301539589696406e-05
+          }
+        },
+        "L2": {
+          "A": {
+            "2014": 0.02756041925842295,
+            "2015": 0.02674697250429762,
+            "2016": 0.027124657619874624,
+            "2017": 0.026796132168172376,
+            "2018": 0.026199927339245147,
+            "2019": 0.026037401236312978,
+            "2020": 0.026408023094714555,
+            "2021": 0.026468841534445134,
+            "2022": 0.027383642333726886,
+            "2023": 0.027594004653850996,
+            "2024": 0.027702064662075455
+          },
+          "B": {
+            "2014": 0.0001684678451157597,
+            "2015": 0.00016549403977570855,
+            "2016": 0.0001707102827174299,
+            "2017": 0.00014812578056040088,
+            "2018": 0.00015691330327948804,
+            "2019": 0.0001409868936834957,
+            "2020": 0.00013721514079755826,
+            "2021": 0.00013636344266556438,
+            "2022": 0.00015020665528541686,
+            "2023": 0.0001433708690759218,
+            "2024": 0.0001534920080386575
+          }
+        }
+      }
+    },
+    "G6": {
+      "status": "APROVADO",
+      "reducao_estrita_todos_anos": true,
+      "alguma_reducao": true,
+      "M1": {
+        "L1": {
+          "B": {
+            "2014": 7.927898593682809e-05,
+            "2015": 7.525623703484852e-05,
+            "2016": 8.55379146806822e-05,
+            "2017": 7.067205915893825e-05,
+            "2018": 7.704301827686575e-05,
+            "2019": 5.7560540573623575e-05,
+            "2020": 6.385635361216007e-05,
+            "2021": 6.082119459799321e-05,
+            "2022": 7.38919836484712e-05,
+            "2023": 6.8019702089997e-05,
+            "2024": 8.301539589696406e-05
+          },
+          "C": {
+            "2014": 3.5392404436083973e-07,
+            "2015": 0.0,
+            "2016": 0.0,
+            "2017": 0.0,
+            "2018": 0.0,
+            "2019": 0.0,
+            "2020": 0.0,
+            "2021": 0.0,
+            "2022": 0.0,
+            "2023": 0.0,
+            "2024": 0.0
+          }
+        },
+        "L2": {
+          "B": {
+            "2014": 0.0001684678451157597,
+            "2015": 0.00016549403977570855,
+            "2016": 0.0001707102827174299,
+            "2017": 0.00014812578056040088,
+            "2018": 0.00015691330327948804,
+            "2019": 0.0001409868936834957,
+            "2020": 0.00013721514079755826,
+            "2021": 0.00013636344266556438,
+            "2022": 0.00015020665528541686,
+            "2023": 0.0001433708690759218,
+            "2024": 0.0001534920080386575
+          },
+          "C": {
+            "2014": 3.5392404436083973e-07,
+            "2015": 0.0,
+            "2016": 0.0,
+            "2017": 0.0,
+            "2018": 0.0,
+            "2019": 0.0,
+            "2020": 0.0,
+            "2021": 0.0,
+            "2022": 0.0,
+            "2023": 0.0,
+            "2024": 0.0
+          }
+        }
+      }
+    },
+    "G7": {
+      "status": "SINALIZADO",
+      "formulacoes": {
+        "B_4_6": "SINALIZADO",
+        "C_4_5": "SINALIZADO",
+        "D_landmark": "PENDENTE"
+      },
+      "avancam_para_discussao_metodologica": [
+        "B_4_6",
+        "C_4_5"
+      ],
+      "permanecem_bloqueadas_ou_pendentes": [
+        "D_landmark"
+      ],
+      "V2_escolhida": false
+    }
+  },
+  "NENHUMA_NOVA_ESTIMATIVA_CAUSAL": true,
+  "V1_PRESERVADA": true,
+  "V2_NAO_ESCOLHIDA": true
+}
