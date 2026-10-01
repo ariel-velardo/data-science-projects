@@ -106,7 +106,10 @@ A camada temporal usa a chave uniforme `(ano, UF_res, CONTADOR)`, com `UF_res = 
 | 06_auditoria_historica_sinasc | — | disponibilidade, esquema, códigos, janela e critérios | criado |
 | 07_descritiva_temporal_sinasc | A | N, fluxo A0–A3, ausentes/ignorados, prevalência de Y, proporção de T, covariáveis e UF por ano | criado |
 | 08_estabilidade_temporal_overlap | B | SMD, composição, escore de propensão, suporte comum e positividade por ano | criado e executado |
+| 08b_selecao_modelos_nuisance | B | seleção aninhada do propensity logístico em 2024 | revisado; C=1 preservado |
+| 08c_benchmark_modelos_nuisance | B | benchmark preditivo das famílias de nuisance models em 2024 | parcial por orçamento; fechamento aprovado |
 | 09_estabilidade_temporal_estimativas | C | AIPW independente por ano com C1/C2 congeladas | planejado |
+| 10 — PoC Spark | independente | prova de conceito em branch própria | fora do desenho causal desta branch |
 | (eventual) | D | análise empilhada, só se A–C justificarem; não é automaticamente a principal | não planejado |
 
 ## Uso
@@ -141,6 +144,16 @@ Principais achados:
 - a janela de sensibilidade 2018–2024 preserva as mesmas conclusões qualitativas.
 
 Conclusão operacional: a fase C pode ser planejada com estimações independentes por ano, ambas as janelas congeladas e reporte obrigatório de N, caudas, suporte e ESS. Isso é uma autorização para **planejar** o notebook 09, não uma validação causal antecipada. Resultados, contrato diagnóstico e benchmarks estão em `outputs/temporal/`; caches locais com fingerprint ficam em `data/interim/temporal_overlap/`. Detalhes no [notebook 08](../../notebooks/08_estabilidade_temporal_overlap.ipynb).
+
+## Fechamento de 08B e 08C
+
+A sequência da expansão é: 06 auditoria histórica; 07 descrição temporal; 08 diagnóstico de overlap/positividade; 08B seleção do propensity logístico; 08C benchmark preditivo das famílias de nuisance models; 09 estimativas causais temporais, ainda não implementadas. A PoC Spark 10 segue em branch independente e não participa da especificação causal.
+
+Em 08B, a seleção aninhada completa em 2024 (`N=2.251.570`, `T=0: 309.525`, `T=1: 1.942.045`, três folds externos e três internos, 48 fits) escolheu `C=1` nos três folds externos. O propensity principal continua `LogisticRegression` L2 com `C=1` (`BASELINE_C1_PRESERVADO`).
+
+Em 08C, o HGB foi avaliado integralmente, ExtraTrees central teve três folds externos e RandomForest foi avaliado apenas no piloto de custo. A grade completa de ExtraTrees foi interrompida pela regra computacional pré-especificada: a projeção revisada foi de 12,61 horas. A revisão humana aceitou essa pendência pelo custo desproporcional, sem atribuí-la a resultado preditivo ou falha metodológica. O veredito factual permanece `BENCHMARK_NUISANCE_2024_PARCIAL`; registram-se `PENDENCIA_EXTRATREES_ACEITA_POR_ORCAMENTO`, `REVISAO_HUMANA_08B_08C_APROVADA` e `PRONTO_PARA_FECHAR_08B_08C`.
+
+O HGB histórico fica como sensibilidade de propensity (`PROPENSITY_SENSIBILIDADE_ML_RECOMENDADA`): em 2024, log-loss 0,377690 versus 0,380096 e maior SMD ponderado 0,007294 versus 0,021745 no baseline. A fração fora de `[0,05; 0,95]` passou de 0,06580 para 0,06735, sem colapso de ESS. Para os outcomes, mantêm-se os modelos históricos logístico (C1) e HGB (C2): o HGB histórico teve ganho preditivo nos dois braços, mas a regra de 1 EP preservou sua configuração em 3/3 folds de cada braço (`OUTCOMES_HISTORICOS_MANTIDOS`). Nenhum efeito causal foi calculado em 08B/08C; ganho preditivo não implica melhoria causal. Os resumos agregados e o contrato de decisão estão em `outputs/temporal/tuning/` e `outputs/temporal/modelos_nuisance/`.
 
 Para reproduzir o preparo dos dados (reutiliza arquivos íntegros; não toca 2024):
 

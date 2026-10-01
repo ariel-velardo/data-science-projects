@@ -1,0 +1,187 @@
+{
+  "seed": 20240925,
+  "folds_externos": 3,
+  "folds_internos": 3,
+  "familias": {
+    "logistica": [
+      {
+        "id": "logistica_c1",
+        "familia": "logistica",
+        "parametros": {
+          "C": 1.0
+        },
+        "historico": true
+      }
+    ],
+    "hgb": [
+      {
+        "id": "hgb_lr0.05_leaf15_min100",
+        "familia": "hgb",
+        "parametros": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 15,
+          "min_samples_leaf": 100,
+          "l2_regularization": 1.0,
+          "max_iter": 100
+        },
+        "historico": false
+      },
+      {
+        "id": "hgb_lr0.05_leaf15_min500",
+        "familia": "hgb",
+        "parametros": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 15,
+          "min_samples_leaf": 500,
+          "l2_regularization": 1.0,
+          "max_iter": 100
+        },
+        "historico": false
+      },
+      {
+        "id": "hgb_lr0.05_leaf31_min100",
+        "familia": "hgb",
+        "parametros": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 100,
+          "l2_regularization": 1.0,
+          "max_iter": 100
+        },
+        "historico": false
+      },
+      {
+        "id": "hgb_lr0.05_leaf31_min500",
+        "familia": "hgb",
+        "parametros": {
+          "learning_rate": 0.05,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 500,
+          "l2_regularization": 1.0,
+          "max_iter": 100
+        },
+        "historico": false
+      },
+      {
+        "id": "hgb_lr0.1_leaf15_min100",
+        "familia": "hgb",
+        "parametros": {
+          "learning_rate": 0.1,
+          "max_leaf_nodes": 15,
+          "min_samples_leaf": 100,
+          "l2_regularization": 1.0,
+          "max_iter": 100
+        },
+        "historico": true
+      },
+      {
+        "id": "hgb_lr0.1_leaf15_min500",
+        "familia": "hgb",
+        "parametros": {
+          "learning_rate": 0.1,
+          "max_leaf_nodes": 15,
+          "min_samples_leaf": 500,
+          "l2_regularization": 1.0,
+          "max_iter": 100
+        },
+        "historico": false
+      },
+      {
+        "id": "hgb_lr0.1_leaf31_min100",
+        "familia": "hgb",
+        "parametros": {
+          "learning_rate": 0.1,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 100,
+          "l2_regularization": 1.0,
+          "max_iter": 100
+        },
+        "historico": false
+      },
+      {
+        "id": "hgb_lr0.1_leaf31_min500",
+        "familia": "hgb",
+        "parametros": {
+          "learning_rate": 0.1,
+          "max_leaf_nodes": 31,
+          "min_samples_leaf": 500,
+          "l2_regularization": 1.0,
+          "max_iter": 100
+        },
+        "historico": false
+      }
+    ],
+    "extra_trees": [
+      {
+        "id": "extra_sqrt_min50",
+        "familia": "extra_trees",
+        "parametros": {
+          "n_estimators": 200,
+          "max_features": "sqrt",
+          "min_samples_leaf": 50,
+          "max_depth": null,
+          "class_weight": null,
+          "random_state": 20240925,
+          "n_jobs": 8
+        },
+        "historico": false
+      },
+      {
+        "id": "extra_sqrt_min200",
+        "familia": "extra_trees",
+        "parametros": {
+          "n_estimators": 200,
+          "max_features": "sqrt",
+          "min_samples_leaf": 200,
+          "max_depth": null,
+          "class_weight": null,
+          "random_state": 20240925,
+          "n_jobs": 8
+        },
+        "historico": false
+      },
+      {
+        "id": "extra_meio_min50",
+        "familia": "extra_trees",
+        "parametros": {
+          "n_estimators": 200,
+          "max_features": 0.5,
+          "min_samples_leaf": 50,
+          "max_depth": null,
+          "class_weight": null,
+          "random_state": 20240925,
+          "n_jobs": 8
+        },
+        "historico": false
+      },
+      {
+        "id": "extra_meio_min200",
+        "familia": "extra_trees",
+        "parametros": {
+          "n_estimators": 200,
+          "max_features": 0.5,
+          "min_samples_leaf": 200,
+          "max_depth": null,
+          "class_weight": null,
+          "random_state": 20240925,
+          "n_jobs": 8
+        },
+        "historico": false
+      }
+    ]
+  },
+  "random_forest_somente_viabilidade": [
+    {
+      "id": "rf_viabilidade",
+      "familia": "random_forest",
+      "parametros": {
+        "n_estimators": 200,
+        "max_features": "sqrt",
+        "min_samples_leaf": 100,
+        "random_state": 20240925,
+        "n_jobs": 8
+      },
+      "historico": false
+    }
+  ]
+}

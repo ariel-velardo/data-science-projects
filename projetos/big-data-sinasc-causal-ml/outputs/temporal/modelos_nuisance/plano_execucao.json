@@ -1,0 +1,68 @@
+{
+  "projecao_horas_full": 4.673944164923781,
+  "plano": {
+    "propensity": {
+      "logistica": [
+        "logistica_c1"
+      ],
+      "hgb": [
+        "hgb_lr0.05_leaf15_min100",
+        "hgb_lr0.05_leaf15_min500",
+        "hgb_lr0.05_leaf31_min100",
+        "hgb_lr0.05_leaf31_min500",
+        "hgb_lr0.1_leaf15_min100",
+        "hgb_lr0.1_leaf15_min500",
+        "hgb_lr0.1_leaf31_min100",
+        "hgb_lr0.1_leaf31_min500"
+      ],
+      "extra_trees": [
+        "extra_sqrt_min50",
+        "extra_sqrt_min200",
+        "extra_meio_min50",
+        "extra_meio_min200"
+      ]
+    },
+    "outcome_t0": {
+      "logistica": [
+        "logistica_c1"
+      ],
+      "hgb": [
+        "hgb_lr0.05_leaf15_min100",
+        "hgb_lr0.05_leaf15_min500",
+        "hgb_lr0.05_leaf31_min100",
+        "hgb_lr0.05_leaf31_min500",
+        "hgb_lr0.1_leaf15_min100",
+        "hgb_lr0.1_leaf15_min500",
+        "hgb_lr0.1_leaf31_min100",
+        "hgb_lr0.1_leaf31_min500"
+      ],
+      "extra_trees": [
+        "extra_sqrt_min50",
+        "extra_sqrt_min200",
+        "extra_meio_min50",
+        "extra_meio_min200"
+      ]
+    },
+    "outcome_t1": {
+      "logistica": [
+        "logistica_c1"
+      ],
+      "hgb": [
+        "hgb_lr0.05_leaf15_min100",
+        "hgb_lr0.05_leaf15_min500",
+        "hgb_lr0.05_leaf31_min100",
+        "hgb_lr0.05_leaf31_min500",
+        "hgb_lr0.1_leaf15_min100",
+        "hgb_lr0.1_leaf15_min500",
+        "hgb_lr0.1_leaf31_min100",
+        "hgb_lr0.1_leaf31_min500"
+      ],
+      "extra_trees": [
+        "extra_sqrt_min50",
+        "extra_sqrt_min200",
+        "extra_meio_min50",
+        "extra_meio_min200"
+      ]
+    }
+  }
+}

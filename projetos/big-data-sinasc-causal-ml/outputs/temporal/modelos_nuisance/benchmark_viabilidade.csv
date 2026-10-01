@@ -1,0 +1,13 @@
+alvo,familia,candidato,n_treino,n_validacao,segundos,rss_antes_bytes,rss_depois_bytes,nota,status,erro
+propensity,logistica,logistica_c1,120000,30000,1.69750650018,774729728,768012288,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+propensity,hgb,hgb_lr0.1_leaf15_min100,120000,30000,1.25631049997,772628480,777023488,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+propensity,extra_trees,extra_sqrt_min50,120000,30000,15.5712212999,772661248,771846144,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+propensity,random_forest,rf_viabilidade,120000,30000,10.6403591002,777953280,773185536,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+outcome_t0,logistica,logistica_c1,16496,4125,0.319192899857,774475776,782921728,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+outcome_t0,hgb,hgb_lr0.1_leaf15_min100,16496,4125,0.243361700093,782925824,786591744,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+outcome_t0,extra_trees,extra_sqrt_min50,16496,4125,1.25285160006,786595840,776581120,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+outcome_t0,random_forest,rf_viabilidade,16496,4125,1.20823809993,777609216,776691712,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+outcome_t1,logistica,logistica_c1,103503,25876,1.24441679986,785727488,798310400,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+outcome_t1,hgb,hgb_lr0.1_leaf15_min100,103503,25876,0.930176799884,781848576,777285632,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+outcome_t1,extra_trees,extra_sqrt_min50,103503,25876,12.7433743,785580032,773095424,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,
+outcome_t1,random_forest,rf_viabilidade,103503,25876,8.63358359993,783777792,778694656,Amostra apenas para custo; métricas preditivas não utilizadas.,VIAVEL,

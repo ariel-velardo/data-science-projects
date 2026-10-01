@@ -1,0 +1,62 @@
+{
+  "horas_revisadas_grade_completa": 12.60858476857945,
+  "primeiro_fit_et_segundos": 386.9973083001096,
+  "fator_real_sobre_piloto": 2.9803269886443697,
+  "motivo": "projeção acima de seis horas; configuração central com três folds",
+  "plano": {
+    "propensity": {
+      "logistica": [
+        "logistica_c1"
+      ],
+      "hgb": [
+        "hgb_lr0.05_leaf15_min100",
+        "hgb_lr0.05_leaf15_min500",
+        "hgb_lr0.05_leaf31_min100",
+        "hgb_lr0.05_leaf31_min500",
+        "hgb_lr0.1_leaf15_min100",
+        "hgb_lr0.1_leaf15_min500",
+        "hgb_lr0.1_leaf31_min100",
+        "hgb_lr0.1_leaf31_min500"
+      ],
+      "extra_trees": [
+        "extra_sqrt_min50"
+      ]
+    },
+    "outcome_t0": {
+      "logistica": [
+        "logistica_c1"
+      ],
+      "hgb": [
+        "hgb_lr0.05_leaf15_min100",
+        "hgb_lr0.05_leaf15_min500",
+        "hgb_lr0.05_leaf31_min100",
+        "hgb_lr0.05_leaf31_min500",
+        "hgb_lr0.1_leaf15_min100",
+        "hgb_lr0.1_leaf15_min500",
+        "hgb_lr0.1_leaf31_min100",
+        "hgb_lr0.1_leaf31_min500"
+      ],
+      "extra_trees": [
+        "extra_sqrt_min50"
+      ]
+    },
+    "outcome_t1": {
+      "logistica": [
+        "logistica_c1"
+      ],
+      "hgb": [
+        "hgb_lr0.05_leaf15_min100",
+        "hgb_lr0.05_leaf15_min500",
+        "hgb_lr0.05_leaf31_min100",
+        "hgb_lr0.05_leaf31_min500",
+        "hgb_lr0.1_leaf15_min100",
+        "hgb_lr0.1_leaf15_min500",
+        "hgb_lr0.1_leaf31_min100",
+        "hgb_lr0.1_leaf31_min500"
+      ],
+      "extra_trees": [
+        "extra_sqrt_min50"
+      ]
+    }
+  }
+}

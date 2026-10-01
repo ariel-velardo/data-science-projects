@@ -1,0 +1,85 @@
+{
+  "benchmark": "BENCHMARK_NUISANCE_2024_PARCIAL",
+  "propensity": "PROPENSITY_SENSIBILIDADE_ML_RECOMENDADA",
+  "sensibilidade_propensity": "hgb_historico",
+  "outcome": "OUTCOMES_HISTORICOS_MANTIDOS",
+  "baseline": "BASELINE_2024_PRESERVADO",
+  "pendencia_extratrees": "ACEITA_POR_ORCAMENTO",
+  "revisao_humana": "APROVADA",
+  "fechamento": "PRONTO_PARA_FECHAR_08B_08C",
+  "custo": {
+    "fits_benchmark_certificados": 249,
+    "fits_piloto": 12,
+    "fits_grade_interrompida": 1,
+    "fits_totais_novos": 262,
+    "segundos_benchmark_certificados": 6655.764838798437,
+    "segundos_piloto": 55.740593199863994,
+    "segundos_grade_interrompida": 386.9973083001096,
+    "baseline_08b_fits_reutilizados": 48,
+    "segundos_totais_fits": 7098.502740298411
+  },
+  "horas_projetadas_grade_completa_inicial": 4.673944164924352,
+  "horas_revisadas_grade_completa": 12.60858476857945,
+  "parquet_sha256": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5",
+  "plano": {
+    "propensity": {
+      "logistica": [
+        "logistica_c1"
+      ],
+      "hgb": [
+        "hgb_lr0.05_leaf15_min100",
+        "hgb_lr0.05_leaf15_min500",
+        "hgb_lr0.05_leaf31_min100",
+        "hgb_lr0.05_leaf31_min500",
+        "hgb_lr0.1_leaf15_min100",
+        "hgb_lr0.1_leaf15_min500",
+        "hgb_lr0.1_leaf31_min100",
+        "hgb_lr0.1_leaf31_min500"
+      ],
+      "extra_trees": [
+        "extra_sqrt_min50"
+      ]
+    },
+    "outcome_t0": {
+      "logistica": [
+        "logistica_c1"
+      ],
+      "hgb": [
+        "hgb_lr0.05_leaf15_min100",
+        "hgb_lr0.05_leaf15_min500",
+        "hgb_lr0.05_leaf31_min100",
+        "hgb_lr0.05_leaf31_min500",
+        "hgb_lr0.1_leaf15_min100",
+        "hgb_lr0.1_leaf15_min500",
+        "hgb_lr0.1_leaf31_min100",
+        "hgb_lr0.1_leaf31_min500"
+      ],
+      "extra_trees": [
+        "extra_sqrt_min50"
+      ]
+    },
+    "outcome_t1": {
+      "logistica": [
+        "logistica_c1"
+      ],
+      "hgb": [
+        "hgb_lr0.05_leaf15_min100",
+        "hgb_lr0.05_leaf15_min500",
+        "hgb_lr0.05_leaf31_min100",
+        "hgb_lr0.05_leaf31_min500",
+        "hgb_lr0.1_leaf15_min100",
+        "hgb_lr0.1_leaf15_min500",
+        "hgb_lr0.1_leaf31_min100",
+        "hgb_lr0.1_leaf31_min500"
+      ],
+      "extra_trees": [
+        "extra_sqrt_min50"
+      ]
+    }
+  },
+  "restricoes": {
+    "efeito_causal_calculado": false,
+    "notebook_09_criado": false,
+    "baseline_historico_sobrescrito": false
+  }
+}

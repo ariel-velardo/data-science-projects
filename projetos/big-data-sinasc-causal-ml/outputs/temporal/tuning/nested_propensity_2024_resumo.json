@@ -1,0 +1,367 @@
+{
+  "status": "NESTED_PROPENSITY_2024_CONCLUIDO",
+  "contexto": {
+    "ano": 2024,
+    "n": 2251570,
+    "n_t0": 309525,
+    "n_t1": 1942045,
+    "features": [
+      "IDADEMAE_NUM",
+      "ESCOLARIDADE_MAE",
+      "RACA_COR_MAE",
+      "SITUACAO_CONJUGAL",
+      "PARIDADE_CAT",
+      "PERDAS_FETAIS_CAT",
+      "UF_RESIDENCIA"
+    ],
+    "chave": "contador",
+    "ordem": "contador",
+    "parquet_sha256": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5",
+    "populacao": "SINASC 2024, gravidez única, peso 500-6000g, mês válido",
+    "baseline_origem": "outputs/tables/fase2_predicoes_oof.npz::e"
+  },
+  "auditoria": {
+    "n": 2251570,
+    "features": [
+      "IDADEMAE_NUM",
+      "ESCOLARIDADE_MAE",
+      "RACA_COR_MAE",
+      "SITUACAO_CONJUGAL",
+      "PARIDADE_CAT",
+      "PERDAS_FETAIS_CAT",
+      "UF_RESIDENCIA"
+    ],
+    "seed": 20240925,
+    "n_folds_externos": 3,
+    "n_folds_internos": 3,
+    "n_candidatos": 5,
+    "candidatos": [
+      0.01,
+      0.1,
+      1.0,
+      10.0,
+      100.0
+    ],
+    "n_refits": 3,
+    "total_fits_previstos": 48,
+    "total_fits_realizados": 48,
+    "cobertura_min": 1,
+    "cobertura_max": 1,
+    "usa_outcome": false,
+    "criterio_primario": "log_loss OOF interno",
+    "tempo_total_segundos": 712.4925005999394
+  },
+  "folds": [
+    {
+      "outer_fold": 1,
+      "n_treino": 1501046,
+      "n_validacao": 750524,
+      "n_treino_t0": 206350,
+      "n_treino_t1": 1294696,
+      "n_validacao_t0": 103175,
+      "n_validacao_t1": 647349,
+      "hash_treino": "22d703fd6c714b68a673703502f4d4e42b56ecc0bca622a5c7fd9c47cf756b97",
+      "hash_validacao": "0fa72b8e7ed2d9d30743de101401654980dcb96df67a4c3ce3bdedd6b5e972a5",
+      "C_menor_log_loss_interno": 0.1,
+      "C_escolhido": 1.0,
+      "baseline_preservado": true,
+      "limite_um_ep": 0.3801905711996253,
+      "criterio": "baseline-first dentro de 1 EP e guardrails",
+      "tempo_tuning_segundos": 213.68663830007426,
+      "tempo_refit_segundos": 15.808310700114816,
+      "n_tuning_fits": 15,
+      "n_refits": 1,
+      "n_validacao_usado_na_selecao": 0,
+      "ajuste_refit": {
+        "n_iter": 60,
+        "convergence_warning": false,
+        "tentativas": [
+          {
+            "tentativa": 1,
+            "convergence_warnings": []
+          }
+        ],
+        "early_stopping": false
+      },
+      "auditoria_inner": {
+        "n": 1501046,
+        "n_folds": 3,
+        "seed": 20240925,
+        "folds": [
+          {
+            "fold": 1,
+            "n_treino": 1000697,
+            "n_validacao": 500349,
+            "hash_treino": "1861a127e0ade199a7caec511603cd168c4f648caee0f1a0f34371044e0c021d",
+            "hash_validacao": "d307190a8b9c02ad5d4b96e5695998dda3cbe30264745e499812e8463eba9589"
+          },
+          {
+            "fold": 2,
+            "n_treino": 1000697,
+            "n_validacao": 500349,
+            "hash_treino": "a8f7a69db677c7a990f3dc9a65b6b6cc6d61fcfeb19110936a97ec545c4360d2",
+            "hash_validacao": "d11b7cbc7b52de0f9a2ffd9453ab26318c5424307dba9d04a1d978c5e752b614"
+          },
+          {
+            "fold": 3,
+            "n_treino": 1000698,
+            "n_validacao": 500348,
+            "hash_treino": "1432bada333fd4e168651bbfa0e27cc84b2a13399a9619937cd89f984fcba36c",
+            "hash_validacao": "f353eebe9f166e142229d95099fb05f5da81b4f02b2c2293ca62b6007e314f00"
+          }
+        ],
+        "cobertura_min": 1,
+        "cobertura_max": 1,
+        "usa_outcome": false,
+        "criterio_primario": "log_loss OOF"
+      },
+      "externo_log_loss": 0.3801563668527875,
+      "externo_brier": 0.11349681500911345,
+      "externo_auc": 0.6626360418566334,
+      "externo_prevalencia": 0.8625293794735411,
+      "externo_media_predita": 0.8625657644267669,
+      "externo_erro_calibracao_medio": 0.0022996711532764723,
+      "externo_erro_calibracao_maximo": 0.0042273650139262875,
+      "externo_max_abs_smd_bruto": 0.3758456471131155,
+      "externo_max_abs_smd_ponderado": 0.019945973898272025,
+      "externo_ess_t0": 77318.42909341193,
+      "externo_ess_t1": 642386.7419760197,
+      "externo_ess_t0_sobre_n": 0.7493911227856742,
+      "externo_ess_t1_sobre_n": 0.9923344934123938,
+      "externo_fora_005_095_fracao": 0.06673071081004738,
+      "externo_propensity_min": 0.3374963993659294,
+      "externo_propensity_max": 0.9762852221097761
+    },
+    {
+      "outer_fold": 2,
+      "n_treino": 1501047,
+      "n_validacao": 750523,
+      "n_treino_t0": 206350,
+      "n_treino_t1": 1294697,
+      "n_validacao_t0": 103175,
+      "n_validacao_t1": 647348,
+      "hash_treino": "0f555d3f84068ccf089003f0644f1011bdfa7ac4aaa691793f6e37c03f2659c6",
+      "hash_validacao": "31699ec56e235abc23b47053dceca5cd86d18bfcd04ce7834b963e9c6b44ec59",
+      "C_menor_log_loss_interno": 1.0,
+      "C_escolhido": 1.0,
+      "baseline_preservado": true,
+      "limite_um_ep": 0.3802727223965026,
+      "criterio": "baseline-first dentro de 1 EP e guardrails",
+      "tempo_tuning_segundos": 212.6675998000428,
+      "tempo_refit_segundos": 15.222632799996063,
+      "n_tuning_fits": 15,
+      "n_refits": 1,
+      "n_validacao_usado_na_selecao": 0,
+      "ajuste_refit": {
+        "n_iter": 56,
+        "convergence_warning": false,
+        "tentativas": [
+          {
+            "tentativa": 1,
+            "convergence_warnings": []
+          }
+        ],
+        "early_stopping": false
+      },
+      "auditoria_inner": {
+        "n": 1501047,
+        "n_folds": 3,
+        "seed": 20240925,
+        "folds": [
+          {
+            "fold": 1,
+            "n_treino": 1000698,
+            "n_validacao": 500349,
+            "hash_treino": "7d65eb0ea07422c972e897a47a662ffa6e0413202dd584f50116ffc09105b5e6",
+            "hash_validacao": "adcf603eabb7bdfb91bfbf2d0aafb86cba7bb006a86783fdab3b034d8a5160dc"
+          },
+          {
+            "fold": 2,
+            "n_treino": 1000698,
+            "n_validacao": 500349,
+            "hash_treino": "7aed00d6d021697b7f1c02d93daf6640b6bb83ea00961cf674b9ad5e3df3cf7a",
+            "hash_validacao": "c3e436a437cdb0f1fbc9558b0410c144f73407c711ef32c9935918b538ff8bb0"
+          },
+          {
+            "fold": 3,
+            "n_treino": 1000698,
+            "n_validacao": 500349,
+            "hash_treino": "9888a66e1396ecb8e5028d6ddf3bf53a1b1cac3436d0cfb258a79f8046f85000",
+            "hash_validacao": "14b54a6202dff29441e5783df40f57d076f91fd285c7ae3b0afb32fe768cef3b"
+          }
+        ],
+        "cobertura_min": 1,
+        "cobertura_max": 1,
+        "usa_outcome": false,
+        "criterio_primario": "log_loss OOF"
+      },
+      "externo_log_loss": 0.3800462791184738,
+      "externo_brier": 0.1135117513278897,
+      "externo_auc": 0.6631845034710735,
+      "externo_prevalencia": 0.8625291963071086,
+      "externo_media_predita": 0.8624505974261176,
+      "externo_erro_calibracao_medio": 0.0016600159847427575,
+      "externo_erro_calibracao_maximo": 0.003221126795785345,
+      "externo_max_abs_smd_bruto": 0.37737883563479035,
+      "externo_max_abs_smd_ponderado": 0.0187977801369797,
+      "externo_ess_t0": 78002.44997680378,
+      "externo_ess_t1": 642356.5345122672,
+      "externo_ess_t0_sobre_n": 0.7560208381565668,
+      "externo_ess_t1_sobre_n": 0.9922893629273084,
+      "externo_fora_005_095_fracao": 0.06504397600073548,
+      "externo_propensity_min": 0.2625600016052848,
+      "externo_propensity_max": 0.9768519812831358
+    },
+    {
+      "outer_fold": 3,
+      "n_treino": 1501047,
+      "n_validacao": 750523,
+      "n_treino_t0": 206350,
+      "n_treino_t1": 1294697,
+      "n_validacao_t0": 103175,
+      "n_validacao_t1": 647348,
+      "hash_treino": "6da243584a4fe231e81044682d03c790321721bddbbb6f79357f7d052431c403",
+      "hash_validacao": "185b628a82c640b6b185fe445aa0f060a55a63c06d022db7af5d57c200fa2625",
+      "C_menor_log_loss_interno": 10.0,
+      "C_escolhido": 1.0,
+      "baseline_preservado": true,
+      "limite_um_ep": 0.38026196387372785,
+      "criterio": "baseline-first dentro de 1 EP e guardrails",
+      "tempo_tuning_segundos": 211.8932759000454,
+      "tempo_refit_segundos": 14.313413199968636,
+      "n_tuning_fits": 15,
+      "n_refits": 1,
+      "n_validacao_usado_na_selecao": 0,
+      "ajuste_refit": {
+        "n_iter": 49,
+        "convergence_warning": false,
+        "tentativas": [
+          {
+            "tentativa": 1,
+            "convergence_warnings": []
+          }
+        ],
+        "early_stopping": false
+      },
+      "auditoria_inner": {
+        "n": 1501047,
+        "n_folds": 3,
+        "seed": 20240925,
+        "folds": [
+          {
+            "fold": 1,
+            "n_treino": 1000698,
+            "n_validacao": 500349,
+            "hash_treino": "a494b8892664f5d2e4e8581da19ddbc724af483ebd3f25ace59527f1e8fb8da6",
+            "hash_validacao": "48679d54ed11ecc47e721db0bd96ddbf00ba13ddad8ac2ffa755503f4087a673"
+          },
+          {
+            "fold": 2,
+            "n_treino": 1000698,
+            "n_validacao": 500349,
+            "hash_treino": "0bfa9bd65eecfa985f77382907cda842fd20690a483ff86330bc33ba5ef38b28",
+            "hash_validacao": "5246bcfdd8a8035fdfa8dfef1906e18d60e7f0579a327a03ec921031a1bd3ce8"
+          },
+          {
+            "fold": 3,
+            "n_treino": 1000698,
+            "n_validacao": 500349,
+            "hash_treino": "ff56256334b4434ffe446cd577597f7de625c7e010b6b9a9363b89e17d849778",
+            "hash_validacao": "619182904a8e49e81bce022c2f425117d2a814ba52774c9741880d045158e3e0"
+          }
+        ],
+        "cobertura_min": 1,
+        "cobertura_max": 1,
+        "usa_outcome": false,
+        "criterio_primario": "log_loss OOF"
+      },
+      "externo_log_loss": 0.38008634816119186,
+      "externo_brier": 0.11346543757772677,
+      "externo_auc": 0.6627875693576095,
+      "externo_prevalencia": 0.8625291963071086,
+      "externo_media_predita": 0.8625692965590899,
+      "externo_erro_calibracao_medio": 0.002756020359105782,
+      "externo_erro_calibracao_maximo": 0.005222990569858088,
+      "externo_max_abs_smd_bruto": 0.37243391950668286,
+      "externo_max_abs_smd_ponderado": 0.026459768562813887,
+      "externo_ess_t0": 77467.15814605975,
+      "externo_ess_t1": 642381.8064933514,
+      "externo_ess_t0_sobre_n": 0.7508326449824061,
+      "externo_ess_t1_sobre_n": 0.9923284021783513,
+      "externo_fora_005_095_fracao": 0.06563822827548256,
+      "externo_propensity_min": 0.23983788966516387,
+      "externo_propensity_max": 0.9762553603652073
+    }
+  ],
+  "metricas_oof_nested": {
+    "log_loss": 0.38009633140414817,
+    "brier": 0.11349133464067733,
+    "auc": 0.6628670757027335,
+    "prevalencia": 0.8625292573626403,
+    "media_predita": 0.8625285528205183,
+    "erro_calibracao_medio": 0.0021408694139591344,
+    "erro_calibracao_maximo": 0.0038508576084451684,
+    "max_abs_smd_bruto": 0.3752174135817836,
+    "max_abs_smd_ponderado": 0.021744995513755146,
+    "ess_t0": 232779.34898345004,
+    "ess_t1": 1927125.0626584245,
+    "ess_t0_sobre_n": 0.7520534657408934,
+    "ess_t1_sobre_n": 0.9923174090499574,
+    "fora_005_095_fracao": 0.06580430544020395,
+    "propensity_min": 0.23983788966516387,
+    "propensity_max": 0.9768519812831358
+  },
+  "baseline_c1_certificado": {
+    "log_loss": 0.38009481030833925,
+    "brier": 0.11349044835956866,
+    "auc": 0.6628622758850582,
+    "prevalencia": 0.8625292573626403,
+    "media_predita": 0.8625300768366304,
+    "erro_calibracao_medio": 0.0021468798544636903,
+    "erro_calibracao_maximo": 0.00416025288155375,
+    "max_abs_smd_bruto": 0.3752174135817836,
+    "max_abs_smd_ponderado": 0.02179679490456652,
+    "ess_t0": 232772.24080160598,
+    "ess_t1": 1927132.766492636,
+    "ess_t0_sobre_n": 0.7520305009340311,
+    "ess_t1_sobre_n": 0.9923213759169515,
+    "fora_005_095_fracao": 0.06584338927948054,
+    "propensity_min": 0.25813399267675413,
+    "propensity_max": 0.976852724033408
+  },
+  "diferenca_nested_menos_baseline_c1": {
+    "log_loss": 1.5210958089206805e-06,
+    "brier": 8.862811086696176e-07,
+    "auc": 4.79981767531612e-06,
+    "prevalencia": 0.0,
+    "media_predita": -1.5240161120866347e-06,
+    "erro_calibracao_medio": -6.0104405045558786e-06,
+    "erro_calibracao_maximo": -0.0003093952731085814,
+    "max_abs_smd_bruto": 0.0,
+    "max_abs_smd_ponderado": -5.1799390811374524e-05,
+    "ess_t0": 7.108181844057981,
+    "ess_t1": -7.703834211453795,
+    "ess_t0_sobre_n": 2.296480686225788e-05,
+    "ess_t1_sobre_n": -3.96686699410953e-06,
+    "fora_005_095_fracao": -3.9083839276587984e-05,
+    "propensity_min": -0.018296103011590265,
+    "propensity_max": -7.427502721757406e-07
+  },
+  "decisao_propensity": "BASELINE_C1_PRESERVADO",
+  "baseline_2024": "BASELINE_2024_PRESERVADO",
+  "tuning_anual_propensity": "TUNING_ANUAL_PROPENSITY_NAO_JUSTIFICADO_AGORA",
+  "outcome_tuning": "OUTCOME_TUNING_NAO_PRIORITARIO",
+  "prontidao_outcome_tuning": "PRONTO_PARA_DECIDIR_OUTCOME_TUNING",
+  "proximo_passo_cientifico": "Revisao humana; depois auditar deriva preditiva e guardrails do baseline C=1 em 2014-2023, sem tuning anual nem metricas causais.",
+  "cache_oof": {
+    "caminho": "C:/GitHub/data-science-projects/projetos/big-data-sinasc-causal-ml/data/interim/temporal_overlap/nested_propensity_2024_oof.npz",
+    "sha256": "0b530da69220532e2358e17566b8d864035772dcec5ab3c24799477163022b52",
+    "bytes": 10741640,
+    "versionado": false
+  },
+  "restricoes": {
+    "usa_outcome": false,
+    "estima_efeito_causal": false,
+    "sobrescreve_cache_historico": false
+  }
+}
