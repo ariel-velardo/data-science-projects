@@ -41,7 +41,7 @@ Fonte: Portal de Dados Abertos do SUS, recursos "Nascidos Vivos - <ano>", inspec
 
 Diferenças de formato dentro da janela: caixa dos nomes (2016 em minúsculas; `contador`/`CONTADOR`), posição da chave (última coluna em 2016 e 2018–2022), aspas variáveis. A leitura deve ser por nome, sem diferenciar caixa, e a chave multianual é `(ano, CONTADOR)`.
 
-Detalhes, riscos substantivos (COVID-19 em 2020–2021, Zika em 2015–2016, mudança de composição, dicionário oficial só até 2019) e os critérios de admissão de cada ano estão no [notebook 06](../../notebooks/06_auditoria_historica_sinasc.ipynb).
+Detalhes, riscos substantivos (COVID-19 em 2020–2021, Zika em 2015–2016, mudança de composição, dicionário oficial só até 2019) e os critérios de admissão de cada ano estão no [notebook 06](../../notebooks/historico/06_auditoria_historica_sinasc.ipynb).
 
 ## Critérios de admissão — versão 1
 
@@ -127,7 +127,7 @@ python -m nbconvert --execute --to notebook --inplace --ExecutePreprocessor.kern
 
 Os ZIPs oficiais de 2014–2023 foram baixados um ano por vez (≈1,15 GB), com retomada por HTTP Range, verificação de tamanho e CRC, e convertidos para Parquet textual com a mesma rotina de 2024. Os SHA-256 de ZIP e Parquet estão nos manifestos por ano. A auditoria aplicada ao Parquet certificado de 2024 reproduz exatamente o fluxo A0–A3 e os ausentes de `fase1_amostra.json`.
 
-Resumo descritivo (sem inferência): a prevalência do tratamento cresce de 78,6% (2014) para 86,3% (2024); o baixo peso fica em 6,9–7,2% até 2020 e apresenta uma **mudança de nível descritiva** por volta de 2021–2022, para ~7,9% em 2022–2024 (**possível mudança temporal a investigar**, sem atribuição causal a COVID-19 ou Zika); a associação bruta T=1 versus T=0 é negativa em todos os anos e passa de −0,72 p.p. para −1,42 p.p. 2024 está no extremo recente das tendências observadas e é semelhante em direção a 2022–2023. Detalhes no [notebook 07](../../notebooks/07_descritiva_temporal_sinasc.ipynb).
+Resumo descritivo (sem inferência): a prevalência do tratamento cresce de 78,6% (2014) para 86,3% (2024); o baixo peso fica em 6,9–7,2% até 2020 e apresenta uma **mudança de nível descritiva** por volta de 2021–2022, para ~7,9% em 2022–2024 (**possível mudança temporal a investigar**, sem atribuição causal a COVID-19 ou Zika); a associação bruta T=1 versus T=0 é negativa em todos os anos e passa de −0,72 p.p. para −1,42 p.p. 2024 está no extremo recente das tendências observadas e é semelhante em direção a 2022–2023. Detalhes no [notebook 07](../../notebooks/historico/07_descritiva_temporal_sinasc.ipynb).
 
 ## Estabilidade temporal, suporte e positividade (notebook 08)
 
@@ -143,7 +143,7 @@ Principais achados:
 - os diagnósticos ao redor de 2021–2022 não mostram uma deterioração conjunta capaz de explicar, sozinha, a mudança descritiva do desfecho no notebook 07;
 - a janela de sensibilidade 2018–2024 preserva as mesmas conclusões qualitativas.
 
-Conclusão operacional: a fase C pode ser planejada com estimações independentes por ano, ambas as janelas congeladas e reporte obrigatório de N, caudas, suporte e ESS. Isso é uma autorização para **planejar** o notebook 09, não uma validação causal antecipada. Resultados, contrato diagnóstico e benchmarks estão em `outputs/temporal/`; caches locais com fingerprint ficam em `data/interim/temporal_overlap/`. Detalhes no [notebook 08](../../notebooks/08_estabilidade_temporal_overlap.ipynb).
+Conclusão operacional: a fase C pode ser planejada com estimações independentes por ano, ambas as janelas congeladas e reporte obrigatório de N, caudas, suporte e ESS. Isso é uma autorização para **planejar** o notebook 09, não uma validação causal antecipada. Resultados, contrato diagnóstico e benchmarks estão em `outputs/temporal/`; caches locais com fingerprint ficam em `data/interim/temporal_overlap/`. Detalhes no [notebook 08](../../notebooks/historico/08_estabilidade_temporal_overlap.ipynb).
 
 ## Fechamento de 08B e 08C
 

@@ -19,6 +19,9 @@ outputs/tables/*
 !outputs/figures/.gitkeep
 !outputs/tables/.gitkeep
 
+# Literatura local: PDFs e extrações integrais em TXT (direitos autorais)
+docs/literature/pdfs/
+
 # Artefatos temporários de notebook
 *.nbconvert.ipynb
 *.html

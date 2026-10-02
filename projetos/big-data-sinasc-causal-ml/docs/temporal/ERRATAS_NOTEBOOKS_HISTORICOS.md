@@ -8,7 +8,7 @@ O estado documental atual é **`CODIFICACAO_OPERACIONAL_OBSERVADA`**. O Manual D
 
 Ocorrências a ler com esta errata, sem reescrever os registros congelados:
 
-- [Notebook 02](../../notebooks/02_amostra_desenho_e_overlap.ipynb) e [notebook 06](../../notebooks/06_auditoria_historica_sinasc.ipynb): formulações antigas que atribuem a semântica de `99` ao manual.
+- [Notebook 02](../../notebooks/02_amostra_desenho_e_overlap.ipynb) e [notebook 06](../../notebooks/historico/06_auditoria_historica_sinasc.ipynb): formulações antigas que atribuem a semântica de `99` ao manual.
 - [Baseline anterior à refatoração](../architecture/BASELINE_PRE_REFATORACAO.md): captura literal da interpretação antiga, inclusive a seção “Evidência documental nova”.
 - [Estado histórico da Fase 1](../playbooks/ESTADO_ATUAL.md): frase que diz que a confirmação veio do manual; a seção atual no topo aponta para esta errata.
 - [Fontes oficiais](../sources/FONTES_OFICIAIS.md): afirmação sobre o formulário e conclusão de que o manual resolve a semântica numérica.
@@ -19,4 +19,4 @@ As formulações que apenas excluem `99` de T ou o chamam de código operacional
 
 ## Leitura da auditoria 09b
 
-O LOCO individual alterou pouco o ponto (máximo C1: 0,0346 p.p.). Exclusões conjuntas Top 5/10 chegaram a 0,1205 p.p. no Top 10, removendo até cerca de 13% da população observada. A inferência apresenta concentração em alguns clusters, e exclusões conjuntas de grandes municípios alteram moderadamente o ponto, **em uma população observada diferente**. Essas exclusões não definem estimandos alternativos. Nenhum sinal mudou, nenhum IC municipal passou a incluir zero e a transição 2021–2022 não foi explicada pelos clusters mais influentes. Esta leitura complementa o [09b](../../notebooks/09b_auditoria_inferencia_temporal.ipynb), sem alterar seus resultados.
+O LOCO individual alterou pouco o ponto (máximo C1: 0,0346 p.p.). Exclusões conjuntas Top 5/10 chegaram a 0,1205 p.p. no Top 10, removendo até cerca de 13% da população observada. A inferência apresenta concentração em alguns clusters, e exclusões conjuntas de grandes municípios alteram moderadamente o ponto, **em uma população observada diferente**. Essas exclusões não definem estimandos alternativos. Nenhum sinal mudou, nenhum IC municipal passou a incluir zero e a transição 2021–2022 não foi explicada pelos clusters mais influentes. Esta leitura complementa o [09b](../../notebooks/historico/09b_auditoria_inferencia_temporal.ipynb), sem alterar seus resultados.

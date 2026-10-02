@@ -165,7 +165,7 @@ def test_api_propensity_nao_recebe_outcome_e_notebook_plotly():
     from src.benchmark_nuisance import executar_familia
 
     assert "y" not in inspect.signature(executar_familia).parameters
-    caminho = Path(__file__).parents[1] / "notebooks/08c_benchmark_modelos_nuisance.ipynb"
+    caminho = Path(__file__).parents[1] / "notebooks/historico/08c_benchmark_modelos_nuisance.ipynb"
     nb = json.loads(caminho.read_text(encoding="utf-8"))
     markdown = "\n".join("".join(c.get("source", [])) for c in nb["cells"]
                          if c["cell_type"] == "markdown")
@@ -182,7 +182,7 @@ def test_fechamento_humano_preserva_benchmark_parcial():
     raiz = Path(__file__).parents[1]
     decisao = json.loads((raiz / "outputs/temporal/modelos_nuisance/decisao_modelos_nuisance.json")
                         .read_text(encoding="utf-8"))
-    notebook = json.loads((raiz / "notebooks/08c_benchmark_modelos_nuisance.ipynb")
+    notebook = json.loads((raiz / "notebooks/historico/08c_benchmark_modelos_nuisance.ipynb")
                           .read_text(encoding="utf-8"))
     fonte = "\n".join("".join(c.get("source", [])) for c in notebook["cells"]
                       if c["cell_type"] == "code")

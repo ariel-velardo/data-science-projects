@@ -376,7 +376,7 @@ def test_numeros_certificados_2024_inalterados():
 def test_notebook_06_em_portugues_executado_e_sem_erros():
     import nbformat
     from src.visualizacao import auditar_idioma
-    p = RAIZ_REAL / 'notebooks/06_auditoria_historica_sinasc.ipynb'
+    p = RAIZ_REAL / 'notebooks/historico/06_auditoria_historica_sinasc.ipynb'
     nb = nbformat.read(p, as_version=4)
     nbformat.validate(nb)
     assert not auditar_idioma(nb)
@@ -612,7 +612,7 @@ def test_registro_de_harmonizacoes_documentado():
 def test_notebook_07_em_portugues_executado_sem_inferencia():
     import nbformat
     from src.visualizacao import auditar_idioma
-    p = RAIZ_REAL / 'notebooks/07_descritiva_temporal_sinasc.ipynb'
+    p = RAIZ_REAL / 'notebooks/historico/07_descritiva_temporal_sinasc.ipynb'
     nb = nbformat.read(p, as_version=4)
     nbformat.validate(nb)
     assert not auditar_idioma(nb)
@@ -941,7 +941,7 @@ def test_notebook_08_tem_contrato_diagnostico_e_nao_estima_efeitos_causais():
     import nbformat
     import re
 
-    caminho = RAIZ_REAL / 'notebooks/08_estabilidade_temporal_overlap.ipynb'
+    caminho = RAIZ_REAL / 'notebooks/historico/08_estabilidade_temporal_overlap.ipynb'
     assert caminho.exists()
     nb = nbformat.read(caminho, as_version=4)
     nbformat.validate(nb)
