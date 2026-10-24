@@ -25,3 +25,9 @@ docs/literature/pdfs/
 # Artefatos temporários de notebook
 *.nbconvert.ipynb
 *.html
+
+# Caches de ferramentas
+.pytest_cache/
+
+# Arquivo local: material retirado da estrutura ativa e backups (ver docs/manutencao/)
+_arquivo_local/
