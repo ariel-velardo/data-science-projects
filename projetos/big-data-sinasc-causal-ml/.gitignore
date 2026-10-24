@@ -26,6 +26,8 @@ docs/sp_capital_ato/artigos/*.pdf
 # Artefatos temporários de notebook
 *.nbconvert.ipynb
 *.html
+# Exceção: gráficos interativos exportados dos notebooks principais (ver README)
+!outputs/figuras_interativas/*.html
 
 # Caches de ferramentas
 .pytest_cache/

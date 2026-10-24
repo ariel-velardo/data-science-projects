@@ -1,87 +1,127 @@
-# Início precoce do pré-natal e baixo peso ao nascer no Brasil
+# Início do pré-natal e baixo peso ao nascer — SINASC
 
-## SINASC 2014–2024
+Estudo observacional com microdados do Sistema de Informações sobre Nascidos Vivos (SINASC). Análise atual: **município de São Paulo, 2024**, com ponderação por sobreposição (ATO), e repetição descritiva da mesma especificação em **2014–2024**.
 
-Análise observacional com inferência causal, AIPW e *cross-fitting* em aproximadamente 30,5 milhões de registros do SINASC.
+> **Para revisão acadêmica, comece pelo [guia de revisão](docs/GUIA_REVISAO_MIKE.md)**: ordem de leitura, o que foi feito e o que permanece em aberto.
 
-## 1. Visão geral
+## 1. Problema e objetivo
 
-O Sistema de Informações sobre Nascidos Vivos (SINASC), mantido pelo Ministério da Saúde, registra cada nascimento ocorrido no Brasil a partir da Declaração de Nascido Vivo (DNV). Este projeto usa os microdados públicos de 2014 a 2024: 30.468.409 registros brutos, em que cada linha corresponde a um nascido vivo (uma DNV).
+**Pergunta.** Entre nascidos vivos de mães residentes no município de São Paulo em 2024, o início do pré-natal no primeiro trimestre (meses 1–3) está associado a menor risco de baixo peso ao nascer, comparado ao início entre o 4º e o 6º mês, após ajuste por características maternas observadas?
 
-**Pergunta de pesquisa.** Entre gestantes comparáveis nas características observadas, iniciar o pré-natal no 1º–3º mês está associado a menor risco de baixo peso ao nascer do que iniciar no 4º–6º mês?
+**Objetivo.** Estimar essa diferença de risco de forma transparente e auditável, explicitando quais hipóteses seriam necessárias para uma leitura causal e por que elas não estão demonstradas.
 
-Trata-se de um estudo observacional: o momento de início do pré-natal não foi atribuído aleatoriamente. Para comparar grupos com perfis observados semelhantes, o contraste é estimado com o estimador duplamente robusto AIPW (*Augmented Inverse Probability Weighting*), com *cross-fitting*, separadamente para cada ano.
+**Associação, não causalidade.** O momento de início do pré-natal não foi atribuído ao acaso. O estudo estima uma **associação ajustada pelas covariáveis observadas**. Ler o resultado como efeito causal exigiria, entre outras hipóteses, ausência de confundimento não medido, positividade, consistência da exposição e ordenação temporal adequada; nenhuma delas é demonstrada pelos dados. O balanço das covariáveis após a ponderação é necessário para a comparação, mas não comprova essas hipóteses.
 
-**Resultado principal.** Na formulação principal (B), o início do pré-natal no 1º trimestre está associado a um risco de baixo peso ao nascer aproximadamente 0,9 a 1,5 ponto percentual (p.p.) menor do que o início entre o 4º e o 6º mês, em todos os onze anos.
+## 2. Dados e população
 
-Essa é uma estimativa obtida **sob hipóteses de identificação** (ausência de confundimento não medido, suporte comum e ordenação temporal adequada das variáveis). Ela não constitui prova de causalidade.
+| Item | Definição |
+|---|---|
+| Fonte principal | SINASC, Ministério da Saúde/DATASUS, [Portal de Dados Abertos do SUS](https://dadosabertos.saude.gov.br/dataset/sistema-de-informacao-sobre-nascidos-vivos-sinasc); uma linha por Declaração de Nascido Vivo |
+| Fonte complementar | SIM 2024 (óbitos), usado só de forma **descritiva e territorial**, sem vinculação individual com o SINASC |
+| Recorte geográfico | mãe residente no município de São Paulo (`CODMUNRES = 355030`), escolhido por qualidade de preenchimento, **sem usar a associação com o desfecho** |
+| Recorte temporal | estimação principal em 2024; mesma especificação repetida em cada ano de 2014 a 2024 (descritiva) |
+| Elegibilidade (especificação B) | gestação única; peso entre 500 e 6.000 g; início do pré-natal nos meses 1–6 |
+| Exposição T=1 | início do pré-natal nos meses 1–3 (`MESPRENAT` 1–3) |
+| Comparação T=0 | início nos meses 4–6 |
+| Desfecho Y=1 | peso ao nascer < 2.500 g |
+| Covariáveis do escore | idade materna e idade², escolaridade, raça/cor, paridade e perdas fetais anteriores |
+| Fora do escore | situação conjugal (temporalidade incerta; usada em diagnóstico e sensibilidade) e todas as variáveis do parto ou posteriores à exposição (idade gestacional, consultas, tipo de parto, Apgar etc.) |
 
-## 2. Dados
+Em 2024: **114.694 nascimentos elegíveis**, 104.576 em T=1 e 10.118 em T=0, nenhum excluído por suporte ou por covariável incompleta.
 
-| Item | Descrição |
-| --- | --- |
-| Fonte | Ministério da Saúde, [SINASC — Portal de Dados Abertos do SUS](https://dadosabertos.saude.gov.br/dataset/sistema-de-informacao-sobre-nascidos-vivos-sinasc) |
-| Período | 2014–2024 (11 anos, analisados separadamente) |
-| Cobertura | Brasil: 27 UFs e cerca de 5.580 municípios de residência por ano |
-| Registros brutos | 30.468.409 |
-| População principal B | 27.533.362 (gestação única, peso entre 500 e 6.000 g, início do pré-natal no 1º–6º mês) |
-| Granularidade | 1 linha = 1 nascido vivo = 1 DNV |
-| Target (Y) | Baixo peso ao nascer: `PESO` < 2.500 g |
-| Tratamento (T) | `MESPRENAT` 1–3 (T = 1) versus 4–6 (T = 0) |
-| Features (X) | 7 covariáveis: idade, escolaridade, raça/cor, situação conjugal, paridade, perdas fetais e UF de residência |
-| Formato analítico | CSV oficial (ZIP) convertido para Parquet; consultas e transformações em DuckDB |
+## 3. Método
 
-A prevalência de baixo peso na população analítica variou de 6,93% (2014) a 7,89% (2023 e 2024).
+1. **Escore de propensão** $e(X)=P(T=1\mid X)$: regressão logística com penalização L2, ajustada na amostra inteira.
+2. **Pesos de sobreposição (ATO):** $1-e(X)$ para T=1 e $e(X)$ para T=0. Os pesos ficam em $[0,1]$, sem divisão por escores próximos de 0 ou 1. Isso importa aqui porque cerca de 91% dos nascimentos estão em T=1.
+3. **Estimando:** diferença de riscos ponderados (T=1 − T=0) na **população de sobreposição**, que enfatiza perfis em que os dois momentos de início são frequentes. Não é a população total (ATE) nem a dos tratados (ATT).
+4. **Incerteza:** bootstrap não paramétrico com **1.000 réplicas**, reestimando o escore em cada uma; intervalo de 95% por percentis. A reamostragem trata os nascimentos como independentes.
+5. **Diagnósticos:** balanço por diferença média padronizada (SMD) antes e depois da ponderação, suporte do escore, tamanho amostral efetivo de Kish e sensibilidade com situação conjugal no escore.
 
-## 3. Fluxo principal
+## 4. Resultados principais
 
-Os cinco notebooks de `notebooks/principal/` formam o **fluxo acadêmico principal** do projeto e devem ser lidos nesta ordem:
+**São Paulo (capital), 2024** — [notebook 06](notebooks/principal/06_ato_sp_capital_2024.ipynb):
 
-| Notebook | Conteúdo |
-| --- | --- |
-| [01 — EDA](notebooks/entrega_1_nacional_aipw/01_eda_sinasc_2014_2024.ipynb) | Descrição da base 2014–2024: volume, qualidade, ausências, perfil das gestantes e evolução do desfecho e da exposição. |
-| [02 — Preparação e desenho](notebooks/entrega_1_nacional_aipw/02_preparacao_e_desenho.ipynb) | Da base bruta à população analítica: filtros, definição de Y, T e X e escolha do comparador. |
-| [03 — Propensity e suporte](notebooks/entrega_1_nacional_aipw/03_propensity_e_overlap.ipynb) | Escore de propensão, sobreposição entre grupos, balanceamento das covariáveis e tamanho efetivo de amostra. |
-| [04 — Estimação AIPW](notebooks/entrega_1_nacional_aipw/04_estimacao_aipw.ipynb) | Modelos auxiliares, estimador AIPW, *cross-fitting* e cálculo da incerteza. |
-| [05 — Resultados e sensibilidades](notebooks/entrega_1_nacional_aipw/05_resultados_e_sensibilidades.ipynb) | Contrastes de 2014 a 2024, formulação C, especificações de modelo, recorte de suporte, inferência municipal e limitações. |
+| | T=1 (meses 1–3) | T=0 (meses 4–6) | Diferença T=1 − T=0 |
+|---|---:|---:|---:|
+| Risco bruto | 8,41% | 10,41% | −2,00 p.p. (IC 95% −2,61 a −1,37) |
+| Risco ponderado (ATO) | 8,68% | 10,42% | **−1,74 p.p. (IC 95% −2,36 a −1,12)** |
 
-Os demais notebooks registram o histórico do desenvolvimento e são preservados para rastreabilidade, mas não são necessários para acompanhar o trabalho:
+- Covariáveis do escore com balanço aproximado após a ponderação (máximo |SMD| de 0,452 para 0,0031). A situação conjugal, fora do escore, continua desequilibrada (SMD 0,194 em "casada").
+- Sensibilidade com situação conjugal no escore: −1,63 p.p., estimativa pontual **sem IC**. Ela também muda a população-alvo.
+- **Série 2014–2024** ([notebook 07](notebooks/principal/07_evolucao_ato_sp_capital_2014_2024.ipynb)): diferença ATO negativa nos onze anos, de −0,58 p.p. (2020) a −1,90 p.p. (2023), sem tendência monotônica. São estimativas pontuais, **sem IC anual e sem teste de diferença entre anos**; cada ano tem sua própria população de sobreposição.
+- **Temporalidade** ([notebook 08](notebooks/principal/08_temporalidade_prenatal_sp_capital_2024.ipynb)): a análise descreve a composição por duração gestacional e a seleção antes do filtro de início do pré-natal; não identifica a magnitude nem a direção do possível viés temporal.
 
-- `notebooks/historico/`: extensão temporal e execução científica original ([10_estimacao_v2.ipynb](notebooks/historico/10_estimacao_v2.ipynb));
-- `notebooks/01–05` (raiz da pasta): análise inicial restrita a 2024, mantida no lugar original por compatibilidade com os registros históricos do projeto.
+Consolidação com a origem de cada número: [RESUMO_PARA_REDACAO.md](docs/sp_capital_ato/RESUMO_PARA_REDACAO.md).
 
-## 4. Metodologia resumida
+## 5. Limitações
 
-- **X:** 7 covariáveis maternas e geográficas, medidas na DNV. Valores categóricos ausentes formam a categoria `IGNORADO`.
-- **T:** início do pré-natal no 1º–3º mês (T = 1) versus 4º–6º mês (T = 0), na formulação principal B.
-- **Y:** `PESO` < 2.500 g.
-- **Método:** AIPW, que combina um modelo de propensão P(T | X) e modelos de desfecho P(Y | T, X). O contraste é a diferença entre os riscos padronizados de baixo peso nos dois grupos, em p.p.
-- **Cross-fitting:** 3 partições; cada observação recebe predições de modelos ajustados sem ela.
-- **Inferência:** erro-padrão agrupado por município de residência e IC95% correspondente.
-- **Especificações de modelo:** C1 (propensão e desfechos logísticos), C2 (propensão logística e desfechos HGB) e C3 (propensão e desfechos HGB).
-- **Sensibilidades:**
-  - formulação C, com comparador restrito ao 4º–5º mês;
-  - especificações C1, C2 e C3;
-  - recorte de suporte (*trimming*) mantendo apenas escores de propensão em [0,05; 0,95].
+- **Confundimento não observado:** renda, cobertura de plano privado, planejamento da gestação, tabagismo, estado nutricional, condições clínicas e acesso a serviços não estão no SINASC.
+- **Temporalidade da exposição:** `MESPRENAT` é registrado no parto. Gestações mais curtas têm menos tempo para um início tardio. Restringir o comparador aos meses 4–6 reduz a janela considerada, mas não foi demonstrado quanto isso altera o viés nem sua direção.
+- **Seleção por nascidos vivos:** perdas fetais não entram na população, e não há vinculação individual SINASC–SIM; a fonte do SIM usada não contém óbitos fetais do Sudeste em 2024.
+- **População-alvo específica:** o ATO vale para a população de sobreposição (mais jovem e menos escolarizada que o total) e não se generaliza automaticamente para todas as gestantes, outros municípios ou outros anos.
+- **Incerteza:** o bootstrap reamostra nascimentos como independentes. Agrupamento por estabelecimento ou região, e mães com mais de um parto, podem tornar o IC estreito demais.
+- **Série histórica:** comparação descritiva entre estimativas pontuais, sem inferência formal.
+- **Modelo:** um único escore logístico, sem modelo de desfecho; o estimador não é duplamente robusto.
 
-## 5. Resultados principais
+## 6. Organização do repositório
 
-Contraste AIPW = risco de baixo peso com início no 1º–3º mês **menos** o risco com início no 4º–6º mês. Valores negativos indicam menor risco estimado no início precoce.
+```text
+notebooks/
+  principal/                  análise atual (SP capital, ATO) — ler na ordem 05a → 05b → 06 → 07 → 08
+  entrega_1_nacional_aipw/    Entrega 1: série nacional 2014–2024 com AIPW (fase anterior, concluída)
+  historico/                  desenvolvimento da extensão temporal nacional
+  01–05 (raiz)                fase inicial: Brasil, 2024 (preservada para rastreabilidade)
+docs/
+  GUIA_REVISAO_MIKE.md        roteiro de revisão
+  sp_capital_ato/             resumo para redação, PDF e fonte LaTeX da Etapa 1
+  entrega_1_nacional_aipw/    relatório final e anexos da Entrega 1
+  manutencao/                 registros da reorganização de outubro de 2026
+  demais pastas               metodologia, literatura, dicionários e registros das fases anteriores
+outputs/
+  figuras_interativas/        gráficos interativos (HTML) dos notebooks principais
+  qualidade_geografica_2024/, comparabilidade_sp_capital_2024/, sinasc_sim_piloto_2024/   resultados da análise atual
+  entrega_1_nacional_aipw/, temporal/, diagnostics/, tables/, figures/   fases anteriores
+src/  scripts/  tests/        código reutilizado, utilitários e testes
+data/                         bases locais (não versionadas)
+apresentacao/                 relatório interativo da fase inicial 2024
+```
 
-| Ano | B / C1 (p.p.) | IC95% municipal |
-| --- | ---: | :---: |
-| 2014 | −0,936 | −1,046 a −0,827 |
-| 2022 | −1,524 | −1,671 a −1,377 |
-| 2024 | −1,480 | −1,626 a −1,335 |
+Índices por pasta: [notebooks/README.md](notebooks/README.md), [outputs/README.md](outputs/README.md) e [docs/README.md](docs/README.md).
 
-- O contraste é negativo em **todos os 11 anos**, de −0,936 p.p. (2014) a −1,524 p.p. (2022).
-- A formulação C (comparador 4º–5º mês) segue o mesmo padrão, com valores entre −0,851 e −1,487 p.p.
-- As especificações C2 e C3 ficam muito próximas entre si e entre 0,07 e 0,12 p.p. menos negativas que C1, sem mudar a direção nem a ordem de grandeza.
-- O recorte de suporte [0,05; 0,95] altera pouco as estimativas: a maior mudança é de 0,067 p.p. em B e 0,096 p.p. em C.
-- Nenhum IC95% municipal inclui zero, com ou sem recorte.
-- Em B, o ano de 2024 tem caudas de propensão sinalizadas (10,56% dos registros fora de [0,05; 0,95]). Em C, os anos de 2017 a 2024 recebem a mesma sinalização. Nenhum registro fica fora de [0,01; 0,99].
+## 7. Como executar
 
-As tabelas completas, ano a ano, estão em [TABELAS_RESULTADOS.md](docs/entrega_1_nacional_aipw/TABELAS_RESULTADOS.md).
+Use o ambiente virtual **deste projeto** (`.venv` dentro de `projetos/big-data-sinasc-causal-ml/`). No PowerShell, a partir desta pasta:
+
+```powershell
+python -m venv .venv                      # Python 3.11 (validado com 3.11.9)
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+$env:PYTHONUTF8 = "1"
+jupyter lab
+```
+
+- **Kernel:** com o Jupyter aberto a partir da `.venv`, o kernel `python3` já usa esse ambiente; no VS Code, selecione `.venv\Scripts\python.exe`.
+- **Leitura sem dados:** todos os notebooks estão salvos com as saídas; não é preciso executar nada para conferir resultados e gráficos.
+- **Bases locais** (não versionadas por tamanho; endereços oficiais e hashes em [METADADOS_BASE.md](docs/entrega_1_nacional_aipw/METADADOS_BASE.md)):
+  - 2024: `python scripts/baixar_dados.py` baixa o ZIP oficial para `data/raw/`; `python scripts/executar_pipeline.py --etapa dados` gera `data/processed/sinasc_2024.parquet`;
+  - 2014–2023: `python -c "from src.temporal import preparar_anos; preparar_anos('.', range(2014, 2024))"` baixa e converte um ano por vez para `data/processed/sinasc/sinasc_<ano>.parquet`.
+- **Reexecução:** 05a, 05b e 08 são rápidos. O 07 ajusta onze escores anuais. O 06 inclui o bootstrap de 1.000 réplicas (alguns minutos). A seção 7 do 06 pode ser executada sozinha.
+- **Gráficos estáticos:** o `kaleido` usa o Google Chrome instalado na máquina para gerar os PNG incorporados aos notebooks.
+- **Verificações:** `python -m pytest -q tests` (não precisa das bases) e `python scripts/validar_projeto.py --rapida` (preservação das fases anteriores).
+- **PySpark** não é dependência do projeto.
+
+## 8. Como visualizar os gráficos
+
+Os gráficos dos notebooks são Plotly interativos: passe o mouse para ver valores, intervalos, tamanhos de grupo e tamanho efetivo; use a barra de ferramentas para zoom, seleção e exportação em PNG. Cada saída também traz uma imagem PNG estática, que é o que o GitHub mostra.
+
+Para abrir os gráficos interativos fora do Jupyter, abra [outputs/figuras_interativas/index.html](outputs/figuras_interativas/index.html) no navegador, depois de clonar ou baixar o repositório. Os arquivos funcionam offline e compartilham um único `plotly.min.js` local. Para regenerá-los a partir dos notebooks: `python scripts/exportar_figuras_interativas.py`.
+
+## 9. Fases anteriores do projeto
+
+- **Entrega 1 — série nacional 2014–2024 (AIPW):** Brasil, formulação B, AIPW com *cross-fitting* por ano e IC agrupado por município; diferença de −0,94 a −1,52 p.p. entre os anos (−1,48 p.p. em 2024). Documentos em [docs/entrega_1_nacional_aipw/](docs/entrega_1_nacional_aipw/README.md). **População, estimando e estimador diferem da análise atual; os números não devem ser combinados.**
+- **Fase inicial — Brasil 2024:** auditoria, AIPW com comparador 4º–9º mês, robustez e heterogeneidade (`notebooks/01–05` na raiz, [apresentacao/](apresentacao/relatorio_interativo_sinasc_2024.html)).
+
+Métricas da fase inicial, mantidas para a validação automática do histórico (`scripts/validar_projeto.py`):
 
 <details>
 <summary>Referência histórica de reprodução — análise de 2024</summary>
@@ -103,59 +143,6 @@ Métricas da primeira versão do projeto, restrita a 2024, com comparador 4º–
 | Classificação da análise de heterogeneidade | <span data-metrica="gate4">HETEROGENEIDADE_SENSIVEL_A_MODELO</span> |
 
 </details>
-
-## 6. Estrutura do repositório
-
-```text
-notebooks/
-  principal/    fluxo acadêmico da entrega (01–05)
-  historico/    desenvolvimento temporal e execução científica original
-  01–05 antigos análise inicial de 2024, preservada por rastreabilidade histórica
-src/            módulos Python reutilizados pelos notebooks (caminhos, estimação, figuras)
-data/           dados brutos (ZIP), Parquet anual e caches intermediários; mantidos apenas localmente
-outputs/        tabelas, figuras, diagnósticos e resultados da estimação usados pelos notebooks
-docs/           relatório final, dicionário, metadados, metodologia e referências
-apresentacao/   relatório interativo em HTML da análise inicial de 2024
-```
-
-## 7. Como executar
-
-Use o ambiente virtual do próprio projeto (`.venv` dentro desta pasta). No PowerShell, a partir de `projetos/big-data-sinasc-causal-ml/`:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-$env:PYTHONUTF8 = "1"
-jupyter lab
-```
-
-Execute os notebooks de `notebooks/principal/` na ordem **01 → 02 → 03 → 04 → 05**.
-
-- Os notebooks **03, 04 e 05** leem resultados já calculados em `outputs/` e executam em poucos instantes; nenhum modelo é ajustado neles.
-- Os notebooks **01 e 02** combinam tabelas consolidadas em `outputs/` com algumas consultas DuckDB aos arquivos Parquet anuais: 2014–2023 em `data/processed/sinasc/` e 2024 em `data/processed/sinasc_2024.parquet`. Esses arquivos não são versionados no Git por causa do tamanho. Os ZIPs anuais vêm da fonte oficial, e o endereço de cada ano e os hashes de verificação estão em [METADADOS_BASE.md](docs/entrega_1_nacional_aipw/METADADOS_BASE.md).
-- O notebook científico original ([10_estimacao_v2.ipynb](notebooks/historico/10_estimacao_v2.ipynb)), que ajusta os modelos sobre todos os registros, é versionado. Os caches de ajuste ficam em `data/interim/`, são apenas locais e não são versionados; por isso, um clone do repositório não reexecuta de imediato a estimação pesada. Ele é computacionalmente pesado e não é necessário para a leitura acadêmica dos resultados.
-
-## 8. Documentação
-
-| Documento | Conteúdo |
-| --- | --- |
-| [RELATORIO_FINAL_DISCIPLINA.md](docs/entrega_1_nacional_aipw/RELATORIO_FINAL_DISCIPLINA.md) | Relatório completo: contexto, métodos, resultados, limitações e referências |
-| [DICIONARIO_TECNICO.md](docs/entrega_1_nacional_aipw/DICIONARIO_TECNICO.md) | Dicionário das variáveis usadas na análise |
-| [METADADOS_BASE.md](docs/entrega_1_nacional_aipw/METADADOS_BASE.md) | Ficha da base, volumes por ano, filtros, qualidade e proveniência |
-| [MATRIZ_XTY.md](docs/entrega_1_nacional_aipw/MATRIZ_XTY.md) | Definição e codificação de X, T e Y |
-| [TABELAS_RESULTADOS.md](docs/entrega_1_nacional_aipw/TABELAS_RESULTADOS.md) | Tabelas finais de resultados, sensibilidades e comparação entre formulações |
-
-Um mapa completo da documentação principal, complementar e histórica está disponível em [docs/README.md](docs/README.md).
-
-## 9. Limitações
-
-- **Confundimento residual:** apenas sete covariáveis registradas na DNV estão disponíveis; fatores como renda, tabagismo, estado nutricional, morbidades prévias e acesso efetivo a serviços estão ausentes ou incompletos no SINASC.
-- **Seleção por nascido vivo:** o SINASC inclui apenas nascidos vivos; perdas gestacionais e natimortos não entram na análise.
-- **`MESPRENAT` retrospectivo:** o mês de início do pré-natal é informado no momento do parto e pode conter erro de registro ou de memória.
-- **Problema temporal residual:** gestações que terminam mais cedo têm menos tempo para iniciar o pré-natal tardiamente. Restringir o comparador ao 4º–6º mês reduz esse problema, mas não o elimina.
-- **Dependência entre anos não modelada:** cada ano é estimado separadamente. O IC municipal não considera a dependência temporal, e as diferenças entre anos não são testes formais de mudança.
-- **Caudas de propensão sinalizadas:** 2024 em B e 2017–2024 em C apresentam mais de 10% dos registros fora de [0,05; 0,95], ainda que sem violação de positividade em [0,01; 0,99].
 
 ## 10. Tecnologias
 

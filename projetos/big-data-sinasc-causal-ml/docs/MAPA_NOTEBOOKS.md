@@ -1,5 +1,7 @@
 # Mapa dos notebooks
 
+> Mapa histórico das fases nacionais (estado de 01/10/2026). O mapa atual, incluindo a análise SP capital, está em [notebooks/README.md](../notebooks/README.md).
+
 Estado documental em 01/10/2026. A unidade analítica das frentes de estimação é o registro de nascido vivo elegível; na série temporal, cada ano é analisado separadamente. A V1 é um contraste observacional padronizado, cuja leitura causal depende de hipóteses não verificadas. Os diagnósticos de suporte não são estimativas de efeito.
 
 | Notebook | Pergunta | Papel | Status | Histórico/atual | Resultado principal | Dependências | Deve ser reexecutado? | Observação |
