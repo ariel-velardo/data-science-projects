@@ -1,0 +1,16 @@
+{
+  "alvo": "outcome_t1",
+  "familia": "logistica",
+  "n": 1942045,
+  "fits_previstos": 3,
+  "cobertura_min": 1,
+  "cobertura_max": 1,
+  "log_loss": 0.26906748216984055,
+  "brier": 0.07073626340399532,
+  "auc": 0.5717357157140946,
+  "prevalencia": 0.07699152182364466,
+  "media_predita": 0.07699231703682076,
+  "erro_calibracao_medio": 0.000832919671146106,
+  "erro_calibracao_maximo": 0.0014299177823676734,
+  "log_loss_se_folds": 5.392686023354653e-05
+}

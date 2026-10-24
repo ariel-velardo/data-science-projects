@@ -1,0 +1,5 @@
+﻿UF;nascidos_vivos;nascidos_peso_valido;nascidos_baixo_peso_com_peso_valido;percentual_baixo_peso;obitos_fetais;obitos_menores_1_ano;registros_fetais_no_arquivo;status_obitos_fetais;status_obitos_menores_1_ano
+ES;49937;49888;4508;9.036241180243746;;602;0;NAO_DISPONIVEL: nenhum TIPOBITO=1 no recorte da fonte fornecida;"CONTAGEM_COM_IDADE_COMPATIVEL_COM_LAYOUT; exclusoes descritas em LEIA_ME.txt"
+MG;219819;219506;22701;10.341858536896488;;2431;0;NAO_DISPONIVEL: nenhum TIPOBITO=1 no recorte da fonte fornecida;"CONTAGEM_COM_IDADE_COMPATIVEL_COM_LAYOUT; exclusoes descritas em LEIA_ME.txt"
+RJ;163722;163446;16233;9.931720568261078;;2174;0;NAO_DISPONIVEL: nenhum TIPOBITO=1 no recorte da fonte fornecida;"CONTAGEM_COM_IDADE_COMPATIVEL_COM_LAYOUT; exclusoes descritas em LEIA_ME.txt"
+SP;470887;470227;46799;9.952427231953928;;5225;0;NAO_DISPONIVEL: nenhum TIPOBITO=1 no recorte da fonte fornecida;"CONTAGEM_COM_IDADE_COMPATIVEL_COM_LAYOUT; exclusoes descritas em LEIA_ME.txt"

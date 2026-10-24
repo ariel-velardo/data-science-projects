@@ -1,0 +1,343 @@
+{
+  "gerado_por": "notebooks/apoio_aula/01_amostra_sinasc_sudeste_avaliacao_causal.ipynb",
+  "fonte": {
+    "url": "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SINASC/csv/SINASC_2024_csv.zip",
+    "sha256_zip_oficial": "27e55de6359e1b1914301dc1d752d78e9535a7a52cc0640931dd94876aca6027",
+    "parquet_local": "data/processed/sinasc_2024.parquet",
+    "sha256_parquet": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5"
+  },
+  "recorte": "Nascimentos de 2024 com CODMUNRES iniciado por 31 (MG), 32 (ES), 33 (RJ) ou 35 (SP)",
+  "regra_populacao_B": "GRAVIDEZ = 1; 500 <= PESO <= 6000; MESPRENAT 1-6; T = 1 se 1-3, T = 0 se 4-6; Y = 1 se PESO < 2500",
+  "amostragem": {
+    "metodo": "numpy.random.default_rng(42).choice(ids_ordenados, 100000, replace=False)",
+    "semente": 42,
+    "n": 100000,
+    "sha256_ids_sorteados": "3796b8cb8d7d917134f8f4e97a813326c0ceeab3556fdd4072ce0f214cf5d6d3"
+  },
+  "ambiente": {
+    "python": "3.11.9",
+    "duckdb": "1.5.5",
+    "pandas": "3.0.6",
+    "numpy": "2.4.6"
+  },
+  "contagens": {
+    "registros_sudeste_2024_base_A": 904365,
+    "registros_por_uf": {
+      "MG": 219819,
+      "ES": 49937,
+      "RJ": 163722,
+      "SP": 470887
+    },
+    "populacao_B": 842998,
+    "populacao_B_T1": 758924,
+    "populacao_B_T0": 84074,
+    "populacao_B_Y1": 70725,
+    "populacao_B_Y0": 772273,
+    "amostra_registros": 100000,
+    "amostra_elegiveis_B": 93208
+  },
+  "arquivos": [
+    {
+      "arquivo": "sinasc_sudeste_2024_base_regional.parquet",
+      "existe": true,
+      "tamanho_MB": 10.35,
+      "sha256": "a76a51df5b57356f4b08eaaa98c3e3c016b919be30881a6ee9f722c979d14701"
+    },
+    {
+      "arquivo": "sinasc_sudeste_2024_populacao_B.parquet",
+      "existe": true,
+      "tamanho_MB": 9.19,
+      "sha256": "7aaa6b6611f2edda6775056e62ff9cd90d70ddc8b7e7d6e21631fde17aaacc21"
+    },
+    {
+      "arquivo": "sinasc_sudeste_2024_amostra_100k.csv",
+      "existe": true,
+      "tamanho_MB": 11.42,
+      "sha256": "64efcdf32b485c623b1413e33d6cffac17fbc19cdc046bcf840eb55b3ff9462f"
+    },
+    {
+      "arquivo": "sinasc_sudeste_2024_amostra_100k.parquet",
+      "existe": true,
+      "tamanho_MB": 1.19,
+      "sha256": "5ec5afa391b3f081f968d146d45573b2ca8998d470f183c5220366bf2b2eb61e"
+    },
+    {
+      "arquivo": "DICIONARIO_DADOS_PROFESSORA.md",
+      "existe": true,
+      "tamanho_MB": 0.01,
+      "sha256": "d93b0f09f1e3385f115b14aaca7d86f3e9e4ab2bf4861b10f72301140173e11d"
+    },
+    {
+      "arquivo": "LEIA_ME_PROFESSORA.md",
+      "existe": true,
+      "tamanho_MB": 0.01,
+      "sha256": "fad40c5d5d83b0bf2c4ff66b6eac8bf8ba717b92196668ba1aeedc9d621c634e"
+    },
+    {
+      "arquivo": "pacote_professora_sinasc_sudeste_2024.zip",
+      "existe": true,
+      "tamanho_MB": 1.64,
+      "sha256": "9dcad27baaf49920597ad80d2cd32eefcdbe8ddde7aee0081427422bafd0de5d"
+    }
+  ],
+  "validacoes": [
+    {
+      "verificacao": "Parquet 2024 idêntico ao certificado no projeto (SHA-256)",
+      "status": "OK",
+      "observado": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5",
+      "esperado": "a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5"
+    },
+    {
+      "verificacao": "Base nacional 2024: CONTADOR único e não nulo (1 linha por DNV)",
+      "status": "OK",
+      "observado": "2389325 linhas / 2389325 contadores",
+      "esperado": "iguais"
+    },
+    {
+      "verificacao": "Base nacional 2024: todas as datas de nascimento válidas e em 2024",
+      "status": "OK",
+      "observado": "inválidas=0; fora de 2024=0",
+      "esperado": "0; 0"
+    },
+    {
+      "verificacao": "Base regional: contagem por UF idêntica à fonte (filtro por CODMUNRES)",
+      "status": "OK",
+      "observado": "{'MG': 219819, 'ES': 49937, 'RJ': 163722, 'SP': 470887}",
+      "esperado": "{'MG': 219819, 'ES': 49937, 'RJ': 163722, 'SP': 470887}"
+    },
+    {
+      "verificacao": "Base regional: CODMUNRES com 6 dígitos em todos os registros",
+      "status": "OK",
+      "observado": "0",
+      "esperado": "0"
+    },
+    {
+      "verificacao": "Cascata de filtros reconcilia com o motivo principal de exclusão",
+      "status": "OK",
+      "observado": "[24274, 1189, 22620, 13284]",
+      "esperado": "contagens por MOTIVO_PRINCIPAL_EXCLUSAO_B"
+    },
+    {
+      "verificacao": "Amostra: sorteio reprodutível com semente 42 (duas execuções idênticas)",
+      "status": "OK",
+      "observado": "3796b8cb8d7d9171",
+      "esperado": "mesma lista nas duas execuções"
+    },
+    {
+      "verificacao": "Amostra: 100.000 identificadores distintos (sem reposição)",
+      "status": "OK",
+      "observado": "100000",
+      "esperado": "100000"
+    },
+    {
+      "verificacao": "Amostra: todos os identificadores sorteados pertencem à base regional",
+      "status": "OK",
+      "observado": "100000",
+      "esperado": "100000"
+    },
+    {
+      "verificacao": "Amostra: proporções compatíveis com a base (|z| ≤ 4 em todas as categorias)",
+      "status": "OK",
+      "observado": "max |z| = 2.27",
+      "esperado": "≤ 4"
+    },
+    {
+      "verificacao": "Pacote ZIP gerado com CSV, dicionário e LEIA-ME",
+      "status": "OK",
+      "observado": "True",
+      "esperado": "True"
+    },
+    {
+      "verificacao": "A: contagem total igual à da fonte filtrada por CODMUNRES",
+      "status": "OK",
+      "observado": "904365",
+      "esperado": "904365"
+    },
+    {
+      "verificacao": "A: exatamente as UFs 31, 32, 33 e 35, derivadas de CODMUNRES",
+      "status": "OK",
+      "observado": "['31', '32', '33', '35']",
+      "esperado": "['31', '32', '33', '35']"
+    },
+    {
+      "verificacao": "A: siglas de UF coerentes com o código",
+      "status": "OK",
+      "observado": "0 divergências",
+      "esperado": "0"
+    },
+    {
+      "verificacao": "A: ID_REGISTRO único (sem duplicidade de registro)",
+      "status": "OK",
+      "observado": "0",
+      "esperado": "0"
+    },
+    {
+      "verificacao": "B: ID_REGISTRO único (sem duplicidade de registro)",
+      "status": "OK",
+      "observado": "0",
+      "esperado": "0"
+    },
+    {
+      "verificacao": "C_parquet: ID_REGISTRO único (sem duplicidade de registro)",
+      "status": "OK",
+      "observado": "0",
+      "esperado": "0"
+    },
+    {
+      "verificacao": "C_csv: ID_REGISTRO único (sem duplicidade de registro)",
+      "status": "OK",
+      "observado": "0",
+      "esperado": "0"
+    },
+    {
+      "verificacao": "A: chave técnica de origem (CONTADOR, não exportada) única no recorte",
+      "status": "OK",
+      "observado": "0",
+      "esperado": "0"
+    },
+    {
+      "verificacao": "A: registros com todos os atributos exportados idênticos a outro registro (informativo)",
+      "status": "OK",
+      "observado": "391",
+      "esperado": "esperado > 0: combinações comuns de atributos não indicam duplicidade"
+    },
+    {
+      "verificacao": "B: igual ao subconjunto ELEGIVEL_B = 1 de A",
+      "status": "OK",
+      "observado": "842998",
+      "esperado": "842998"
+    },
+    {
+      "verificacao": "B: todos os registros pertencem à base regional (anti-junção vazia)",
+      "status": "OK",
+      "observado": "0",
+      "esperado": "0"
+    },
+    {
+      "verificacao": "B: nenhum registro viola os critérios recalculados a partir dos códigos originais",
+      "status": "OK",
+      "observado": "{'gravidez_nao_unica': 0, 'peso_invalido': 0, 'mes_fora_1_6': 0, 't_ou_y_nulo': 0, 'com_motivo': 0}",
+      "esperado": "todos 0"
+    },
+    {
+      "verificacao": "A: T, Y, ELEGIVEL_B e motivos coerentes com as regras em todos os registros",
+      "status": "OK",
+      "observado": "{'t_incoerente': 0, 'y_incoerente': 0, 'elegivel_incoerente': 0, 'motivo_incoerente': 0, 'valor_fora_0_1': 0}",
+      "esperado": "todos 0"
+    },
+    {
+      "verificacao": "Função original do projeto: B nacional 2024 reconcilia com o diagnóstico V2 registrado",
+      "status": "OK",
+      "observado": "(2207214, 1942045, 265169)",
+      "esperado": "(2207214, 1942045, 265169)"
+    },
+    {
+      "verificacao": "Regra B deste notebook aplicada ao Brasil reproduz N, T=1 e T=0 do projeto",
+      "status": "OK",
+      "observado": "(2207214, 1942045, 265169)",
+      "esperado": "(2207214, 1942045, 265169)"
+    },
+    {
+      "verificacao": "B Sudeste idêntica à função original do projeto (registros, T, município, UF e seis X recodificadas)",
+      "status": "OK",
+      "observado": "{'n_projeto': 842998, 'n_notebook': 842998, 'so_no_projeto': 0, 'so_no_notebook': 0, 'valores_divergentes': 0}",
+      "esperado": "mesmos registros e 0 divergências"
+    },
+    {
+      "verificacao": "Y da população B idêntico ao Y da view congelada do projeto (amostra_principal)",
+      "status": "OK",
+      "observado": "(0, 0)",
+      "esperado": "(0, 0)"
+    },
+    {
+      "verificacao": "Amostra: CSV e Parquet idênticos (DuckDB, EXCEPT ALL nos dois sentidos)",
+      "status": "OK",
+      "observado": "(100000, 100000, 0, 0)",
+      "esperado": "(100000, 100000, 0, 0)"
+    },
+    {
+      "verificacao": "Amostra: registros idênticos aos da base A (mesmos valores)",
+      "status": "OK",
+      "observado": "0",
+      "esperado": "0"
+    },
+    {
+      "verificacao": "Amostra: identificadores gravados iguais aos sorteados com semente 42",
+      "status": "OK",
+      "observado": "3796b8cb8d7d9171",
+      "esperado": "3796b8cb8d7d9171"
+    },
+    {
+      "verificacao": "Amostra: CSV e Parquet idênticos também lidos com pandas",
+      "status": "OK",
+      "observado": "(100000, 41)",
+      "esperado": "(100000, 41)"
+    },
+    {
+      "verificacao": "A: nenhum identificador individual ou campo excluído por privacidade",
+      "status": "OK",
+      "observado": "nenhum",
+      "esperado": "nenhum"
+    },
+    {
+      "verificacao": "A: colunas e tipos conforme o esquema esperado",
+      "status": "OK",
+      "observado": "41 colunas",
+      "esperado": "41 colunas"
+    },
+    {
+      "verificacao": "B: nenhum identificador individual ou campo excluído por privacidade",
+      "status": "OK",
+      "observado": "nenhum",
+      "esperado": "nenhum"
+    },
+    {
+      "verificacao": "B: colunas e tipos conforme o esquema esperado",
+      "status": "OK",
+      "observado": "41 colunas",
+      "esperado": "41 colunas"
+    },
+    {
+      "verificacao": "C_parquet: nenhum identificador individual ou campo excluído por privacidade",
+      "status": "OK",
+      "observado": "nenhum",
+      "esperado": "nenhum"
+    },
+    {
+      "verificacao": "C_parquet: colunas e tipos conforme o esquema esperado",
+      "status": "OK",
+      "observado": "41 colunas",
+      "esperado": "41 colunas"
+    },
+    {
+      "verificacao": "C_csv: nenhum identificador individual ou campo excluído por privacidade",
+      "status": "OK",
+      "observado": "nenhum",
+      "esperado": "nenhum"
+    },
+    {
+      "verificacao": "C_csv: colunas e tipos conforme o esquema esperado",
+      "status": "OK",
+      "observado": "41 colunas",
+      "esperado": "41 colunas"
+    },
+    {
+      "verificacao": "Todos os arquivos legíveis com pandas e DuckDB, com as contagens esperadas",
+      "status": "OK",
+      "observado": "{'A (pandas)': 904365, 'B (pandas)': 842998, 'C parquet (pandas)': 100000, 'C csv (pandas)': 100000, 'A (DuckDB)': 904365, 'B (DuckDB)': 842998, 'C parquet (DuckDB)': 100000, 'C csv (DuckDB)': 100000}",
+      "esperado": "{'A (pandas)': 904365, 'B (pandas)': 842998, 'C parquet (pandas)': 100000, 'C csv (pandas)': 100000, 'A (DuckDB)': 904365, 'B (DuckDB)': 842998, 'C parquet (DuckDB)': 100000, 'C csv (DuckDB)': 100000}"
+    },
+    {
+      "verificacao": "Pacote ZIP íntegro e com os três arquivos previstos",
+      "status": "OK",
+      "observado": "['DICIONARIO_DADOS_PROFESSORA.md', 'LEIA_ME_PROFESSORA.md', 'sinasc_sudeste_2024_amostra_100k.csv']",
+      "esperado": "CSV + dicionário + LEIA-ME"
+    },
+    {
+      "verificacao": "Pacote ZIP adequado para e-mail (≤ 20 MB)",
+      "status": "OK",
+      "observado": "1.64 MB",
+      "esperado": "≤ 20 MB"
+    }
+  ]
+}

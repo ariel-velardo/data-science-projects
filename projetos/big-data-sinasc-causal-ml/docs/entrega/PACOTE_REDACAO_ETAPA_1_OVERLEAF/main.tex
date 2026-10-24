@@ -1,0 +1,1280 @@
+% !TEX program = xelatex
+% =====================================================================
+%  Início do pré-natal e baixo peso ao nascer — SINASC, São Paulo, 2024
+%  Material de apoio à redação — Repasse acadêmico, Etapa 1
+%
+%  Compilador: XeLaTeX (Overleaf: Menu > Settings > Compiler > XeLaTeX).
+%  Bibliografia: BibTeX + abntex2cite (ABNT, autor-data), arquivo referencias.bib.
+%  Figuras: arquivos .tex em figuras/ (pgfplots/TikZ), editáveis como texto.
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+% ---------- Identificação do documento (editar aqui) -----------------
+\newcommand{\docTitulo}{Início do pré-natal e baixo peso ao nascer: análise observacional com dados do SINASC}
+\newcommand{\docSubtitulo}{Material metodológico e resultados preliminares — São Paulo, 2024}
+\newcommand{\docEtapa}{Repasse acadêmico — Etapa 1}
+\newcommand{\docCurso}{Mestrado em Computação Aplicada}
+\newcommand{\docDisciplina}{Big Data \& Analytics}
+\newcommand{\docLocal}{São Paulo}
+\newcommand{\docAno}{2026}
+% Autores e orientação: preencher entre as chaves (separar nomes com \\).
+% Enquanto estiverem vazios, as linhas correspondentes não aparecem na capa.
+\newcommand{\docAutores}{}
+\newcommand{\docOrientacao}{}
+
+% ---------- Motor e fontes --------------------------------------------
+\usepackage{iftex}
+\ifPDFTeX
+  \errmessage{Este projeto usa fontes OpenType: selecione o compilador XeLaTeX
+    (Overleaf: Menu > Settings > Compiler > XeLaTeX)}
+\fi
+\usepackage{amsmath}
+\usepackage{fontspec}
+\usepackage{unicode-math}
+% Família Libertinus (incluída no TeX Live/Overleaf): serifada no texto,
+% sem serifa em títulos e figuras, matemática compatível.
+\setmainfont{LibertinusSerif}[Extension=.otf, UprightFont=*-Regular,
+  BoldFont=*-Semibold, ItalicFont=*-Italic, BoldItalicFont=*-SemiboldItalic]
+\setsansfont{LibertinusSans}[Extension=.otf, UprightFont=*-Regular,
+  BoldFont=*-Bold, ItalicFont=*-Italic]
+\setmonofont{LibertinusMono}[Extension=.otf, UprightFont=*-Regular, Scale=0.92]
+\setmathfont{LibertinusMath-Regular.otf}
+\usepackage[brazilian]{babel}
+
+% ---------- Página ------------------------------------------------------
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm,
+  headheight=15pt, headsep=0.8cm, footskip=1.1cm]{geometry}
+\usepackage{setspace}
+\setstretch{1.10}
+\setlength{\parindent}{1.25em}
+\setlength{\parskip}{0pt plus 1pt}
+\usepackage{microtype}
+\usepackage{etoolbox}
+\usepackage{enumitem}
+\setlist{itemsep=2pt, topsep=4pt, parsep=0pt}
+\setlist[enumerate]{label=\arabic*., leftmargin=2.2em}
+\setlist[itemize]{label=\textcolor{iptazul}{\small\textbullet}, leftmargin=1.6em}
+
+% ---------- Cores ---------------------------------------------------------
+% Cores amostradas do logotipo oficial do IPT (arquivo vetorial em ipt.br,
+% página Comunicação Institucional). São valores medidos no arquivo,
+% não códigos oficiais publicados em manual de marca.
+\usepackage{xcolor}
+\definecolor{iptazul}{HTML}{123C59}   % azul institucional escuro
+\definecolor{iptciano}{HTML}{00B3E2}  % azul-ciano (pequenos destaques)
+\definecolor{iptcinza}{HTML}{636362}  % cinza do logotipo
+\colorlet{cinzaserie}{iptcinza!75}    % cinza médio para séries secundárias
+
+% ---------- Tabelas -------------------------------------------------------
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{tabularx}
+\usepackage{siunitx}
+\sisetup{output-decimal-marker={,}, group-separator={.}, group-minimum-digits=4,
+  group-digits=integer, table-number-alignment=center}
+\arrayrulecolor{iptazul}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcommand{\cab}[1]{{\sffamily\color{iptazul}#1}}
+\newcommand{\destaque}{\rowcolor{iptazul!6}}
+
+% ---------- Figuras -----------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, calc, positioning}
+\usepackage{pgfplots}
+\pgfplotsset{
+  compat=1.18,
+  estilo ipt/.style={
+    axis lines*=left,
+    axis line style={iptcinza!70, line width=0.5pt},
+    tick style={iptcinza!70},
+    tick align=outside,
+    tick label style={font=\sffamily\footnotesize, text=iptcinza!30!black},
+    label style={font=\sffamily\footnotesize, text=iptcinza!30!black},
+    title style={font=\sffamily\footnotesize\bfseries, text=iptazul},
+    major grid style={iptcinza!18, line width=0.4pt},
+    legend style={font=\sffamily\footnotesize, draw=none, fill=white,
+      fill opacity=0.9, text opacity=1},
+    legend cell align=left,
+    /pgf/number format/use comma,
+    /pgf/number format/1000 sep={.},
+  },
+  serie principal/.style={iptazul, line width=1.2pt, mark size=2.2pt,
+    mark options={fill=iptazul, solid}},
+  serie secundaria/.style={cinzaserie, line width=1.2pt, mark size=2.2pt,
+    mark options={fill=white, solid}},
+}
+\tikzset{rotulo valor/.style={font=\sffamily\scriptsize, text=iptcinza!20!black,
+  inner sep=2.5pt}}
+
+% ---------- Legendas (padrão ABNT: título acima, fonte abaixo) ---------------
+\usepackage{caption}
+\captionsetup{font=small, labelfont={sf, color=iptazul}, labelsep=endash,
+  justification=justified, singlelinecheck=false, skip=5pt, position=top}
+\newcommand{\fonte}[1]{\par\vspace{4pt}%
+  {\footnotesize\color{iptcinza!50!black}\textsf{Fonte:} #1\par}}
+\newcommand{\nota}[1]{\par\vspace{2pt}%
+  {\footnotesize\color{iptcinza!50!black}\textsf{Nota:} #1\par}}
+
+% ---------- Títulos ----------------------------------------------------------
+\usepackage{titlesec}
+\titleformat{\section}{\sffamily\Large\bfseries\color{iptazul}}{\thesection}{0.75em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries\color{iptazul}}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\sffamily\normalsize\bfseries\color{iptazul}}{\thesubsubsection}{0.6em}{}
+\titleformat{\paragraph}[runin]{\sffamily\normalsize\bfseries\color{iptazul}}{}{0pt}{}
+\titlespacing*{\paragraph}{0pt}{1.6ex plus 0.4ex minus 0.2ex}{0.6em}
+\titlespacing*{\section}{0pt}{3.0ex plus 0.8ex minus 0.4ex}{1.4ex plus 0.3ex}
+\titlespacing*{\subsection}{0pt}{2.4ex plus 0.6ex minus 0.3ex}{1.0ex plus 0.2ex}
+\titlespacing*{\subsubsection}{0pt}{1.8ex plus 0.4ex minus 0.2ex}{0.6ex plus 0.2ex}
+\setcounter{tocdepth}{1}
+
+% Posicionamento de figuras e tabelas: evita páginas só com flutuantes
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.6}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.8}
+\setlength{\textfloatsep}{14pt plus 4pt minus 4pt}
+\setlength{\floatsep}{12pt plus 3pt minus 3pt}
+
+% ---------- Cabeçalho e rodapé --------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\footnotesize\color{iptcinza}IPT \textperiodcentered\ \docCurso}
+\fancyhead[R]{\sffamily\footnotesize\color{iptcinza}\docEtapa}
+\fancyfoot[R]{\sffamily\footnotesize\color{iptazul}\thepage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{iptciano}\leaders\hrule height \headrulewidth\hfill}}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[R]{\sffamily\footnotesize\color{iptazul}\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+
+% ---------- Notação e atalhos --------------------------------------------------
+\newcommand{\campo}[1]{\texttt{#1}}       % nomes de campos do SINASC/SIM
+\newcommand{\pp}{\,p.p.}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\ATO}{\mathrm{ATO}}
+
+% ---------- Hiperlinks e citações (abntex2cite depois do hyperref) --------------
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=iptazul, citecolor=iptazul,
+  urlcolor=iptazul, pdftitle={\docTitulo}, pdfsubject={\docSubtitulo},
+  pdfkeywords={SINASC, pré-natal, baixo peso ao nascer, escore de propensão, ATO},
+  pdflang={pt-BR}}
+\urlstyle{same}
+\usepackage[alf, abnt-etal-cite=3, abnt-etal-list=0]{abntex2cite}
+% Caminhos de arquivos do projeto (sem os sinais < > que a ABNT usa em URLs)
+\DeclareUrlCommand\arquivo{\urlstyle{tt}\def\UrlLeft{}\def\UrlRight{}}
+
+% =====================================================================
+\begin{document}
+
+% ---------------------------------- Capa ---------------------------------------
+\begin{titlepage}
+\newgeometry{top=2.3cm, bottom=2.3cm, left=2.7cm, right=2.7cm}
+\setlength{\parindent}{0pt}
+\sffamily
+% Logotipo oficial do IPT (PDF vetorial, sem alterações); o recorte apenas
+% elimina a margem branca da página original.
+\noindent\includegraphics[height=1.75cm, trim=192 203 192 203, clip]{logo_ipt.pdf}
+
+\vspace{0.75cm}
+{\small\color{iptcinza}\docCurso\\[1pt] Disciplina \docDisciplina\par}
+
+\vspace*{\fill}
+{\color{iptciano}\rule{2.4cm}{1.5pt}}\par
+\vspace{0.7cm}
+{\fontsize{23}{29}\selectfont\bfseries\color{iptazul}\raggedright\docTitulo\par}
+\vspace{0.75cm}
+{\rmfamily\Large\itshape\color{iptcinza!70!black}\raggedright\docSubtitulo\par}
+\vspace{1.3cm}
+{\small\color{iptazul}\addfontfeatures{LetterSpace=6}\MakeUppercase{\docEtapa}\par}
+\ifdefempty{\docAutores}{}{%
+  \vspace{1.1cm}{\normalsize\color{iptcinza!20!black}\docAutores\par}}
+\ifdefempty{\docOrientacao}{}{%
+  \vspace{0.5cm}{\small\color{iptcinza!20!black}\docOrientacao\par}}
+\vspace*{\fill}
+
+{\footnotesize\color{iptcinza}\begin{minipage}{0.78\linewidth}
+Material de apoio à redação, elaborado no âmbito acadêmico do \docCurso{} do
+Instituto de Pesquisas Tecnológicas. Não constitui publicação oficial da
+instituição nem versão final de dissertação ou artigo.
+\end{minipage}\par}
+\vspace{0.6cm}
+{\small\color{iptazul}\docLocal, \docAno\par}
+\restoregeometry
+\end{titlepage}
+
+% ------------------------------- Sumário -----------------------------------------
+\pagestyle{fancy}
+\tableofcontents
+\thispagestyle{fancy}
+
+\section*{Apresentação}
+\addcontentsline{toc}{section}{Apresentação}
+
+Este documento organiza, em formato de relatório técnico-científico, o material produzido
+na primeira etapa da análise sobre o momento de início do pré-natal e o baixo peso ao
+nascer no município de São Paulo. Destina-se a quem fará a redação do trabalho acadêmico:
+textos, equações, tabelas e figuras podem ser reaproveitados diretamente, e a
+Seção~\ref{sec:orientacao} indica o que ainda precisa ser desenvolvido ou decidido.
+
+Nenhuma análise foi reexecutada para prepará-lo. Os números foram transcritos das saídas
+salvas dos notebooks do projeto e conferidos com elas; as figuras foram redesenhadas a
+partir dos mesmos valores que geraram os gráficos originais. O resultado principal é uma
+associação ajustada por características maternas observadas, e não um efeito causal
+identificado. Essa distinção orienta todo o texto.
+
+Convenções: diferenças calculadas sempre como $T=1$ menos $T=0$; p.p.\ = pontos
+percentuais; SMD = diferença média padronizada; IC 95\% = intervalo de confiança de 95\%;
+ATO = efeito médio na população de sobreposição (\emph{average treatment effect in the
+overlap population}). Abaixo de cada tabela e figura indica-se o arquivo do projeto de
+onde os valores foram extraídos.
+
+% =====================================================================
+\section{Introdução}\label{sec:introducao}
+
+\subsection{Baixo peso ao nascer}
+
+A Organização Mundial da Saúde define baixo peso ao nascer como peso inferior a
+2.500\,g \cite{who_lbw}. A definição não depende da idade gestacional: o baixo peso pode
+resultar de restrição do crescimento intrauterino, de prematuridade ou de ambas
+\cite{who_lbw}. O indicador agrega, portanto, mecanismos distintos, o que tem
+consequências diretas para a interpretação de qualquer associação com fatores da
+assistência pré-natal (Seção~\ref{sec:discussao}).
+
+A relevância do desfecho para a saúde materno-infantil é bem estabelecida. Segundo a OMS,
+recém-nascidos com baixo peso têm probabilidade de morrer cerca de vinte vezes maior que
+recém-nascidos mais pesados, e o indicador integra a lista de referência global de
+indicadores básicos de saúde da organização \cite{who_lbw}. No Brasil, o peso ao nascer é
+registrado para todos os nascidos vivos na Declaração de Nascido Vivo, o que permite
+estudá-lo em base populacional.
+
+\subsection{O momento de início do pré-natal}
+
+O início precoce do pré-natal permite rastreamento, suplementação e manejo antecipado de
+condições de risco. Essa é a hipótese substantiva que motivou o projeto: quando o
+acompanhamento começa no primeiro trimestre, haveria mais oportunidade de intervir sobre
+fatores associados à prematuridade e à restrição de crescimento. A assistência pré-natal
+no Brasil foi avaliada em âmbito nacional por \citeonline{viellas2014}, e estudos com
+dados do SINASC associaram índices de adequação do pré-natal ao baixo peso
+\cite{vale2021}. Esses índices, contudo, combinam o mês de início com o número de
+consultas; o contraste estudado aqui isola o momento de início.
+
+A evidência sobre efeitos do pré-natal em desfechos do nascimento é heterogênea, e
+\citeonline{corman2018} discutem as dificuldades de identificá-los com dados
+observacionais. Trabalhos recentes procuram enfrentar esse problema com métodos de
+inferência causal, como a abordagem de decomposição causal aplicada por
+\citeonline{vachuska2025} ao início precoce do pré-natal e às desigualdades raciais em
+desfechos do nascimento.
+
+\subsection{Diferenças entre gestantes e confundimento}
+
+O momento de início do pré-natal não é atribuído ao acaso. Nos dados analisados, o início
+nos meses 4--6 é mais frequente entre mães mais jovens, com menor escolaridade e sem união
+formal registrada (Seção~\ref{sec:comparabilidade}). Características socioeconômicas,
+reprodutivas e clínicas podem influenciar simultaneamente o momento de início e o peso ao
+nascer; em estudo brasileiro de base populacional, escolaridade, raça/cor, idade e
+paridade associaram-se ao baixo peso a termo \cite{falcao2020}. A comparação bruta entre
+os grupos mistura, portanto, a eventual contribuição do momento de início com diferenças
+de composição. Parte dessas diferenças é registrada no SINASC e pode ser ajustada; outra
+parte --- renda, cobertura por plano de saúde, planejamento da gestação, tabagismo,
+condições clínicas prévias --- não é registrada.
+
+\subsection{Objetivo e pergunta de pesquisa}
+
+O objetivo desta etapa é estimar a diferença no risco de baixo peso ao nascer entre
+nascimentos cujas mães iniciaram o pré-natal nos meses 1--3 e nascimentos com início nos
+meses 4--6, após ponderação por características maternas observadas, e documentar as
+condições sob as quais essa estimativa pode ser interpretada.
+
+\begin{center}
+\begin{minipage}{0.9\linewidth}
+\setstretch{1.08}
+{\color{iptciano}\rule{\linewidth}{0.6pt}}\par\vspace{2pt}
+\textsf{\color{iptazul}Pergunta principal.} Entre nascidos vivos de mães residentes no
+município de São Paulo em 2024, o início do pré-natal nos meses 1--3 está associado a
+menor risco de baixo peso ao nascer, em comparação com o início nos meses 4--6, após
+ajuste por características maternas observadas?\par\vspace{2pt}
+{\color{iptciano}\rule{\linewidth}{0.6pt}}
+\end{minipage}
+\end{center}
+
+Convém distinguir duas perguntas. A pergunta causal que motivou o projeto é
+contrafactual: qual seria a diferença no risco de baixo peso se as mesmas gestações
+tivessem iniciado o pré-natal nos meses 1--3, e não nos meses 4--6? Respondê-la exige
+hipóteses de identificação --- ausência de confundimento não medido, positividade e
+consistência da exposição \cite{hernan2025} --- que os dados do SINASC não permitem
+verificar. A pergunta efetivamente respondida nesta etapa é mais restrita: qual é a
+diferença de risco entre os grupos depois que suas distribuições de características
+maternas observadas são equilibradas por ponderação? O resultado é uma associação
+ajustada, válida para uma população-alvo definida pelos próprios pesos
+(Seção~\ref{sec:ato}).
+
+% =====================================================================
+\section{Dados e população de origem}\label{sec:dados}
+
+\subsection{O Sistema de Informações sobre Nascidos Vivos}
+
+O Sistema de Informações sobre Nascidos Vivos (SINASC), do Ministério da Saúde, reúne as
+informações da Declaração de Nascido Vivo, preenchida para cada nascimento vivo. Os
+microdados públicos, disseminados pelo DATASUS, contêm características da mãe, da
+gestação, do parto e do recém-nascido. A cobertura e a qualidade do sistema foram objeto
+de avaliação nacional \cite{szwarcwald2019}. Em maternidades públicas da capital paulista,
+\citeonline{bonilha2018} encontraram boa concordância entre o SINASC e a coleta de campo
+para peso ao nascer e tipo de gravidez, e concordância menor para campos de assistência e
+de história reprodutiva.
+
+A unidade de análise é o registro de nascido vivo. Cada linha corresponde a uma
+declaração, e não a uma gestante: a mesma mulher pode contribuir com mais de um registro
+em gestações múltiplas (excluídas da população analítica) ou em mais de um parto no mesmo
+ano. Os dados não formam uma coorte de gestantes acompanhadas desde o início da gestação;
+exposição, covariáveis e desfecho são registrados no momento do parto.
+
+O projeto dispõe de bases locais completas do SINASC para os onze anos de 2014 a 2024. As
+definições de campos seguem o dicionário analítico do projeto, que corresponde ao layout
+documentado até 2019; códigos não enumerados nesse dicionário, como limites de idade
+materna e sentinelas do campo de perdas fetais, não foram presumidos.
+
+\subsection{Qualidade dos dados e escolha da capital}\label{sec:qualidade}
+
+A orientação metodológica foi concentrar a investigação em localidades com melhor
+qualidade de registro. O recorte foi escolhido exclusivamente por critérios de
+preenchimento, validade e retenção de registros, \emph{sem consulta à magnitude da
+associação entre início do pré-natal e baixo peso}. Dois levantamentos fundamentaram a
+decisão.
+
+O primeiro comparou seis recortes geográficos em 2024 (Tabela~\ref{tab:recortes}). A
+capital apresentou a maior proporção de registros com as três variáveis essenciais
+simultaneamente válidas --- mês de início do pré-natal (\campo{MESPRENAT} entre 1 e 9),
+tipo de gravidez (\campo{GRAVIDEZ} entre 1 e 3) e peso inteiro entre 500 e 6.000\,g:
+99,04\%, contra 97,93\% no estado de São Paulo e 97,16\% no Sudeste. O mês de início do
+pré-natal, que define a exposição, foi válido em 99,15\% dos registros da capital,
+98,08\% do estado e 97,32\% do Sudeste. Escolaridade, raça/cor, situação conjugal e
+perdas fetais anteriores também tiveram preenchimento maior na capital que no estado.
+
+\begin{table}[htbp]
+\centering
+\caption{Qualidade e volume de registros por recorte geográfico de residência materna, SINASC 2024}
+\label{tab:recortes}
+\small
+\begin{tabular}{@{}l S[table-format=6.0] S[table-format=2.2] S[table-format=6.0]
+  S[table-format=2.2] S[table-format=6.0] S[table-format=5.0]@{}}
+\toprule
+\cab{Recorte} & {\cab{Nascimentos}} & {\cab{Essenciais (\%)}} & {\cab{Elegíveis}} &
+  {\cab{Retenção (\%)}} & {\cab{$T=1$}} & {\cab{$T=0$}} \\
+\midrule
+Sudeste                 & 904365 & 97.16 & 842998 & 93.21 & 758924 & 84074 \\
+São Paulo --- estado    & 470887 & 97.93 & 442733 & 94.02 & 402207 & 40526 \\
+\destaque
+São Paulo --- capital   & 120789 & 99.04 & 114694 & 94.95 & 104576 & 10118 \\
+Minas Gerais            & 219819 & 95.49 & 201200 & 91.53 & 182626 & 18574 \\
+Rio de Janeiro          & 163722 & 96.93 & 151969 & 92.82 & 131899 & 20070 \\
+Espírito Santo          &  49937 & 98.06 &  47096 & 94.31 &  42192 &  4904 \\
+\bottomrule
+\end{tabular}
+\nota{Essenciais: \campo{MESPRENAT} 1--9, \campo{GRAVIDEZ} 1--3 e peso inteiro de 500 a
+6.000\,g simultaneamente. Elegíveis: gestação única, peso de 500 a 6.000\,g e início do
+pré-natal nos meses 1--6, aplicados a cada recorte. Retenção: elegíveis sobre nascimentos. Os recortes se
+sobrepõem (capital $\subset$ estado $\subset$ Sudeste) e não devem ser somados.}
+\fonte{\arquivo{outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md}.}
+\end{table}
+
+O segundo levantamento examinou a série 2014--2024 para verificar se a vantagem da capital
+era persistente (Figura~\ref{fig:qualidade}). A validade de \campo{MESPRENAT} na capital
+variou de 98,45\% em 2014 a 99,15\% em 2024 e foi superior à do restante do estado em
+todos os onze anos, com vantagem entre 0,81 e 4,62\pp{} No período, a capital somou
+1.587.749 nascimentos elegíveis segundo os critérios da Seção~\ref{sec:populacao} ---
+1.401.494 com início nos meses 1--3 e 186.255 nos meses 4--6 ---, com retenção acumulada
+de 94,61\% dos registros.
+
+\begin{figure}[htbp]
+\centering
+\caption{Proporção de registros com mês de início do pré-natal válido, por ano de
+nascimento e residência materna, estado de São Paulo, 2014--2024}
+\label{fig:qualidade}
+\input{figuras/fig1_qualidade_mesprenat.tex}
+\nota{Denominador: todos os nascimentos do ano no recorte. Restante do estado: residência
+no estado de São Paulo fora da capital.}
+\fonte{SINASC 2014--2024; \arquivo{outputs/qualidade_geografica_2024/qualidade_sp_2014_2024.ipynb}
+(seção 7) e \arquivo{qualidade_sp_por_ano.csv}.}
+\end{figure}
+
+A série também revelou um ponto de atenção. Na capital, o número de nascimentos com
+início nos meses 4--6 caiu de 24.348 em 2014 (14,76\% dos elegíveis) para 10.118 em 2024
+(8,82\%), redução de 58,44\%, enquanto o total de elegíveis caiu 30,48\%. A redução do
+grupo de comparação não constitui, por si só, violação de positividade, mas motivou o
+diagnóstico de comparabilidade da Seção~\ref{sec:comparabilidade}. As causas dessa
+mudança não foram investigadas.
+
+A estimação ajustada foi restrita a 2024. Os onze anos serviram apenas para avaliar
+qualidade e viabilidade amostral; o estado de São Paulo foi registrado como alternativa
+de maior abrangência, mas não foi analisado nesta etapa.
+
+\subsection{Papel complementar do SIM}
+
+O Sistema de Informações sobre Mortalidade (SIM) de 2024 foi explorado de forma
+exclusivamente descritiva para o Sudeste. Foram selecionados 10.432 óbitos infantis com
+códigos de idade compatíveis com o dicionário do SIM, dos quais 5.225 de residentes no
+estado de São Paulo; 944 óbitos não fetais com idade ignorada (\campo{IDADE}~=~999) e 162
+registros com códigos de idade sem detalhamento não foram classificados como infantis. O
+arquivo utilizado não contém óbitos fetais (\campo{TIPOBITO}~=~1) para o Sudeste em
+2024: trata-se de ausência de registro na fonte, não de ausência de mortes fetais. Não
+foi calculada taxa de mortalidade infantil.
+
+A integração entre SINASC e SIM foi territorial. Cada base foi agregada separadamente por
+município de residência, e os indicadores do SIM foram acrescentados ao painel do SINASC
+por junção de códigos: 1.672 códigos de residência, dos quais 1.133 com registros no
+recorte do SIM, incluindo códigos residuais que não correspondem a municípios
+identificados. Não houve vinculação de indivíduos, mães ou declarações, e os óbitos
+ocorridos em 2024 não correspondem ao acompanhamento dos nascidos em 2024. Associações
+nesse painel são ecológicas e não se transpõem ao nível individual. \emph{O SIM não entrou
+na estimação ATO}, que usa exclusivamente registros individuais do SINASC: exposição,
+covariáveis e desfecho pertencem ao mesmo nascimento.
+
+% =====================================================================
+\section{População analítica}\label{sec:populacao}
+
+\subsection{Critérios de seleção}
+
+A população analítica foi definida sobre o SINASC 2024 com a projeção de seleção
+congelada no código do projeto, acrescida dos filtros de município e de mês de início:
+
+\begin{enumerate}
+\item residência materna no município de São Paulo (\campo{CODMUNRES}~=~355030);
+\item nascimento ocorrido em 2024;
+\item gestação única (\campo{GRAVIDEZ}~=~1);
+\item peso ao nascer inteiro entre 500 e 6.000\,g, faixa operacional do projeto e não
+domínio clínico validado;
+\item início do pré-natal conhecido e situado nos meses 1 a 6 (\campo{MESPRENAT} entre 1
+e 6).
+\end{enumerate}
+
+Registros com covariáveis incompletas não foram excluídos. Foram verificadas a unicidade
+e a ausência de nulos na chave do registro (\campo{CONTADOR}), a ocorrência de todas as
+datas de nascimento em 2024 e a igualdade das contagens com a referência do levantamento
+de qualidade.
+
+\subsection{Exposição e desfecho}
+
+A exposição e o desfecho foram definidos para cada registro $i$ como
+\begin{equation}\label{eq:def}
+T_i =
+\begin{cases}
+1, & \text{se } \campo{MESPRENAT}_i \in \{1,2,3\},\\[2pt]
+0, & \text{se } \campo{MESPRENAT}_i \in \{4,5,6\},
+\end{cases}
+\qquad
+Y_i =
+\begin{cases}
+1, & \text{se o peso ao nascer é inferior a 2.500\,g},\\[2pt]
+0, & \text{caso contrário.}
+\end{cases}
+\end{equation}
+Por convenção, $T=1$ é chamado grupo de início precoce e $T=0$, grupo de comparação. Na
+população analítica, os inícios distribuíram-se em 35.224 no mês 1, 54.444 no mês 2,
+14.908 no mês 3, 5.366 no mês 4, 3.005 no mês 5 e 1.747 no mês 6. Inícios nos meses 7--9
+ficaram fora do contraste: comparar o primeiro trimestre com inícios muito tardios
+acentuaria o problema de duração gestacional discutido na Seção~\ref{sec:temporalidade}.
+
+\subsection{Covariáveis}\label{sec:covariaveis}
+
+Todas as covariáveis são registradas no parto e foram tratadas como aproximações de
+condições anteriores à exposição (Tabela~\ref{tab:variaveis}). O valor ignorado (código 9
+ou nulo) foi mantido como indicador de ausência, nunca interpretado como categoria
+substantiva.
+
+\begin{table}[htbp]
+\centering
+\caption{Variáveis da análise, codificação e papel no modelo principal}
+\label{tab:variaveis}
+\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.0cm}
+  >{\raggedright\arraybackslash}p{3.3cm} >{\raggedright\arraybackslash}p{2.6cm} L@{}}
+\toprule
+\cab{Papel} & \cab{Variável (campo)} & \cab{Codificação} & \cab{Uso} \\
+\midrule
+Exposição & Início do pré-natal (\campo{MESPRENAT}) & 1--3: $T=1$; 4--6: $T=0$ &
+  Define os grupos \\
+Desfecho & Peso ao nascer (\campo{PESO}) & $<$ 2.500\,g: $Y=1$ &
+  Não usado no ajuste nem no diagnóstico \\
+\addlinespace
+Covariável & Idade materna (\campo{IDADEMAE}) & Anos (10--59) e idade$^2$ &
+  Incluída; o termo quadrático acomoda o desequilíbrio concentrado nas adolescentes \\
+Covariável & Escolaridade (\campo{ESCMAE2010}) & 0--5; ignorado & Incluída \\
+Covariável & Raça/cor (\campo{RACACORMAE}) & 1--5; ignorado & Incluída \\
+Covariável & Paridade (\campo{PARIDADE}) & Nulípara; multípara & Incluída \\
+Covariável & Perdas fetais anteriores (\campo{QTDFILMORT}) & 0; 1; 2 ou mais; ignorado &
+  Incluída, com ressalvas de mensuração \\
+\addlinespace
+Diagnóstico & Situação conjugal (\campo{ESTCIVMAE}) & 1--5; ignorado &
+  Excluída do modelo principal; usada no diagnóstico e na sensibilidade \\
+\addlinespace
+Vedadas & Idade gestacional, consultas, tipo de parto, Apgar, índice de Kotelchuck, grupo
+  de Robson & --- & Posteriores à exposição ou mediadoras; nunca usadas como controle \\
+\bottomrule
+\end{tabularx}
+\fonte{\arquivo{notebooks/principal/06_ato_sp_capital_2024.ipynb} (seção 1);
+\arquivo{docs/entrega/RESUMO_PARA_REDACAO.md} (seção 3.3).}
+\end{table}
+
+Algumas decisões merecem registro. O campo de perdas fetais anteriores é definido no
+dicionário como número de perdas fetais e abortos anteriores à gestação atual, portanto
+anterior à exposição; na população analisada, 99,98\% dos registros têm valor não
+sentinela e 99,99\% estão entre 0 e 9, sem ocorrência do código 99. O campo mistura,
+porém, perdas espontâneas e abortos, estes provavelmente sub-registrados, e a categoria
+``2 ou mais'' limita a influência de valores altos pouco plausíveis. A situação conjugal
+foi excluída do modelo principal por temporalidade frágil: casamento ou união podem
+ocorrer depois do início do pré-natal. A idade não apresentou registros fora de 10--59
+anos e não houve imputação. Outros campos possivelmente anteriores à exposição
+(\campo{QTDGESTANT}, \campo{QTDFILVIVO}, \campo{IDADEPAI}, \campo{CODOCUPMAE}) não foram
+incorporados nesta versão. O bloqueio das variáveis vedadas é verificado por código antes
+do ajuste do escore; ajustar por mediadores ou por consequências da exposição introduziria
+viés de sobreajuste \cite{schisterman2009}.
+
+\subsection{Registros fora da população}
+
+Dos 120.789 nascimentos de mães residentes na capital em 2024, 114.694 (94,95\%)
+compuseram a população analítica. As exclusões foram aplicadas em sequência
+(Tabela~\ref{tab:fluxo}) e têm naturezas distintas. Apenas a primeira etapa --- registros
+sem informação válida de mês de início, tipo de gravidez ou peso --- está relacionada à
+qualidade do registro. As demais são critérios de definição da população: gestações
+múltiplas e inícios nos meses 7--9 são categorias válidas que ficam fora do contraste, e
+o peso fora da faixa de 500 a 6.000\,g é uma exclusão operacional, não um erro presumido.
+Nenhum registro foi excluído por covariável incompleta ou por falta de suporte no escore
+de propensão.
+
+\begin{table}[htbp]
+\centering
+\caption{Composição da população analítica a partir dos nascimentos de mães residentes no
+município de São Paulo, 2024}
+\label{tab:fluxo}
+\small
+\begin{tabularx}{\linewidth}{@{}L S[table-format=-6.0] S[table-format=3.2]
+  >{\raggedright\arraybackslash}p{4.4cm}@{}}
+\toprule
+\cab{Etapa} & {\cab{Registros}} & {\cab{\% do total}} & \cab{Natureza} \\
+\midrule
+Nascimentos de mães residentes na capital & 120789 & 100.00 & --- \\
+\addlinespace
+\quad Sem \campo{MESPRENAT}, \campo{GRAVIDEZ} ou peso válidos & -1028 & 0.85 &
+  Qualidade do registro \\
+\quad Gestação múltipla & -3210 & 2.66 & Categoria válida fora da população \\
+\quad Gestação única com peso fora de 500--6.000\,g & -122 & 0.10 &
+  Exclusão operacional \\
+\quad Gestação única com início nos meses 7--9 & -1735 & 1.44 &
+  Categoria válida fora do contraste \\
+\addlinespace
+\destaque
+População analítica & 114694 & 94.95 & $T=1$: 104.576; $T=0$: 10.118 \\
+\bottomrule
+\end{tabularx}
+\nota{Etapas aplicadas em sequência; cada linha conta apenas os registros não excluídos
+nas etapas anteriores. Percentuais sobre os 120.789 nascimentos.}
+\fonte{\arquivo{outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv}
+(recorte capital, 2024).}
+\end{table}
+
+% =====================================================================
+\section{Comparabilidade dos grupos e confundimento}\label{sec:comparabilidade}
+
+\subsection{Por que a comparação bruta pode ser confundida}
+
+Seja $X$ o vetor de características maternas registradas. Se $X$ influencia tanto a
+probabilidade de início precoce quanto o risco de baixo peso, a diferença bruta de riscos
+entre $T=1$ e $T=0$ combina dois componentes que não se separam sem hipóteses adicionais:
+a eventual relação do momento de início com o desfecho e as diferenças de composição dos
+grupos. A estrutura assumida está representada na Figura~\ref{fig:dag}
+(Seção~\ref{sec:discussao}): as características observadas foram ajustadas; fatores não
+registrados permanecem como fonte possível de confundimento; e variáveis posteriores ao
+início do pré-natal --- número de consultas, idade gestacional, tipo de parto --- não
+foram usadas como controle, pois condicionar nelas bloquearia parte da própria relação
+estudada ou introduziria viés \cite{schisterman2009,wilcox2011}. O diagnóstico de
+comparabilidade foi realizado antes de qualquer estimação e sem uso do desfecho.
+
+\subsection{Diferença média padronizada}
+
+O desequilíbrio entre os grupos foi descrito pela diferença média padronizada (SMD), que
+expressa a diferença em unidades de desvio-padrão e é recomendada para diagnosticar
+balanço em análises com escore de propensão \cite{austin2015}. Para uma covariável
+numérica,
+\begin{equation}\label{eq:smd-num}
+\mathrm{SMD} = \frac{\bar{x}_1 - \bar{x}_0}{\sqrt{\left(s_1^2 + s_0^2\right)/2}},
+\end{equation}
+em que $\bar{x}_t$ e $s_t^2$ são a média e a variância amostral no grupo $t$. Para
+covariáveis categóricas, cada nível é tratado como indicador binário com proporção $p_t$
+no grupo $t$:
+\begin{equation}\label{eq:smd-cat}
+\mathrm{SMD} = \frac{p_1 - p_0}{\sqrt{\left[p_1(1-p_1) + p_0(1-p_0)\right]/2}},
+\end{equation}
+com $p_t$ calculado sobre todos os registros do grupo, inclusive a categoria ignorado. O
+resumo de cada variável é o maior $|\mathrm{SMD}|$ entre seus níveis. Os valores 0,1 e
+0,2 foram usados como referências convencionais, não como testes. P-valores não foram
+usados como critério de equilíbrio: com mais de cem mil registros, diferenças triviais
+seriam estatisticamente significativas.
+
+\begin{table}[htbp]
+\centering
+\caption{Desequilíbrio das covariáveis antes de qualquer ajuste: maior $|\mathrm{SMD}|$
+por variável, São Paulo (capital), 2024}
+\label{tab:smd}
+\small
+\begin{tabular}{@{}l S[table-format=1.3] l S[table-format=2.1] S[table-format=2.1]@{}}
+\toprule
+\cab{Variável} & {\cab{$|\mathrm{SMD}|$}} & \cab{Nível mais desequilibrado} &
+  {\cab{$T=1$}} & {\cab{$T=0$}} \\
+\midrule
+Escolaridade             & 0.452 & Superior completo (\%) & 31.1 & 12.9 \\
+Situação conjugal\textsuperscript{a} & 0.421 & Casada (\%) & 36.5 & 18.1 \\
+Idade materna            & 0.270 & Média (anos)           & 29.3 & 27.5 \\
+Raça/cor                 & 0.199 & Branca (\%)            & 45.9 & 36.1 \\
+Paridade                 & 0.166 & Nulípara (\%)          & 40.4 & 32.4 \\
+Perdas fetais anteriores & 0.041 & Uma (\%)               & 17.1 & 15.6 \\
+\bottomrule
+\end{tabular}
+\nota{\textsuperscript{a} Não incluída no modelo principal (temporalidade frágil). SMD
+calculado sem uso do desfecho.}
+\fonte{\arquivo{outputs/comparabilidade_sp_capital_2024/comparabilidade_sp_capital_2024.ipynb}
+(seção 4) e \arquivo{balanco_covariaveis_2024.csv}.}
+\end{table}
+
+Escolaridade e situação conjugal concentraram os maiores desequilíbrios
+(Tabela~\ref{tab:smd}). A idade média foi 29,3 anos em $T=1$ e 27,5 em $T=0$, e mães de
+10--19 anos foram mais frequentes em $T=0$ (11,9\% contra 6,6\%). Raça/cor e paridade
+apresentaram desequilíbrio moderado; perdas fetais anteriores, desequilíbrio pequeno. O
+padrão é compatível com um gradiente socioeconômico: o início nos meses 4--6 é mais
+frequente entre mães mais jovens, menos escolarizadas e sem união formal registrada.
+
+\subsection{Escore de propensão e sobreposição}\label{sec:overlap}
+
+O escore de propensão é a probabilidade condicional de pertencer ao grupo $T=1$ dadas as
+covariáveis,
+\begin{equation}\label{eq:ps}
+e(X) = P(T = 1 \mid X),
+\end{equation}
+e resume em uma dimensão as diferenças de composição entre os grupos nas covariáveis
+incluídas. A hipótese de positividade requer $0 < e(x) < 1$ para os perfis da
+população-alvo: cada combinação de características deve ter probabilidade não nula de
+pertencer a ambos os grupos \cite{petersen2012}. Empiricamente, examina-se a sobreposição
+(suporte comum) das distribuições do escore estimado em $T=1$ e $T=0$. Quando a
+sobreposição é limitada, estimadores ponderados podem depender de poucos registros com
+pesos elevados, e restringir a análise à região de sobreposição altera a população para a
+qual o resultado vale \cite{crump2009,petersen2012}.
+
+No diagnóstico, o escore foi estimado por regressão logística com penalização L2 e seis
+covariáveis --- incluindo situação conjugal e sem o termo quadrático de idade ---, com
+predições fora da partição de treino (validação cruzada estratificada em cinco partições).
+Os principais resultados foram:
+\begin{itemize}
+\item AUC fora da partição de 0,655, discriminação modesta: as covariáveis registradas
+explicam pouco do momento de início do pré-natal;
+\item escores entre 0,514 e 0,986 em $T=1$ e entre 0,712 e 0,981 em $T=0$, sem registros
+abaixo de 0,05 ou acima de 0,99;
+\item 125 registros de $T=1$ e nenhum de $T=0$ fora do suporte comum observado;
+\item cauda superior com poucos controles: acima de 0,95 estavam 28.683 registros de $T=1$
+(27,4\% do grupo) e 982 de $T=0$ (9,7\%); entre 0,975 e 1,000, 5.366 contra 106.
+\end{itemize}
+
+A AUC modesta favorece a sobreposição, mas não indica validade causal. Ela mostra apenas
+que as covariáveis observadas discriminam pouco os grupos, o que é compatível com a
+existência de determinantes importantes do momento de início que não estão registrados. O
+escore descreve as covariáveis incluídas e nada informa sobre as não observadas.
+
+O diagnóstico revelou uma combinação específica: suporte comum amplo, mas escores
+concentrados perto de 1, reflexo de $P(T=1) \approx 0{,}91$. Nessas condições, o recorte
+simétrico convencional de 0,05 a 0,95 retiraria 27,4\% dos registros de $T=1$, e pesos
+de probabilidade inversa seriam instáveis: sob ponderação voltada aos tratados, controles
+com escore alto receberiam pesos proporcionais à razão $e/(1-e)$, que chega a cerca de 52.
+Essa combinação motivou a escolha da ponderação por sobreposição.
+
+% =====================================================================
+\section{Metodologia: ponderação por sobreposição (ATO)}\label{sec:ato}
+
+\subsection{Estimandos: ATE, ATT e ATO}
+
+Na notação de resultados potenciais, $Y_i(1)$ e $Y_i(0)$ denotam o desfecho que o
+nascimento $i$ apresentaria sob início do pré-natal nos meses 1--3 e nos meses 4--6,
+respectivamente; apenas um deles é observado. Seja
+$\tau(x) = \E[\,Y(1) - Y(0) \mid X = x\,]$ a diferença média condicional ao perfil $x$. Os
+estimandos usuais diferem na população sobre a qual $\tau(x)$ é promediado:
+\begin{align}
+\tau_{\mathrm{ATE}} &= \E\left[\,Y(1) - Y(0)\,\right], \label{eq:ate}\\
+\tau_{\mathrm{ATT}} &= \E\left[\,Y(1) - Y(0) \mid T = 1\,\right], \label{eq:att}\\
+\tau_{\ATO} &= \frac{\E\left[\,h(X)\,\tau(X)\,\right]}{\E\left[\,h(X)\,\right]},
+  \qquad h(x) = e(x)\,\left[1 - e(x)\right]. \label{eq:ato}
+\end{align}
+O ATE refere-se a toda a população; o ATT, aos nascimentos do grupo $T=1$. O ATO
+refere-se a uma população-alvo cuja densidade é proporcional a $f(x)\,e(x)\,[1-e(x)]$, em
+que $f$ é a densidade das covariáveis \cite{li2018}. A função $h(x)$ é máxima quando
+$e(x) = 0{,}5$ e tende a zero quando $e(x)$ se aproxima de 0 ou de 1. A população de
+sobreposição dá, portanto, mais peso aos perfis em que os dois momentos de início são
+frequentes e menos peso aos perfis em que um deles é quase certo.
+
+Sob ignorabilidade condicional, positividade e consistência \cite{hernan2025},
+$\tau_{\ATO}$ tem interpretação causal para essa população. Como essas hipóteses não
+podem ser verificadas com os dados disponíveis, a estimativa é apresentada como diferença
+de riscos ajustada: uma associação ajustada na população de sobreposição.
+
+\subsection{Justificativa da escolha}
+
+\citeonline{li2018} propuseram os pesos de sobreposição como membro de uma família de
+pesos de balanceamento definida pela função $h$. Os autores mostram que, sob
+homocedasticidade, esses pesos minimizam a variância assintótica do estimador ponderado
+entre os pesos dessa família e que, com escore estimado por regressão logística, produzem
+balanço exato das médias das covariáveis incluídas no modelo.
+
+Neste estudo, três características do diagnóstico favoreceram o método. Primeiro, com
+escores concentrados perto de 1, os pesos de probabilidade inversa para o ATE, proporcionais
+a $1/(1-e)$ no grupo de comparação, ou para o ATT, proporcionais a $e/(1-e)$, seriam
+elevados para os controles com escore alto. Segundo, recortar o suporte em limites
+convencionais excluiria uma parcela grande do grupo $T=1$ e redefiniria a população-alvo
+de forma arbitrária \cite{crump2009}. Terceiro, os pesos de sobreposição são limitados ao
+intervalo $[0,1]$, não envolvem divisão por $e$ ou $1-e$ e reduzem gradualmente a
+influência das regiões de pouca sobreposição, sem limiares escolhidos ad hoc. O custo
+dessa escolha é que a população-alvo não é a população total, e precisa ser descrita
+(Seção~\ref{sec:perfil}).
+
+\subsection{Modelo de escore de propensão}
+
+O escore foi estimado por regressão logística com as covariáveis da
+Tabela~\ref{tab:variaveis}:
+\begin{multline}\label{eq:logit}
+\operatorname{logit} e(X_i) = \beta_0 + \beta_1\,\text{idade}_i + \beta_2\,\text{idade}_i^2
+ + \sum_{k} \gamma_k\,\mathbb{1}\{\text{escolaridade}_i = k\}
+ + \sum_{k} \delta_k\,\mathbb{1}\{\text{raça/cor}_i = k\} \\
+ + \theta\,\mathbb{1}\{\text{nulípara}_i\}
+ + \sum_{k} \lambda_k\,\mathbb{1}\{\text{perdas fetais}_i = k\},
+\end{multline}
+em que os indicadores incluem a categoria ignorado de cada variável. A estimação usou
+penalização L2 (parâmetro $C = 1$ na parametrização do \emph{scikit-learn}), variáveis
+numéricas padronizadas, intercepto não penalizado e nenhum peso de classe; com cerca de
+115 mil registros, a penalização é praticamente desprezível. O modelo foi ajustado na
+amostra inteira, e não fora da partição, porque a propriedade de balanço dos pesos de
+sobreposição depende de o escore ser ajustado no mesmo conjunto em que os pesos são
+aplicados. A otimização convergiu em 81 iterações, e a média do escore estimado (0,9118)
+coincidiu com a proporção observada de $T=1$ (0,9118). O desfecho não foi usado na
+especificação nem no ajuste.
+
+\subsection{Pesos, riscos ponderados e diferença ajustada}
+
+Com o escore estimado $\hat{e}(X_i)$, os pesos de sobreposição são
+\begin{equation}\label{eq:pesos}
+w_i =
+\begin{cases}
+1 - \hat{e}(X_i), & \text{se } T_i = 1,\\[2pt]
+\hat{e}(X_i), & \text{se } T_i = 0.
+\end{cases}
+\end{equation}
+Cada registro do grupo $T=1$ recebe peso igual à probabilidade estimada de pertencer ao
+grupo de comparação, e cada registro de $T=0$, peso igual à probabilidade estimada de
+pertencer ao grupo de início precoce. O risco ponderado em cada grupo e a diferença
+ajustada são
+\begin{equation}\label{eq:risco}
+\hat{r}_t = \frac{\sum_{i:\,T_i = t} w_i\,Y_i}{\sum_{i:\,T_i = t} w_i},
+\quad t \in \{0, 1\},
+\qquad\qquad
+\hat{\Delta}_{\ATO} = \hat{r}_1 - \hat{r}_0 ,
+\end{equation}
+com $\hat{\Delta}_{\ATO}$ expresso em pontos percentuais. Como os pesos são normalizados
+dentro de cada grupo, $\hat{r}_t$ é a proporção ponderada de baixo peso no grupo $t$. Os
+riscos brutos correspondem a $w_i = 1$ para todos os registros.
+
+\subsection{Balanço ponderado e tamanho amostral efetivo}
+
+O balanço após a ponderação foi avaliado pelas expressões \eqref{eq:smd-num} e
+\eqref{eq:smd-cat}, com médias e proporções ponderadas no numerador e o mesmo denominador
+não ponderado, para que a comparação antes/depois reflita apenas a mudança nas médias. A
+perda de precisão decorrente da ponderação foi resumida pelo tamanho amostral efetivo de
+Kish em cada grupo:
+\begin{equation}\label{eq:kish}
+n_{\mathrm{ef},t} = \frac{\left(\sum_{i:\,T_i = t} w_i\right)^2}{\sum_{i:\,T_i = t} w_i^2}.
+\end{equation}
+
+\subsection{Suporte com as covariáveis finais}
+
+Como o modelo final difere do modelo de diagnóstico (sai a situação conjugal; entra o
+termo quadrático de idade), o suporte foi reexaminado (Tabela~\ref{tab:suporte}). A regra
+foi fixada antes do cálculo de qualquer risco: nenhum recorte automático; contar os
+registros fora do suporte comum observado e sua participação na soma dos pesos. Seis
+registros de $T=1$ ficaram abaixo do mínimo dos controles, com 0,022\% da soma dos pesos do
+grupo. Nenhum registro foi excluído.
+
+\begin{table}[htbp]
+\centering
+\caption{Distribuição do escore de propensão estimado no modelo final, por grupo}
+\label{tab:suporte}
+\small
+\begin{tabular}{@{}l *{9}{S[table-format=1.4]}@{}}
+\toprule
+\cab{Grupo} & {\cab{Mín.}} & {\cab{P1}} & {\cab{P5}} & {\cab{P25}} & {\cab{Mediana}} &
+  {\cab{P75}} & {\cab{P95}} & {\cab{P99}} & {\cab{Máx.}} \\
+\midrule
+$T=1$ & 0.6232 & 0.8027 & 0.8450 & 0.8870 & 0.9124 & 0.9530 & 0.9719 & 0.9725 & 0.9760 \\
+$T=0$ & 0.6910 & 0.7732 & 0.8192 & 0.8678 & 0.8936 & 0.9169 & 0.9643 & 0.9719 & 0.9760 \\
+\bottomrule
+\end{tabular}
+\nota{Suporte comum observado: 0,6910 a 0,9760. Fora do suporte: 6 registros de $T=1$ e
+nenhum de $T=0$.}
+\fonte{\arquivo{notebooks/principal/06_ato_sp_capital_2024.ipynb} (seção 2).}
+\end{table}
+
+\subsection{Propriedades e limites do estimador}
+
+Duas propriedades precisam constar do texto. Primeiro, com escore logístico, as médias
+ponderadas dos termos incluídos no modelo tornam-se iguais entre os grupos \cite{li2018};
+com a penalização L2, aproximadamente iguais. O balanço quase exato nas covariáveis
+ajustadas é, portanto, esperado por construção e não demonstra ausência de confundimento:
+o diagnóstico informativo está nas covariáveis não incluídas e no tamanho amostral
+efetivo. Segundo, com um único modelo de escore e sem modelo para o desfecho, o estimador
+\emph{não é duplamente robusto}. Sua validade depende de o escore logístico de efeitos
+principais, com idade quadrática, representar adequadamente a relação entre $X$ e $T$.
+Estimadores duplamente robustos, como o AIPW usado na fase anterior do projeto, combinam
+modelos de escore e de desfecho \cite{funk2011}, mas também não eliminam confundimento
+não medido.
+
+% =====================================================================
+\section{Incerteza estatística}\label{sec:incerteza}
+
+A incerteza foi quantificada por bootstrap não paramétrico com $B = 1.000$ réplicas. Em
+cada réplica $b$:
+\begin{enumerate}
+\item sorteiam-se, com reposição, 114.694 registros da população analítica, o mesmo
+tamanho da base original;
+\item o escore de propensão é reajustado na réplica, com a mesma especificação do modelo
+principal;
+\item os pesos, os riscos e as diferenças são recalculados, produzindo
+$\hat{\Delta}^{*}_{b}$.
+\end{enumerate}
+O intervalo de confiança de 95\% é formado pelos percentis 2,5 e 97,5 da distribuição das
+réplicas,
+\begin{equation}\label{eq:ic}
+\mathrm{IC}_{95\%} = \left[\, \hat{\Delta}^{*}_{(0{,}025)}\,,\; \hat{\Delta}^{*}_{(0{,}975)} \,\right].
+\end{equation}
+Como conferência, calcularam-se o erro-padrão bootstrap e o intervalo normal
+correspondente. As sementes aleatórias foram derivadas de uma sequência fixa, uma por
+réplica, de modo que o resultado não depende do número de processos paralelos; todas as
+1.000 réplicas convergiram. Reajustar o escore em cada réplica incorpora ao intervalo a
+variabilidade decorrente da estimação dos pesos.
+
+O bootstrap não deve ser confundido com amostragem dos dados. A análise principal usou
+todos os 114.694 registros elegíveis; não houve sorteio de uma subamostra, por exemplo de
+10 mil nascimentos, para estimar o resultado. A reamostragem bootstrap é um procedimento
+computacional aplicado depois da estimação: cada réplica tem o mesmo tamanho da base,
+repete alguns registros e omite outros, e serve apenas para aproximar a variabilidade do
+estimador. As réplicas não são novas amostras da população nem substituem a estimativa
+pontual, que é sempre a obtida com a base completa. Como a base reúne todos os registros
+elegíveis do ano, o intervalo deve ser lido como medida da variabilidade do estimador sob
+um modelo de nascimentos independentes, e não como erro de amostragem de um levantamento.
+
+Essa independência é uma simplificação. Agrupamentos por estabelecimento de saúde, por
+região de residência ou por mães com mais de um parto no ano tendem a aumentar a
+incerteza, e ignorá-los pode produzir intervalos estreitos demais \cite{cameron2015}.
+Além disso, o intervalo reflete apenas variabilidade amostral; não incorpora vieses de
+confundimento, mensuração ou seleção.
+
+% =====================================================================
+\section{Resultados}\label{sec:resultados}
+
+\subsection{População analisada}
+
+A população analítica reuniu 114.694 nascimentos, 104.576 (91,18\%) no grupo $T=1$ e
+10.118 (8,82\%) no grupo $T=0$, com 9.850 casos de baixo peso ao nascer
+(Tabela~\ref{tab:populacao}). Nenhum registro foi excluído por suporte ou por covariável
+incompleta.
+
+\begin{table}[htbp]
+\centering
+\caption{População analisada e casos de baixo peso ao nascer, São Paulo (capital), 2024}
+\label{tab:populacao}
+\small
+\begin{tabular}{@{}l S[table-format=6.0] S[table-format=3.2] S[table-format=4.0]@{}}
+\toprule
+\cab{Grupo} & {\cab{Nascimentos}} & {\cab{\% do total}} & {\cab{Casos de baixo peso}} \\
+\midrule
+$T=1$ (início nos meses 1--3) & 104576 & 91.18 & 8797 \\
+$T=0$ (início nos meses 4--6) & 10118  & 8.82  & 1053 \\
+\midrule
+Total                         & 114694 & 100.00 & 9850 \\
+\bottomrule
+\end{tabular}
+\fonte{\arquivo{notebooks/principal/06_ato_sp_capital_2024.ipynb} (seções 1 e 5).}
+\end{table}
+
+\subsection{Balanço das covariáveis}
+
+Nas covariáveis incluídas no modelo, o maior $|\mathrm{SMD}|$ caiu de 0,452 para 0,0031
+(Figura~\ref{fig:balanco}), resultado esperado por construção. O indicador descritivo de
+mães de 10--19 anos, que não entra no modelo, também ficou equilibrado: 11,1\% em $T=1$ e
+11,3\% em $T=0$ após a ponderação. A situação conjugal, deixada fora do modelo principal,
+permaneceu desequilibrada: o SMD do nível casada passou de 0,421 para 0,194; o de
+solteira, de $-0{,}279$ para $-0{,}117$; e o de união estável, de $-0{,}125$ para
+$-0{,}070$. A ponderação por covariáveis correlacionadas reduziu, mas não eliminou, o
+desequilíbrio em uma característica não ajustada. Entre as linhas não ajustadas ou
+descritivas, o maior $|\mathrm{SMD}|$ após a ponderação foi 0,194.
+
+\begin{figure}[htbp]
+\centering
+\caption{Diferença média padronizada absoluta por nível de covariável, antes e depois da
+ponderação ATO}
+\label{fig:balanco}
+\input{figuras/fig2_balanco_smd.tex}
+\nota{Linha tracejada: referência convencional de 0,1. Faixa sombreada: situação conjugal,
+não incluída no modelo principal. Denominador do SMD não ponderado, igual antes e depois.}
+\fonte{\arquivo{notebooks/principal/06_ato_sp_capital_2024.ipynb} (seção 4).}
+\end{figure}
+
+\subsection{Pesos e tamanho amostral efetivo}
+
+Os pesos ficaram concentrados em faixas estreitas e não houve valores extremos
+(Tabela~\ref{tab:pesos}). O tamanho amostral efetivo foi de 84.995 em $T=1$ (81,3\% do
+tamanho do grupo) e de 10.096 em $T=0$ (99,8\%). A maior participação de um registro
+individual na soma dos pesos do grupo foi de 0,0042\% em $T=1$ e de 0,0108\% em $T=0$. A
+ponderação implicou perda moderada de precisão em $T=1$ e praticamente nenhuma em $T=0$.
+
+\begin{table}[htbp]
+\centering
+\caption{Distribuição dos pesos de sobreposição e tamanho amostral efetivo, por grupo}
+\label{tab:pesos}
+\small
+\begin{tabular}{@{}l c c@{}}
+\toprule
+\cab{Medida} & \cab{$T=1$ (peso $1-\hat{e}$)} & \cab{$T=0$ (peso $\hat{e}$)} \\
+\midrule
+Registros ($n$)                               & 104.576         & 10.118 \\
+Tamanho efetivo de Kish ($n_{\mathrm{ef}}$)   & 84.995          & 10.096 \\
+$n_{\mathrm{ef}}/n$                           & 81,3\%          & 99,8\% \\
+Peso mínimo -- máximo                         & 0,0240 -- 0,3768 & 0,6910 -- 0,9760 \\
+Peso mediano                                  & 0,0876          & 0,8936 \\
+Maior participação individual na soma dos pesos & 0,0042\%      & 0,0108\% \\
+\bottomrule
+\end{tabular}
+\fonte{\arquivo{notebooks/principal/06_ato_sp_capital_2024.ipynb} (seção 3).}
+\end{table}
+
+\subsection{Perfil da população de sobreposição}\label{sec:perfil}
+
+Como o balanço é praticamente exato nas covariáveis ajustadas, as médias ponderadas de
+$T=1$ e $T=0$ coincidem e descrevem a população de sobreposição. Comparada à população
+total, ela é mais jovem e menos escolarizada, com perfil próximo ao do grupo $T=0$
+(Tabela~\ref{tab:perfil}). O resultado apresentado a seguir vale para essa população: idade média de
+27,6 anos e 13,8\% com ensino superior completo, contra 29,1 anos e 29,5\% na população
+total.
+
+\begin{table}[htbp]
+\centering
+\caption{Perfil da população total, dos grupos sem ponderação e da população de
+sobreposição}
+\label{tab:perfil}
+\small
+\begin{tabular}{@{}l S[table-format=2.1] S[table-format=2.1] S[table-format=2.1]
+  S[table-format=2.1]@{}}
+\toprule
+\cab{Característica} & {\cab{População total}} & {\cab{$T=1$ bruto}} & {\cab{$T=0$ bruto}}
+  & {\cab{Sobreposição (ATO)}} \\
+\midrule
+Idade materna média (anos)         & 29.1 & 29.3 & 27.5 & 27.6 \\
+Mães de 10--19 anos (\%)           & 7.1  & 6.6  & 11.9 & 11.1 \\
+Escolaridade: ensino médio (\%)    & 55.0 & 54.0 & 65.4 & 65.2 \\
+Escolaridade: superior completo (\%) & 29.5 & 31.1 & 12.9 & 13.8 \\
+Raça/cor branca (\%)               & 45.0 & 45.9 & 36.1 & 36.7 \\
+Raça/cor parda (\%)                & 42.7 & 41.9 & 50.3 & 49.7 \\
+Nulíparas (\%)                     & 39.7 & 40.4 & 32.4 & 32.9 \\
+\bottomrule
+\end{tabular}
+\nota{Coluna de sobreposição: médias ponderadas de $T=1$, iguais às de $T=0$ nas
+covariáveis ajustadas; para mães de 10--19 anos, indicador não ajustado, o valor de $T=0$
+ponderado é 11,3\%.}
+\fonte{\arquivo{notebooks/principal/06_ato_sp_capital_2024.ipynb} (seção 4).}
+\end{table}
+
+\subsection{Riscos brutos e ponderados}
+
+O risco bruto de baixo peso foi 8,41\% em $T=1$ e 10,41\% em $T=0$, diferença de
+$-2{,}00$\pp{} (IC 95\%: $-2{,}61$ a $-1{,}37$). Após a ponderação ATO, os riscos foram
+8,68\% e 10,42\%, e a diferença ajustada foi de $-1{,}74$\pp{} (IC 95\%: $-2{,}36$ a
+$-1{,}12$), conforme a Tabela~\ref{tab:riscos} e a Figura~\ref{fig:riscos}. O erro-padrão
+bootstrap da diferença ajustada foi 0,32\pp, o intervalo normal de conferência foi de
+$-2{,}37$ a $-1{,}11$\pp{} e a média das réplicas, $-1{,}75$\pp{} O intervalo não inclui
+zero. A ponderação reduziu a magnitude da diferença bruta em cerca de 13\%.
+
+\begin{table}[htbp]
+\centering
+\caption{Riscos de baixo peso ao nascer, brutos e ponderados (ATO), e diferença entre
+grupos, São Paulo (capital), 2024}
+\label{tab:riscos}
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}l S[table-format=2.2] c S[table-format=2.2] c S[table-format=-1.2] c@{}}
+\toprule
+ & \multicolumn{2}{c}{\cab{$T=1$ (meses 1--3)}} & \multicolumn{2}{c}{\cab{$T=0$ (meses 4--6)}}
+ & \multicolumn{2}{c}{\cab{Diferença $T=1 - T=0$}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(l){6-7}
+\cab{Estimativa} & {\cab{Risco (\%)}} & \cab{IC 95\%} & {\cab{Risco (\%)}} & \cab{IC 95\%}
+ & {\cab{p.p.}} & \cab{IC 95\%} \\
+\midrule
+Bruta              & 8.41 & 8,25 a 8,59 & 10.41 & 9,84 a 11,00 & -2.00 & $-$2,61 a $-$1,37 \\
+\destaque
+Ponderada (ATO)    & 8.68 & 8,49 a 8,87 & 10.42 & 9,85 a 11,00 & -1.74 & $-$2,36 a $-$1,12 \\
+\bottomrule
+\end{tabular}
+\nota{Intervalos bootstrap por percentis, 1.000 réplicas com reestimação do escore. Riscos
+brutos sobre todos os nascimentos de cada grupo; riscos ATO com pesos normalizados dentro
+do grupo. Diferença ATO: erro-padrão bootstrap 0,32\pp; intervalo normal $-2{,}37$ a
+$-1{,}11$\pp}
+\fonte{\arquivo{notebooks/principal/06_ato_sp_capital_2024.ipynb} (seção 5).}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\caption{Risco de baixo peso ao nascer por grupo, bruto e ponderado (ATO), e diferença
+entre grupos, com intervalos de confiança de 95\%}
+\label{fig:riscos}
+\input{figuras/fig3_riscos_ato.tex}
+\nota{Barras: IC 95\% bootstrap por percentis (1.000 réplicas, escore reestimado em cada
+réplica). Linha tracejada no painel (b): diferença nula. População: 114.694 nascimentos de
+mães residentes no município de São Paulo, 2024.}
+\fonte{\arquivo{notebooks/principal/06_ato_sp_capital_2024.ipynb} (seção 5).}
+\end{figure}
+
+A mudança concentrou-se no grupo $T=1$, cujo risco ponderado (8,68\%) é maior que o
+bruto (8,41\%). Esse movimento acompanha a mudança de composição do grupo, que após a
+ponderação passa a refletir o perfil da população de sobreposição, mais jovem e menos
+escolarizada (Seção~\ref{sec:perfil}). No grupo $T=0$, em que os pesos são próximos de
+uniformes, o risco praticamente não se altera (10,41\% e 10,42\%).
+
+Uma formulação adequada do resultado principal é a seguinte: \emph{na população de
+sobreposição definida pelos pesos ATO, após o equilíbrio das distribuições de idade,
+escolaridade, raça/cor, paridade e perdas fetais anteriores, o risco de baixo peso ao
+nascer foi 1,74 p.p.\ menor entre nascimentos com início do pré-natal nos meses 1--3 do
+que entre nascimentos com início nos meses 4--6 (IC 95\%: $-2{,}36$ a $-1{,}12$ p.p.).}
+Trata-se de associação ajustada por características observadas, não de efeito causal
+identificado.
+
+% =====================================================================
+\section{Análise de sensibilidade: situação conjugal}\label{sec:sensibilidade}
+
+A situação conjugal foi o segundo maior desequilíbrio observado e permaneceu
+desequilibrada no modelo principal. Para avaliar quanto a estimativa depende de sua
+exclusão, a variável foi acrescentada ao escore em uma análise exploratória, mantidos a
+população, as codificações, a idade e seu quadrado, a regressão logística com penalização
+L2, o ajuste na amostra inteira, os pesos de sobreposição e a ausência de recorte de
+suporte. O novo escore convergiu em 89 iterações.
+
+\begin{table}[htbp]
+\centering
+\caption{Modelo principal e modelo de sensibilidade com situação conjugal no escore}
+\label{tab:sensibilidade}
+\small
+\begin{tabular}{@{}l c c@{}}
+\toprule
+\cab{Medida} & \cab{Principal} & \cab{Com situação conjugal} \\
+\midrule
+Diferença $T=1 - T=0$ (p.p.)                  & $-$1,74 (IC 95\%: $-$2,36 a $-$1,12) & $-$1,63 (sem IC) \\
+Risco ponderado $T=1$ / $T=0$ (\%)            & 8,68 / 10,42   & 8,77 / 10,40 \\
+Maior $|\mathrm{SMD}|$, conjunto diagnóstico comum & 0,1945    & 0,0111 \\
+SMD do nível casada                           & 0,1945         & 0,0001 \\
+Tamanho efetivo $T=1$ / $T=0$                 & 84.995 / 10.096 & 82.323 / 10.094 \\
+\bottomrule
+\end{tabular}
+\nota{Conjunto diagnóstico comum: mesmas linhas nos dois modelos, incluindo situação
+conjugal e o indicador de 10--19 anos. Na sensibilidade, o maior desequilíbrio residual foi
+o desse indicador ($-0{,}0111$).}
+\fonte{\arquivo{notebooks/principal/06_ato_sp_capital_2024.ipynb} (seção 7).}
+\end{table}
+
+A diferença passou de $-1{,}74$ para $-1{,}63$\pp, uma redução de 0,107\pp{} (6,1\%) na
+magnitude absoluta, na mesma direção (Tabela~\ref{tab:sensibilidade}). O SMD do nível
+casada aproximou-se de zero, como esperado ao incluir a variável no modelo. Essa
+comparação exige quatro cautelas.
+
+\begin{itemize}
+\item \emph{Ausência de intervalo de confiança.} Não foi executado bootstrap para a
+sensibilidade, e o intervalo do modelo principal não se aplica à nova estimativa. A
+comparação é apenas entre estimativas pontuais, sem teste da diferença entre modelos; a
+semelhança não constitui teste de equivalência ou de robustez causal.
+\item \emph{Temporalidade.} A situação conjugal é registrada no parto, e não foi
+demonstrado que ela anteceda o início do pré-natal.
+\item \emph{Mudança da população-alvo.} Incluir a variável altera o escore e, portanto, os
+pesos e a população de sobreposição, cuja densidade é proporcional a
+$f(x)\,e(x)\,[1-e(x)]$. A proporção de casadas na população ponderada passou a 19,2\% nos
+dois grupos, enquanto no modelo principal era de 27,1\% em $T=1$ e 18,6\% em $T=0$.
+\item \emph{Atribuição.} A diferença entre as estimativas mistura mudança de ajuste e
+mudança de população e não pode ser atribuída exclusivamente à correção de confundimento.
+\end{itemize}
+
+% =====================================================================
+\section{Discussão e limitações}\label{sec:discussao}
+
+\subsection{O que foi observado e o que a ponderação ajustou}
+
+Entre os nascimentos de mães residentes na capital paulista em 2024, o risco de baixo peso
+foi menor no grupo com início do pré-natal nos meses 1--3. A diferença bruta de
+$-2{,}00$\pp{} reduziu-se a $-1{,}74$\pp{} depois que as distribuições de idade,
+escolaridade, raça/cor, paridade e perdas fetais anteriores foram equilibradas entre os
+grupos, e o intervalo de confiança da diferença ajustada não incluiu zero. Na análise de
+sensibilidade, a inclusão da situação conjugal levou a $-1{,}63$\pp, na mesma direção.
+
+O que a ponderação fez foi tornar comparáveis, em média, as distribuições das
+características observadas incluídas no modelo, definindo uma população ponderada de
+sobreposição. Ela não pareou gestantes individualmente, não equilibrou características não
+registradas e não equilibrou completamente a situação conjugal, deixada fora do modelo
+principal. A redução de cerca de 13\% na magnitude da diferença indica que parte da
+diferença bruta acompanhava a composição dos grupos nas covariáveis observadas; a parte
+remanescente não pode ser atribuída ao momento de início sem as hipóteses discutidas a
+seguir.
+
+\subsection{O que permanece sem solução}
+
+A principal ameaça é o confundimento não observado. Renda, cobertura por plano privado ou
+uso exclusivo do SUS, planejamento e desejo da gestação, tabagismo, estado nutricional,
+condições clínicas prévias e acesso geográfico à unidade de saúde não constam do SINASC e
+podem afetar tanto o momento de início do pré-natal quanto o peso ao nascer
+(Figura~\ref{fig:dag}). A escolaridade capta parte do gradiente socioeconômico, mas não o
+esgota. A AUC modesta do escore indica que boa parte da variação no momento de início não
+é explicada pelas covariáveis registradas; o balanço obtido nada informa sobre essa parte.
+
+\begin{figure}[htbp]
+\centering
+\caption{Diagrama causal conceitual adotado como hipótese de trabalho}
+\label{fig:dag}
+\input{figuras/fig4_dag.tex}
+\nota{Contorno contínuo azul: variáveis observadas; contorno duplo: seleção pela condição
+de nascido vivo; contorno cinza: variáveis posteriores à exposição, não ajustadas;
+contorno e setas tracejados: fatores não observados e mecanismos possíveis, não avaliados
+com os dados. Todas as setas representam hipóteses de trabalho, não relações estimadas.}
+\fonte{elaboração própria a partir de \arquivo{docs/methodology/DAG_INICIAL.md} e das
+limitações registradas em \arquivo{docs/entrega/RESUMO_PARA_REDACAO.md}.}
+\end{figure}
+
+A situação conjugal ilustra o dilema entre confundimento e temporalidade. Ela foi excluída
+do modelo principal porque pode mudar depois do início do pré-natal; incluída na
+sensibilidade, alterou pouco a estimativa, mas também mudou a população-alvo. A decisão
+sobre seu papel deve ser tomada com base no diagrama causal, e não na magnitude da
+mudança da estimativa.
+
+\subsection{Temporalidade da exposição e duração gestacional}\label{sec:temporalidade}
+
+O mês de início do pré-natal é registrado na Declaração de Nascido Vivo, no parto, a
+partir de recordação ou de transcrição do cartão da gestante. Erros de classificação entre
+meses adjacentes, como 3 e 4, são plausíveis e não foram quantificados.
+
+Há também uma dificuldade estrutural. Gestações mais curtas têm menos tempo para que o
+pré-natal comece tardiamente, e a prematuridade está fortemente ligada ao baixo peso.
+Restringir o grupo de comparação aos meses 4--6 atenua, mas não elimina, essa ligação entre
+duração da gestação e classificação da exposição. Ajustar pela idade gestacional ao nascer
+não resolve o problema: trata-se de variável posterior à exposição, e o ajuste por ela
+pode introduzir viés \cite{wilcox2011,schisterman2009}. As covariáveis, por sua vez, também
+são registradas no parto: a escolaridade pode mudar durante a gestação em adolescentes, e
+o campo de perdas fetais anteriores mistura perdas espontâneas e abortos, com provável
+sub-registro.
+
+\subsection{Seleção por nascimento vivo}
+
+A população inclui apenas gestações que resultaram em nascido vivo. Se o momento de início
+do pré-natal influenciar perdas fetais, e se houver fatores que afetem tanto a
+sobrevivência fetal quanto o peso ao nascer, a comparação restrita a nascidos vivos pode
+ser enviesada \cite{snowden2018}. A fonte do SIM utilizada não contém óbitos fetais para
+o Sudeste em 2024, o que impede avaliar essa seleção com os dados atuais.
+
+\subsection{Alcance da população-alvo e da inferência}
+
+O estimando ATO refere-se a uma população definida pelos próprios pesos --- mais jovem e
+menos escolarizada que o total --- e não se generaliza automaticamente para todas as
+gestantes da capital (ATE), para as que iniciaram cedo (ATT), para outros municípios ou
+para outros anos. Mudar as covariáveis do escore muda essa população, como mostrou a
+análise de sensibilidade.
+
+A validade da ponderação depende ainda da especificação do escore: um modelo logístico de
+efeitos principais com idade quadrática pode não representar interações relevantes entre
+as covariáveis, e o estimador não é duplamente robusto. Quanto à inferência, o bootstrap
+tratou os nascimentos como independentes; o intervalo apresentado pode ser estreito demais
+na presença de agrupamento e não cobre vieses sistemáticos.
+
+\subsection{O que não se pode concluir}
+
+Os resultados não permitem afirmar que iniciar o pré-natal nos meses 1--3 reduz o risco de
+baixo peso em 1,74\pp, nem que antecipar o início para gestantes que hoje o iniciam nos
+meses 4--6 produziria essa redução. Também não autorizam extrapolar a magnitude para a
+população total de gestantes, para outros anos ou para o estado. O que os dados sustentam
+é uma diferença de risco persistente após o equilíbrio das características maternas
+observadas, em uma população-alvo bem definida, cuja interpretação causal depende de
+hipóteses não verificáveis com o SINASC. Avaliar a robustez dessa associação a
+confundimento não medido, por exemplo com o valor E \cite{vanderweele2017}, é um passo
+natural para a etapa seguinte.
+
+% =====================================================================
+\section{Orientação para a redação}\label{sec:orientacao}
+
+Esta seção destina-se a quem fará a redação. O documento já oferece base para as seções
+centrais do trabalho, mas não substitui a revisão bibliográfica, a argumentação e as
+decisões finais de apresentação. A Tabela~\ref{tab:roteiro} relaciona cada parte do
+trabalho ao material deste documento.
+
+\begin{table}[htbp]
+\centering
+\caption{Correspondência entre as seções do trabalho e o material deste documento}
+\label{tab:roteiro}
+\small
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.3cm}
+  >{\raggedright\arraybackslash}p{4.4cm} L@{}}
+\toprule
+\cab{Seção do trabalho} & \cab{Base neste documento} & \cab{A desenvolver} \\
+\midrule
+Introdução & Seção~\ref{sec:introducao} &
+  Revisão bibliográfica sobre pré-natal e baixo peso, com dados epidemiológicos de fontes
+  verificáveis \\
+Dados & Seções~\ref{sec:dados} e \ref{sec:populacao}; Tabelas~\ref{tab:recortes}
+  a~\ref{tab:fluxo}; Figura~\ref{fig:qualidade} &
+  Citação formal das bases SINASC e SIM (DATASUS) segundo a ABNT \\
+Métodos & Seções~\ref{sec:comparabilidade} a~\ref{sec:incerteza}; equações
+  \eqref{eq:def} a \eqref{eq:ic}; Figura~\ref{fig:dag} &
+  Referências para o bootstrap e para o tamanho efetivo de Kish; decidir se o diagrama
+  causal entra no texto final \\
+Resultados & Seção~\ref{sec:resultados}; Tabelas~\ref{tab:populacao} a
+  \ref{tab:riscos}; Figuras~\ref{fig:balanco} e \ref{fig:riscos} &
+  Escolher o que fica no corpo do texto e o que vai para apêndice \\
+Sensibilidade & Seção~\ref{sec:sensibilidade}; Tabela~\ref{tab:sensibilidade} &
+  Decidir se é apresentada no corpo do texto ou em apêndice \\
+Discussão & Seção~\ref{sec:discussao} &
+  Confrontar os resultados com a literatura e discutir implicações sem linguagem causal \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Formulações a evitar.} Não descrever o resultado como efeito ou redução causal
+do baixo peso. Não usar expressões como ``comparando gestantes com o mesmo perfil'',
+que aparece na redação sugerida de \arquivo{RESUMO_PARA_REDACAO.md}: a ponderação ATO
+equilibra distribuições e define uma população ponderada; não houve pareamento
+individual. Não aplicar à estimativa
+de sensibilidade o intervalo do modelo principal. Não chamar o estimador de duplamente
+robusto.
+
+\paragraph{Material de fase anterior.} Os demais documentos de \arquivo{docs/entrega/},
+como o relatório final da disciplina e as tabelas de resultados, referem-se à fase
+nacional do projeto: série 2014--2024 estimada com AIPW e erros-padrão agrupados por
+município. População, estimando e estimador são
+diferentes; seus números, como $-1{,}48$\pp{} em 2024, não devem ser combinados com os
+desta etapa, embora possam ser citados como contexto em comparação explícita.
+
+\paragraph{Questões em aberto.} Nenhuma das questões a seguir foi iniciada nesta etapa.
+\begin{enumerate}
+\item Quantificar a robustez da associação a confundimento não medido, por exemplo com o
+valor E, e buscar um controle negativo defensável.
+\item Estimar a incerteza com dependência, por bootstrap ou variância agrupada por
+estabelecimento de nascimento ou região de residência.
+\item Estimar intervalo de confiança para a sensibilidade com situação conjugal, caso ela
+seja usada além de forma descritiva.
+\item Revisar com o diagrama causal o conjunto de ajuste, incluindo a situação conjugal e
+campos possivelmente anteriores à exposição ainda não usados.
+\item Avaliar desenhos que reduzam a dependência entre duração gestacional e oportunidade
+de início tardio, sem condicionar em variáveis posteriores à exposição.
+\item Obter fonte do SIM com óbitos fetais e, se houver autorização e base adequada,
+avaliar vinculação individual entre SINASC e SIM.
+\item Repetir a especificação na capital em outros anos e no estado de São Paulo,
+explicitando que cada população de sobreposição é diferente.
+\end{enumerate}
+
+% =====================================================================
+{\small\setstretch{1.0}\bibliography{referencias}}
+
+\end{document}

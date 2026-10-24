@@ -1,0 +1,16 @@
+{
+  "alvo": "outcome_t1",
+  "familia": "hgb_historico",
+  "n": 1942045,
+  "fits_previstos": 3,
+  "cobertura_min": 1,
+  "cobertura_max": 1,
+  "log_loss": 0.268412451599764,
+  "brier": 0.07063374011033997,
+  "auc": 0.5806121996802825,
+  "prevalencia": 0.07699152182364466,
+  "media_predita": 0.07699773637086842,
+  "erro_calibracao_medio": 0.0006748473570543686,
+  "erro_calibracao_maximo": 0.0014670620520441519,
+  "log_loss_se_folds": 8.05458228173702e-05
+}

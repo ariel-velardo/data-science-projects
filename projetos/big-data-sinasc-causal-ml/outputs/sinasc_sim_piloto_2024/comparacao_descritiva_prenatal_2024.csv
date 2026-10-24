@@ -1,0 +1,3 @@
+﻿grupo;nascimentos;baixo_peso;percentual_baixo_peso;diferenca_bruta_pp_T1_menos_T0;interpretacao
+T=1 (1-3 meses);758924;61974;8.166035070705368;-2.242652514041403;DESCRITIVA, NAO CAUSAL
+T=0 (4-6 meses);84074;8751;10.40868758474677;-2.242652514041403;DESCRITIVA, NAO CAUSAL

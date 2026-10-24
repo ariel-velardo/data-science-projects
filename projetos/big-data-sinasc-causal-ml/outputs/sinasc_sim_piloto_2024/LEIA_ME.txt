@@ -1,0 +1,23 @@
+﻿PILOTO SINASC + SIM 2024 | Sudeste | 22/10/2026
+SINASC: data/processed/sinasc_2024.parquet, base local preexistente, sem novo download.
+SIM: https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SIM/csv/DO24OPEN_csv.zip
+Download conclu?do na primeira tentativa. ZIP original preservado nesta pasta.
+Dicion?rio: https://svs.aids.gov.br/daent/cgiae/coesv/sistemas-informacao/sim/documentacao/dicionario-de-dados-SIM-tabela-DOM.pdf
+Resid?ncia: prefixos de CODMUNRES 31=MG, 32=ES, 33=RJ, 35=SP.
+SINASC: ano de DTNASC=2024. SIM: ano de DTOBITO=2024. N?o h? linkage nem acompanhamento da mesma coorte.
+Amostras: reservoir aleat?rio simples, semente 2024, DuckDB com uma thread, 10.000 linhas em cada CSV, sem cotas.
+C?digos originais mantidos como texto. Ao abrir CSV, importar todas as colunas como texto para preservar zeros ? esquerda.
+CSV: UTF-8, separador ponto e v?rgula, decimal ponto. Nenhum identificador individual exportado nos recortes.
+Peso v?lido: inteiro entre 500 e 6.000 g. Baixo peso: 500 a 2.499 g entre os pesos v?lidos.
+Resumo por UF: todos os nascimentos do recorte. O denominador de percentual_baixo_peso ? nascidos_peso_valido.
+Compara??o B: gesta??o ?nica, MESPRENAT 1?3 versus 4?6, peso v?lido. Diferen?a = percentual T1 menos percentual T0.
+TIPOBITO=1: fetal. TIPOBITO=2: n?o fetal. A fonte fornecida n?o cont?m TIPOBITO=1 no Sudeste de 2024.
+Por isso obitos_fetais est? vazio (indispon?vel); registros_fetais_no_arquivo=0 n?o significa zero mortes fetais na popula??o.
+SIM infantil: TIPOBITO=2 e IDADE 001?059 (<1 hora), 101?123 (horas), 201?229 (dias), 301?311 (meses), ou 400 (zero anos).
+Os c?digos 100 (22 registros) e 200 (140) t?m detalhamento 00 fora dos intervalos desse dicion?rio e foram exclu?dos conservadoramente.
+Outros 944 ?bitos n?o fetais do Sudeste t?m IDADE=999. N?o foram classificados como infantis.
+A contagem infantil cobre somente c?digos aceitos acima; n?o ? uma contagem exaustiva validada de todos os menores de um ano.
+SIM lido: 1.532.015 linhas. Sudeste/2024: 691.582 n?o fetais. Recorte exportado: 10.432 infantis e nenhum fetal.
+SINASC Sudeste/2024: 904.365 nascimentos. Amostra SINASC n?o restrita ? popula??o B.
+Dados e compara??o exclusivamente descritivos. Nenhum modelo ou estimador foi executado.
+PowerPoint n?o gerado: @oai/artifact-tool, exigido pela skill de apresenta??es, indispon?vel no ambiente. Nenhuma depend?ncia instalada.

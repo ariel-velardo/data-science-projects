@@ -1,0 +1,16 @@
+{
+  "alvo": "outcome_t0",
+  "familia": "extra_trees",
+  "n": 309525,
+  "fits_previstos": 3,
+  "cobertura_min": 1,
+  "cobertura_max": 1,
+  "log_loss": 0.3016897203286714,
+  "brier": 0.08228173842524245,
+  "auc": 0.5849105157883251,
+  "prevalencia": 0.09123011065342056,
+  "media_predita": 0.09121195078608911,
+  "erro_calibracao_medio": 0.0018160264287710025,
+  "erro_calibracao_maximo": 0.003380886757437744,
+  "log_loss_se_folds": 3.66860460127115e-05
+}

@@ -1,0 +1,30 @@
+﻿variavel;rotulo_variavel;tipo_linha;nivel;rotulo_nivel;n_t1;pct_t1;n_t0;pct_t0;media_t1;dp_t1;media_t0;dp_t0;mediana_t1;mediana_t0;diferenca;unidade_diferenca;smd;smd_abs;razao_variancias;incluida_propensity;smd_abs_max_variavel
+IDADEMAE_NUM;Idade materna (anos);numerica;;Média (DP);104576;;10118;;29.303425;6.6002;27.484878;6.8542;29.0;27.0;1.818547;anos;0.270279;0.270279;0.927258;True;0.270279
+IDADE_FAIXA;Idade materna (faixa);faixa_descritiva;10-19;10–19 anos;6889;6.587554;1209;11.949002;;;;;;;-5.361448;p.p.;-0.185681;0.185681;;False;
+IDADE_FAIXA;Idade materna (faixa);faixa_descritiva;20-34;20–34 anos;71767;68.626645;7090;70.073137;;;;;;;-1.446492;p.p.;-0.031378;0.031378;;False;
+IDADE_FAIXA;Idade materna (faixa);faixa_descritiva;35-59;35–59 anos;25920;24.785802;1819;17.977861;;;;;;;6.80794;p.p.;0.166623;0.166623;;False;
+ESCOLARIDADE_MAE;Escolaridade;nivel_categorico;0;Sem escolaridade;28;0.026775;5;0.049417;;;;;;;-0.022642;p.p.;-0.011603;0.011603;;True;0.451831
+ESCOLARIDADE_MAE;Escolaridade;nivel_categorico;1;Fundamental I;579;0.553664;113;1.116822;;;;;;;-0.563157;p.p.;-0.061909;0.061909;;True;0.451831
+ESCOLARIDADE_MAE;Escolaridade;nivel_categorico;2;Fundamental II;8727;8.345127;1508;14.904131;;;;;;;-6.559004;p.p.;-0.205716;0.205716;;True;0.451831
+ESCOLARIDADE_MAE;Escolaridade;nivel_categorico;3;Médio;56513;54.040124;6620;65.42795;;;;;;;-11.387826;p.p.;-0.23378;0.23378;;True;0.451831
+ESCOLARIDADE_MAE;Escolaridade;nivel_categorico;4;Superior incompleto;6163;5.893322;564;5.574224;;;;;;;0.319097;p.p.;0.013726;0.013726;;True;0.451831
+ESCOLARIDADE_MAE;Escolaridade;nivel_categorico;5;Superior completo;32548;31.123776;1302;12.868156;;;;;;;18.25562;p.p.;0.451831;0.451831;;True;0.451831
+ESCOLARIDADE_MAE;Escolaridade;nivel_ausencia;IGNORADO;Ignorado/ausente;18;0.017212;6;0.0593;;;;;;;-0.042088;p.p.;-0.021524;0.021524;;True;0.451831
+RACA_COR_MAE;Raça/cor;nivel_categorico;1;Branca;47963;45.864252;3655;36.12374;;;;;;;9.740512;p.p.;0.199028;0.199028;;True;0.199028
+RACA_COR_MAE;Raça/cor;nivel_categorico;2;Preta;11419;10.919331;1287;12.719905;;;;;;;-1.800574;p.p.;-0.055795;0.055795;;True;0.199028
+RACA_COR_MAE;Raça/cor;nivel_categorico;3;Amarela;1193;1.140797;62;0.612769;;;;;;;0.528028;p.p.;0.056663;0.056663;;True;0.199028
+RACA_COR_MAE;Raça/cor;nivel_categorico;4;Parda;43839;41.920708;5085;50.256968;;;;;;;-8.336259;p.p.;-0.167825;0.167825;;True;0.199028
+RACA_COR_MAE;Raça/cor;nivel_categorico;5;Indígena;123;0.117618;26;0.256968;;;;;;;-0.13935;p.p.;-0.032234;0.032234;;True;0.199028
+RACA_COR_MAE;Raça/cor;nivel_ausencia;IGNORADO;Ignorado/ausente;39;0.037293;3;0.02965;;;;;;;0.007643;p.p.;0.004178;0.004178;;True;0.199028
+SITUACAO_CONJUGAL;Situação conjugal;nivel_categorico;1;Solteira;47344;45.272338;5975;59.053173;;;;;;;-13.780835;p.p.;-0.278537;0.278537;;True;0.421386
+SITUACAO_CONJUGAL;Situação conjugal;nivel_categorico;2;Casada;38130;36.461521;1831;18.096462;;;;;;;18.365059;p.p.;0.421386;0.421386;;True;0.421386
+SITUACAO_CONJUGAL;Situação conjugal;nivel_categorico;3;Viúva;114;0.109012;11;0.108717;;;;;;;0.000294;p.p.;8.9e-05;8.9e-05;;True;0.421386
+SITUACAO_CONJUGAL;Situação conjugal;nivel_categorico;4;Separada/divorciada;1860;1.778611;152;1.502273;;;;;;;0.276338;p.p.;0.021756;0.021756;;True;0.421386
+SITUACAO_CONJUGAL;Situação conjugal;nivel_categorico;5;União estável;17050;16.303932;2144;21.189958;;;;;;;-4.886026;p.p.;-0.125436;0.125436;;True;0.421386
+SITUACAO_CONJUGAL;Situação conjugal;nivel_ausencia;IGNORADO;Ignorado/ausente;78;0.074587;5;0.049417;;;;;;;0.02517;p.p.;0.010112;0.010112;;True;0.421386
+PARIDADE_CAT;Paridade;nivel_categorico;0;Nulípara;42208;40.361077;3279;32.40759;;;;;;;7.953487;p.p.;0.165885;0.165885;;True;0.165885
+PARIDADE_CAT;Paridade;nivel_categorico;1;Multípara;62368;59.638923;6839;67.59241;;;;;;;-7.953487;p.p.;-0.165885;0.165885;;True;0.165885
+PERDAS_FETAIS_CAT;Perdas fetais anteriores;nivel_categorico;0;Nenhuma;81527;77.95957;8043;79.491994;;;;;;;-1.532424;p.p.;-0.037452;0.037452;;True;0.041435
+PERDAS_FETAIS_CAT;Perdas fetais anteriores;nivel_categorico;1;Uma;17923;17.138732;1579;15.605851;;;;;;;1.532881;p.p.;0.041435;0.041435;;True;0.041435
+PERDAS_FETAIS_CAT;Perdas fetais anteriores;nivel_categorico;2_OU_MAIS;Duas ou mais;5101;4.877792;493;4.872504;;;;;;;0.005288;p.p.;0.000246;0.000246;;True;0.041435
+PERDAS_FETAIS_CAT;Perdas fetais anteriores;nivel_ausencia;IGNORADO;Ignorado/ausente;25;0.023906;3;0.02965;;;;;;;-0.005744;p.p.;-0.003511;0.003511;;True;0.041435
