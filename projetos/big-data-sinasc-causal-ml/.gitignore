@@ -21,6 +21,7 @@ outputs/tables/*
 
 # Literatura local: PDFs e extrações integrais em TXT (direitos autorais)
 docs/literature/pdfs/
+docs/sp_capital_ato/artigos/*.pdf
 
 # Artefatos temporários de notebook
 *.nbconvert.ipynb

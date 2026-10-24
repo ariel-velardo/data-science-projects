@@ -8,7 +8,7 @@ Material de apoio para a aula. A **Parte A** descreve as variáveis que o projet
   - código de construção da amostra (`src/amostra.py`);
   - [contrato V2](../temporal/CONTRATO_V2_PRE_ESTIMACAO.md).
 - **Percentuais de ausência:** salvo indicação, referem-se à base bruta de 2024 (N = 2.389.325). "Analítico" refere-se à população analítica histórica (A) de 2024 (N = 2.251.570).
-- **Versão em CSV da Parte B:** [outputs/entrega/dicionario_raw_2014_2024.csv](../../outputs/entrega/dicionario_raw_2014_2024.csv).
+- **Versão em CSV da Parte B:** [outputs/entrega_1_nacional_aipw/dicionario_raw_2014_2024.csv](../../outputs/entrega_1_nacional_aipw/dicionario_raw_2014_2024.csv).
 
 ---
 

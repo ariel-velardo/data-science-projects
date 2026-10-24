@@ -6,7 +6,7 @@ Os três pontos solicitados: **(1) dicionário técnico, (2) matriz X–T–Y e 
 
 ## 1. Dicionário técnico
 
-**Base raw:** 62 campos distintos em 2014–2024 (61 por ano até 2022; 62 em 2023–2024, com `OPORT_DN`). Todos são texto no CSV original. Lista completa: [DICIONARIO_TECNICO.md — Parte B](DICIONARIO_TECNICO.md#parte-b--dicionário-raw-todas-as-colunas-20142024) e [CSV](../../outputs/entrega/dicionario_raw_2014_2024.csv).
+**Base raw:** 62 campos distintos em 2014–2024 (61 por ano até 2022; 62 em 2023–2024, com `OPORT_DN`). Todos são texto no CSV original. Lista completa: [DICIONARIO_TECNICO.md — Parte B](DICIONARIO_TECNICO.md#parte-b--dicionário-raw-todas-as-colunas-20142024) e [CSV](../../outputs/entrega_1_nacional_aipw/dicionario_raw_2014_2024.csv).
 
 | Papel | Campos | Quantos |
 | --- | --- | ---: |

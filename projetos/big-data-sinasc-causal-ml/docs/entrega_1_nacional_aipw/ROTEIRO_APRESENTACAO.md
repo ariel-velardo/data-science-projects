@@ -1,6 +1,6 @@
 # Roteiro de apresentação — 11 slides, cerca de 11 minutos
 
-Tempo médio de 1 minuto por slide. As falas são sugestões para dizer com naturalidade, não para ler. Figuras em [outputs/entrega/figuras/](../../outputs/entrega/figuras/) (PNG para os slides; HTML interativo para eventuais perguntas).
+Tempo médio de 1 minuto por slide. As falas são sugestões para dizer com naturalidade, não para ler. Figuras em [outputs/entrega_1_nacional_aipw/figuras/](../../outputs/entrega_1_nacional_aipw/figuras/) (PNG para os slides; HTML interativo para eventuais perguntas).
 
 ---
 

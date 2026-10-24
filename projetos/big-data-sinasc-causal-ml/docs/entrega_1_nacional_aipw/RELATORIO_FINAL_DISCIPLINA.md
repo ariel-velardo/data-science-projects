@@ -84,7 +84,7 @@ A análise é feita **separadamente para cada ano de nascimento**. Não há esti
 
 Em 2024, na população analítica histórica, a prevalência de BPN é de 7,894891% (N = 2.251.570). A regra de 500–6.000 g remove valores implausíveis. Em 2024, ela excluiu 3.471 registros após as demais regras (0,15%). A definição de BPN da OMS não depende da idade gestacional; por isso, o projeto não restringe a análise a nascimentos a termo.
 
-![Prevalência de baixo peso por ano](../../outputs/entrega/figuras/fig1_prevalencia_baixo_peso.png)
+![Prevalência de baixo peso por ano](../../outputs/entrega_1_nacional_aipw/figuras/fig1_prevalencia_baixo_peso.png)
 
 *Figura 1. Prevalência de BPN na população analítica histórica (A). O eixo vertical não começa em zero.*
 
@@ -107,7 +107,7 @@ Regras adicionais:
 - `CONSPRENAT` = 0 não é convertido em controle.
 - Restringir o comparador muda a população e o estimando: **A, B e C são três estimandos distintos**, e não três medições da mesma grandeza.
 
-![Proporção de início precoce](../../outputs/entrega/figuras/fig2_inicio_precoce.png)
+![Proporção de início precoce](../../outputs/entrega_1_nacional_aipw/figuras/fig2_inicio_precoce.png)
 
 *Figura 2. Proporção de início no 1º–3º mês na população A: de 78,55% (2014) a 86,25% (2024). O eixo vertical não começa em zero.*
 
@@ -246,7 +246,7 @@ A diferença bruta de risco entre início precoce e tardio na formulação A, em
 
 **Ano sinalizado.** Em B/2024, a fração de registros com escore de propensão fora de [0,05; 0,95] é de 10,56%, acima do limite de alerta de 10% fixado antes da estimação, no notebook 09d. A sinalização indica caudas mais pesadas, compostas predominantemente por tratados com propensão alta (223.170 dos 232.984 registros fora do intervalo). Ela **não** indica falha de positividade: nenhum registro fica fora de [0,01; 0,99]. Por isso, o ano é mantido e reportado com a ressalva.
 
-![B C1 com IC95 municipal](../../outputs/entrega/figuras/fig3_B_C1_ic95_municipal.png)
+![B C1 com IC95 municipal](../../outputs/entrega_1_nacional_aipw/figuras/fig3_B_C1_ic95_municipal.png)
 
 *Figura 3. Contraste AIPW ajustado (B, C1) com IC95% municipal.*
 
@@ -264,7 +264,7 @@ A formulação C usa como comparador apenas o início no 4º ou 5º mês. Ela af
 
 A tabela completa está em [TABELAS_RESULTADOS.md](TABELAS_RESULTADOS.md#tabela-3--formulação-c-sensibilidade-sem-recorte). C reproduz o mesmo padrão de B, com magnitudes ligeiramente menores: C1 de C é menos negativo que C1 de B em todos os anos, por 0,037 p.p. (2022) a 0,150 p.p. (2024). Todos os ICs municipais permanecem abaixo de zero. Os anos 2017–2024 de C estão sinalizados pelo mesmo critério de caudas, já que o comparador menor aumenta a proporção de tratados. Nenhum ano foi bloqueado ou removido.
 
-![B versus C](../../outputs/entrega/figuras/fig4_B_versus_C.png)
+![B versus C](../../outputs/entrega_1_nacional_aipw/figuras/fig4_B_versus_C.png)
 
 *Figura 4. Formulações B e C (C1) com faixas de IC95% municipal.*
 
@@ -274,7 +274,7 @@ A tabela completa está em [TABELAS_RESULTADOS.md](TABELAS_RESULTADOS.md#tabela-
 - **C1 é sistematicamente mais negativo:** fica entre 0,07 e 0,12 p.p. abaixo de C2 e C3, em B e em C. A diferença decorre dos modelos de desfecho (logístico × HGB) e é pequena diante da magnitude do contraste.
 - O sinal, a ordem de grandeza e a forma da série temporal são os mesmos nas três especificações.
 
-![C1 C2 C3 em B](../../outputs/entrega/figuras/fig5_B_especificacoes.png)
+![C1 C2 C3 em B](../../outputs/entrega_1_nacional_aipw/figuras/fig5_B_especificacoes.png)
 
 *Figura 5. Formulação B nas três especificações.*
 

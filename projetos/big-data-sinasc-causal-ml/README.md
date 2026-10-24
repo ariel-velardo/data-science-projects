@@ -39,11 +39,11 @@ Os cinco notebooks de `notebooks/principal/` formam o **fluxo acadêmico princip
 
 | Notebook | Conteúdo |
 | --- | --- |
-| [01 — EDA](notebooks/principal/01_eda_sinasc_2014_2024.ipynb) | Descrição da base 2014–2024: volume, qualidade, ausências, perfil das gestantes e evolução do desfecho e da exposição. |
-| [02 — Preparação e desenho](notebooks/principal/02_preparacao_e_desenho.ipynb) | Da base bruta à população analítica: filtros, definição de Y, T e X e escolha do comparador. |
-| [03 — Propensity e suporte](notebooks/principal/03_propensity_e_overlap.ipynb) | Escore de propensão, sobreposição entre grupos, balanceamento das covariáveis e tamanho efetivo de amostra. |
-| [04 — Estimação AIPW](notebooks/principal/04_estimacao_aipw.ipynb) | Modelos auxiliares, estimador AIPW, *cross-fitting* e cálculo da incerteza. |
-| [05 — Resultados e sensibilidades](notebooks/principal/05_resultados_e_sensibilidades.ipynb) | Contrastes de 2014 a 2024, formulação C, especificações de modelo, recorte de suporte, inferência municipal e limitações. |
+| [01 — EDA](notebooks/entrega_1_nacional_aipw/01_eda_sinasc_2014_2024.ipynb) | Descrição da base 2014–2024: volume, qualidade, ausências, perfil das gestantes e evolução do desfecho e da exposição. |
+| [02 — Preparação e desenho](notebooks/entrega_1_nacional_aipw/02_preparacao_e_desenho.ipynb) | Da base bruta à população analítica: filtros, definição de Y, T e X e escolha do comparador. |
+| [03 — Propensity e suporte](notebooks/entrega_1_nacional_aipw/03_propensity_e_overlap.ipynb) | Escore de propensão, sobreposição entre grupos, balanceamento das covariáveis e tamanho efetivo de amostra. |
+| [04 — Estimação AIPW](notebooks/entrega_1_nacional_aipw/04_estimacao_aipw.ipynb) | Modelos auxiliares, estimador AIPW, *cross-fitting* e cálculo da incerteza. |
+| [05 — Resultados e sensibilidades](notebooks/entrega_1_nacional_aipw/05_resultados_e_sensibilidades.ipynb) | Contrastes de 2014 a 2024, formulação C, especificações de modelo, recorte de suporte, inferência municipal e limitações. |
 
 Os demais notebooks registram o histórico do desenvolvimento e são preservados para rastreabilidade, mas não são necessários para acompanhar o trabalho:
 
@@ -81,7 +81,7 @@ Contraste AIPW = risco de baixo peso com início no 1º–3º mês **menos** o r
 - Nenhum IC95% municipal inclui zero, com ou sem recorte.
 - Em B, o ano de 2024 tem caudas de propensão sinalizadas (10,56% dos registros fora de [0,05; 0,95]). Em C, os anos de 2017 a 2024 recebem a mesma sinalização. Nenhum registro fica fora de [0,01; 0,99].
 
-As tabelas completas, ano a ano, estão em [TABELAS_RESULTADOS.md](docs/entrega/TABELAS_RESULTADOS.md).
+As tabelas completas, ano a ano, estão em [TABELAS_RESULTADOS.md](docs/entrega_1_nacional_aipw/TABELAS_RESULTADOS.md).
 
 <details>
 <summary>Referência histórica de reprodução — análise de 2024</summary>
@@ -133,18 +133,18 @@ jupyter lab
 Execute os notebooks de `notebooks/principal/` na ordem **01 → 02 → 03 → 04 → 05**.
 
 - Os notebooks **03, 04 e 05** leem resultados já calculados em `outputs/` e executam em poucos instantes; nenhum modelo é ajustado neles.
-- Os notebooks **01 e 02** combinam tabelas consolidadas em `outputs/` com algumas consultas DuckDB aos arquivos Parquet anuais: 2014–2023 em `data/processed/sinasc/` e 2024 em `data/processed/sinasc_2024.parquet`. Esses arquivos não são versionados no Git por causa do tamanho. Os ZIPs anuais vêm da fonte oficial, e o endereço de cada ano e os hashes de verificação estão em [METADADOS_BASE.md](docs/entrega/METADADOS_BASE.md).
+- Os notebooks **01 e 02** combinam tabelas consolidadas em `outputs/` com algumas consultas DuckDB aos arquivos Parquet anuais: 2014–2023 em `data/processed/sinasc/` e 2024 em `data/processed/sinasc_2024.parquet`. Esses arquivos não são versionados no Git por causa do tamanho. Os ZIPs anuais vêm da fonte oficial, e o endereço de cada ano e os hashes de verificação estão em [METADADOS_BASE.md](docs/entrega_1_nacional_aipw/METADADOS_BASE.md).
 - O notebook científico original ([10_estimacao_v2.ipynb](notebooks/historico/10_estimacao_v2.ipynb)), que ajusta os modelos sobre todos os registros, é versionado. Os caches de ajuste ficam em `data/interim/`, são apenas locais e não são versionados; por isso, um clone do repositório não reexecuta de imediato a estimação pesada. Ele é computacionalmente pesado e não é necessário para a leitura acadêmica dos resultados.
 
 ## 8. Documentação
 
 | Documento | Conteúdo |
 | --- | --- |
-| [RELATORIO_FINAL_DISCIPLINA.md](docs/entrega/RELATORIO_FINAL_DISCIPLINA.md) | Relatório completo: contexto, métodos, resultados, limitações e referências |
-| [DICIONARIO_TECNICO.md](docs/entrega/DICIONARIO_TECNICO.md) | Dicionário das variáveis usadas na análise |
-| [METADADOS_BASE.md](docs/entrega/METADADOS_BASE.md) | Ficha da base, volumes por ano, filtros, qualidade e proveniência |
-| [MATRIZ_XTY.md](docs/entrega/MATRIZ_XTY.md) | Definição e codificação de X, T e Y |
-| [TABELAS_RESULTADOS.md](docs/entrega/TABELAS_RESULTADOS.md) | Tabelas finais de resultados, sensibilidades e comparação entre formulações |
+| [RELATORIO_FINAL_DISCIPLINA.md](docs/entrega_1_nacional_aipw/RELATORIO_FINAL_DISCIPLINA.md) | Relatório completo: contexto, métodos, resultados, limitações e referências |
+| [DICIONARIO_TECNICO.md](docs/entrega_1_nacional_aipw/DICIONARIO_TECNICO.md) | Dicionário das variáveis usadas na análise |
+| [METADADOS_BASE.md](docs/entrega_1_nacional_aipw/METADADOS_BASE.md) | Ficha da base, volumes por ano, filtros, qualidade e proveniência |
+| [MATRIZ_XTY.md](docs/entrega_1_nacional_aipw/MATRIZ_XTY.md) | Definição e codificação de X, T e Y |
+| [TABELAS_RESULTADOS.md](docs/entrega_1_nacional_aipw/TABELAS_RESULTADOS.md) | Tabelas finais de resultados, sensibilidades e comparação entre formulações |
 
 Um mapa completo da documentação principal, complementar e histórica está disponível em [docs/README.md](docs/README.md).
 

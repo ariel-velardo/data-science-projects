@@ -1,7 +1,7 @@
 ﻿PILOTO SINASC + SIM 2024 | Sudeste | 22/10/2026
 SINASC: data/processed/sinasc_2024.parquet, base local preexistente, sem novo download.
 SIM: https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SIM/csv/DO24OPEN_csv.zip
-Download conclu?do na primeira tentativa. ZIP original preservado nesta pasta.
+Download conclu?do na primeira tentativa. ZIP original preservado em data/raw/sim/DO24OPEN_csv.zip (movido desta pasta em 24/10/2026; arquivo local, fora do Git).
 Dicion?rio: https://svs.aids.gov.br/daent/cgiae/coesv/sistemas-informacao/sim/documentacao/dicionario-de-dados-SIM-tabela-DOM.pdf
 Resid?ncia: prefixos de CODMUNRES 31=MG, 32=ES, 33=RJ, 35=SP.
 SINASC: ano de DTNASC=2024. SIM: ano de DTOBITO=2024. N?o h? linkage nem acompanhamento da mesma coorte.

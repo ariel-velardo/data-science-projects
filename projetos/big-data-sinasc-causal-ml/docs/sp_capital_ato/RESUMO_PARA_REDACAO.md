@@ -35,7 +35,7 @@ Inícios nos meses 7–9 ficam fora da população; a comparação com 4–6 mes
 **Justificativa da escolha de São Paulo, capital.** A orientação metodológica foi concentrar a investigação em localidades com melhor qualidade de dados. A escolha foi feita por critérios de preenchimento e retenção, **sem usar a magnitude da associação com o desfecho**.
 
 - *Comparação geográfica de 2024* (`outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md`): a capital apresentou a maior proporção de registros com as variáveis essenciais simultaneamente válidas (`MESPRENAT` 1–9, `GRAVIDEZ` 1–3 e peso inteiro 500–6.000 g): 99,04%, contra 97,93% no estado de São Paulo e 97,16% no Sudeste. `MESPRENAT` válido: 99,15% (capital), 98,08% (estado), 97,32% (Sudeste). Retenção na especificação B: 94,95% dos 120.789 nascimentos da capital. Escolaridade, raça/cor, situação conjugal e perdas fetais também tiveram preenchimento maior na capital que no estado.
-- *Série temporal 2014–2024* (`outputs/qualidade_geografica_2024/qualidade_sp_2014_2024.ipynb` e `qualidade_sp_por_ano.csv`): `MESPRENAT` válido na capital foi superior ao do estado e ao do restante do estado em 11 de 11 anos, variando de 98,45% (2014) a 99,15% (2024). No período, a capital somou 1.587.749 nascimentos elegíveis (1.401.494 em T=1 e 186.255 em T=0), retenção acumulada de 94,61%.
+- *Série temporal 2014–2024* (`notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb` e `outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv`): `MESPRENAT` válido na capital foi superior ao do estado e ao do restante do estado em 11 de 11 anos, variando de 98,45% (2014) a 99,15% (2024). No período, a capital somou 1.587.749 nascimentos elegíveis (1.401.494 em T=1 e 186.255 em T=0), retenção acumulada de 94,61%.
 - *Ponto de atenção da série:* o número de controles na capital caiu 58,44% entre 2014 (24.348; 14,76% dos elegíveis) e 2024 (10.118; 8,82%), enquanto o total de elegíveis caiu 30,48%. A queda motivou o diagnóstico de comparabilidade, mas não constitui, por si só, violação de positividade.
 
 O estado de São Paulo foi registrado como alternativa de maior abrangência; não foi analisado nesta versão.
@@ -85,7 +85,7 @@ Todas são registradas no parto e tratadas como aproximações de condições an
 
 ### 3.4 Diagnóstico de comparabilidade e de sobreposição
 
-Realizado antes da estimação, sem uso do desfecho (`outputs/comparabilidade_sp_capital_2024/comparabilidade_sp_capital_2024.ipynb`).
+Realizado antes da estimação, sem uso do desfecho (`notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb`).
 
 **Definição de SMD.** Numéricas: $(\bar x_1-\bar x_0)/\sqrt{(s_1^2+s_0^2)/2}$. Categóricas: um indicador por nível, $(p_1-p_0)/\sqrt{[p_1(1-p_1)+p_0(1-p_0)]/2}$, com $p_g$ calculado sobre todos os elegíveis do grupo $g$ (inclusive "Ignorado"); o resumo de cada variável é o maior |SMD| entre seus níveis. Os valores 0,1 e 0,2 foram usados como referências convencionais, não como testes; p-valores não foram usados como critério de equilíbrio.
 
@@ -241,10 +241,10 @@ Caminhos relativos à raiz do projeto. Os gráficos estão incorporados aos note
 | Introdução / problema | Contexto, pergunta e literatura brasileira já levantada | `docs/literature/REFERENCIAS_CENTRAIS.md`; `docs/literature/fichas/` |
 | Dados — SINASC e dicionário | Definições de campos, códigos e papéis analíticos | `docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md`; `src/sinasc.py` (descrições oficiais e classificação temporal) |
 | Dados — escolha do recorte (2024) | Tabela de seis recortes, qualidade e retenção | `outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md`; `comparacao_recortes_2024.csv`; `qualidade_variaveis_2024.csv` |
-| Dados — série 2014–2024 | Gráficos e tabelas de qualidade e de contagens anuais | `outputs/qualidade_geografica_2024/qualidade_sp_2014_2024.ipynb`; `qualidade_sp_por_ano.csv` |
+| Dados — série 2014–2024 | Gráficos e tabelas de qualidade e de contagens anuais | `notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb`; `outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv` |
 | Dados — SIM e cruzamento territorial | Regras, exclusões e totais descritivos | `outputs/sinasc_sim_piloto_2024/LEIA_ME.txt`; `BRIEFING_APRESENTACAO.md`; `resumo_sinasc_sim_2024.csv`; `painel_municipal_2024.csv`; `perfil_obitos_infantis_2024.csv`; `comparacao_descritiva_prenatal_2024.csv` |
 | Metodologia — seleção e covariáveis | Projeção SQL congelada; pipeline do escore; lista de variáveis vedadas | `src/amostra.py`; `src/diagnosticos.py` |
-| Metodologia — comparabilidade | Tabela por nível, gráfico de balanço (seção 5), escore e histograma espelhado (seção 6), faixas de pouca representação | `outputs/comparabilidade_sp_capital_2024/comparabilidade_sp_capital_2024.ipynb`; `balanco_covariaveis_2024.csv`; `resumo_propensity_2024.csv` |
+| Metodologia — comparabilidade | Tabela por nível, gráfico de balanço (seção 5), escore e histograma espelhado (seção 6), faixas de pouca representação | `notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb`; `outputs/comparabilidade_sp_capital_2024/balanco_covariaveis_2024.csv` e `resumo_propensity_2024.csv` |
 | Metodologia — ATO e bootstrap | Definições (seção 2), suporte com covariáveis finais, procedimento bootstrap (seção 5) | `notebooks/principal/06_ato_sp_capital_2024.ipynb` |
 | Resultados — riscos | Tabela de riscos brutos e ponderados com IC; gráfico de riscos (seção 5) | `notebooks/principal/06_ato_sp_capital_2024.ipynb` |
 | Resultados — balanço e pesos | Tabela de pesos e n efetivo (seção 3); tabela e gráfico de balanço antes/depois (seção 4); perfil da população de sobreposição | `notebooks/principal/06_ato_sp_capital_2024.ipynb` |
@@ -253,13 +253,13 @@ Caminhos relativos à raiz do projeto. Os gráficos estão incorporados aos note
 | Discussão — temporalidade e seleção | Duração gestacional por mês de início, baixo peso por duração, nascimentos fora da especificação B (seção 5.1) e conclusão (seção 6); base da seção 10 deste resumo | `notebooks/principal/08_temporalidade_prenatal_sp_capital_2024.ipynb` |
 | Discussão | Interpretação e limitações já redigidas (seção 6 do notebook ATO; seção 7 do notebook de comparabilidade) | os dois notebooks acima |
 
-**Material de fase anterior, não misturar:** `docs/entrega/RELATORIO_FINAL_DISCIPLINA.md`, `TABELAS_RESULTADOS.md` e demais arquivos de `docs/entrega/` referem-se à série **nacional** 2014–2024 estimada com AIPW e erros-padrão agrupados por município. População, estimando e estimador são diferentes; seus números (por exemplo, −1,48 p.p. em 2024) não devem ser combinados com os desta versão. Podem ser citados como contexto ou comparação explícita.
+**Material de fase anterior, não misturar:** `docs/entrega_1_nacional_aipw/RELATORIO_FINAL_DISCIPLINA.md`, `TABELAS_RESULTADOS.md` e demais arquivos de `docs/entrega_1_nacional_aipw/` referem-se à série **nacional** 2014–2024 estimada com AIPW e erros-padrão agrupados por município. População, estimando e estimador são diferentes; seus números (por exemplo, −1,48 p.p. em 2024) não devem ser combinados com os desta versão. Podem ser citados como contexto ou comparação explícita.
 
 ---
 
 ## 7. Referências metodológicas
 
-Selecionadas entre as referências já identificadas e verificadas no projeto (`docs/literature/REFERENCIAS_CENTRAIS.md` e lista de referências de `docs/entrega/RELATORIO_FINAL_DISCIPLINA.md`). A única referência acrescentada depois é Li, Morgan e Zaslavsky (2018), referência primária dos pesos de sobreposição, já incorporada a este documento e ao pacote acadêmico aprovado (ver o fim desta seção).
+Selecionadas entre as referências já identificadas e verificadas no projeto (`docs/literature/REFERENCIAS_CENTRAIS.md` e lista de referências de `docs/entrega_1_nacional_aipw/RELATORIO_FINAL_DISCIPLINA.md`). A única referência acrescentada depois é Li, Morgan e Zaslavsky (2018), referência primária dos pesos de sobreposição, já incorporada a este documento e ao pacote acadêmico aprovado (ver o fim desta seção).
 
 **Pré-natal, baixo peso e qualidade do SINASC**
 
@@ -292,7 +292,7 @@ Selecionadas entre as referências já identificadas e verificadas no projeto (`
 
 **Contraste com a fase anterior (AIPW), se citada:** FUNK, M. J. et al. Doubly robust estimation of causal effects. *American Journal of Epidemiology*, v. 173, p. 761–767, 2011. DOI: 10.1093/aje/kwq439.
 
-**Referência primária dos pesos de sobreposição (ATO).** Já incorporada ao pacote acadêmico aprovado (`docs/entrega/PACOTE_REDACAO_ETAPA_1_OVERLEAF/referencias.bib`, chave `li2018`; índice em `docs/entrega/artigos/LEIA_ME.md`):
+**Referência primária dos pesos de sobreposição (ATO).** Já incorporada ao pacote acadêmico aprovado (`docs/sp_capital_ato/PACOTE_REDACAO_ETAPA_1_OVERLEAF/referencias.bib`, chave `li2018`; índice em `docs/sp_capital_ato/artigos/LEIA_ME.md`):
 
 - LI, F.; MORGAN, K. L.; ZASLAVSKY, A. M. Balancing covariates via propensity score weighting. *Journal of the American Statistical Association*, v. 113, n. 521, p. 390–400, 2018. DOI: 10.1080/01621459.2016.1260466. — pesos de sobreposição e população-alvo do ATO.
 

@@ -2,25 +2,25 @@
 
 Este diretório contém tanto a documentação final da entrega quanto registros históricos do desenvolvimento.
 
-Para leitura acadêmica do projeto, começar por [RELATORIO_FINAL_DISCIPLINA.md](entrega/RELATORIO_FINAL_DISCIPLINA.md) e pelos cinco notebooks de [notebooks/principal/](../notebooks/principal/).
+Para leitura acadêmica do projeto, começar por [RELATORIO_FINAL_DISCIPLINA.md](entrega_1_nacional_aipw/RELATORIO_FINAL_DISCIPLINA.md) e pelos cinco notebooks de [notebooks/principal/](../notebooks/principal/).
 
 ## Documentação principal
 
 | Documento | Finalidade |
 | --- | --- |
-| [RELATORIO_FINAL_DISCIPLINA.md](entrega/RELATORIO_FINAL_DISCIPLINA.md) | Síntese completa de pergunta, dados, método, resultados, limitações e referências |
-| [DICIONARIO_TECNICO.md](entrega/DICIONARIO_TECNICO.md) | Variáveis analíticas e dicionário raw das colunas de 2014–2024 |
-| [METADADOS_BASE.md](entrega/METADADOS_BASE.md) | Fonte, período, volumes, qualidade e proveniência da base |
-| [MATRIZ_XTY.md](entrega/MATRIZ_XTY.md) | Definição e codificação de X, T e Y |
-| [TABELAS_RESULTADOS.md](entrega/TABELAS_RESULTADOS.md) | Resultados finais e sensibilidades |
+| [RELATORIO_FINAL_DISCIPLINA.md](entrega_1_nacional_aipw/RELATORIO_FINAL_DISCIPLINA.md) | Síntese completa de pergunta, dados, método, resultados, limitações e referências |
+| [DICIONARIO_TECNICO.md](entrega_1_nacional_aipw/DICIONARIO_TECNICO.md) | Variáveis analíticas e dicionário raw das colunas de 2014–2024 |
+| [METADADOS_BASE.md](entrega_1_nacional_aipw/METADADOS_BASE.md) | Fonte, período, volumes, qualidade e proveniência da base |
+| [MATRIZ_XTY.md](entrega_1_nacional_aipw/MATRIZ_XTY.md) | Definição e codificação de X, T e Y |
+| [TABELAS_RESULTADOS.md](entrega_1_nacional_aipw/TABELAS_RESULTADOS.md) | Resultados finais e sensibilidades |
 
 ## Material complementar
 
 | Material | Finalidade |
 | --- | --- |
-| [MATERIAL_PROXIMA_AULA.md](entrega/MATERIAL_PROXIMA_AULA.md) | Versão enxuta de dicionário, matriz X–T–Y e metadados para projeção em aula |
-| [ROTEIRO_APRESENTACAO.md](entrega/ROTEIRO_APRESENTACAO.md) | Roteiro de slides com falas sugeridas |
-| [RESUMO_UMA_PAGINA.md](entrega/RESUMO_UMA_PAGINA.md) | Resumo executivo do problema, método e resultados |
+| [MATERIAL_PROXIMA_AULA.md](entrega_1_nacional_aipw/MATERIAL_PROXIMA_AULA.md) | Versão enxuta de dicionário, matriz X–T–Y e metadados para projeção em aula |
+| [ROTEIRO_APRESENTACAO.md](entrega_1_nacional_aipw/ROTEIRO_APRESENTACAO.md) | Roteiro de slides com falas sugeridas |
+| [RESUMO_UMA_PAGINA.md](entrega_1_nacional_aipw/RESUMO_UMA_PAGINA.md) | Resumo executivo do problema, método e resultados |
 | [sources/](sources/) | Fontes oficiais dos dados SINASC |
 | [literature/](literature/) | Referências centrais, fichas de leitura e manifesto dos artigos consultados |
 
@@ -44,6 +44,6 @@ Registros preservados para rastreabilidade. Não são necessários para a leitur
 
 1. [README do projeto](../README.md);
 2. notebooks [01–05 de notebooks/principal/](../notebooks/principal/);
-3. [RELATORIO_FINAL_DISCIPLINA.md](entrega/RELATORIO_FINAL_DISCIPLINA.md);
-4. [DICIONARIO_TECNICO.md](entrega/DICIONARIO_TECNICO.md), [METADADOS_BASE.md](entrega/METADADOS_BASE.md) e [MATRIZ_XTY.md](entrega/MATRIZ_XTY.md);
+3. [RELATORIO_FINAL_DISCIPLINA.md](entrega_1_nacional_aipw/RELATORIO_FINAL_DISCIPLINA.md);
+4. [DICIONARIO_TECNICO.md](entrega_1_nacional_aipw/DICIONARIO_TECNICO.md), [METADADOS_BASE.md](entrega_1_nacional_aipw/METADADOS_BASE.md) e [MATRIZ_XTY.md](entrega_1_nacional_aipw/MATRIZ_XTY.md);
 5. histórico de desenvolvimento, apenas se necessário para rastreabilidade.

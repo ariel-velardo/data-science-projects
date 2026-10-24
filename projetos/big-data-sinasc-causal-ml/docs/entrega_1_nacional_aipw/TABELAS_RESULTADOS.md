@@ -1,6 +1,6 @@
 # Tabelas de resultados
 
-Cinco tabelas finais. Os valores foram extraídos de `outputs/temporal/estimacao_v2/` (V2), `outputs/temporal/estimativas/aipw_anual.csv` (V1) e `outputs/temporal/tabelas/descritiva_anual.csv`. As versões em CSV, sem arredondamento, estão em [outputs/entrega/tabelas/](../../outputs/entrega/tabelas/).
+Cinco tabelas finais. Os valores foram extraídos de `outputs/temporal/estimacao_v2/` (V2), `outputs/temporal/estimativas/aipw_anual.csv` (V1) e `outputs/temporal/tabelas/descritiva_anual.csv`. As versões em CSV, sem arredondamento, estão em [outputs/entrega_1_nacional_aipw/tabelas/](../../outputs/entrega_1_nacional_aipw/tabelas/).
 
 **Convenções:**
 
