@@ -3,7 +3,7 @@
 **Título provisório.** Início precoce do pré-natal e baixo peso ao nascer no Brasil, 2014–2024: contrastes AIPW com ajuste cruzado em 30,5 milhões de registros do SINASC.
 
 **Disciplina:** Big Data & Analytics — Mestrado IPT, 2026.3.
-**Notebook científico de referência:** [10_estimacao_v2.ipynb](../../notebooks/historico/10_estimacao_v2.ipynb).
+**Notebook científico de referência:** `notebooks/historico/10_estimacao_v2.ipynb` (retirado da árvore em outubro de 2026; disponível no histórico Git, commit `e11bee6`).
 **Fonte numérica:** [outputs/temporal/estimacao_v2/](../../outputs/temporal/estimacao_v2/) e tabelas temporais descritivas. Todos os números deste texto foram conferidos automaticamente contra esses arquivos.
 
 ---

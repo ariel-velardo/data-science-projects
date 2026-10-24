@@ -1,7 +1,5 @@
 """Contratos pequenos para o benchmark preditivo de 2024."""
 import inspect
-import json
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -161,37 +159,7 @@ def test_regra_um_ep_preserva_historico_e_rejeita_metrica_causal():
         escolher_um_ep([historico | {"aipw_estimativa": 0.1}, novo])
 
 
-def test_api_propensity_nao_recebe_outcome_e_notebook_plotly():
+def test_api_propensity_nao_recebe_outcome():
     from src.benchmark_nuisance import executar_familia
 
     assert "y" not in inspect.signature(executar_familia).parameters
-    caminho = Path(__file__).parents[1] / "notebooks/historico/08c_benchmark_modelos_nuisance.ipynb"
-    nb = json.loads(caminho.read_text(encoding="utf-8"))
-    markdown = "\n".join("".join(c.get("source", [])) for c in nb["cells"]
-                         if c["cell_type"] == "markdown")
-    codigo = "\n".join("".join(c.get("source", [])) for c in nb["cells"]
-                       if c["cell_type"] == "code")
-    assert all(f"## {i}." in markdown for i in range(1, 19))
-    assert "plotly.graph_objects" in codigo
-    assert "aplicar_tema_ipt" in codigo
-    assert "calcular_aipw" not in codigo
-    assert "src.inferencia_causal" not in codigo
-
-
-def test_fechamento_humano_preserva_benchmark_parcial():
-    raiz = Path(__file__).parents[1]
-    decisao = json.loads((raiz / "outputs/temporal/modelos_nuisance/decisao_modelos_nuisance.json")
-                        .read_text(encoding="utf-8"))
-    notebook = json.loads((raiz / "notebooks/historico/08c_benchmark_modelos_nuisance.ipynb")
-                          .read_text(encoding="utf-8"))
-    fonte = "\n".join("".join(c.get("source", [])) for c in notebook["cells"]
-                      if c["cell_type"] == "code")
-
-    assert decisao["benchmark"] == "BENCHMARK_NUISANCE_2024_PARCIAL"
-    assert decisao["pendencia_extratrees"] == "ACEITA_POR_ORCAMENTO"
-    assert decisao["revisao_humana"] == "APROVADA"
-    assert decisao["fechamento"] == "PRONTO_PARA_FECHAR_08B_08C"
-    assert decisao["propensity"] == "PROPENSITY_SENSIBILIDADE_ML_RECOMENDADA"
-    assert decisao["outcome"] == "OUTCOMES_HISTORICOS_MANTIDOS"
-    assert '"pendencia_extratrees": "ACEITA_POR_ORCAMENTO"' in fonte
-    assert '"revisao_humana": "APROVADA"' in fonte

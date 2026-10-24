@@ -18,7 +18,6 @@ A numeração começa em 05a porque 01–05 pertencem à Entrega 1 (abaixo).
 
 | Pasta | Conteúdo | Situação |
 |---|---|---|
-| [`entrega_1_nacional_aipw/`](entrega_1_nacional_aipw/) | Entrega 1: Brasil 2014–2024, AIPW anual (01 EDA → 05 resultados) | concluída; [documentos](../docs/entrega_1_nacional_aipw/README.md) |
-| [`historico/`](historico/) | Desenvolvimento da extensão temporal nacional (06 a 10), incluindo a estimação completa (`10_estimacao_v2.ipynb`) | registro de rastreabilidade; mapa em [MAPA_NOTEBOOKS.md](../docs/MAPA_NOTEBOOKS.md) |
+| [`entrega_1_nacional_aipw/`](entrega_1_nacional_aipw/) | Entrega 1: Brasil 2014–2024, AIPW anual (01 EDA → 05 resultados) | concluída; registro acadêmico para leitura; [documentos](../docs/entrega_1_nacional_aipw/README.md) |
 
-Os notebooks das fases anteriores não devem ser reexecutados para ler a análise atual. Vários dependem de caches locais (`data/interim/`). Os notebooks da fase inicial (Brasil 2024, 01–05) foram retirados em outubro de 2026 e permanecem no histórico Git.
+Os notebooks da Entrega 1 estão salvos com as saídas e não são reexecutáveis na árvore atual: leem resultados intermediários da extensão temporal nacional que foram retirados. Os notebooks de desenvolvimento dessa extensão (V1 → V2, 06 a 10, incluindo `10_estimacao_v2.ipynb`) e os da fase inicial (Brasil 2024, 01–05) foram retirados em outubro de 2026 e permanecem no histórico Git; a reprodução integral dessas fases exige recuperá-los de lá.

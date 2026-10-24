@@ -1,9 +1,5 @@
 """Contratos essenciais da estimação V2 em dados sintéticos pequenos."""
 import json
-import os
-from pathlib import Path
-import subprocess
-import sys
 
 import numpy as np
 import pandas as pd
@@ -114,18 +110,6 @@ def test_checkpoint_incompativel_lista_campos_divergentes(tmp_path):
         f"- sklearn: salvo=0.0.0 atual={sklearn.__version__}"]
     assert ".venv" in mensagem
     assert alvo.read_bytes() == antes
-
-
-def test_notebook_10_localiza_raiz_a_partir_de_notebooks():
-    raiz = Path(__file__).resolve().parents[1]
-    notebook = json.loads((raiz / "notebooks/historico/10_estimacao_v2.ipynb").read_text(encoding="utf-8"))
-    bootstrap = next(c for c in notebook["cells"] if c["cell_type"] == "code")
-    ambiente = {k: v for k, v in os.environ.items() if k != "PYTHONPATH"}
-    saida = subprocess.run([sys.executable, "-c", "".join(bootstrap["source"])], cwd=raiz / "notebooks/historico",
-                           env={**ambiente, "PYTHONIOENCODING": "utf-8"}, capture_output=True,
-                           text=True, encoding="utf-8", check=True)
-    assert f"Raiz localizada: {raiz}" in saida.stdout
-    assert f"Python do kernel: {sys.executable}" in saida.stdout
 
 
 def test_formulacao_entra_no_contrato_do_cache():

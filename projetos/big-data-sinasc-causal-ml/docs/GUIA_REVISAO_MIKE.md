@@ -57,4 +57,6 @@ Nenhum dos itens abaixo foi iniciado.
 
 O projeto começou com uma análise nacional de 2024 (retirada da árvore em outubro de 2026; disponível no histórico Git) e evoluiu para a **Entrega 1**, uma série nacional 2014–2024 estimada com AIPW ([docs/entrega_1_nacional_aipw/](entrega_1_nacional_aipw/README.md)). A análise atual mudou população, estimando e estimador. Os números das fases não devem ser combinados; por exemplo, −1,48 p.p. nacional (AIPW, 2024) e −1,74 p.p. na capital (ATO, 2024) respondem a perguntas diferentes.
 
+A Entrega 1 permanece como registro acadêmico para leitura. Os notebooks de desenvolvimento da extensão nacional (V1 → V2) e seus resultados intermediários foram retirados da árvore em outubro de 2026 e estão no histórico Git; nenhum deles é necessário para revisar a análise atual.
+
 A reorganização de outubro de 2026 está documentada em [manutencao/ALTERACOES_REALIZADAS.md](manutencao/ALTERACOES_REALIZADAS.md).

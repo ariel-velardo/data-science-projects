@@ -68,14 +68,13 @@ Consolidação com a origem de cada número: [RESUMO_PARA_REDACAO.md](docs/sp_ca
 ```text
 notebooks/
   principal/                  análise atual (SP capital, ATO) — ler na ordem 05a → 05b → 06 → 07 → 08
-  entrega_1_nacional_aipw/    Entrega 1: série nacional 2014–2024 com AIPW (fase anterior, concluída)
-  historico/                  desenvolvimento da extensão temporal nacional
+  entrega_1_nacional_aipw/    Entrega 1: série nacional 2014–2024 com AIPW (fase anterior, concluída; registro para leitura)
 docs/
   GUIA_REVISAO_MIKE.md        roteiro de revisão
   sp_capital_ato/             resumo para redação, PDF e fonte LaTeX da Etapa 1
   entrega_1_nacional_aipw/    relatório final e anexos da Entrega 1
   manutencao/                 registros da reorganização de outubro de 2026
-  demais pastas               literatura, fontes, dicionário e registros da extensão temporal
+  demais pastas               literatura, fontes, dicionário e contrato metodológico V2 da Entrega 1
 outputs/
   figuras_interativas/        gráficos interativos (HTML) dos notebooks principais
   qualidade_geografica_2024/, comparabilidade_sp_capital_2024/   resultados da análise atual
@@ -118,7 +117,8 @@ Para abrir os gráficos interativos fora do Jupyter, abra [outputs/figuras_inter
 
 ## 9. Fases anteriores do projeto
 
-- **Entrega 1 — série nacional 2014–2024 (AIPW):** Brasil, formulação B, AIPW com *cross-fitting* por ano e IC agrupado por município; diferença de −0,94 a −1,52 p.p. entre os anos (−1,48 p.p. em 2024). Documentos em [docs/entrega_1_nacional_aipw/](docs/entrega_1_nacional_aipw/README.md). **População, estimando e estimador diferem da análise atual; os números não devem ser combinados.**
+- **Entrega 1 — série nacional 2014–2024 (AIPW):** Brasil, formulação B, AIPW com *cross-fitting* por ano e IC agrupado por município; diferença de −0,94 a −1,52 p.p. entre os anos (−1,48 p.p. em 2024). Documentos em [docs/entrega_1_nacional_aipw/](docs/entrega_1_nacional_aipw/README.md). **População, estimando e estimador diferem da análise atual; os números não devem ser combinados.** Os cinco notebooks, os documentos e os resultados finais (`outputs/entrega_1_nacional_aipw/` e `outputs/temporal/estimacao_v2/`) permanecem como registro acadêmico para leitura.
+- **Desenvolvimento da extensão temporal nacional (V1 → V2):** os notebooks 06–10, sua documentação de trabalho e os resultados intermediários foram retirados da árvore em outubro de 2026 e permanecem no histórico Git. A reexecução integral da Entrega 1 ou da extensão V1/V2 exige recuperar esses arquivos do histórico. A análise atual não depende deles, e seus resultados continuam disponíveis nos cinco notebooks principais.
 - **Fase inicial — Brasil 2024** (AIPW com comparador 4º–9º mês): superada pela análise atual e retirada da árvore em outubro de 2026; notebooks, código e resultados permanecem no histórico Git.
 
 ## 10. Tecnologias

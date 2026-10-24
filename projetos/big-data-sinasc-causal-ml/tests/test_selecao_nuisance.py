@@ -204,24 +204,3 @@ def test_outputs_nested_sao_pequenos_e_cache_oof_fica_separado(tmp_path):
     resumo = json.loads(Path(arquivos["resumo"]).read_text(encoding="utf-8"))
     assert resumo["auditoria"]["total_fits_realizados"] == 10
     assert resumo["cache_oof"]["versionado"] is False
-
-
-def test_notebook_08b_tem_as_doze_secoes_e_nao_executa_estimacao_causal():
-    caminho = Path(__file__).parents[1] / "notebooks/historico/08b_selecao_modelos_nuisance.ipynb"
-    notebook = json.loads(caminho.read_text(encoding="utf-8"))
-    markdown = "\n".join(
-        "".join(celula.get("source", ""))
-        for celula in notebook["cells"]
-        if celula["cell_type"] == "markdown"
-    )
-    codigo = "\n".join(
-        "".join(celula.get("source", ""))
-        for celula in notebook["cells"]
-        if celula["cell_type"] == "code"
-    )
-    for numero in range(1, 13):
-        assert f"## {numero}." in markdown
-    assert "src.inferencia_causal" not in codigo
-    assert "calcular_aipw" not in codigo
-    assert "Y_BAIXO_PESO" not in codigo.replace("'Y_BAIXO_PESO'}.intersection(x.columns)", "")
-    assert "notebook_09_criado': False" in codigo

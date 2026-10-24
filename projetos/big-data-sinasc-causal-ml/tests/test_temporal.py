@@ -349,20 +349,6 @@ def test_inspecao_remota_le_cabecalho_e_dominios_sem_baixar_tudo():
     assert r['dominios_amostra'] == {'MESPRENAT': {'02': r['n_linhas_amostra']}, 'KOTELCHUCK': None}
 
 
-def test_notebook_06_em_portugues_executado_e_sem_erros():
-    import nbformat
-    from src.visualizacao import auditar_idioma
-    p = RAIZ_REAL / 'notebooks/historico/06_auditoria_historica_sinasc.ipynb'
-    nb = nbformat.read(p, as_version=4)
-    nbformat.validate(nb)
-    assert not auditar_idioma(nb)
-    codigo = [c for c in nb.cells if c.cell_type == 'code']
-    assert codigo and all(c.execution_count is not None for c in codigo)
-    assert not any(o.output_type == 'error' for c in codigo for o in c.outputs)
-    for c in codigo:
-        compile(c.source, str(p), 'exec')
-
-
 # --- conversão registrada e orquestração sequencial ---
 
 def _falso_download_zip(linhas_por_ano):
@@ -583,22 +569,6 @@ def test_registro_de_harmonizacoes_documentado():
     for h in tp.HARMONIZACOES:
         assert {'id', 'variavel', 'anos', 'valor_original', 'valor_harmonizado', 'justificativa'} <= set(h)
         assert tp.ANO_BASELINE not in h['anos']
-
-
-def test_notebook_07_em_portugues_executado_sem_inferencia():
-    import nbformat
-    from src.visualizacao import auditar_idioma
-    p = RAIZ_REAL / 'notebooks/historico/07_descritiva_temporal_sinasc.ipynb'
-    nb = nbformat.read(p, as_version=4)
-    nbformat.validate(nb)
-    assert not auditar_idioma(nb)
-    codigo = [c for c in nb.cells if c.cell_type == 'code']
-    assert all(c.execution_count is not None for c in codigo)
-    assert not any(o.output_type == 'error' for c in codigo for o in c.outputs)
-    fonte = '\n'.join(c.source for c in codigo)
-    for proibido in ('calcular_aipw', 'cross_fitting', 'estimar_propensity_oof', 'ajuste_honesto', 'ajustar_modelo'):
-        assert proibido not in fonte, proibido
-    assert 'Interpretação pendente' not in '\n'.join(c.source for c in nb.cells)
 
 
 def test_tabelas_temporais_versionaveis_sao_coerentes():
@@ -911,28 +881,3 @@ def test_recortes_principal_e_sensibilidade_reutilizam_os_mesmos_resultados_anua
     assert recortes['sensibilidade'].ano.tolist() == list(range(2018, 2025))
     assert recortes['sensibilidade'].set_index('ano').auc_oof.equals(
         tabela[tabela.ano >= 2018].set_index('ano').auc_oof)
-
-
-def test_notebook_08_tem_contrato_diagnostico_e_nao_estima_efeitos_causais():
-    import nbformat
-    import re
-
-    caminho = RAIZ_REAL / 'notebooks/historico/08_estabilidade_temporal_overlap.ipynb'
-    assert caminho.exists()
-    nb = nbformat.read(caminho, as_version=4)
-    nbformat.validate(nb)
-    fonte = '\n'.join(c.source for c in nb.cells)
-    for secao in ('controle positivo 2024', 'SMD intra-ano', 'composiÃ§Ã£o versus 2024',
-                  'sensibilidade 2018â€“2024', '2021â€“2022', 'critÃ©rios para o notebook 09'):
-        for _ in range(3):
-            try:
-                reparada = secao.encode('cp1252').decode('utf-8')
-            except (UnicodeEncodeError, UnicodeDecodeError):
-                break
-            if reparada == secao:
-                break
-            secao = reparada
-        assert secao.casefold() in fonte.casefold()
-    codigo = '\n'.join(c.source for c in nb.cells if c.cell_type == 'code')
-    for proibido in ('calcular_aipw', 'aipw_independente', 'ajuste_honesto', 'CATE', 'pooled'):
-        assert re.search(rf'\b{re.escape(proibido)}\b', codigo, flags=re.IGNORECASE) is None

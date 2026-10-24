@@ -16,7 +16,7 @@ Os notebooks 06, 07 e 08 não gravam arquivos: seus resultados estão nas saída
 | Pasta | Conteúdo |
 |---|---|
 | [`entrega_1_nacional_aipw/`](entrega_1_nacional_aipw/) | figuras e tabelas da Entrega 1 (Brasil 2014–2024, AIPW) e dicionário raw |
-| `temporal/` | extensão temporal nacional: manifestos, descritiva, suporte, modelos auxiliares, contrato V2 congelado e estimação V2; lido por `src/` e pelos testes |
+| `temporal/` | resultados finais e proveniência da extensão temporal nacional: estimação V2 da Entrega 1 (`estimacao_v2/`), AIPW anual V1 usado na comparação (`estimativas/aipw_anual.csv`), contrato V2 congelado, manifestos dos ZIPs 2014–2023, tabelas anuais de admissão e descritiva, e `contrato_temporal.json`; lido por `src/` e pelos testes. Os resultados intermediários da V1/V2 foram retirados em outubro de 2026 e permanecem no histórico Git |
 | `diagnostics/` | quatro JSONs residuais da fase inicial 2024, lidos pelo código da extensão temporal e pela reexecução do notebook 02 da Entrega 1 |
 | `tables/` | `histograma_propensity.csv` (lido por `src/temporal.py`) e a versão JSON do [dicionário analítico](../docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md) |
 | `figures/` | arquivos locais e regeneráveis da extensão temporal (fora do Git) |

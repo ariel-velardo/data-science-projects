@@ -1,8 +1,0 @@
-codigo,rotulo,semantica
-CONSPRENAT=0,DEFINICAO_OFICIAL,"não fez pré-natal (Manual 2022, campo 33)"
-CONSPRENAT=99,CODIFICACAO_OPERACIONAL_OBSERVADA,provável Ignorado; código numérico não documentado
-MESPRENAT=99,CODIFICACAO_OPERACIONAL_OBSERVADA,provável Ignorado; código numérico não documentado
-MESPRENAT vazio,SEM_SEMANTICA_OFICIAL,não preenchido; sem regra no manual
-MESPRENAT=10,FORA_DO_DOMINIO_OFICIAL,Manual 2022: não existe início no 10º mês
-TPMETESTIM=8,CODIFICACAO_OPERACIONAL_OBSERVADA,não documentado
-"KOTELCHUCK 1-5, 9",NAO_CONFIRMADO_DOCUMENTALMENTE,índice de Kotelchuck; códigos sem fonte oficial localizada

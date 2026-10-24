@@ -2,7 +2,7 @@
 
 **Estado:** `DECISAO_V2_PRE_ESTIMACAO_CONGELADA` · `SUPORTE_V2_SINALIZADO` · `NENHUM_EFEITO_V2_ESTIMADO` · `V1_PRESERVADA` · `SEM_RESULT_SHOPPING` · `PRONTO_PARA_REVISAO_HUMANA_ANTES_DOS_EFEITOS`.
 
-Documento complementar. A fonte de verdade das decisões é o notebook [09d_contrato_v2_pre_estimacao.ipynb](../../notebooks/historico/09d_contrato_v2_pre_estimacao.ipynb). Este texto as resume para revisão e não acrescenta decisões. O congelamento foi originalmente realizado sem commit, antes de qualquer efeito B/C; após revisão humana, os artefatos foram versionados nos commits registrados na seção de clarificações pós-congelamento.
+Documento complementar. A fonte de verdade das decisões é o notebook `notebooks/historico/09d_contrato_v2_pre_estimacao.ipynb` (retirado da árvore em outubro de 2026; disponível no histórico Git, commit `e11bee6`). Este texto as resume para revisão e não acrescenta decisões. O congelamento foi originalmente realizado sem commit, antes de qualquer efeito B/C; após revisão humana, os artefatos foram versionados nos commits registrados na seção de clarificações pós-congelamento.
 
 ## 1. Registro
 
