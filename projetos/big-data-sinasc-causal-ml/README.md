@@ -109,6 +109,7 @@ jupyter lab
 - **Gráficos estáticos:** o `kaleido` usa o Google Chrome instalado na máquina para gerar os PNG incorporados aos notebooks.
 - **Verificações:** `python -m pytest -q tests` (não precisa das bases) e `python scripts/validar_projeto.py --rapida` (preservação das fases anteriores).
 - **PySpark** não é dependência do projeto.
+- **Atenção:** não execute `python -m src.entrega` sem argumentos (instrução antiga de `docs/REPRODUCAO.md`): ele regenera o README da fase inicial 2024 e sobrescreve este arquivo.
 
 ## 8. Como visualizar os gráficos
 

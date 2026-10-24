@@ -42,3 +42,76 @@ Nada foi apagado. O material foi movido para `_arquivo_local/` (ignorado pelo Gi
 ## 4. `.gitignore` do projeto
 
 Passam a ser ignorados `_arquivo_local/`, `.pytest_cache/` e os PDFs de `docs/sp_capital_ato/artigos/` (mesma política de direitos autorais de `docs/literature/pdfs/`). Os CSVs agregados de resultados da análise atual foram versionados explicitamente (`git add -f`), porque o `.gitignore` da raiz do workspace ignora `*.csv`; as amostras de microdados continuam fora do Git.
+
+## 5. Dependências
+
+Um único `requirements.txt`, com a versão validada de cada pacote:
+
+- **acrescentados** (importados diretamente, antes implícitos): `scipy`, `joblib`, `threadpoolctl`, `psutil` e `nbformat`;
+- **removidos**: `pdfplumber` e `pymupdf`, nunca importados no histórico do projeto (continuam instalados na `.venv`; nada foi desinstalado);
+- **`pyspark`**: instalado na `.venv` (4.2.0, com Java 17 na máquina), mas nenhum código do projeto o importa; documentado como não dependência;
+- **`requirements_before_spark.txt`**: `pip freeze` em UTF-16 do ambiente anterior ao PySpark; retirado da raiz, com o conteúdo recuperável no commit `663becf`. Nenhum script o instalava.
+
+Nenhuma biblioteca foi instalada ou atualizada.
+
+## 6. Correções científicas
+
+Nenhum número mudou: a sequência de números dos textos regenerados é idêntica à original (ver [validação](VALIDACAO_FINAL.md)).
+
+| Onde | Antes | Depois |
+|---|---|---|
+| 06, perfil ponderado | coluna única "População de sobreposição (ATO)" com a média de T=1; situação conjugal aparecia como 27,1% da população-alvo | colunas T=1 e T=0 ponderadas e coluna "papel no ajuste"; casadas: 27,1% em T=1 e 18,6% em T=0, sem proporção única; texto explica a diferença entre covariáveis ajustadas e variáveis de diagnóstico |
+| 06 método; resumo 3.5 e 4.3–4.5 | "balanço exato", "ficam exatamente iguais", "balanço quase exato", "médias coincidem" | igualdade exata só sem penalização; com L2, balanço **aproximado** (máximo \|SMD\| 0,0031), que não demonstra ausência de confundimento |
+| 06 interpretação; resumo 4.2 | "comparando gestantes com o mesmo perfil" | "grupos ponderados com distribuições aproximadamente iguais" |
+| 06, 05b e resumo (seções 1 e 5) | restringir T=0 aos meses 4–6 "atenua, mas não elimina" o problema temporal | reduz a janela de início tardio considerada; não foi demonstrado quanto altera o viés nem sua direção |
+| 08, seção 5 | restrição 4–6 com menor parcela de incluídos afetados | idem, explicitando que isso não demonstra redução do viés nem sua direção |
+| 08, seção 2 | "as faixas são confiáveis para uma descrição grossa" | separa completude, consistência interna (`GESTACAO` × `SEMAGESTAC`) e validade da mensuração, que não foi avaliada |
+| 07, resumo e interpretação | "sem evidência… de diferença estatisticamente significativa"; "Não se conclui diferença estatisticamente significativa" | "não foi feito teste formal de diferença entre anos" |
+| 06, limitações | IC "considera nascimentos independentes" | bootstrap individual, possível dependência por estabelecimento, região e mães recorrentes; ausência de vinculação SINASC–SIM; item explícito sobre ausência de identificação causal |
+
+Uma nota de revisão no topo do resumo registra essas mudanças.
+
+## 7. Gráficos Plotly
+
+Novo módulo `src/graficos.py`, só de apresentação: identidade T=1 (azul IPT) e T=0 (laranja), validada para daltonismo (ΔE CVD 19,6); formato pt-BR (`separators=",."`); título com subtítulo; notas de método e de fonte; nome de arquivo para a exportação PNG da barra de ferramentas; saída com Plotly interativo e PNG estático.
+
+| Gráfico | Melhoria |
+|---|---|
+| 06 — escore e pesos (novo) | distribuição do escore por grupo, sem e com pesos ATO (histograma espelhado); hover com faixa, registros, % do grupo, % da soma dos pesos e peso da faixa; nota de que a ponderação não iguala variáveis fora do escore |
+| 06 — balanço | hover com papel no ajuste, médias brutas e ponderadas de T=1 e T=0 e SMD com sinal; faixas sombreadas nas variáveis fora do escore; linhas 0,1/0,2 como referências |
+| 06 — riscos | dois painéis: riscos por grupo e diferenças (bruta e ATO) com IC; hover com IC, nascimentos, casos e n efetivo |
+| 07 — série ATO | diferença bruta como referência; hover unificado por ano com riscos, n e n efetivo; rótulos apenas em anos de destaque; nota de que não há IC anual nem teste entre anos |
+| 07 — participação de T=0 | hover com contagens de T=0, T=1 e elegíveis |
+| 08 — início tardio por duração | rampa sequencial dos meses 4–6; hover com n, denominador e soma |
+| 08 — baixo peso pré-termo/a termo | hover com casos, n do mês e fração pré-termo |
+
+O bootstrap não gravava réplicas; o gráfico de riscos e o texto da seção 6 do 06 usam os percentis salvos (limites dos riscos por grupo com precisão integral, extraídos do gráfico original; limites das diferenças com duas casas decimais, a precisão da tabela salva). Os traços lidos pela seção 7 ("Risco ponderado ATO", "Depois (pesos ATO)") mantêm nomes e valores, e essa seção agora localiza a parte principal pelo `id` da célula, em vez da posição fixa 22.
+
+**Exportação:** `scripts/exportar_figuras_interativas.py` gera `outputs/figuras_interativas/` a partir das saídas salvas dos 5 notebooks principais: 11 HTML de 5–20 KB, `index.html` e um único `plotly.min.js` local. Os gráficos de 05a e 05b foram exportados sem alteração.
+
+## 8. Notebooks, `src/`, `scripts/` e `tests/`
+
+- **Padronização:** a função local `exibir_plotly` de 06, 07 e 08 foi substituída pela do módulo comum; imports sem uso foram removidos da configuração do 06. Os notebooks já seguiam a sequência objetivo → dados → população → método → diagnósticos → resultados → limitações; nenhuma seção foi reordenada. Não há caminhos absolutos no código.
+- **Mantido de propósito:** as funções locais `fmt` (trocá-las exigiria reexecutar todas as células) e os imports repetidos na seção 7 do 06, que é executável sozinha.
+- **`src/` e `scripts/`:** 16 arquivos com hash congelado não foram editados. Código novo: `src/graficos.py` e `scripts/exportar_figuras_interativas.py`.
+- **Testes novos** (`tests/test_analise_sp_capital.py`, 13): estrutura de pastas; validade dos notebooks principais; valores de referência de 2024, da série e do 08; textos corrigidos; contrato da seção 7; fórmulas ATO executadas a partir do próprio notebook 07 e comparadas com implementação independente; sincronização dos HTML; links; módulo de gráficos. Nenhum precisa das bases do SINASC.
+
+## 9. Documentação
+
+- `README.md` reescrito para a análise atual. O bloco histórico com os spans `data-metrica` foi mantido sem alteração, porque `validar_projeto` o exige.
+- `docs/GUIA_REVISAO_MIKE.md`, `notebooks/README.md`, `outputs/README.md`, `docs/README.md`, `docs/sp_capital_ato/README.md` e `docs/entrega_1_nacional_aipw/README.md`.
+- Avisos em `docs/MAPA_NOTEBOOKS.md` (mapa histórico) e em `docs/REPRODUCAO.md` (o comando `python -m src.entrega` sobrescreve o README).
+
+## 10. Commits
+
+| Commit | Conteúdo |
+|---|---|
+| `663becf` | snapshot do trabalho pré-existente não rastreado, sem alteração de conteúdo |
+| `0c956de` | estado inicial, inventário e plano |
+| `0f05fca` | reorganização de pastas e referências |
+| `d8ac83a` | dependências |
+| `22dfb5c` | correções científicas e gráficos |
+| `47e73ba` | README, guia, índices, exportação interativa e testes |
+| último | avisos, validação final e este relatório |
+
+Pendências e limites da validação: ver [VALIDACAO_FINAL.md](VALIDACAO_FINAL.md).

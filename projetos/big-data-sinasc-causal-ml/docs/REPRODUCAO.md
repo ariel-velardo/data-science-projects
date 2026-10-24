@@ -21,6 +21,8 @@ Se a `.venv` já existe, apenas ative-a; não a recrie. As versões do checkpoin
 
 ## Regenerar somente a Fase 5
 
+> **Atenção (24/10/2026):** `python -m src.entrega` sem argumentos regenera o `README.md` da fase inicial 2024 e **sobrescreve o README atual do projeto** (análise SP capital). Não execute esse comando sem antes guardar o README; para apenas validar, use `python -m src.entrega --validar` ou `python scripts/validar_projeto.py --rapida`.
+
 ```powershell
 python -m src.literatura
 python -m src.entrega

@@ -62,10 +62,10 @@ _arquivo_local/                 fora do Git: material retirado da estrutura ativ
 - [x] 0. Proteção: branch, commit de snapshot, backup verificado, [estado inicial](ESTADO_INICIAL_REPOSITORIO.md)
 - [x] 1. [Inventário](INVENTARIO_REPOSITORIO.md)
 - [x] 2. Plano (este documento)
-- [ ] 3. Movimentações e atualização de referências; validadores e testes
-- [ ] 4. Consolidação de dependências
-- [ ] 5. Correções científicas nos notebooks 06–08 e no resumo
-- [ ] 6. Gráficos Plotly e exportação HTML interativa
-- [ ] 7. Testes leves de proteção
-- [ ] 8. README, guia de revisão e índices de pastas
-- [ ] 9. Validação final e relatório de alterações
+- [x] 3. Movimentações e atualização de referências; validadores e testes
+- [x] 4. Consolidação de dependências
+- [x] 5. Correções científicas nos notebooks 06–08 e no resumo
+- [x] 6. Gráficos Plotly e exportação HTML interativa
+- [x] 7. Testes leves de proteção
+- [x] 8. README, guia de revisão e índices de pastas
+- [x] 9. [Validação final](VALIDACAO_FINAL.md) e [relatório de alterações](ALTERACOES_REALIZADAS.md)
