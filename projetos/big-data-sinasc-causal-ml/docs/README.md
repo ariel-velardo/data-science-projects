@@ -27,12 +27,10 @@ Registros preservados para rastreabilidade. Não são necessários para a leitur
 
 | Pasta | Conteúdo |
 | --- | --- |
-| [methodology/](methodology/) | Protocolos, gates e decisões da análise inicial de 2024 (Fases 0–4) |
-| [temporal/](temporal/) | Expansão 2014–2024 e transição V1 → V2 (Entrega 1) |
-| [architecture/](architecture/) | Registros de refatoração, preservação e certificação |
+| [temporal/](temporal/) e [MAPA_NOTEBOOKS.md](MAPA_NOTEBOOKS.md) | Expansão 2014–2024 e transição V1 → V2 (Entrega 1) |
 | [playbooks/](playbooks/) | Registros de estado e planejamento interno |
-| [dados/](dados/) | Documentação da base 2024 e do fluxo de dados |
-| [artigo/](artigo/) | Esqueleto de artigo anterior ao relatório final |
-| Arquivos `.md` na raiz de `docs/` | Resultados, reprodução, mapas e registros da fase inicial (SINASC 2024) |
+| [methodology/DAG_INICIAL.md](methodology/DAG_INICIAL.md) | DAG de trabalho citado como fonte da Figura 4 do PDF da Etapa 1 |
 
-> **Preservação.** Parte da documentação histórica é referenciada por código, testes, hashes ou artefatos congelados. Por isso, arquivos históricos não devem ser movidos, renomeados ou reescritos sem verificar essas dependências.
+A documentação da fase inicial (Brasil 2024) foi retirada da árvore em outubro de 2026 e permanece no histórico Git.
+
+> **Preservação.** Parte da documentação histórica é referenciada por código, testes ou artefatos congelados da extensão temporal. Por isso, arquivos históricos não devem ser movidos, renomeados ou reescritos sem verificar essas dependências.

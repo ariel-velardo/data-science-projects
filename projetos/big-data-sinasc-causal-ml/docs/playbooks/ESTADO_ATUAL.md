@@ -31,12 +31,12 @@ RELATORIO_HTML = SIM
 
 - Estado inicial reconstruído: fetch concluído; branch main; HEAD e origin/main em `07e9b7be28d3561a702f7f498c8a6632a9fde4e2`. Histórico confirmado: `48ce06b` → `1d27ab4` → `07e9b7b`. Projeto inicialmente limpo; uma pasta não rastreada em outro projeto foi preservada.
 - Suíte inicial: 86 testes aprovados. Cinco notebooks com 7, 12, 13, 21 e 10 células de código executadas, sem saídas de erro. Nenhuma modelagem das Fases 0–4 foi refeita.
-- Entregas: dicionário 62/62 em Markdown/CSV/JSON, fluxo, metodologia, resultados, síntese, reprodução, esqueleto do artigo e dez gráficos no HTML autocontido. [README](../../README.md), [métodos](../METODOLOGIA_DO_PROJETO.md) e [relatório](../../apresentacao/relatorio_interativo_sinasc_2024.html).
+- Entregas: dicionário 62/62 em Markdown/CSV/JSON, fluxo, metodologia, resultados, síntese, reprodução, esqueleto do artigo e dez gráficos no HTML autocontido. [README](../../README.md), métodos e relatório.
 - Literatura: 12 referências centrais, cinco PDFs públicos obtidos e sete tentativas sem PDF. Fichas distinguem leitura dirigida de PDF e síntese limitada a fontes públicas. PDFs/textos ficam locais, fora do staging. [Manifesto](../literature/MANIFESTO_ARTIGOS.md).
 - Validação histórica: seis resultados da Fase 2 e 22 linhas da Fase 3 reconciliados; Fase 4 aprovada, incluindo pseudo-desfechos, cobertura única, partições e preservação. Auditoria de apresentação e pip check aprovados. Validação da entrega confere números, séries dos gráficos, dicionário, links e notebooks.
 - Ressalva: a política de segurança do navegador bloqueou a URL local do HTML. Não houve tentativa de contorno. Verificação estática concluída; abertura e controles no navegador permanecem para conferência manual. Figuras exportadas separadamente para inspeção.
 - Rastreabilidade: `outputs/diagnostics/fase5_validacao.json` e `fase5_links_externos.json`. HTML e dois JSONs pequenos em diretórios ignorados recebem staging explícito; `.gitignore` preservado.
-- Suíte final: 93 testes aprovados. [Auditoria da Fase 5](../AUDITORIA_FASE5.md) registra evidências, comandos, PDFs e a pendência de inspeção do HTML no navegador.
+- Suíte final: 93 testes aprovados. Auditoria da Fase 5 registra evidências, comandos, PDFs e a pendência de inspeção do HTML no navegador.
 - Registros abaixo são históricos: proibições de iniciar Fase 5 descrevem autorizações antigas, superadas pelo pedido desta sessão. Artigo completo e Fase 6 permanecem fora do escopo.
 
 ## Resultado da Fase 4
@@ -47,7 +47,7 @@ RELATORIO_HTML = SIM
 - Ridge: média −1,301716 pp; Spearman com HGB 0,706556. Correlação mediana das médias dos grandes perfis entre partições: 0,157895, abaixo do critério exploratório 0,5. Instabilidade também pode refletir composição geográfica.
 - Separação prevista Q5−Q1: aproximadamente 4,24–4,73 pp; contraste DR externo: 0,95–1,67 pp. Há ordenação parcial, com magnitude excessiva e baixa estabilidade de perfis. Critério final: `HETEROGENEIDADE_SENSIVEL_A_MODELO`.
 - CATE não foi recentrado para coincidir com ATE. Média psi externa −1,216412 pp; C2 histórico −1,231456 pp, preservado. Idade ausente (N=32) é muito imprecisa; UF 53 é categoria nova na rodada de sua avaliação.
-- Resultados, protocolo prévio e limitações: [HETEROGENEIDADE_FASE4.md](../methodology/HETEROGENEIDADE_FASE4.md). Sem política clínica, ROI, Causal Forest, artigo completo ou Fase 5.
+- Resultados, protocolo prévio e limitações: HETEROGENEIDADE_FASE4.md. Sem política clínica, ROI, Causal Forest, artigo completo ou Fase 5.
 - Validação final: 86 testes aprovados, `pip check` sem inconsistências e cinco notebooks executados sem erros. Notebook 05: dez células de código executadas; gráficos finais inspecionados e auditoria de idioma aprovada.
 - Recuperação do checkpoint pelo repositório: 22 linhas da Fase 3 e seis resultados históricos da Fase 2 reconciliados novamente a partir dos artefatos, sem refazer ajustes pesados. A validação da Fase 4 confirmou cobertura única, separação municipal, pseudo-desfechos, quintis, perfis e preservação das Fases 0–3. As únicas mudanças históricas de apresentação continuam documentadas no manifesto da etapa PT-BR.
 - Entregas computacionais e documentais autorizadas concluídas. Esta atualização integra o commit separado da Fase 4; o histórico Git registra sua publicação.
@@ -61,7 +61,7 @@ RELATORIO_HTML = SIM
 - Excluir discordância de consultas ou ampliar a regra de peso tem pouca influência; incluir gestações múltiplas altera a magnitude em aproximadamente 0,20 pp e muda a população-alvo.
 - Confundimento residual, seleção de nascidos vivos e temporalidade de covariáveis continuam limitantes. O estimando observável é uma associação padronizada na população selecionada; sua interpretação causal exige hipóteses não verificadas.
 - Validação: 22 linhas da Fase 3 reconciliadas, 65 testes aprovados e `pip check` sem inconsistências. Notebook 04 executado integralmente; registros em `outputs/diagnostics/fase3_validacao.json`.
-- Evidências e limitações: [relatório completo](../methodology/ROBUSTEZ_FASE3.md), [literatura](../literature/AUDITORIA_GATE_INFLUENCIA.md) e [estimando](../methodology/AUDITORIA_ESTIMANDO_FASE3.md).
+- Evidências e limitações: relatório completo, [literatura](../literature/AUDITORIA_GATE_INFLUENCIA.md) e estimando.
 - Sequência posterior já cumprida: publicação da Fase 3, padronização e reexecução dos notebooks 01–04 em português e execução da Fase 4 exclusivamente como exercício didático exploratório. Não há autorização para Fase 5 ou artigo completo.
 
 ## Objetivo

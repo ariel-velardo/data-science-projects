@@ -9,6 +9,8 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import unicodedata
+from urllib.parse import unquote, urlsplit
 
 import numpy as np
 import pytest
@@ -59,6 +61,45 @@ def _tracos(nb):
             for t in o.get("data", {}).get(MIME_PLOTLY, {}).get("data", [])]
 
 
+def links_quebrados(arquivo):
+    """Links relativos (e âncoras) inexistentes; links dentro de blocos de código são ignorados."""
+    texto = arquivo.read_text(encoding='utf-8')
+    if arquivo.suffix == '.md':
+        linhas, cerca = [], None
+        for linha in texto.splitlines():
+            marcador = re.match(r'^ {0,3}(`{3,}|~{3,})(.*)$', linha)
+            if cerca is None:
+                if marcador:
+                    cerca = marcador.group(1)
+                else:
+                    linhas.append(linha)
+            elif (marcador and marcador.group(1)[0] == cerca[0]
+                  and len(marcador.group(1)) >= len(cerca)
+                  and not marcador.group(2).strip()):
+                cerca = None
+        texto = '\n'.join(linhas)
+    destinos = re.findall(r'\]\(([^)]+)\)', texto)
+    destinos += re.findall(r'(?:href|src)="([^"]+)"', texto) if arquivo.suffix == '.html' else []
+    erros = []
+    for destino in destinos:
+        u = urlsplit(destino.strip('<>'))
+        if u.scheme:
+            continue
+        alvo = arquivo.parent / unquote(u.path) if u.path else arquivo
+        if not alvo.exists():
+            erros.append(destino)
+        elif u.fragment and alvo.suffix in {'.md', '.html'}:
+            conteudo = alvo.read_text(encoding='utf-8')
+            ids = set(re.findall(r'id="([^"]+)"', conteudo))
+            for titulo in re.findall(r'^#+\s+(.+)$', conteudo, re.M):
+                slug = re.sub(r'[^\w -]', '', titulo.lower()).replace(' ', '-')
+                ids.add(slug)
+                ids.add(''.join(c for c in unicodedata.normalize('NFD', slug) if not unicodedata.combining(c)))
+            if unquote(u.fragment) not in ids:
+                erros.append(destino)
+    return sorted(set(erros))
+
+
 # ---------------------------------------------------------------- estrutura
 
 def test_estrutura_reorganizada():
@@ -81,7 +122,11 @@ def test_estrutura_reorganizada():
     ]
     assert [p for p in esperados if not (RAIZ / p).is_file()] == []
     retirados = ["docs/entrega", "outputs/entrega", "outputs/compartilhamento_professora",
-                 "notebooks/apoio_aula", "requirements_before_spark.txt", "outputs/temporal/figuras"]
+                 "notebooks/apoio_aula", "requirements_before_spark.txt", "outputs/temporal/figuras",
+                 # fase inicial Brasil 2024 (G1), removida no lote 3 do expurgo
+                 "notebooks/01_auditoria_sinasc_2024.ipynb", "notebooks/05_heterogeneidade_causal.ipynb",
+                 "apresentacao", "docs/architecture", "docs/artigo", "docs/REPRODUCAO.md",
+                 "src/validacao.py", "src/entrega.py", "scripts/validar_projeto.py", "scripts/executar_pipeline.py"]
     assert [p for p in retirados if (RAIZ / p).exists()] == []
 
 
@@ -221,8 +266,28 @@ def test_figuras_interativas_sincronizadas_e_offline():
     assert (DESTINO / "plotly.min.js").stat().st_size > 1_000_000
 
 
+def test_links_relativos_e_ancoras(tmp_path):
+    p = tmp_path / 'pagina.md'
+    p.write_text('[ok](alvo.md#secao) [erro](ausente.md) [web](https://example.org)', encoding='utf-8')
+    (tmp_path / 'alvo.md').write_text('# Seção\n', encoding='utf-8')
+    assert links_quebrados(p) == ['ausente.md']
+
+
+def test_detecta_ancora_inexistente(tmp_path):
+    p = tmp_path / 'pagina.md'
+    p.write_text('[ruim](alvo.md#nao-existe)', encoding='utf-8')
+    (tmp_path / 'alvo.md').write_text('# Seção\n', encoding='utf-8')
+    assert links_quebrados(p) == ['alvo.md#nao-existe']
+
+
+def test_links_em_bloco_codigo_sao_dados_mas_links_renderizados_sao_validados(tmp_path):
+    p = tmp_path / 'baseline.md'
+    p.write_text('```json\n{"fonte": "[histórico](ausente.md)"}\n```\n'
+                 '[navegável](tambem-ausente.md)\n', encoding='utf-8')
+    assert links_quebrados(p) == ['tambem-ausente.md']
+
+
 def test_links_relativos_da_documentacao_e_dos_notebooks():
-    from src.validacao import links_quebrados
     arquivos = [RAIZ / "README.md", *(RAIZ / "docs").rglob("*.md"), *(RAIZ / "notebooks").rglob("*.md"),
                 *(RAIZ / "outputs").rglob("*.md")]
     erros = {str(p.relative_to(RAIZ)): links_quebrados(p) for p in arquivos}

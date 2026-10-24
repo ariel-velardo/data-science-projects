@@ -17,7 +17,8 @@ Os notebooks 06, 07 e 08 não gravam arquivos: seus resultados estão nas saída
 |---|---|
 | [`entrega_1_nacional_aipw/`](entrega_1_nacional_aipw/) | figuras e tabelas da Entrega 1 (Brasil 2014–2024, AIPW) e dicionário raw |
 | `temporal/` | extensão temporal nacional: manifestos, descritiva, suporte, modelos auxiliares, contrato V2 congelado e estimação V2; lido por `src/` e pelos testes |
-| `diagnostics/` | resultados e validações da fase inicial 2024, conferidos por hash (`scripts/validar_projeto.py`) |
-| `tables/`, `figures/` | arquivos locais e regeneráveis das fases anteriores (fora do Git) |
+| `diagnostics/` | quatro JSONs residuais da fase inicial 2024, lidos pelo código da extensão temporal e pela reexecução do notebook 02 da Entrega 1 |
+| `tables/` | `histograma_propensity.csv` (lido por `src/temporal.py`) e a versão JSON do [dicionário analítico](../docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md) |
+| `figures/` | arquivos locais e regeneráveis da extensão temporal (fora do Git) |
 
-Não mova nem renomeie `temporal/`, `diagnostics/` e `tables/`: caminhos e hashes são conferidos por código, testes e contratos congelados.
+Não mova nem renomeie `temporal/`, `diagnostics/` e `tables/`: caminhos e hashes são conferidos por código, testes e contratos congelados. Os demais resultados da fase inicial (Brasil 2024) foram retirados em outubro de 2026 e permanecem no histórico Git.

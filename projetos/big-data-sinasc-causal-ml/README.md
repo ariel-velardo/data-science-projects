@@ -70,20 +70,20 @@ notebooks/
   principal/                  análise atual (SP capital, ATO) — ler na ordem 05a → 05b → 06 → 07 → 08
   entrega_1_nacional_aipw/    Entrega 1: série nacional 2014–2024 com AIPW (fase anterior, concluída)
   historico/                  desenvolvimento da extensão temporal nacional
-  01–05 (raiz)                fase inicial: Brasil, 2024 (preservada para rastreabilidade)
 docs/
   GUIA_REVISAO_MIKE.md        roteiro de revisão
   sp_capital_ato/             resumo para redação, PDF e fonte LaTeX da Etapa 1
   entrega_1_nacional_aipw/    relatório final e anexos da Entrega 1
   manutencao/                 registros da reorganização de outubro de 2026
-  demais pastas               metodologia, literatura, dicionários e registros das fases anteriores
+  demais pastas               literatura, fontes, dicionário e registros da extensão temporal
 outputs/
   figuras_interativas/        gráficos interativos (HTML) dos notebooks principais
-  qualidade_geografica_2024/, comparabilidade_sp_capital_2024/, sinasc_sim_piloto_2024/   resultados da análise atual
-  entrega_1_nacional_aipw/, temporal/, diagnostics/, tables/, figures/   fases anteriores
+  qualidade_geografica_2024/, comparabilidade_sp_capital_2024/   resultados da análise atual
+  sinasc_sim_piloto_2024/     complemento descritivo SINASC + SIM
+  entrega_1_nacional_aipw/, temporal/, figures/   fases anteriores
+  diagnostics/, tables/       arquivos residuais lidos pelo código da extensão temporal e pela Entrega 1
 src/  scripts/  tests/        código reutilizado, utilitários e testes
 data/                         bases locais (não versionadas)
-apresentacao/                 relatório interativo da fase inicial 2024
 ```
 
 Índices por pasta: [notebooks/README.md](notebooks/README.md), [outputs/README.md](outputs/README.md) e [docs/README.md](docs/README.md).
@@ -103,13 +103,12 @@ jupyter lab
 - **Kernel:** com o Jupyter aberto a partir da `.venv`, o kernel `python3` já usa esse ambiente; no VS Code, selecione `.venv\Scripts\python.exe`.
 - **Leitura sem dados:** todos os notebooks estão salvos com as saídas; não é preciso executar nada para conferir resultados e gráficos.
 - **Bases locais** (não versionadas por tamanho; endereços oficiais e hashes em [METADADOS_BASE.md](docs/entrega_1_nacional_aipw/METADADOS_BASE.md)):
-  - 2024: `python scripts/baixar_dados.py` baixa o ZIP oficial para `data/raw/`; `python scripts/executar_pipeline.py --etapa dados` gera `data/processed/sinasc_2024.parquet`;
+  - 2024: `python scripts/baixar_dados.py` baixa o ZIP oficial para `data/raw/`; `python -c "from src.sinasc import converter_zip_para_parquet; converter_zip_para_parquet('data/raw/SINASC_2024_csv.zip', 'data/processed/sinasc_2024.parquet')"` gera `data/processed/sinasc_2024.parquet`;
   - 2014–2023: `python -c "from src.temporal import preparar_anos; preparar_anos('.', range(2014, 2024))"` baixa e converte um ano por vez para `data/processed/sinasc/sinasc_<ano>.parquet`.
 - **Reexecução:** 05a, 05b e 08 são rápidos. O 07 ajusta onze escores anuais. O 06 inclui o bootstrap de 1.000 réplicas (alguns minutos). A seção 7 do 06 pode ser executada sozinha.
 - **Gráficos estáticos:** o `kaleido` usa o Google Chrome instalado na máquina para gerar os PNG incorporados aos notebooks.
-- **Verificações:** `python -m pytest -q tests` (não precisa das bases) e `python scripts/validar_projeto.py --rapida` (preservação das fases anteriores).
+- **Verificações:** `python -m pytest -q tests` (não precisa das bases).
 - **PySpark** não é dependência do projeto.
-- **Atenção:** não execute `python -m src.entrega` sem argumentos (instrução antiga de `docs/REPRODUCAO.md`): ele regenera o README da fase inicial 2024 e sobrescreve este arquivo.
 
 ## 8. Como visualizar os gráficos
 
@@ -120,30 +119,7 @@ Para abrir os gráficos interativos fora do Jupyter, abra [outputs/figuras_inter
 ## 9. Fases anteriores do projeto
 
 - **Entrega 1 — série nacional 2014–2024 (AIPW):** Brasil, formulação B, AIPW com *cross-fitting* por ano e IC agrupado por município; diferença de −0,94 a −1,52 p.p. entre os anos (−1,48 p.p. em 2024). Documentos em [docs/entrega_1_nacional_aipw/](docs/entrega_1_nacional_aipw/README.md). **População, estimando e estimador diferem da análise atual; os números não devem ser combinados.**
-- **Fase inicial — Brasil 2024:** auditoria, AIPW com comparador 4º–9º mês, robustez e heterogeneidade (`notebooks/01–05` na raiz, [apresentacao/](apresentacao/relatorio_interativo_sinasc_2024.html)).
-
-Métricas da fase inicial, mantidas para a validação automática do histórico (`scripts/validar_projeto.py`):
-
-<details>
-<summary>Referência histórica de reprodução — análise de 2024</summary>
-
-Métricas da primeira versão do projeto, restrita a 2024, com comparador 4º–9º mês. São mantidas para rastreabilidade e para a validação automática do histórico. **Não substituem os resultados finais de 2014–2024.**
-
-| Indicador (2024, versão inicial) | Valor |
-| --- | --- |
-| Registros brutos | <span data-metrica="bruto">2.389.325</span> |
-| Colunas originais | <span data-metrica="colunas">62</span> |
-| Registros analíticos | <span data-metrica="n">2.251.570</span> |
-| T = 1: início até o 3º mês | <span data-metrica="n_t1">1.942.045</span> |
-| T = 0: início após o 3º mês | <span data-metrica="n_t0">309.525</span> |
-| Baixo peso na população analítica (%) | <span data-metrica="prevalencia">7,894891</span> |
-| UFs de residência | <span data-metrica="ufs">27</span> |
-| C1 AIPW: estimativa (p.p.) | <span data-metrica="C1_estimativa_pp">-1,340527</span> |
-| C2 AIPW: estimativa (p.p.) | <span data-metrica="C2_estimativa_pp">-1,231456</span> |
-| CATE HGB: média (p.p.) | <span data-metrica="cate_media_pp">-1,294100</span> |
-| Classificação da análise de heterogeneidade | <span data-metrica="gate4">HETEROGENEIDADE_SENSIVEL_A_MODELO</span> |
-
-</details>
+- **Fase inicial — Brasil 2024** (AIPW com comparador 4º–9º mês): superada pela análise atual e retirada da árvore em outubro de 2026; notebooks, código e resultados permanecem no histórico Git.
 
 ## 10. Tecnologias
 

@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Referência certificada** | SINASC **2024**, notebooks 01–05, commit `a3c9095` ([certificação](../architecture/CERTIFICACAO_REFATORACAO.md)) |
+| **Referência certificada** | SINASC **2024**, notebooks 01–05, commit `a3c9095` (certificação) |
 | **Extensão em desenvolvimento** | análise multianual, branch `feature/expansao-temporal-sinasc` |
 | **Validade causal da extensão** | **não estabelecida**; nenhuma estimativa multianual foi produzida |
 
@@ -11,7 +11,7 @@ Acrescentar anos não aumenta automaticamente a validade causal. A pergunta dest
 ## Regras de convivência com 2024
 
 - Os notebooks 01–05, os JSONs de `outputs/diagnostics/`, os caches `.npz`, `data/raw/SINASC_2024_csv.zip`, `data/raw/source_manifest.json` e `data/processed/sinasc_2024.parquet` não são alterados nem migrados.
-- Os módulos de `src/` e `scripts/` certificados estão ancorados por hash em [preservacao_refatoracao.json](../architecture/preservacao_refatoracao.json); a extensão vive em um módulo novo, `src/temporal.py`, sem editar os existentes.
+- Os módulos de `src/` e `scripts/` certificados estão ancorados por hash em preservacao_refatoracao.json; a extensão vive em um módulo novo, `src/temporal.py`, sem editar os existentes.
 - Para `ano=2024`, `src.temporal.caminhos_ano` devolve os caminhos legados; `baixar_sinasc_ano(raiz, 2024)` apenas verifica o SHA-256 do ZIP contra o manifesto histórico, sem rede e sem escrita.
 
 ## Estrutura de arquivos por ano

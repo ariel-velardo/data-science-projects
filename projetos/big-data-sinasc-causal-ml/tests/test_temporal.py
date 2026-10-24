@@ -349,30 +349,6 @@ def test_inspecao_remota_le_cabecalho_e_dominios_sem_baixar_tudo():
     assert r['dominios_amostra'] == {'MESPRENAT': {'02': r['n_linhas_amostra']}, 'KOTELCHUCK': None}
 
 
-# --- baseline certificado continua intacto ---
-
-def test_codigo_ancorado_do_baseline_nao_foi_alterado():
-    from src.validacao import _validar_codigo_atual_ancorado, sha256
-    m = json.loads((RAIZ_REAL / 'docs/architecture/preservacao_refatoracao.json').read_text(encoding='utf-8'))
-    _validar_codigo_atual_ancorado(m)
-    for nome, esperado in m['codigo_atual'].items():
-        assert sha256(RAIZ_REAL / nome) == esperado, nome
-    assert 'src/temporal.py' not in m['codigo_atual']
-
-
-def test_numeros_certificados_2024_inalterados():
-    ler = lambda n: json.loads((RAIZ_REAL / 'outputs/diagnostics' / n).read_text(encoding='utf-8'))
-    aipw = {r['especificacao']: r['estimativa_pp'] for r in ler('fase2_aipw.json')['resultados']
-            if r['populacao'] == 'sem_trimming'}
-    assert aipw == {'C1': -1.340526785646844, 'C2': -1.2314558359825436}
-    assert ler('fase1_amostra.json')['fluxo_amostra'][-1]['n_restante'] == 2251570
-    assert ler('fase3_gate.json')['gate'] == 'GATE_FASE2_EXCESSIVAMENTE_CONSERVADOR'
-    r4 = ler('fase4_resultados.json')
-    assert r4['principal']['media_pp'] == -1.294100493864875
-    assert r4['principal']['proporcao_negativa'] * 100 == pytest.approx(84.68419813729975, abs=1e-12)
-    assert r4['gate'] == 'HETEROGENEIDADE_SENSIVEL_A_MODELO'
-
-
 def test_notebook_06_em_portugues_executado_e_sem_erros():
     import nbformat
     from src.visualizacao import auditar_idioma
