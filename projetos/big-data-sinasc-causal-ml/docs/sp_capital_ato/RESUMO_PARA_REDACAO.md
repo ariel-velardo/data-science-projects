@@ -4,6 +4,8 @@ Documento de consolidação para a redação de introdução, metodologia, resul
 
 Convenções: p.p. = pontos percentuais; diferenças sempre calculadas como T=1 − T=0; SMD = diferença média padronizada; IC 95% = intervalo de confiança de 95%.
 
+*Revisão de redação (24/10/2026):* o balanço nas covariáveis ajustadas passou a ser descrito como aproximado; a restrição do comparador aos meses 4–6 deixou de ser apresentada como atenuação demonstrada do viés temporal; a situação conjugal aparece separadamente em T=1 e T=0. Nenhum número foi alterado.
+
 ---
 
 ## 1. Problema de pesquisa
@@ -22,7 +24,7 @@ Convenções: p.p. = pontos percentuais; diferenças sempre calculadas como T=1 
 | Desfecho Y=1 | Peso ao nascer inferior a 2.500 g |
 | População | Nascimentos de 2024, mãe residente no município de São Paulo (`CODMUNRES=355030`), gestação única, peso entre 500 e 6.000 g, início do pré-natal nos meses 1–6 ("especificação B") |
 
-Inícios nos meses 7–9 ficam fora da população; a comparação com 4–6 meses evita confrontar o 1º trimestre com inícios muito tardios, mais sujeitos ao problema de duração gestacional descrito na seção 5.
+Inícios nos meses 7–9 ficam fora da população. A comparação com 4–6 meses evita confrontar o 1º trimestre com inícios muito tardios, cuja ocorrência depende mais da duração da gestação (seção 5). Isso reduz a janela considerada para o início tardio, mas não foi demonstrado quanto altera o viés nem em que direção.
 
 ---
 
@@ -121,7 +123,7 @@ Estimação em `notebooks/principal/06_ato_sp_capital_2024.ipynb`.
 3. **Riscos ponderados**, com pesos normalizados dentro de cada grupo: $\hat r_t=\sum_{i:T_i=t}w_iY_i\big/\sum_{i:T_i=t}w_i$. **Diferença ATO** $=\hat r_1-\hat r_0$, em p.p.
 4. **População de sobreposição (população-alvo):** densidade proporcional a $f(x)\,e(x)\,[1-e(x)]$, que enfatiza perfis em que os dois momentos de início são frequentes. Não é a população total (ATE) nem a dos tratados (ATT).
 5. **Suporte com as covariáveis finais:** escore de 0,6232 a 0,9760 em T=1 e de 0,6910 a 0,9760 em T=0; suporte comum observado 0,6910–0,9760. Seis tratados ficaram abaixo do mínimo dos controles, com 0,022% da soma dos pesos de T=1. Regra fixada antes de calcular riscos: nenhum recorte automático. **Nenhum registro foi excluído.**
-6. **Propriedades a declarar no texto:** com escore logístico, as médias ponderadas dos termos incluídos no modelo tornam-se iguais entre grupos (com a penalização L2, aproximadamente); o balanço quase exato nessas covariáveis é esperado por construção e não demonstra ausência de confundimento. Com um único modelo de escore e sem modelo de desfecho, o estimador **não é duplamente robusto**.
+6. **Propriedades a declarar no texto:** com escore logístico estimado sem penalização, as médias ponderadas dos termos incluídos no modelo seriam iguais entre grupos; com a penalização L2 usada, ficam aproximadamente iguais (máximo |SMD| 0,0031). Esse balanço aproximado nas covariáveis e nos termos do escore é esperado por construção e não demonstra ausência de confundimento. Com um único modelo de escore e sem modelo de desfecho, o estimador **não é duplamente robusto**.
 
 ### 3.6 Procedimento bootstrap e intervalo de confiança
 
@@ -158,13 +160,13 @@ Nenhum registro foi excluído por suporte ou por covariável incompleta.
 - Diferença ATO: erro-padrão bootstrap 0,32 p.p.; intervalo normal de conferência −2,37 a −1,11 p.p.; média das réplicas −1,75 p.p. O intervalo não inclui zero.
 - A ponderação reduziu a magnitude da diferença bruta em cerca de 13%.
 
-**Redação sugerida:** na população de sobreposição, comparando gestantes com o mesmo perfil de idade, escolaridade, raça/cor, paridade e perdas fetais anteriores, o início do pré-natal nos meses 1–3 esteve associado a um risco de baixo peso 1,74 p.p. menor (IC 95%: −2,36 a −1,12) que o início nos meses 4–6.
+**Redação sugerida:** na população de sobreposição, comparando grupos ponderados com distribuições aproximadamente iguais de idade, escolaridade, raça/cor, paridade e perdas fetais anteriores, o início do pré-natal nos meses 1–3 esteve associado a um risco de baixo peso 1,74 p.p. menor (IC 95%: −2,36 a −1,12) que o início nos meses 4–6.
 
 ### 4.3 Balanço das covariáveis
 
 SMD com o mesmo denominador não ponderado antes e depois da ponderação.
 
-- **Covariáveis ajustadas:** maior |SMD| caiu de 0,452 para 0,0031. Esperado por construção (seção 3.5).
+- **Covariáveis ajustadas:** maior |SMD| caiu de 0,452 para 0,0031: balanço aproximado, esperado por construção (seção 3.5), que não demonstra ausência de confundimento.
 - **Situação conjugal (não ajustada no modelo principal):** permaneceu desequilibrada — "casada" com SMD 0,421 antes e 0,194 depois da ponderação. Entre as linhas não ajustadas ou descritivas, o maior |SMD| após a ponderação foi 0,194.
 - **Faixa de 10–19 anos (descritiva):** 11,1% em T=1 e 11,3% em T=0 após a ponderação.
 
@@ -185,7 +187,7 @@ Não há pesos extremos.
 
 ### 4.5 Perfil da população de sobreposição
 
-Médias ponderadas (iguais entre grupos nas covariáveis ajustadas) comparadas à população total:
+Médias ponderadas de T=1 nas covariáveis ajustadas, em que T=1 e T=0 ponderados ficam aproximadamente iguais (máximo |SMD| 0,0031), comparadas à população total. O indicador de 10–19 anos é descritivo (11,1% em T=1 e 11,3% em T=0 após a ponderação). A situação conjugal, fora do escore, **não tem proporção única** na população de sobreposição: casadas são 27,1% em T=1 e 18,6% em T=0 após a ponderação (notebook 06, seção 4).
 
 | Característica | População total | População de sobreposição |
 |---|---:|---:|
@@ -223,7 +225,7 @@ A magnitude absoluta diminuiu 0,107 p.p. (6,1%), na mesma direção. Leitura cor
 
 - **Confundimento não observado.** Renda, cobertura por plano privado ou uso exclusivo do SUS, planejamento e desejo da gestação, tabagismo, estado nutricional, condições clínicas prévias e acesso geográfico à unidade de saúde não estão no SINASC e podem afetar tanto o momento de início do pré-natal quanto o peso ao nascer. A AUC modesta do escore (0,655 no diagnóstico) indica que grande parte da variação no momento de início não é explicada pelas covariáveis registradas. A situação conjugal, excluída por temporalidade, permanece desequilibrada no modelo principal.
 - **Exposição medida retrospectivamente.** `MESPRENAT` é registrado na Declaração de Nascido Vivo, no parto, a partir de recordação ou transcrição do cartão da gestante. Erros de classificação entre meses adjacentes (3 e 4, por exemplo) são plausíveis e não foram quantificados.
-- **Duração gestacional e oportunidade de início tardio.** Gestações mais curtas têm menos tempo para que o pré-natal comece tardiamente, e a prematuridade está fortemente ligada ao baixo peso. Restringir T=0 aos meses 4–6 atenua, mas não elimina, essa ligação entre duração da gestação e classificação da exposição. Ajustar pela idade gestacional não é solução, por ser variável posterior à exposição.
+- **Duração gestacional e oportunidade de início tardio.** Gestações mais curtas têm menos tempo para que o pré-natal comece tardiamente, e a prematuridade está fortemente ligada ao baixo peso. Restringir T=0 aos meses 4–6 reduz a janela considerada para o início tardio, mas não foi demonstrado quanto isso altera essa ligação entre duração da gestação e classificação da exposição, nem o viés resultante ou sua direção (seção 10). Ajustar pela idade gestacional não é solução, por ser variável posterior à exposição.
 - **Seleção por nascidos vivos.** A população inclui apenas gestações que resultaram em nascido vivo. Se o momento de início do pré-natal afeta perdas fetais, a comparação entre nascidos vivos pode ser enviesada. A fonte do SIM utilizada não contém óbitos fetais para o Sudeste em 2024, o que impede avaliar essa seleção com os dados atuais.
 - **Temporalidade e mensuração das covariáveis.** Todas as covariáveis são registradas no parto. A escolaridade pode mudar durante a gestação em adolescentes; perdas fetais anteriores misturam perdas espontâneas e abortos, com provável sub-registro; limites de idade e sentinelas não estão confirmados no dicionário disponível. A confiabilidade de campos de história reprodutiva e de assistência no SINASC é menor que a de peso e tipo de gravidez, conforme estudo de validação em maternidades públicas da capital (Bonilha et al., 2018).
 - **Alcance da população de sobreposição.** O estimando ATO refere-se a uma população definida pelos próprios pesos — mais jovem e menos escolarizada que o total — e não se generaliza automaticamente para todas as gestantes da capital (ATE), para as que iniciaram cedo (ATT), para outros municípios ou para outros anos. Mudar as covariáveis muda essa população.
