@@ -1,6 +1,6 @@
 # Alterações realizadas na reorganização
 
-Branch `chore/reorganizacao-revisao-mike`, a partir de `f2d4f45`. Nenhuma estimativa foi recalculada e nenhum arquivo foi apagado de forma irreversível. Contexto: [estado inicial](ESTADO_INICIAL_REPOSITORIO.md), [inventário](INVENTARIO_REPOSITORIO.md) e [plano](PLANO_REORGANIZACAO.md).
+Branch `chore/reorganizacao-revisao-mike`, a partir de `f2d4f45`. Nenhuma estimativa foi recalculada e nenhum arquivo foi apagado de forma irreversível. Contexto: [estado inicial](ESTADO_INICIAL_REPOSITORIO.md). O inventário e o plano que orientaram a reorganização foram retirados em outubro de 2026 e permanecem no histórico Git (versão final em `36b1634`).
 
 ## 1. Movimentações
 

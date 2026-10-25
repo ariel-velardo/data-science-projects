@@ -19,7 +19,7 @@ Para revisar a análise atual, comece pelo [guia de revisão](GUIA_REVISAO_MIKE.
 
 ## Manutenção
 
-[manutencao/](manutencao/ALTERACOES_REALIZADAS.md): estado inicial, inventário, plano, alterações e validação da reorganização de outubro de 2026.
+[manutencao/](manutencao/ALTERACOES_REALIZADAS.md): estado inicial, alterações e validação da reorganização de outubro de 2026.
 
 ## Histórico de desenvolvimento
 
