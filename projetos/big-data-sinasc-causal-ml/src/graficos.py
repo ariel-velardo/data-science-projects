@@ -52,8 +52,7 @@ def layout_academico(figura, titulo, subtitulo=None, notas=(), nome_arquivo=None
     """Título com subtítulo, notas de rodapé (fonte e método) e formatação pt-BR.
 
     ``nome_arquivo`` vai para ``layout.meta`` e nomeia a imagem exportada pela
-    barra de ferramentas e o HTML interativo gerado por
-    ``scripts/exportar_figuras_interativas.py``. ``margem_esquerda`` (px) reserva
+    barra de ferramentas. ``margem_esquerda`` (px) reserva
     espaço para rótulos longos no eixo y e mantém as notas alinhadas à esquerda.
     """
     aplicar_tema_base(figura)

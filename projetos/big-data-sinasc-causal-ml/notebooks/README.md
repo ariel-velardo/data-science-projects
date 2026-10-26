@@ -4,6 +4,10 @@ Todos estão salvos com as saídas e podem ser lidos sem executar nada. Para exe
 
 ## Análise atual — São Paulo (capital), ATO · [`principal/`](principal/)
 
+Estes cinco notebooks são a fonte oficial das análises, dos gráficos e das interpretações, com 11 figuras em Plotly JSON e PNG de apoio nas saídas salvas.
+
+Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
+
 | Notebook | Pergunta | Natureza |
 |---|---|---|
 | [05a — qualidade geográfica](principal/05a_qualidade_geografica_sp_2014_2024.ipynb) | Qual recorte tem melhor qualidade de dados? (2014–2024) | descritivo; justifica o recorte |

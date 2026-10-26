@@ -20,7 +20,9 @@ Em 2024, entre 114.694 nascidos vivos elegíveis de mães residentes na capital 
 | 8 | Diagnósticos complementares | CSVs em [`outputs/qualidade_geografica_2024/`](../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md) e `outputs/comparabilidade_sp_capital_2024/`; piloto descritivo SINASC + SIM em [`outputs/sinasc_sim_piloto_2024/`](../outputs/sinasc_sim_piloto_2024/BRIEFING_APRESENTACAO.md) |
 | 9 | Limitações | seção 5 do resumo e seções finais dos notebooks 06, 07 e 08 |
 
-Os gráficos interativos, com valores, intervalos e tamanhos de grupo no hover, também podem ser abertos fora do Jupyter: [outputs/figuras_interativas/index.html](../outputs/figuras_interativas/index.html), com o repositório clonado ou baixado. No GitHub aparece apenas a imagem estática de cada gráfico.
+Os cinco notebooks principais são a fonte oficial das análises, dos gráficos e das interpretações, com 11 figuras em Plotly JSON e PNG de apoio nas saídas salvas.
+
+Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
 
 ## O que foi realizado até o momento
 

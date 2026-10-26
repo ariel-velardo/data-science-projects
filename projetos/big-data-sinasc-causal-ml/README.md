@@ -76,10 +76,9 @@ docs/
   manutencao/                 registros da reorganização de outubro de 2026
   demais pastas               literatura, fontes, dicionário e contrato metodológico V2 da Entrega 1
 outputs/
-  figuras_interativas/        gráficos interativos (HTML) dos notebooks principais
   qualidade_geografica_2024/, comparabilidade_sp_capital_2024/   resultados da análise atual
   sinasc_sim_piloto_2024/     complemento descritivo SINASC + SIM
-  entrega_1_nacional_aipw/, temporal/, figures/   fases anteriores
+  entrega_1_nacional_aipw/, temporal/   fases anteriores
   diagnostics/, tables/       arquivos residuais lidos pelo código da extensão temporal e pela Entrega 1
 src/  scripts/  tests/        código reutilizado, utilitários e testes
 data/                         bases locais (não versionadas)
@@ -111,9 +110,11 @@ jupyter lab
 
 ## 8. Como visualizar os gráficos
 
-Os gráficos dos notebooks são Plotly interativos: passe o mouse para ver valores, intervalos, tamanhos de grupo e tamanho efetivo; use a barra de ferramentas para zoom, seleção e exportação em PNG. Cada saída também traz uma imagem PNG estática, que é o que o GitHub mostra.
+Os cinco [notebooks principais](notebooks/README.md) são a fonte oficial das análises, dos gráficos e das interpretações. Suas saídas salvas contêm 11 figuras em Plotly JSON com PNG de apoio.
 
-Para abrir os gráficos interativos fora do Jupyter, abra [outputs/figuras_interativas/index.html](outputs/figuras_interativas/index.html) no navegador, depois de clonar ou baixar o repositório. Os arquivos funcionam offline e compartilham um único `plotly.min.js` local. Para regenerá-los a partir dos notebooks: `python scripts/exportar_figuras_interativas.py`.
+Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
+
+Em visualizadores compatíveis, o hover mostra valores, intervalos e tamanhos de grupo, e a barra de ferramentas permite zoom e exportação em PNG. A interatividade depende do suporte do visualizador; a leitura das saídas salvas não exige reexecutar os notebooks.
 
 ## 9. Fases anteriores do projeto
 

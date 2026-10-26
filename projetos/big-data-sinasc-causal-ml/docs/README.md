@@ -2,6 +2,8 @@
 
 Para revisar a análise atual, comece pelo [guia de revisão](GUIA_REVISAO_MIKE.md).
 
+Os cinco [notebooks principais](../notebooks/README.md) são a fonte oficial das análises, dos gráficos e das interpretações. Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
+
 ## Análise atual — São Paulo (capital), ATO
 
 | Documento | Finalidade |

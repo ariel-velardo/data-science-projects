@@ -1,7 +1,7 @@
 """Proteção da análise SP capital (ATO) contra regressões de organização e apresentação.
 
-Os testes leem apenas arquivos versionados (notebooks executados, documentos e
-HTML exportados); nenhum deles precisa das bases do SINASC nem reexecuta modelos.
+Os testes leem apenas arquivos versionados (notebooks executados e documentos);
+nenhum deles precisa das bases do SINASC nem reexecuta modelos.
 """
 import ast
 import base64
@@ -116,7 +116,6 @@ def test_estrutura_reorganizada():
         "outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv",
         "outputs/comparabilidade_sp_capital_2024/balanco_covariaveis_2024.csv",
         "outputs/entrega_1_nacional_aipw/tabelas/tabela2_B_principal.csv",
-        "outputs/figuras_interativas/index.html",
         "requirements.txt",
     ]
     assert [p for p in esperados if not (RAIZ / p).is_file()] == []
