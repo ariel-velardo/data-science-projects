@@ -10,14 +10,14 @@ Os cinco [notebooks principais](../notebooks/README.md) são a fonte oficial das
 | --- | --- |
 | [GUIA_REVISAO_MIKE.md](GUIA_REVISAO_MIKE.md) | Ordem de leitura, o que foi realizado e o que permanece em aberto |
 | [sp_capital_ato/RESUMO_PARA_REDACAO.md](sp_capital_ato/RESUMO_PARA_REDACAO.md) | Problema, dados, método, resultados, limitações e referências, com a fonte de cada número |
-| [sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) | Documento acadêmico da Etapa 1 (estimação de 2024) e sua [fonte LaTeX](sp_capital_ato/PACOTE_REDACAO_ETAPA_1_OVERLEAF/) |
+| [sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) | Documento acadêmico da Etapa 1 tal como entregue (estimação de 2024), não atualizado depois da retirada do SIM; a [fonte LaTeX atual](sp_capital_ato/PACOTE_REDACAO_ETAPA_1_OVERLEAF/) já foi alterada e não corresponde exatamente ao PDF |
 | [sp_capital_ato/README.md](sp_capital_ato/README.md) | Índice da pasta e correspondência entre os caminhos citados no PDF e os atuais |
 | [dados/DICIONARIO_ANALITICO_SINASC_2024.md](dados/DICIONARIO_ANALITICO_SINASC_2024.md) | Definições dos 62 campos e códigos; versão consolidada em Markdown, sem duplicação JSON |
 | [literature/](literature/) e [sources/](sources/) | Referências centrais, fichas de leitura e fontes oficiais |
 
 ## Manutenção
 
-Os CSVs anuais de qualidade e de comparabilidade foram retirados no lote 7C: os notebooks 05a e 05b calculam essas tabelas diretamente dos Parquets. Consulte a [correspondência dos outputs removidos](../outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c) ao ler citações antigas no resumo, PDF ou fonte Overleaf, cujo conteúdo científico foi preservado. A comparação dos seis recortes de 2024 continua em `outputs/qualidade_geografica_2024/`, pois sua abrangência excede a do 05a.
+Os CSVs anuais de qualidade e de comparabilidade foram retirados no lote 7C: os notebooks 05a e 05b calculam essas tabelas diretamente dos Parquets. Consulte a [correspondência dos outputs removidos](../outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c) ao ler citações antigas no PDF ou na fonte Overleaf, cujo conteúdo científico foi preservado; o resumo para redação já aponta para os notebooks. A comparação dos seis recortes de 2024 continua em `outputs/qualidade_geografica_2024/`, pois sua abrangência excede a do 05a.
 
 [manutencao/](manutencao/ALTERACOES_REALIZADAS.md): estado inicial, alterações e validação da reorganização de outubro de 2026.
 

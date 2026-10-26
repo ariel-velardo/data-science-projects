@@ -5,8 +5,8 @@ Documentos da fase atual do projeto: SINASC 2024, mães residentes no município
 | Arquivo | Conteúdo |
 |---|---|
 | [RESUMO_PARA_REDACAO.md](RESUMO_PARA_REDACAO.md) | Consolidação de problema, dados, método, resultados, limitações, referências e questões abertas, com a fonte de cada número |
-| [PACOTE_REDACAO_ETAPA_1.pdf](PACOTE_REDACAO_ETAPA_1.pdf) | Documento acadêmico entregue no repasse da Etapa 1: estimação de 2024 (notebook 06). Não inclui a série anual de estimativas ATO (notebook 07) nem a análise de temporalidade (notebook 08) |
-| [PACOTE_REDACAO_ETAPA_1_OVERLEAF/](PACOTE_REDACAO_ETAPA_1_OVERLEAF/) | Fonte LaTeX do PDF (compilar com XeLaTeX; instruções em `LEIA_ME.txt`) |
+| [PACOTE_REDACAO_ETAPA_1.pdf](PACOTE_REDACAO_ETAPA_1.pdf) | Documento acadêmico **tal como entregue** no repasse da Etapa 1: estimação de 2024 (notebook 06). Registro histórico, não atualizado: ainda contém a subseção "Papel complementar do SIM", cita caminhos anteriores à reorganização e não inclui a série anual de estimativas ATO (notebook 07) nem a análise de temporalidade (notebook 08). Não representa o estado atual do estudo |
+| [PACOTE_REDACAO_ETAPA_1_OVERLEAF/](PACOTE_REDACAO_ETAPA_1_OVERLEAF/) | Fonte LaTeX **atual**, alterada em 26/10/2026 com a retirada do SIM; não corresponde exatamente ao PDF entregue (compilar com XeLaTeX; instruções em `LEIA_ME.txt`) |
 | [artigos/LEIA_ME.md](artigos/LEIA_ME.md) | Índice das referências citadas; os PDFs de acesso aberto ficam só na cópia local (fora do Git) |
 
 Os notebooks desta fase estão em [`notebooks/principal/`](../../notebooks/principal/) (05a, 05b, 06, 07 e 08).
@@ -15,7 +15,7 @@ Os notebooks desta fase estão em [`notebooks/principal/`](../../notebooks/princ
 
 ## Caminhos citados no PDF da Etapa 1
 
-O PDF é o entregável já enviado e **não foi alterado**. A fonte LaTeX foi alterada uma única vez depois da entrega, em 26/10/2026: a subseção "Papel complementar do SIM" foi retirada, e as menções ao SIM em limitações e trabalhos futuros foram reescritas como referência contextual, porque o piloto SINASC + SIM saiu do projeto. Para a fonte idêntica à entregue, use o commit `2c9b16f`. A reorganização de 24/10/2026 mudou alguns caminhos que o PDF cita:
+O PDF é o entregável já enviado e **não foi alterado**. A fonte LaTeX foi alterada uma única vez depois da entrega, em 26/10/2026: a subseção "Papel complementar do SIM" foi retirada, e as menções ao SIM em limitações e trabalhos futuros foram reescritas como referência contextual, porque o piloto SINASC + SIM saiu do projeto. A fonte anterior a essa alteração, versionada pela primeira vez em 24/10/2026 (commit `663becf`) e sem mudanças até o commit `2c9b16f`, é a que corresponde ao PDF entregue. A reorganização de 24/10/2026 mudou alguns caminhos que o PDF cita:
 
 | Caminho citado no PDF | Caminho atual |
 |---|---|
@@ -29,7 +29,16 @@ O PDF é o entregável já enviado e **não foi alterado**. A fonte LaTeX foi al
 | `notebooks/principal/06_ato_sp_capital_2024.ipynb` | inalterado |
 | `docs/methodology/DAG_INICIAL.md` | inalterado |
 
-Os ZIPs entregues (`PACOTE_REDACAO_ETAPA_1_OVERLEAF.zip` e `ANEXOS_TECNICOS_ETAPA_1.zip`) eram cópias byte a byte das pastas expandidas e ficam na cópia local `_arquivo_local/entrega_sp_capital_etapa_1/`, fora do Git. Desde 26/10/2026, o `main.tex` desta pasta difere do entregue (ver acima). Para gerar um ZIP do Overleaf a partir da versão atual da pasta, no PowerShell:
+## Situação dos pacotes da Etapa 1
+
+| Item | Situação |
+|---|---|
+| PDF entregue | `PACOTE_REDACAO_ETAPA_1.pdf`, nesta pasta, sem alteração desde o primeiro versionamento (`663becf`, 24/10/2026) |
+| Fonte LaTeX atual | `PACOTE_REDACAO_ETAPA_1_OVERLEAF/`, alterada em 26/10/2026 (retirada do SIM) |
+| `PACOTE_REDACAO_ETAPA_1_OVERLEAF.zip` entregue | não há cópia local nem versão no Git. O conteúdo da pasta correspondente pode ser recuperado no commit `2c9b16f`; um ZIP gerado a partir dele não é o arquivo original |
+| `ANEXOS_TECNICOS_ETAPA_1.zip` entregue | cópia local em `_arquivo_local/entrega_sp_capital_etapa_1/`, fora do Git; contém o notebook 06 da entrega, a base analítica em CSV, um dicionário resumido e os artigos de acesso aberto |
+
+Para gerar um ZIP do Overleaf a partir da versão **atual** da pasta (não equivalente ao entregue), no PowerShell:
 
 ```powershell
 Compress-Archive -Path docs\sp_capital_ato\PACOTE_REDACAO_ETAPA_1_OVERLEAF\* -DestinationPath PACOTE_REDACAO_ETAPA_1_OVERLEAF.zip

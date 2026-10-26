@@ -11,7 +11,7 @@ Em 2024, entre 114.694 nascidos vivos elegíveis de mães residentes na capital 
 | Ordem | Material | O que observar |
 |---|---|---|
 | 1 | [README do projeto](../README.md), seções 1–5 | pergunta, população, método, resultados e limitações em duas páginas |
-| 2 | [RESUMO_PARA_REDACAO.md](sp_capital_ato/RESUMO_PARA_REDACAO.md) | consolidação de cada decisão e de cada número, com a fonte. O [PDF da Etapa 1](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) cobre a estimação de 2024 em formato acadêmico |
+| 2 | [RESUMO_PARA_REDACAO.md](sp_capital_ato/RESUMO_PARA_REDACAO.md) | consolidação de cada decisão e de cada número, com a fonte. O [PDF da Etapa 1](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) é a versão já entregue, restrita à estimação de 2024 e anterior à retirada do SIM; não representa o estado atual do estudo |
 | 3 | [05a — qualidade geográfica](../notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb) | por que São Paulo (capital): critério de preenchimento, sem olhar o desfecho |
 | 4 | [05b — comparabilidade](../notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb) | desequilíbrio antes de qualquer ajuste e escore concentrado perto de 1 (≈ 91% em T=1), o que motivou o ATO em vez de IPW |
 | 5 | [06 — estimação principal](../notebooks/principal/06_ato_sp_capital_2024.ipynb) | seção 2 (método); seção 3 (pesos, n efetivo e gráfico do escore); seção 4 (balanço e perfil da população-alvo); seção 5 (riscos com IC bootstrap); seção 7 (sensibilidade com situação conjugal) |
