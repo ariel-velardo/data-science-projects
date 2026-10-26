@@ -15,10 +15,6 @@ Os cinco [notebooks principais](../notebooks/README.md) são a fonte oficial das
 | [dados/DICIONARIO_ANALITICO_SINASC_2024.md](dados/DICIONARIO_ANALITICO_SINASC_2024.md) | Definições de campos e códigos usados nos notebooks |
 | [literature/](literature/) e [sources/](sources/) | Referências centrais, fichas de leitura e fontes oficiais |
 
-## Entrega 1 — série nacional 2014–2024 (AIPW)
-
-[entrega_1_nacional_aipw/](entrega_1_nacional_aipw/README.md): relatório final da disciplina, tabelas de resultados, dicionário técnico, metadados da base, matriz X–T–Y e material de apresentação. População, estimando e estimador diferem da análise atual. As formulações V2 citadas no relatório estão definidas no [contrato metodológico V2](temporal/CONTRATO_V2_PRE_ESTIMACAO.md). A Entrega 1 fica como registro acadêmico para leitura; sua reexecução integral exige recuperar do histórico Git os notebooks e resultados intermediários da extensão temporal nacional.
-
 ## Manutenção
 
 [manutencao/](manutencao/ALTERACOES_REALIZADAS.md): estado inicial, alterações e validação da reorganização de outubro de 2026.
@@ -31,6 +27,6 @@ Registros preservados para rastreabilidade. Não são necessários para a leitur
 | --- | --- |
 | [methodology/DAG_INICIAL.md](methodology/DAG_INICIAL.md) | DAG de trabalho citado como fonte da Figura 4 do PDF da Etapa 1 |
 
-A documentação da fase inicial (Brasil 2024) e a do desenvolvimento da extensão temporal nacional (mapa de notebooks, playbooks, erratas e planos da V1 → V2) foram retiradas da árvore em outubro de 2026 e permanecem no histórico Git.
+A Entrega 1 nacional AIPW e seu contrato V2 foram retirados da árvore ativa e permanecem no histórico Git, no commit `af30d8d`. A documentação de desenvolvimento das fases anteriores também está no histórico. O resumo para redação e o pacote acadêmico da análise atual permanecem preservados; referências textuais à entrega nacional nesses materiais devem ser consultadas no histórico, conforme o [índice da análise atual](sp_capital_ato/README.md).
 
-> **Preservação.** Parte da documentação histórica é referenciada por código, testes ou artefatos congelados da extensão temporal. Por isso, arquivos históricos não devem ser movidos, renomeados ou reescritos sem verificar essas dependências.
+Os manifestos anuais e os registros históricos mantidos por dependência estão identificados no [índice de outputs](../outputs/README.md#proveniência-e-dependências-preservadas).

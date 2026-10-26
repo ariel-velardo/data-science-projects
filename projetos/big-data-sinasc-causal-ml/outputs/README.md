@@ -8,19 +8,22 @@ Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para
 
 | Pasta | Conteúdo | Gerado por |
 |---|---|---|
-| [`qualidade_geografica_2024/`](qualidade_geografica_2024/RECOMENDACAO_RECORTE.md) | recomendação do recorte e CSVs de qualidade por recorte e por ano (o 07 lê `qualidade_sp_por_ano.csv`) | notebook 05a |
+| [`qualidade_geografica_2024/`](qualidade_geografica_2024/RECOMENDACAO_RECORTE.md) | recomendação do recorte e CSVs preservados de qualidade por recorte e por ano; o 07 processa os Parquets diretamente e não depende de `qualidade_sp_por_ano.csv` | análise de qualidade geográfica (05a) |
 | `comparabilidade_sp_capital_2024/` | balanço por nível e resumo do escore diagnóstico (antes da estimação) | notebook 05b |
 | [`sinasc_sim_piloto_2024/`](sinasc_sim_piloto_2024/BRIEFING_APRESENTACAO.md) | piloto descritivo SINASC + SIM do Sudeste (painel municipal e resumos); as amostras de microdados ficam só na cópia local | processamento descrito em `LEIA_ME.txt` |
 
 Os notebooks 06, 07 e 08 não gravam arquivos: seus resultados estão nas saídas salvas dos próprios notebooks.
 
-## Fases anteriores
+## Proveniência e dependências preservadas
 
 | Pasta | Conteúdo |
 |---|---|
-| [`entrega_1_nacional_aipw/`](entrega_1_nacional_aipw/) | figuras e tabelas da Entrega 1 (Brasil 2014–2024, AIPW) e dicionário raw |
-| `temporal/` | resultados finais e proveniência da extensão temporal nacional: estimação V2 da Entrega 1 (`estimacao_v2/`), AIPW anual V1 usado na comparação (`estimativas/aipw_anual.csv`), contrato V2 congelado, manifestos dos ZIPs 2014–2023, tabelas anuais de admissão e descritiva, e `contrato_temporal.json`; lido por `src/` e pelos testes. Os resultados intermediários da V1/V2 foram retirados em outubro de 2026 e permanecem no histórico Git |
-| `diagnostics/` | quatro JSONs residuais da fase inicial 2024; `fase1_amostra.json` é lido por `src/amostra.py` (`carregar_exercicio`) e pela reexecução do notebook 02 da Entrega 1 |
+| `temporal/manifestos/` | dez manifestos SINASC 2014–2023, com fontes oficiais e hashes dos ZIPs e Parquets; lidos por `src.temporal` para preparação anual |
+| `diagnostics/` | `fase1_amostra.json` e `fase1_overlap.json`, exigidos pela função histórica `src.amostra.carregar_exercicio`; `fase2_aipw.json`, preservado pelo hash completo do Parquet 2024 em `provenance.parquet_sha256` |
 | `tables/` | versão JSON do [dicionário analítico](../docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md) |
 
-Não mova nem renomeie `temporal/`, `diagnostics/` e `tables/`: caminhos e hashes são conferidos por código, testes e contratos congelados. Os demais resultados da fase inicial (Brasil 2024) foram retirados em outubro de 2026 e permanecem no histórico Git.
+O ZIP SINASC 2024 tem seu hash em `data/raw/source_manifest.json`; o hash do Parquet 2024 permanece em `diagnostics/fase2_aipw.json`. Esses arquivos e os dez manifestos anuais preservam a proveniência dos onze Parquets. O dicionário analítico cobre os 62 campos brutos e mantém sua versão [Markdown](../docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md).
+
+**Pendência para outro lote:** `src.amostra.carregar_exercicio` ainda lê os dois JSONs da Fase 1 e é chamado por `src.modelagem_preditiva.executar_preditivo`. Essa rotina histórica não é utilizada pelos cinco notebooks principais. Os módulos e os três JSONs foram preservados sem alteração; as estimativas nacionais contidas neles não integram os resultados atuais. Separar a proveniência de 2024 desse registro histórico também fica para uma limpeza posterior.
+
+Os resultados da Entrega 1 nacional, da extensão V1/V2 e `diagnostics/fase3_sensibilidades.json` foram retirados da árvore ativa; seus arquivos versionados permanecem recuperáveis no commit `af30d8d`.

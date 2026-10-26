@@ -11,7 +11,7 @@ Documentos da fase atual do projeto: SINASC 2024, mães residentes no município
 
 Os notebooks desta fase estão em [`notebooks/principal/`](../../notebooks/principal/) (05a, 05b, 06, 07 e 08).
 
-**Não confundir com a Entrega 1** ([`docs/entrega_1_nacional_aipw/`](../entrega_1_nacional_aipw/)): série nacional 2014–2024 estimada com AIPW. População, estimando e estimador são diferentes, e os números das duas fases não devem ser combinados.
+**Não confundir com a Entrega 1:** série nacional 2014–2024 estimada com AIPW, retirada da árvore ativa e recuperável no commit `af30d8d`, em `docs/entrega_1_nacional_aipw/`. População, estimando e estimador são diferentes, e os números das duas fases não devem ser combinados. As menções à entrega nacional no resumo para redação e no pacote acadêmico preservado referem-se a esse material histórico.
 
 ## Caminhos citados no PDF da Etapa 1
 
@@ -20,7 +20,7 @@ O PDF e sua fonte LaTeX são entregáveis já enviados e **não foram alterados*
 | Caminho citado no PDF | Caminho atual |
 |---|---|
 | `docs/entrega/RESUMO_PARA_REDACAO.md` | `docs/sp_capital_ato/RESUMO_PARA_REDACAO.md` |
-| `docs/entrega/` (demais documentos, fase nacional) | `docs/entrega_1_nacional_aipw/` |
+| `docs/entrega/` (demais documentos, fase nacional) | histórico Git: `af30d8d`, pasta `docs/entrega_1_nacional_aipw/` |
 | `outputs/qualidade_geografica_2024/qualidade_sp_2014_2024.ipynb` | `notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb` |
 | `outputs/comparabilidade_sp_capital_2024/comparabilidade_sp_capital_2024.ipynb` | `notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb` |
 | `outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv` e `RECOMENDACAO_RECORTE.md` | inalterados |

@@ -68,18 +68,17 @@ Consolidação com a origem de cada número: [RESUMO_PARA_REDACAO.md](docs/sp_ca
 ```text
 notebooks/
   principal/                  análise atual (SP capital, ATO) — ler na ordem 05a → 05b → 06 → 07 → 08
-  entrega_1_nacional_aipw/    Entrega 1: série nacional 2014–2024 com AIPW (fase anterior, concluída; registro para leitura)
 docs/
   GUIA_REVISAO_MIKE.md        roteiro de revisão
   sp_capital_ato/             resumo para redação, PDF e fonte LaTeX da Etapa 1
-  entrega_1_nacional_aipw/    relatório final e anexos da Entrega 1
   manutencao/                 registros da reorganização de outubro de 2026
-  demais pastas               literatura, fontes, dicionário e contrato metodológico V2 da Entrega 1
+  demais pastas               literatura, fontes oficiais e dicionário analítico
 outputs/
   qualidade_geografica_2024/, comparabilidade_sp_capital_2024/   resultados da análise atual
   sinasc_sim_piloto_2024/     complemento descritivo SINASC + SIM
-  entrega_1_nacional_aipw/, temporal/   fases anteriores
-  diagnostics/, tables/       arquivos residuais lidos pelo código da extensão temporal e pela Entrega 1
+  temporal/manifestos/        proveniência dos ZIPs e Parquets de 2014–2023
+  diagnostics/               registros preservados por dependência de código e proveniência de 2024
+  tables/                    dicionário analítico em JSON
 src/  scripts/  tests/        código reutilizado, utilitários e testes
 data/                         bases locais (não versionadas)
 ```
@@ -100,10 +99,10 @@ jupyter lab
 
 - **Kernel:** com o Jupyter aberto a partir da `.venv`, o kernel `python3` já usa esse ambiente; no VS Code, selecione `.venv\Scripts\python.exe`.
 - **Leitura sem dados:** todos os notebooks estão salvos com as saídas; não é preciso executar nada para conferir resultados e gráficos.
-- **Bases locais** (não versionadas por tamanho; endereços oficiais e hashes em [METADADOS_BASE.md](docs/entrega_1_nacional_aipw/METADADOS_BASE.md)):
+- **Bases locais** (não versionadas por tamanho; [fontes oficiais](docs/sources/FONTES_OFICIAIS.md) e [localização dos manifestos e hashes](outputs/README.md#proveniência-e-dependências-preservadas)):
   - 2024: `python scripts/baixar_dados.py` baixa o ZIP oficial para `data/raw/`; `python -c "from src.sinasc import converter_zip_para_parquet; converter_zip_para_parquet('data/raw/SINASC_2024_csv.zip', 'data/processed/sinasc_2024.parquet')"` gera `data/processed/sinasc_2024.parquet`;
   - 2014–2023: `python -c "from src.temporal import preparar_anos; preparar_anos('.', range(2014, 2024))"` baixa e converte um ano por vez para `data/processed/sinasc/sinasc_<ano>.parquet`.
-- **Reexecução:** 05a, 05b e 08 são rápidos. O 07 ajusta onze escores anuais. O 06 inclui o bootstrap de 1.000 réplicas (alguns minutos). A seção 7 do 06 pode ser executada sozinha.
+- **Reexecução:** 05a, 05b e 08 são rápidos. O 07 lê diretamente os Parquets e ajusta onze escores anuais. O 06 inclui o bootstrap de 1.000 réplicas (alguns minutos); sua seção 7 usa os objetos produzidos nas seções anteriores da mesma execução.
 - **Gráficos estáticos:** o `kaleido` usa o Google Chrome instalado na máquina para gerar os PNG incorporados aos notebooks.
 - **Verificações:** `python -m pytest -q tests` (não precisa das bases).
 - **PySpark** não é dependência do projeto.
@@ -118,9 +117,9 @@ Em visualizadores compatíveis, o hover mostra valores, intervalos e tamanhos de
 
 ## 9. Fases anteriores do projeto
 
-- **Entrega 1 — série nacional 2014–2024 (AIPW):** Brasil, formulação B, AIPW com *cross-fitting* por ano e IC agrupado por município; diferença de −0,94 a −1,52 p.p. entre os anos (−1,48 p.p. em 2024). Documentos em [docs/entrega_1_nacional_aipw/](docs/entrega_1_nacional_aipw/README.md). **População, estimando e estimador diferem da análise atual; os números não devem ser combinados.** Os cinco notebooks, os documentos e os resultados finais (`outputs/entrega_1_nacional_aipw/` e `outputs/temporal/estimacao_v2/`) permanecem como registro acadêmico para leitura.
-- **Desenvolvimento da extensão temporal nacional (V1 → V2):** os notebooks 06–10, sua documentação de trabalho e os resultados intermediários foram retirados da árvore em outubro de 2026 e permanecem no histórico Git. A reexecução integral da Entrega 1 ou da extensão V1/V2 exige recuperar esses arquivos do histórico. A análise atual não depende deles, e seus resultados continuam disponíveis nos cinco notebooks principais.
-- **Fase inicial — Brasil 2024** (AIPW com comparador 4º–9º mês): superada pela análise atual e retirada da árvore em outubro de 2026; notebooks, código e resultados permanecem no histórico Git.
+A árvore ativa contém somente os cinco notebooks da pesquisa sobre São Paulo (capital). A antiga Entrega 1 nacional AIPW e os artefatos da extensão V1/V2 foram retirados; os arquivos versionados deste lote podem ser recuperados no commit `af30d8d`. As fases removidas usam outras populações e estimadores, e seus números não devem ser combinados com os do estudo atual.
+
+Os registros históricos ainda necessários à preparação dos dados, à proveniência ou a funções preservadas estão identificados no [índice de outputs](outputs/README.md#proveniência-e-dependências-preservadas). A limpeza dessas funções fica para outro lote.
 
 ## 10. Tecnologias
 

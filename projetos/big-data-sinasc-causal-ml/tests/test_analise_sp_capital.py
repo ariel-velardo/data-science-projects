@@ -108,23 +108,31 @@ def test_estrutura_reorganizada():
         "notebooks/principal/06_ato_sp_capital_2024.ipynb",
         "notebooks/principal/07_evolucao_ato_sp_capital_2014_2024.ipynb",
         "notebooks/principal/08_temporalidade_prenatal_sp_capital_2024.ipynb",
-        "notebooks/entrega_1_nacional_aipw/04_estimacao_aipw.ipynb",
         "docs/sp_capital_ato/RESUMO_PARA_REDACAO.md",
         "docs/sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf",
-        "docs/entrega_1_nacional_aipw/RELATORIO_FINAL_DISCIPLINA.md",
         "docs/GUIA_REVISAO_MIKE.md",
         "outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv",
         "outputs/comparabilidade_sp_capital_2024/balanco_covariaveis_2024.csv",
-        "outputs/entrega_1_nacional_aipw/tabelas/tabela2_B_principal.csv",
+        "outputs/tables/dicionario_analitico_sinasc_2024.json",
+        "outputs/diagnostics/fase1_amostra.json",
+        "outputs/diagnostics/fase1_overlap.json",
+        "outputs/diagnostics/fase2_aipw.json",
         "requirements.txt",
     ]
     assert [p for p in esperados if not (RAIZ / p).is_file()] == []
+    assert {p.relative_to(RAIZ).as_posix() for p in (RAIZ / "notebooks").rglob("*.ipynb")} == {
+        p for p in esperados if p.endswith(".ipynb")}
     retirados = ["docs/entrega", "outputs/entrega", "outputs/compartilhamento_professora",
                  "notebooks/apoio_aula", "requirements_before_spark.txt", "outputs/temporal/figuras",
                  # fase inicial Brasil 2024 (G1), removida no lote 3 do expurgo
                  "notebooks/01_auditoria_sinasc_2024.ipynb", "notebooks/05_heterogeneidade_causal.ipynb",
                  "apresentacao", "docs/architecture", "docs/artigo", "docs/REPRODUCAO.md",
-                 "src/validacao.py", "src/entrega.py", "scripts/validar_projeto.py", "scripts/executar_pipeline.py"]
+                 "src/validacao.py", "src/entrega.py", "scripts/validar_projeto.py", "scripts/executar_pipeline.py",
+                 "notebooks/entrega_1_nacional_aipw", "docs/entrega_1_nacional_aipw",
+                 "outputs/entrega_1_nacional_aipw", "docs/temporal", "outputs/temporal/estimacao_v2",
+                 "outputs/temporal/estimativas", "outputs/temporal/v2_pre_estimacao",
+                 "outputs/temporal/tabelas", "outputs/temporal/contrato_temporal.json",
+                 "outputs/diagnostics/fase3_sensibilidades.json"]
     assert [p for p in retirados if (RAIZ / p).exists()] == []
 
 

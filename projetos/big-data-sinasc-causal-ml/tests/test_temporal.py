@@ -418,7 +418,7 @@ def test_conversao_registrada_detecta_parquet_adulterado(tmp_path, monkeypatch):
 def test_manifestos_temporais_nao_incluem_2024():
     pasta = RAIZ_REAL / 'outputs/temporal/manifestos'
     nomes = sorted(p.name for p in pasta.glob('*.json'))
-    assert 'sinasc_2024.json' not in nomes
+    assert nomes == [f'sinasc_{ano}.json' for ano in range(2014, 2024)]
     for p in pasta.glob('*.json'):
         m = json.loads(p.read_text(encoding='utf-8'))
         assert m['url'] == tp.url_sinasc(m['ano']) and m['crc_verificado']
