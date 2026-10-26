@@ -3,12 +3,11 @@
 Os testes leem apenas arquivos versionados (notebooks executados, documentos e
 HTML exportados); nenhum deles precisa das bases do SINASC nem reexecuta modelos.
 """
+import ast
 import base64
 import json
 from pathlib import Path
 import re
-import subprocess
-import sys
 import unicodedata
 from urllib.parse import unquote, urlsplit
 
@@ -200,14 +199,65 @@ def test_textos_corrigidos_nao_voltam():
         assert [f for f in frases if f in conteudo] == [], caminho.name
 
 
-def test_secao_7_recupera_referencias_do_arquivo_salvo():
-    """A sensibilidade do notebook 06 lê as saídas principais salvas; o contrato precisa continuar válido."""
-    codigo = _texto(_celula(_nb(NB06), "sens-conjugal-2")["source"])
-    codigo += "\nprint(round(dif_principal_sens, 2), ess_principal_sens)\n"
-    saida = subprocess.run([sys.executable, "-c", "import sys; sys.dont_write_bytecode = True\n" + codigo],
-                           cwd=PRINCIPAL, capture_output=True, text=True, encoding="utf-8", check=True)
-    assert "Referência recuperada exclusivamente das saídas principais salvas." in saida.stdout
-    assert "-1.74 [84995, 10096]" in saida.stdout
+def test_secao_7_usa_referencias_da_execucao_corrente(monkeypatch):
+    """Testa apenas a transferência de referências sintéticas, sem estimação ou bootstrap."""
+    import numpy.testing  # Carrega a dependência antes de bloquear leituras de arquivos.
+    import pandas as pd
+    from src.graficos import fmt_br
+
+    nb = _nb(NB06)
+    codigo = compile(_texto(_celula(nb, "sens-conjugal-2")["source"]), str(NB06), "exec")
+
+    def proibir_leitura(*args, **kwargs):
+        pytest.fail("As referências da sensibilidade não devem ser recuperadas de arquivos.")
+
+    # Duas entradas distintas detectam referências fixas ou arredondadas prematuramente.
+    for risco1, risco0, tamanho in [(0.08681234, 0.10418654, 84995.4321), (0.12, 0.15, 123.4567)]:
+        balanco = pd.DataFrame({
+            "variavel": ["Idade materna (anos)", "Situação conjugal"],
+            "nivel": ["média", "Casada"],
+            "smd_depois": [-0.003123, 0.194512],
+            "media_t1_pond": [27.64, 0.271], "media_t0_pond": [27.61, 0.186],
+        })
+        ambiente = {
+            "__builtins__": {"float": float, "zip": zip, "print": print},
+            "np": np, "pd": pd, "fmt": fmt_br,
+            "risco_ato": {1: risco1, 0: risco0}, "dif_ato": 100 * (risco1 - risco0),
+            "ess": pd.Series([tamanho, 10096.1234], index=[1, 0]), "balanco": balanco,
+        }
+        with monkeypatch.context() as bloqueio:
+            bloqueio.setattr("builtins.open", proibir_leitura)
+            bloqueio.setattr(Path, "open", proibir_leitura)
+            exec(codigo, ambiente)
+        np.testing.assert_allclose(ambiente["riscos_principal_sens"], [100 * risco1, 100 * risco0])
+        assert ambiente["dif_principal_sens"] == ambiente["dif_ato"]
+        assert ambiente["ess_principal_sens"] == [tamanho, 10096.1234]
+        pd.testing.assert_series_equal(ambiente["smd_principal_sens"], pd.Series(
+            [0.003123, 0.194512], index=["Idade materna (anos) — média", "Situação conjugal — Casada"],
+            name="|SMD| principal"))
+        assert ambiente["perfil_principal_sens"] == {
+            ("Idade materna (anos)", "média"): ["27,6", "27,6"],
+            ("Situação conjugal", "Casada"): ["27,1%", "18,6%"],
+        }
+
+    # Inspeção da especificação, sem executar a célula que ajusta o escore.
+    arvore = ast.parse(_texto(_celula(nb, "sens-conjugal-4")["source"]))
+    atribuicoes = {n.targets[0].id: n.value for n in arvore.body
+                  if isinstance(n, ast.Assign) and isinstance(n.targets[0], ast.Name)}
+    assert ast.literal_eval(atribuicoes["numericas_sens"]) == ["IDADEMAE_NUM", "IDADEMAE_QUAD"]
+    assert ast.literal_eval(atribuicoes["categoricas_base_sens"]) == [
+        "ESCOLARIDADE_MAE", "RACA_COR_MAE", "PARIDADE_CAT", "PERDAS_FETAIS_CAT"]
+    for nome, expressao in {
+        "categoricas_sens": 'categoricas_base_sens + ["SITUACAO_CONJUGAL"]',
+        "modelo_sens": 'construir_pipeline_propensity(numericas_sens, categoricas_sens)',
+    }.items():
+        assert ast.dump(atribuicoes[nome]) == ast.dump(ast.parse(expressao, mode="eval").body)
+
+    # Complementa os testes existentes do principal, da série anual e da temporalidade.
+    comparacao = _saidas_texto(_celula(nb, "sens-conjugal-6"))
+    linha = re.search(r"<th>Diferença de riscos T=1 − T=0 \(p.p.\)</th>(.*?)</tr>", comparacao, re.S)
+    assert linha is not None
+    assert re.findall(r"<td>([^<]*)</td>", linha.group(1)) == ["-1,74", "-1,63"]
 
 
 # ------------------------------------------------------------ fórmulas ATO
@@ -256,14 +306,38 @@ def test_riscos_normalizados_nao_dependem_da_escala_dos_pesos(medidas_ato):
 
 # ------------------------------------------------- apresentação e documentos
 
-def test_figuras_interativas_sincronizadas_e_offline():
-    sys.path.insert(0, str(RAIZ))
-    from scripts.exportar_figuras_interativas import DESTINO, verificar
-    assert verificar() == []
-    for html in DESTINO.glob("*.html"):
-        texto = html.read_text(encoding="utf-8")
-        assert not re.search(r'<script[^>]+src="https?://', texto), html.name
-    assert (DESTINO / "plotly.min.js").stat().st_size > 1_000_000
+def test_figuras_plotly_incorporadas_nos_cinco_notebooks():
+    """Valida os artefatos; a interatividade visual requer um visualizador compatível com Plotly."""
+    import plotly.io as pio
+
+    esperados = {
+        PRINCIPAL / "05a_qualidade_geografica_sp_2014_2024.ipynb": 2,
+        PRINCIPAL / "05b_comparabilidade_sp_capital_2024.ipynb": 2,
+        NB06: 3, NB07: 2, NB08: 2,
+    }
+    total = 0
+    for caminho, quantidade in esperados.items():
+        figuras = []
+        for celula in _nb(caminho)["cells"]:
+            for saida in celula.get("outputs", []):
+                assert saida["output_type"] != "error", caminho.name
+                dados = saida.get("data", {})
+                if MIME_PLOTLY not in dados:
+                    continue
+                figura = dados[MIME_PLOTLY]
+                assert isinstance(figura, dict), caminho.name
+                assert isinstance(figura.get("data"), list) and figura["data"], caminho.name
+                assert isinstance(figura.get("layout"), dict) and figura["layout"], caminho.name
+                # O leitor Plotly valida também o schema, sem renderizar nem exportar.
+                validada = pio.from_json(json.dumps(figura, allow_nan=False), skip_invalid=False)
+                assert len(validada.data) == len(figura["data"]), caminho.name
+                assert "image/png" in dados, caminho.name
+                png = base64.b64decode(_texto(dados["image/png"]), validate=True)
+                assert png.startswith(b"\x89PNG\r\n\x1a\n"), caminho.name
+                figuras.append(figura)
+        assert len(figuras) == quantidade, caminho.name
+        total += len(figuras)
+    assert total == 11
 
 
 def test_links_relativos_e_ancoras(tmp_path):
