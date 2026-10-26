@@ -111,9 +111,12 @@ def test_estrutura_reorganizada():
         "docs/sp_capital_ato/RESUMO_PARA_REDACAO.md",
         "docs/sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf",
         "docs/GUIA_REVISAO_MIKE.md",
-        "outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv",
-        "outputs/comparabilidade_sp_capital_2024/balanco_covariaveis_2024.csv",
-        "outputs/tables/dicionario_analitico_sinasc_2024.json",
+        "docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md",
+        # Comparação de seis recortes de 2024, não coberta pela série paulista do 05a.
+        "outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md",
+        "outputs/qualidade_geografica_2024/comparacao_recortes_2024.csv",
+        "outputs/qualidade_geografica_2024/qualidade_variaveis_2024.csv",
+        # Dependência de carregar_exercicio e proveniência do Parquet 2024.
         "outputs/diagnostics/fase1_amostra.json",
         "outputs/diagnostics/fase1_overlap.json",
         "outputs/diagnostics/fase2_aipw.json",
@@ -132,7 +135,11 @@ def test_estrutura_reorganizada():
                  "outputs/entrega_1_nacional_aipw", "docs/temporal", "outputs/temporal/estimacao_v2",
                  "outputs/temporal/estimativas", "outputs/temporal/v2_pre_estimacao",
                  "outputs/temporal/tabelas", "outputs/temporal/contrato_temporal.json",
-                 "outputs/diagnostics/fase3_sensibilidades.json"]
+                 "outputs/diagnostics/fase3_sensibilidades.json",
+                 # Lote 7C: tabelas recalculadas nos notebooks e dicionário consolidado em Markdown.
+                 "outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv",
+                 "outputs/comparabilidade_sp_capital_2024",
+                 "outputs/tables/dicionario_analitico_sinasc_2024.json"]
     assert [p for p in retirados if (RAIZ / p).exists()] == []
 
 

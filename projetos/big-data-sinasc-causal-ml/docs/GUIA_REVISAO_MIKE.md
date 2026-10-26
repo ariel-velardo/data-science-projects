@@ -17,10 +17,12 @@ Em 2024, entre 114.694 nascidos vivos elegíveis de mães residentes na capital 
 | 5 | [06 — estimação principal](../notebooks/principal/06_ato_sp_capital_2024.ipynb) | seção 2 (método); seção 3 (pesos, n efetivo e gráfico do escore); seção 4 (balanço e perfil da população-alvo); seção 5 (riscos com IC bootstrap); seção 7 (sensibilidade com situação conjugal) |
 | 6 | [07 — série 2014–2024](../notebooks/principal/07_evolucao_ato_sp_capital_2014_2024.ipynb) | mesma especificação ano a ano; estimativas pontuais, sem IC anual; queda do grupo T=0 de 14,8% para 8,8% dos elegíveis |
 | 7 | [08 — temporalidade e seleção](../notebooks/principal/08_temporalidade_prenatal_sp_capital_2024.ipynb) | duração gestacional por mês de início e nascimentos excluídos antes do filtro de início; leitura descritiva |
-| 8 | Diagnósticos complementares | CSVs em [`outputs/qualidade_geografica_2024/`](../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md) e `outputs/comparabilidade_sp_capital_2024/`; piloto descritivo SINASC + SIM em [`outputs/sinasc_sim_piloto_2024/`](../outputs/sinasc_sim_piloto_2024/BRIEFING_APRESENTACAO.md) |
+| 8 | Diagnósticos complementares | Comparação de seis recortes de 2024 e justificativa em [`outputs/qualidade_geografica_2024/`](../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md); tabelas anuais e de comparabilidade nos próprios notebooks 05a e 05b; piloto descritivo SINASC + SIM em [`outputs/sinasc_sim_piloto_2024/`](../outputs/sinasc_sim_piloto_2024/BRIEFING_APRESENTACAO.md) |
 | 9 | Limitações | seção 5 do resumo e seções finais dos notebooks 06, 07 e 08 |
 
 Os cinco notebooks principais são a fonte oficial das análises, dos gráficos e das interpretações, com 11 figuras em Plotly JSON e PNG de apoio nas saídas salvas.
+
+Os CSVs duplicados de qualidade anual e comparabilidade foram removidos; nenhum deles é necessário à execução dos notebooks. Para referências antigas no material acadêmico preservado, consulte a [correspondência dos outputs](../outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c). As definições dos campos permanecem no [dicionário em Markdown](dados/DICIONARIO_ANALITICO_SINASC_2024.md).
 
 Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
 

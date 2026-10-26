@@ -74,16 +74,17 @@ docs/
   manutencao/                 registros da reorganização de outubro de 2026
   demais pastas               literatura, fontes oficiais e dicionário analítico
 outputs/
-  qualidade_geografica_2024/, comparabilidade_sp_capital_2024/   resultados da análise atual
+  qualidade_geografica_2024/ comparação de seis recortes de 2024 e justificativa preservadas
   sinasc_sim_piloto_2024/     complemento descritivo SINASC + SIM
   temporal/manifestos/        proveniência dos ZIPs e Parquets de 2014–2023
   diagnostics/               registros preservados por dependência de código e proveniência de 2024
-  tables/                    dicionário analítico em JSON
 src/  scripts/  tests/        código reutilizado, utilitários e testes
 data/                         bases locais (não versionadas)
 ```
 
 Índices por pasta: [notebooks/README.md](notebooks/README.md), [outputs/README.md](outputs/README.md) e [docs/README.md](docs/README.md).
+
+As tabelas anuais de qualidade e os resultados de comparabilidade são calculados em memória nos notebooks 05a e 05b, diretamente dos Parquets; os CSVs duplicados foram removidos. O [dicionário analítico](docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md) concentra as definições dos 62 campos, sem cópia JSON. A [correspondência dos caminhos antigos](outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c) orienta a leitura das referências preservadas no pacote acadêmico.
 
 ## 7. Como executar
 

@@ -23,7 +23,9 @@ O PDF e sua fonte LaTeX são entregáveis já enviados e **não foram alterados*
 | `docs/entrega/` (demais documentos, fase nacional) | histórico Git: `af30d8d`, pasta `docs/entrega_1_nacional_aipw/` |
 | `outputs/qualidade_geografica_2024/qualidade_sp_2014_2024.ipynb` | `notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb` |
 | `outputs/comparabilidade_sp_capital_2024/comparabilidade_sp_capital_2024.ipynb` | `notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb` |
-| `outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv` e `RECOMENDACAO_RECORTE.md` | inalterados |
+| `outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv` | removido no lote 7C; indicadores calculados em memória no [notebook 05a](../../notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb), objeto `dados` |
+| `outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md` | [preservado](../../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md), com a comparação de seis recortes de 2024 |
+| `outputs/comparabilidade_sp_capital_2024/balanco_covariaveis_2024.csv` e `resumo_propensity_2024.csv` | removidos no lote 7C; tabelas `saida_balanco` e `resumo_ps` calculadas no [notebook 05b](../../notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb) |
 | `notebooks/principal/06_ato_sp_capital_2024.ipynb` | inalterado |
 | `docs/methodology/DAG_INICIAL.md` | inalterado |
 
