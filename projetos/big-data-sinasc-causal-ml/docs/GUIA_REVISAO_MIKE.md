@@ -17,7 +17,7 @@ Em 2024, entre 114.694 nascidos vivos elegíveis de mães residentes na capital 
 | 5 | [06 — estimação principal](../notebooks/principal/06_ato_sp_capital_2024.ipynb) | seção 2 (método); seção 3 (pesos, n efetivo e gráfico do escore); seção 4 (balanço e perfil da população-alvo); seção 5 (riscos com IC bootstrap); seção 7 (sensibilidade com situação conjugal) |
 | 6 | [07 — série 2014–2024](../notebooks/principal/07_evolucao_ato_sp_capital_2014_2024.ipynb) | mesma especificação ano a ano; estimativas pontuais, sem IC anual; queda do grupo T=0 de 14,8% para 8,8% dos elegíveis |
 | 7 | [08 — temporalidade e seleção](../notebooks/principal/08_temporalidade_prenatal_sp_capital_2024.ipynb) | duração gestacional por mês de início e nascimentos excluídos antes do filtro de início; leitura descritiva |
-| 8 | Diagnósticos complementares | Comparação de seis recortes de 2024 e justificativa em [`outputs/qualidade_geografica_2024/`](../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md); tabelas anuais e de comparabilidade nos próprios notebooks 05a e 05b; piloto descritivo SINASC + SIM em [`outputs/sinasc_sim_piloto_2024/`](../outputs/sinasc_sim_piloto_2024/BRIEFING_APRESENTACAO.md) |
+| 8 | Diagnósticos complementares | Comparação de seis recortes de 2024 e justificativa em [`outputs/qualidade_geografica_2024/`](../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md); tabelas anuais e de comparabilidade nos próprios notebooks 05a e 05b |
 | 9 | Limitações | seção 5 do resumo e seções finais dos notebooks 06, 07 e 08 |
 
 Os cinco notebooks principais são a fonte oficial das análises, dos gráficos e das interpretações, com 11 figuras em Plotly JSON e PNG de apoio nas saídas salvas.
@@ -36,7 +36,6 @@ Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para
 - Sensibilidade com situação conjugal no escore: −1,63 p.p., estimativa pontual sem IC.
 - Repetição da especificação em cada ano de 2014 a 2024 (diferença ATO negativa nos onze anos), de forma descritiva.
 - Análise descritiva da relação entre duração gestacional, mês de início do pré-natal e seleção da população.
-- Cruzamento territorial descritivo SINASC + SIM (Sudeste, 2024), sem vinculação individual.
 
 ## O que permanece como limitação ou possível aprofundamento
 
@@ -47,7 +46,7 @@ Nenhum dos itens abaixo foi iniciado.
 3. **Incerteza da sensibilidade e da série:** a estimativa com situação conjugal e as estimativas anuais não têm IC, e não há teste de diferença entre anos.
 4. **Conjunto de ajuste:** revisar com diagrama causal a situação conjugal (medida no parto) e campos possivelmente anteriores à exposição ainda não usados (`QTDGESTANT`, `QTDFILVIVO`, `IDADEPAI`, `CODOCUPMAE`).
 5. **Temporalidade da exposição:** desenhos que reduzam a dependência entre duração gestacional e oportunidade de início tardio, sem condicionar em variáveis posteriores à exposição. A comparação com os meses 4–6 não demonstrou atenuar esse viés.
-6. **Seleção por nascidos vivos:** fonte do SIM com óbitos fetais e, se houver autorização, vinculação individual SINASC–SIM.
+6. **Seleção por nascidos vivos:** se houver autorização e base adequada, vinculação individual SINASC–SIM, incluindo óbitos fetais; o estudo atual usa somente o SINASC.
 7. **Generalização:** a população de sobreposição é mais jovem e menos escolarizada que o total; extensões para o estado de São Paulo teriam outra população-alvo.
 
 ## Onde a opinião do revisor seria mais útil

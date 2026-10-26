@@ -17,7 +17,6 @@ Estudo observacional com microdados do Sistema de Informações sobre Nascidos V
 | Item | Definição |
 |---|---|
 | Fonte principal | SINASC, Ministério da Saúde/DATASUS, [Portal de Dados Abertos do SUS](https://dadosabertos.saude.gov.br/dataset/sistema-de-informacao-sobre-nascidos-vivos-sinasc); uma linha por Declaração de Nascido Vivo |
-| Fonte complementar | SIM 2024 (óbitos), usado só de forma **descritiva e territorial**, sem vinculação individual com o SINASC |
 | Recorte geográfico | mãe residente no município de São Paulo (`CODMUNRES = 355030`), escolhido por qualidade de preenchimento, **sem usar a associação com o desfecho** |
 | Recorte temporal | estimação principal em 2024; mesma especificação repetida em cada ano de 2014 a 2024 (descritiva) |
 | Elegibilidade (especificação B) | gestação única; peso entre 500 e 6.000 g; início do pré-natal nos meses 1–6 |
@@ -57,7 +56,7 @@ Consolidação com a origem de cada número: [RESUMO_PARA_REDACAO.md](docs/sp_ca
 
 - **Confundimento não observado:** renda, cobertura de plano privado, planejamento da gestação, tabagismo, estado nutricional, condições clínicas e acesso a serviços não estão no SINASC.
 - **Temporalidade da exposição:** `MESPRENAT` é registrado no parto. Gestações mais curtas têm menos tempo para um início tardio. Restringir o comparador aos meses 4–6 reduz a janela considerada, mas não foi demonstrado quanto isso altera o viés nem sua direção.
-- **Seleção por nascidos vivos:** perdas fetais não entram na população, e não há vinculação individual SINASC–SIM; a fonte do SIM usada não contém óbitos fetais do Sudeste em 2024.
+- **Seleção por nascidos vivos:** perdas fetais não entram na população, e este estudo não vincula o SINASC ao SIM; desfechos gestacionais fora do universo dos nascidos vivos não são observados.
 - **População-alvo específica:** o ATO vale para a população de sobreposição (mais jovem e menos escolarizada que o total) e não se generaliza automaticamente para todas as gestantes, outros municípios ou outros anos.
 - **Incerteza:** o bootstrap reamostra nascimentos como independentes. Agrupamento por estabelecimento ou região, e mães com mais de um parto, podem tornar o IC estreito demais.
 - **Série histórica:** comparação descritiva entre estimativas pontuais, sem inferência formal.
@@ -75,7 +74,6 @@ docs/
   demais pastas               literatura, fontes oficiais e dicionário analítico
 outputs/
   qualidade_geografica_2024/ comparação de seis recortes de 2024 e justificativa preservadas
-  sinasc_sim_piloto_2024/     complemento descritivo SINASC + SIM
   temporal/manifestos/        proveniência dos ZIPs e Parquets de 2014–2023
   diagnostics/               registros preservados por dependência de código e proveniência de 2024
 src/  scripts/  tests/        código reutilizado, utilitários e testes

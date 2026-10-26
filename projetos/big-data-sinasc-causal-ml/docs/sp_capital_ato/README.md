@@ -15,7 +15,7 @@ Os notebooks desta fase estão em [`notebooks/principal/`](../../notebooks/princ
 
 ## Caminhos citados no PDF da Etapa 1
 
-O PDF e sua fonte LaTeX são entregáveis já enviados e **não foram alterados**. A reorganização de 24/10/2026 mudou alguns caminhos que eles citam:
+O PDF é o entregável já enviado e **não foi alterado**. A fonte LaTeX foi alterada uma única vez depois da entrega, em 26/10/2026: a subseção "Papel complementar do SIM" foi retirada, e as menções ao SIM em limitações e trabalhos futuros foram reescritas como referência contextual, porque o piloto SINASC + SIM saiu do projeto. Para a fonte idêntica à entregue, use o commit `2c9b16f`. A reorganização de 24/10/2026 mudou alguns caminhos que o PDF cita:
 
 | Caminho citado no PDF | Caminho atual |
 |---|---|
@@ -29,7 +29,7 @@ O PDF e sua fonte LaTeX são entregáveis já enviados e **não foram alterados*
 | `notebooks/principal/06_ato_sp_capital_2024.ipynb` | inalterado |
 | `docs/methodology/DAG_INICIAL.md` | inalterado |
 
-Os ZIPs entregues (`PACOTE_REDACAO_ETAPA_1_OVERLEAF.zip` e `ANEXOS_TECNICOS_ETAPA_1.zip`) eram cópias byte a byte das pastas expandidas e ficam na cópia local `_arquivo_local/entrega_sp_capital_etapa_1/`, fora do Git. Para recriar o ZIP do Overleaf a partir desta pasta, no PowerShell:
+Os ZIPs entregues (`PACOTE_REDACAO_ETAPA_1_OVERLEAF.zip` e `ANEXOS_TECNICOS_ETAPA_1.zip`) eram cópias byte a byte das pastas expandidas e ficam na cópia local `_arquivo_local/entrega_sp_capital_etapa_1/`, fora do Git. Desde 26/10/2026, o `main.tex` desta pasta difere do entregue (ver acima). Para gerar um ZIP do Overleaf a partir da versão atual da pasta, no PowerShell:
 
 ```powershell
 Compress-Archive -Path docs\sp_capital_ato\PACOTE_REDACAO_ETAPA_1_OVERLEAF\* -DestinationPath PACOTE_REDACAO_ETAPA_1_OVERLEAF.zip

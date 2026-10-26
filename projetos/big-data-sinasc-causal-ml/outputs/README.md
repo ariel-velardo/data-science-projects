@@ -9,7 +9,6 @@ Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para
 | Pasta | Conteúdo | Gerado por |
 |---|---|---|
 | [`qualidade_geografica_2024/`](qualidade_geografica_2024/RECOMENDACAO_RECORTE.md) | recomendação e dois CSVs da comparação de seis recortes em 2024, com conteúdo não coberto pela série paulista do 05a | comparação geográfica de 2024 documentada na recomendação |
-| [`sinasc_sim_piloto_2024/`](sinasc_sim_piloto_2024/BRIEFING_APRESENTACAO.md) | piloto descritivo SINASC + SIM do Sudeste (painel municipal e resumos); as amostras de microdados ficam só na cópia local | processamento descrito em `LEIA_ME.txt` |
 
 Os cinco notebooks não dependem dos CSVs removidos: calculam suas tabelas diretamente dos Parquets e mantêm os resultados nas saídas salvas. O 05a produz os indicadores anuais em `dados`; o 05b produz o balanço em `saida_balanco` e os diagnósticos do escore em `resumo_ps`. Os notebooks 06, 07 e 08 também não gravam arquivos de resultados externos.
 
@@ -17,7 +16,7 @@ Os cinco notebooks não dependem dos CSVs removidos: calculam suas tabelas diret
 
 `comparacao_recortes_2024.csv` (seis linhas, chave `recorte_id`) e `qualidade_variaveis_2024.csv` (54 linhas, chave `recorte_id`, `variavel`) cobrem Sudeste, SP estado, SP capital, MG, RJ e ES. O 05a cobre somente capital, estado e restante de SP em 2014–2024. Portanto, os dois CSVs não são duplicações completas do notebook: preservam qualidade, exclusões e contagens dos demais recortes; o primeiro também contém baixo peso descritivo por grupo, que o 05a não calcula.
 
-`RECOMENDACAO_RECORTE.md` preserva a justificativa da comparação de 2024: a alternativa estadual frente à amostra menor de ES, as limitações de preenchimento de MG/RJ e os códigos 99 sem classificação documental no Sudeste. É citado no 05a, no resumo e no pacote acadêmico. Seu “próximo passo” registra o estágio histórico daquela comparação; o estado atual da análise está nos notebooks e no guia de revisão. Esses três arquivos permanecem inalterados.
+`RECOMENDACAO_RECORTE.md` preserva a justificativa da comparação de 2024: a alternativa estadual frente à amostra menor de ES, as limitações de preenchimento de MG/RJ e os códigos 99 sem classificação documental no Sudeste. É citado no 05a, no resumo e no pacote acadêmico. Seu “próximo passo” registra o estágio histórico daquela comparação; o estado atual da análise está nos notebooks e no guia de revisão. Os dois CSVs permanecem inalterados; na recomendação, apenas a referência às regras de recorte foi reescrita em 26/10/2026, quando o piloto SINASC + SIM foi retirado do projeto (resultados e contagens não mudaram).
 
 ### Correspondência dos outputs removidos no lote 7C
 

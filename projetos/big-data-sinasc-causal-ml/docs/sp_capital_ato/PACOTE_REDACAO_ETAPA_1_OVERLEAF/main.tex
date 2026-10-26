@@ -150,7 +150,7 @@
   \renewcommand{\headrulewidth}{0pt}}
 
 % ---------- Notação e atalhos --------------------------------------------------
-\newcommand{\campo}[1]{\texttt{#1}}       % nomes de campos do SINASC/SIM
+\newcommand{\campo}[1]{\texttt{#1}}       % nomes de campos do SINASC
 \newcommand{\pp}{\,p.p.}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\ATO}{\mathrm{ATO}}
@@ -410,27 +410,6 @@ mudança não foram investigadas.
 A estimação ajustada foi restrita a 2024. Os onze anos serviram apenas para avaliar
 qualidade e viabilidade amostral; o estado de São Paulo foi registrado como alternativa
 de maior abrangência, mas não foi analisado nesta etapa.
-
-\subsection{Papel complementar do SIM}
-
-O Sistema de Informações sobre Mortalidade (SIM) de 2024 foi explorado de forma
-exclusivamente descritiva para o Sudeste. Foram selecionados 10.432 óbitos infantis com
-códigos de idade compatíveis com o dicionário do SIM, dos quais 5.225 de residentes no
-estado de São Paulo; 944 óbitos não fetais com idade ignorada (\campo{IDADE}~=~999) e 162
-registros com códigos de idade sem detalhamento não foram classificados como infantis. O
-arquivo utilizado não contém óbitos fetais (\campo{TIPOBITO}~=~1) para o Sudeste em
-2024: trata-se de ausência de registro na fonte, não de ausência de mortes fetais. Não
-foi calculada taxa de mortalidade infantil.
-
-A integração entre SINASC e SIM foi territorial. Cada base foi agregada separadamente por
-município de residência, e os indicadores do SIM foram acrescentados ao painel do SINASC
-por junção de códigos: 1.672 códigos de residência, dos quais 1.133 com registros no
-recorte do SIM, incluindo códigos residuais que não correspondem a municípios
-identificados. Não houve vinculação de indivíduos, mães ou declarações, e os óbitos
-ocorridos em 2024 não correspondem ao acompanhamento dos nascidos em 2024. Associações
-nesse painel são ecológicas e não se transpõem ao nível individual. \emph{O SIM não entrou
-na estimação ATO}, que usa exclusivamente registros individuais do SINASC: exposição,
-covariáveis e desfecho pertencem ao mesmo nascimento.
 
 % =====================================================================
 \section{População analítica}\label{sec:populacao}
@@ -1173,8 +1152,10 @@ sub-registro.
 A população inclui apenas gestações que resultaram em nascido vivo. Se o momento de início
 do pré-natal influenciar perdas fetais, e se houver fatores que afetem tanto a
 sobrevivência fetal quanto o peso ao nascer, a comparação restrita a nascidos vivos pode
-ser enviesada \cite{snowden2018}. A fonte do SIM utilizada não contém óbitos fetais para
-o Sudeste em 2024, o que impede avaliar essa seleção com os dados atuais.
+ser enviesada \cite{snowden2018}. O SINASC registra apenas nascidos vivos, e este estudo
+não vinculou seus registros aos do Sistema de Informações sobre Mortalidade (SIM).
+Desfechos gestacionais fora desse universo, como os óbitos fetais, não são observados na
+população analítica, o que impede avaliar essa seleção com os dados atuais.
 
 \subsection{Alcance da população-alvo e da inferência}
 
@@ -1225,7 +1206,7 @@ Introdução & Seção~\ref{sec:introducao} &
   verificáveis \\
 Dados & Seções~\ref{sec:dados} e \ref{sec:populacao}; Tabelas~\ref{tab:recortes}
   a~\ref{tab:fluxo}; Figura~\ref{fig:qualidade} &
-  Citação formal das bases SINASC e SIM (DATASUS) segundo a ABNT \\
+  Citação formal da base SINASC (DATASUS) segundo a ABNT \\
 Métodos & Seções~\ref{sec:comparabilidade} a~\ref{sec:incerteza}; equações
   \eqref{eq:def} a \eqref{eq:ic}; Figura~\ref{fig:dag} &
   Referências para o bootstrap e para o tamanho efetivo de Kish; decidir se o diagrama
@@ -1268,8 +1249,8 @@ seja usada além de forma descritiva.
 campos possivelmente anteriores à exposição ainda não usados.
 \item Avaliar desenhos que reduzam a dependência entre duração gestacional e oportunidade
 de início tardio, sem condicionar em variáveis posteriores à exposição.
-\item Obter fonte do SIM com óbitos fetais e, se houver autorização e base adequada,
-avaliar vinculação individual entre SINASC e SIM.
+\item Se houver autorização e base adequada, avaliar a vinculação individual entre SINASC
+e SIM, incluindo óbitos fetais, para examinar a seleção por nascido vivo.
 \item Repetir a especificação na capital em outros anos e no estado de São Paulo,
 explicitando que cada população de sobreposição é diferente.
 \end{enumerate}
