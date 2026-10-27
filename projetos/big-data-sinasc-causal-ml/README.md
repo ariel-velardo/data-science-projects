@@ -69,7 +69,7 @@ notebooks/
   principal/                  análise atual (SP capital, ATO) — ler na ordem 05a → 05b → 06 → 07 → 08
 docs/
   GUIA_REVISAO_MIKE.md        roteiro de revisão
-  sp_capital_ato/             resumo para redação, PDF e fonte LaTeX da Etapa 1
+  sp_capital_ato/             resumo para redação, PDF da Etapa 1 e fontes LaTeX das Etapas 1 e 2
   manutencao/                 registros da reorganização de outubro de 2026
   demais pastas               literatura, fontes oficiais e dicionário analítico
 outputs/

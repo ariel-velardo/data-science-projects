@@ -10,7 +10,8 @@ Os cinco [notebooks principais](../notebooks/README.md) são a fonte oficial das
 | --- | --- |
 | [GUIA_REVISAO_MIKE.md](GUIA_REVISAO_MIKE.md) | Ordem de leitura, o que foi realizado e o que permanece em aberto |
 | [sp_capital_ato/RESUMO_PARA_REDACAO.md](sp_capital_ato/RESUMO_PARA_REDACAO.md) | Problema, dados, método, resultados, limitações e referências, com a fonte de cada número |
-| [sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) | Documento acadêmico da Etapa 1 tal como entregue (estimação de 2024), não atualizado depois da retirada do SIM; a [fonte LaTeX atual](sp_capital_ato/PACOTE_REDACAO_ETAPA_1_OVERLEAF/) já foi alterada e não corresponde exatamente ao PDF |
+| [sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) | Documento acadêmico da Etapa 1 tal como entregue (estimação de 2024), registro histórico não atualizado; a [fonte LaTeX da Etapa 1](sp_capital_ato/PACOTE_REDACAO_ETAPA_1_OVERLEAF/) foi alterada na retirada do SIM e não corresponde exatamente ao PDF |
+| [sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/](sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/) | Fonte LaTeX atual do documento acadêmico (Etapa 2): estimação de 2024, série 2014–2024 e temporalidade e seleção; compilada e revisada em ambiente externo, PDF não armazenado no repositório (ver [situação](sp_capital_ato/README.md#situação-do-pacote-da-etapa-2)) |
 | [sp_capital_ato/README.md](sp_capital_ato/README.md) | Índice da pasta e correspondência entre os caminhos citados no PDF e os atuais |
 | [dados/DICIONARIO_ANALITICO_SINASC_2024.md](dados/DICIONARIO_ANALITICO_SINASC_2024.md) | Definições dos 62 campos e códigos; versão consolidada em Markdown, sem duplicação JSON |
 | [literature/](literature/) e [sources/](sources/) | Referências centrais, fichas de leitura e fontes oficiais |

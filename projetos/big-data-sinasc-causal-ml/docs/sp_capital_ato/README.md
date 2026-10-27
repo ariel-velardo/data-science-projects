@@ -6,7 +6,8 @@ Documentos da fase atual do projeto: SINASC 2024, mães residentes no município
 |---|---|
 | [RESUMO_PARA_REDACAO.md](RESUMO_PARA_REDACAO.md) | Consolidação de problema, dados, método, resultados, limitações, referências e questões abertas, com a fonte de cada número |
 | [PACOTE_REDACAO_ETAPA_1.pdf](PACOTE_REDACAO_ETAPA_1.pdf) | Documento acadêmico **tal como entregue** no repasse da Etapa 1: estimação de 2024 (notebook 06). Registro histórico, não atualizado: ainda contém a subseção "Papel complementar do SIM", cita caminhos anteriores à reorganização e não inclui a série anual de estimativas ATO (notebook 07) nem a análise de temporalidade (notebook 08). Não representa o estado atual do estudo |
-| [PACOTE_REDACAO_ETAPA_1_OVERLEAF/](PACOTE_REDACAO_ETAPA_1_OVERLEAF/) | Fonte LaTeX **atual**, alterada em 26/10/2026 com a retirada do SIM; não corresponde exatamente ao PDF entregue (compilar com XeLaTeX; instruções em `LEIA_ME.txt`) |
+| [PACOTE_REDACAO_ETAPA_1_OVERLEAF/](PACOTE_REDACAO_ETAPA_1_OVERLEAF/) | Fonte LaTeX da Etapa 1, alterada em 26/10/2026 com a retirada do SIM; não corresponde exatamente ao PDF entregue. Preservada sem novas alterações; a versão de trabalho passou a ser a da Etapa 2 |
+| [PACOTE_REDACAO_ETAPA_2_OVERLEAF/](PACOTE_REDACAO_ETAPA_2_OVERLEAF/) | Fonte LaTeX **atual** (Etapa 2, 27/10/2026): estimação de 2024 (notebook 06), série anual 2014–2024 (notebook 07), temporalidade e seleção (notebook 08), sem material do piloto SIM e com a origem de tabelas e figuras apontando para os notebooks atuais. Compilar com XeLaTeX; instruções em `LEIA_ME.txt`. Situação do PDF e do ZIP abaixo |
 | [artigos/LEIA_ME.md](artigos/LEIA_ME.md) | Índice das referências citadas; os PDFs de acesso aberto ficam só na cópia local (fora do Git) |
 
 Os notebooks desta fase estão em [`notebooks/principal/`](../../notebooks/principal/) (05a, 05b, 06, 07 e 08).
@@ -45,3 +46,14 @@ Compress-Archive -Path docs\sp_capital_ato\PACOTE_REDACAO_ETAPA_1_OVERLEAF\* -De
 ```
 
 O notebook 06 recebeu correções de redação e gráficos depois da entrega (ver [ALTERACOES_REALIZADAS.md](../manutencao/ALTERACOES_REALIZADAS.md)); as estimativas citadas no PDF não mudaram.
+
+## Situação do pacote da Etapa 2
+
+| Item | Situação |
+|---|---|
+| Fonte LaTeX | `PACOTE_REDACAO_ETAPA_2_OVERLEAF/`, criada em 27/10/2026 a partir da fonte da Etapa 1 e atualizada com os notebooks 05a a 08, sem reexecução nem alteração de resultados. Duas seções novas (série 2014–2024; temporalidade e seleção), quatro tabelas novas e duas figuras novas (`fig5_serie_ato_2014_2024.tex`, `fig6_temporalidade_2024.tex`) |
+| Verificação estática | referências cruzadas, citações, arquivos de figura, balanço de chaves e ambientes, contagem de colunas das 15 tabelas, ausência de caminhos removidos e de material do piloto SIM; números das tabelas e figuras novas conferidos com as saídas salvas dos notebooks 07 e 08 |
+| Correções após a compilação | em 27/10/2026: `headheight` de 15pt para 22pt em `main.tex`; no painel (b) da Figura 5 (`fig6_temporalidade_2024.tex`), a faixa sombreada que encobria as barras dos meses 4–6 foi substituída por uma linha divisória tracejada, com a nota da figura ajustada. Nenhum dado ou resultado foi alterado |
+| PDF | a fonte desta pasta, já com as correções, foi compilada e revisada visualmente em ambiente externo com XeLaTeX e BibTeXU: 26 páginas, sem erros de compilação. O PDF corrigido não está armazenado neste repositório; a compilação local anterior às correções foi descartada |
+| Conferência da fonte | SHA-256 após normalização para LF: `main.tex` `ba723aa6da2ab47cd98a46e93599c72a37badd817c267091ad92a8f01a633065`; `figuras/fig6_temporalidade_2024.tex` `29b16858d6416f9225ac2b0a9e1ab9671ecc08b6d2659afdd3c62bc7110f8b60` |
+| ZIP para o Overleaf | `PACOTE_REDACAO_ETAPA_2_OVERLEAF.zip`, regerado em 27/10/2026 a partir da fonte corrigida, com os nove arquivos necessários à compilação (sem `LEIA_ME.txt`); cópia local em `_arquivo_local/entrega_sp_capital_etapa_2/`, fora do Git. É um pacote novo da Etapa 2, não uma cópia do ZIP entregue na Etapa 1. Se a fonte mudar, o ZIP deve ser gerado de novo |
