@@ -378,3 +378,46 @@ Para tarefas de revisÃ£o:
 2. evidÃªncia;
 3. correÃ§Ã£o recomendada;
 4. indicaÃ§Ã£o se Ã© bloqueador ou nÃ£o.
+
+
+## 15. Exceção controlada — projeto SINASC
+
+A regra geral de não apagar arquivos permanece vigente.
+
+Exclusivamente em `projetos/big-data-sinasc-causal-ml/`,
+esta seção estabelece uma exceção específica à proibição
+de exclusões da seção 3.
+
+São permitidas exclusões expressamente autorizadas pelo
+responsável pelo projeto, desde que:
+
+- as áreas e categorias estejam delimitadas na autorização;
+- cada remoção tenha suas dependências e referências verificadas;
+- a obsolescência ou redundância esteja comprovada;
+- notebooks, código científico, dados, manifestos, hashes,
+  resultados, fontes LaTeX, PDFs e pacotes acadêmicos sejam preservados;
+- documentos metodológicos exclusivos e arquivos locais únicos
+  sejam preservados;
+- os caminhos resolvidos permaneçam dentro do projeto,
+  sem seguir links simbólicos ou junções;
+- não sejam excluídos diretórios indiscriminadamente;
+- caches autorizados sejam limitados ao projeto,
+  excluindo ambientes virtuais;
+- documentos administrativos não rastreados sejam removidos
+  somente após validação final e confirmação de que não
+  possuem informações indispensáveis exclusivas;
+- testes, links e integridade científica sejam validados;
+- exclusões de arquivos versionados sejam registradas no Git;
+- exclusões de arquivos ignorados ou não rastreados
+  sejam explicitamente descritas no relatório final.
+
+Esta exceção não concede autorização geral para apagar arquivos.
+Cada operação deve respeitar o escopo aprovado.
+
+A exceção não alcança outros projetos, o laboratório externo,
+suas instruções, branches ou worktrees.
+
+Todas as demais proteções continuam vigentes.
+
+Registrada mediante autorização explícita do responsável
+pelo projeto em 29/10/2026.
