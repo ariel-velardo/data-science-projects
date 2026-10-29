@@ -18,7 +18,7 @@ Os cinco [notebooks principais](../notebooks/README.md) são a fonte oficial das
 
 ## Manutenção
 
-Os CSVs anuais de qualidade e de comparabilidade foram retirados no lote 7C: os notebooks 05a e 05b calculam essas tabelas diretamente dos Parquets. Consulte a [correspondência dos outputs removidos](../outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c) ao ler citações antigas no PDF ou na fonte Overleaf, cujo conteúdo científico foi preservado; o resumo para redação já aponta para os notebooks. A comparação dos seis recortes de 2024 continua em `outputs/qualidade_geografica_2024/`, pois sua abrangência excede a do 05a.
+Os CSVs anuais de qualidade e de comparabilidade foram retirados no lote 7C: os notebooks 01 e 02 calculam essas tabelas diretamente dos Parquets. Consulte a [correspondência dos outputs removidos](../outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c) ao ler citações antigas no PDF ou na fonte Overleaf, cujo conteúdo científico foi preservado; o resumo para redação já aponta para os notebooks. A comparação dos seis recortes de 2024 continua em `outputs/qualidade_geografica_2024/`, pois sua abrangência excede a do 01.
 
 [manutencao/](manutencao/ALTERACOES_REALIZADAS.md): estado inicial, alterações e validação da reorganização de outubro de 2026.
 

@@ -7,10 +7,10 @@ Documentos da fase atual do projeto: SINASC 2024, mães residentes no município
 | [RESUMO_PARA_REDACAO.md](RESUMO_PARA_REDACAO.md) | Consolidação de problema, dados, método, resultados, limitações, referências e questões abertas, com a fonte de cada número |
 | [PACOTE_REDACAO_ETAPA_1.pdf](PACOTE_REDACAO_ETAPA_1.pdf) | Documento acadêmico **tal como entregue** no repasse da Etapa 1: estimação de 2024 (notebook 06). Registro histórico, não atualizado: ainda contém a subseção "Papel complementar do SIM", cita caminhos anteriores à reorganização e não inclui a série anual de estimativas ATO (notebook 07) nem a análise de temporalidade (notebook 08). Não representa o estado atual do estudo |
 | [PACOTE_REDACAO_ETAPA_1_OVERLEAF/](PACOTE_REDACAO_ETAPA_1_OVERLEAF/) | Fonte LaTeX da Etapa 1, alterada em 26/10/2026 com a retirada do SIM; não corresponde exatamente ao PDF entregue. Preservada sem novas alterações; a versão de trabalho passou a ser a da Etapa 2 |
-| [PACOTE_REDACAO_ETAPA_2_OVERLEAF/](PACOTE_REDACAO_ETAPA_2_OVERLEAF/) | Fonte LaTeX **atual** (Etapa 2, 27/10/2026): estimação de 2024 (notebook 06), série anual 2014–2024 (notebook 07), temporalidade e seleção (notebook 08), sem material do piloto SIM e com a origem de tabelas e figuras apontando para os notebooks atuais. Compilar com XeLaTeX; instruções em `LEIA_ME.txt`. Situação do PDF e do ZIP abaixo |
+| [PACOTE_REDACAO_ETAPA_2_OVERLEAF/](PACOTE_REDACAO_ETAPA_2_OVERLEAF/) | Fonte LaTeX **atual** (Etapa 2, 27/10/2026): estimação de 2024 (notebook 06), série anual 2014–2024 (notebook 07), temporalidade e seleção (notebook 08), sem material do piloto SIM e com a origem de tabelas e figuras apontando para os nomes históricos dos notebooks. Compilar com XeLaTeX; instruções em `LEIA_ME.txt`. Situação do PDF e do ZIP abaixo |
 | [artigos/LEIA_ME.md](artigos/LEIA_ME.md) | Índice das referências citadas; os PDFs de acesso aberto ficam só na cópia local (fora do Git) |
 
-Os notebooks desta fase estão em [`notebooks/principal/`](../../notebooks/principal/) (05a, 05b, 06, 07 e 08).
+Os notebooks desta fase estão em [`notebooks/principal/`](../../notebooks/principal/) (01 a 05). Os números antigos nas descrições dos pacotes são históricos; consulte o [mapeamento da Etapa 2](../../README.md#correspondência-dos-notebooks-citados-na-etapa-2) para os caminhos atuais.
 
 **Não confundir com a Entrega 1:** série nacional 2014–2024 estimada com AIPW, retirada da árvore ativa e recuperável no commit `af30d8d`, em `docs/entrega_1_nacional_aipw/`. População, estimando e estimador são diferentes, e os números das duas fases não devem ser combinados. As menções à entrega nacional no resumo para redação e no pacote acadêmico preservado referem-se a esse material histórico.
 
@@ -22,12 +22,12 @@ O PDF é o entregável já enviado e **não foi alterado**. A fonte LaTeX foi al
 |---|---|
 | `docs/entrega/RESUMO_PARA_REDACAO.md` | `docs/sp_capital_ato/RESUMO_PARA_REDACAO.md` |
 | `docs/entrega/` (demais documentos, fase nacional) | histórico Git: `af30d8d`, pasta `docs/entrega_1_nacional_aipw/` |
-| `outputs/qualidade_geografica_2024/qualidade_sp_2014_2024.ipynb` | `notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb` |
-| `outputs/comparabilidade_sp_capital_2024/comparabilidade_sp_capital_2024.ipynb` | `notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb` |
-| `outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv` | removido no lote 7C; indicadores calculados em memória no [notebook 05a](../../notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb), objeto `dados` |
+| `outputs/qualidade_geografica_2024/qualidade_sp_2014_2024.ipynb` | `notebooks/principal/01_qualidade_geografica.ipynb` |
+| `outputs/comparabilidade_sp_capital_2024/comparabilidade_sp_capital_2024.ipynb` | `notebooks/principal/02_comparabilidade.ipynb` |
+| `outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv` | removido no lote 7C; indicadores calculados em memória no [notebook 01](../../notebooks/principal/01_qualidade_geografica.ipynb), objeto `dados` |
 | `outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md` | [preservado](../../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md), com a comparação de seis recortes de 2024 |
-| `outputs/comparabilidade_sp_capital_2024/balanco_covariaveis_2024.csv` e `resumo_propensity_2024.csv` | removidos no lote 7C; tabelas `saida_balanco` e `resumo_ps` calculadas no [notebook 05b](../../notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb) |
-| `notebooks/principal/06_ato_sp_capital_2024.ipynb` | inalterado |
+| `outputs/comparabilidade_sp_capital_2024/balanco_covariaveis_2024.csv` e `resumo_propensity_2024.csv` | removidos no lote 7C; tabelas `saida_balanco` e `resumo_ps` calculadas no [notebook 02](../../notebooks/principal/02_comparabilidade.ipynb) |
+| `notebooks/principal/06_ato_sp_capital_2024.ipynb` | `notebooks/principal/03_estimacao_ato.ipynb` |
 | `docs/methodology/DAG_INICIAL.md` | inalterado |
 
 ## Situação dos pacotes da Etapa 1

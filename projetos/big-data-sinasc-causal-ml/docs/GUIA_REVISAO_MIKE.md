@@ -11,14 +11,14 @@ Em 2024, entre 114.694 nascidos vivos elegíveis de mães residentes na capital 
 | Ordem | Material | O que observar |
 |---|---|---|
 | 1 | [README do projeto](../README.md), seções 1–5 | pergunta, população, método, resultados e limitações em duas páginas |
-| 2 | [RESUMO_PARA_REDACAO.md](sp_capital_ato/RESUMO_PARA_REDACAO.md) | consolidação de cada decisão e de cada número, com a fonte. O [PDF da Etapa 1](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) é a versão já entregue, restrita à estimação de 2024 e anterior à retirada do SIM; não representa o estado atual do estudo. A [fonte da Etapa 2](sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/) incorpora os notebooks 07 e 08 |
-| 3 | [05a — qualidade geográfica](../notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb) | por que São Paulo (capital): critério de preenchimento, sem olhar o desfecho |
-| 4 | [05b — comparabilidade](../notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb) | desequilíbrio antes de qualquer ajuste e escore concentrado perto de 1 (≈ 91% em T=1), o que motivou o ATO em vez de IPW |
-| 5 | [06 — estimação principal](../notebooks/principal/06_ato_sp_capital_2024.ipynb) | seção 2 (método); seção 3 (pesos, n efetivo e gráfico do escore); seção 4 (balanço e perfil da população-alvo); seção 5 (riscos com IC bootstrap); seção 7 (sensibilidade com situação conjugal) |
-| 6 | [07 — série 2014–2024](../notebooks/principal/07_evolucao_ato_sp_capital_2014_2024.ipynb) | mesma especificação ano a ano; estimativas pontuais, sem IC anual; queda do grupo T=0 de 14,8% para 8,8% dos elegíveis |
-| 7 | [08 — temporalidade e seleção](../notebooks/principal/08_temporalidade_prenatal_sp_capital_2024.ipynb) | duração gestacional por mês de início e nascimentos excluídos antes do filtro de início; leitura descritiva |
-| 8 | Diagnósticos complementares | Comparação de seis recortes de 2024 e justificativa em [`outputs/qualidade_geografica_2024/`](../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md); tabelas anuais e de comparabilidade nos próprios notebooks 05a e 05b |
-| 9 | Limitações | seção 5 do resumo e seções finais dos notebooks 06, 07 e 08 |
+| 2 | [RESUMO_PARA_REDACAO.md](sp_capital_ato/RESUMO_PARA_REDACAO.md) | consolidação de cada decisão e de cada número, com a fonte. O [PDF da Etapa 1](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) é a versão já entregue, restrita à estimação de 2024 e anterior à retirada do SIM; não representa o estado atual do estudo. A [fonte da Etapa 2](sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/) incorpora os notebooks 04 e 05 |
+| 3 | [01 — qualidade geográfica](../notebooks/principal/01_qualidade_geografica.ipynb) | por que São Paulo (capital): critério de preenchimento, sem olhar o desfecho |
+| 4 | [02 — comparabilidade](../notebooks/principal/02_comparabilidade.ipynb) | desequilíbrio antes de qualquer ajuste e escore concentrado perto de 1 (≈ 91% em T=1), o que motivou o ATO em vez de IPW |
+| 5 | [03 — estimação principal](../notebooks/principal/03_estimacao_ato.ipynb) | seção 2 (método); seção 3 (pesos, n efetivo e gráfico do escore); seção 4 (balanço e perfil da população-alvo); seção 5 (riscos com IC bootstrap); seção 7 (sensibilidade com situação conjugal) |
+| 6 | [04 — série 2014–2024](../notebooks/principal/04_evolucao_historica.ipynb) | mesma especificação ano a ano; estimativas pontuais, sem IC anual; queda do grupo T=0 de 14,8% para 8,8% dos elegíveis |
+| 7 | [05 — temporalidade e seleção](../notebooks/principal/05_temporalidade_prenatal.ipynb) | duração gestacional por mês de início e nascimentos excluídos antes do filtro de início; leitura descritiva |
+| 8 | Diagnósticos complementares | Comparação de seis recortes de 2024 e justificativa em [`outputs/qualidade_geografica_2024/`](../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md); tabelas anuais e de comparabilidade nos próprios notebooks 01 e 02 |
+| 9 | Limitações | seção 5 do resumo e seções finais dos notebooks 03, 04 e 05 |
 
 Os cinco notebooks principais são a fonte oficial das análises, dos gráficos e das interpretações, com 11 figuras em Plotly JSON e PNG de apoio nas saídas salvas.
 

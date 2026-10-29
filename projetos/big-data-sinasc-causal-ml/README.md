@@ -38,7 +38,7 @@ Em 2024: **114.694 nascimentos elegíveis**, 104.576 em T=1 e 10.118 em T=0, nen
 
 ## 4. Resultados principais
 
-**São Paulo (capital), 2024** — [notebook 06](notebooks/principal/06_ato_sp_capital_2024.ipynb):
+**São Paulo (capital), 2024** — [notebook 03](notebooks/principal/03_estimacao_ato.ipynb):
 
 | | T=1 (meses 1–3) | T=0 (meses 4–6) | Diferença T=1 − T=0 |
 |---|---:|---:|---:|
@@ -47,8 +47,8 @@ Em 2024: **114.694 nascimentos elegíveis**, 104.576 em T=1 e 10.118 em T=0, nen
 
 - Covariáveis do escore com balanço aproximado após a ponderação (máximo |SMD| de 0,452 para 0,0031). A situação conjugal, fora do escore, continua desequilibrada (SMD 0,194 em "casada").
 - Sensibilidade com situação conjugal no escore: −1,63 p.p., estimativa pontual **sem IC**. Ela também muda a população-alvo.
-- **Série 2014–2024** ([notebook 07](notebooks/principal/07_evolucao_ato_sp_capital_2014_2024.ipynb)): diferença ATO negativa nos onze anos, de −0,58 p.p. (2020) a −1,90 p.p. (2023), sem tendência monotônica. São estimativas pontuais, **sem IC anual e sem teste de diferença entre anos**; cada ano tem sua própria população de sobreposição.
-- **Temporalidade** ([notebook 08](notebooks/principal/08_temporalidade_prenatal_sp_capital_2024.ipynb)): a análise descreve a composição por duração gestacional e a seleção antes do filtro de início do pré-natal; não identifica a magnitude nem a direção do possível viés temporal.
+- **Série 2014–2024** ([notebook 04](notebooks/principal/04_evolucao_historica.ipynb)): diferença ATO negativa nos onze anos, de −0,58 p.p. (2020) a −1,90 p.p. (2023), sem tendência monotônica. São estimativas pontuais, **sem IC anual e sem teste de diferença entre anos**; cada ano tem sua própria população de sobreposição.
+- **Temporalidade** ([notebook 05](notebooks/principal/05_temporalidade_prenatal.ipynb)): a análise descreve a composição por duração gestacional e a seleção antes do filtro de início do pré-natal; não identifica a magnitude nem a direção do possível viés temporal.
 
 Consolidação com a origem de cada número: [RESUMO_PARA_REDACAO.md](docs/sp_capital_ato/RESUMO_PARA_REDACAO.md).
 
@@ -66,7 +66,7 @@ Consolidação com a origem de cada número: [RESUMO_PARA_REDACAO.md](docs/sp_ca
 
 ```text
 notebooks/
-  principal/                  análise atual (SP capital, ATO) — ler na ordem 05a → 05b → 06 → 07 → 08
+  principal/                  análise atual (SP capital, ATO) — ler na ordem 01 → 02 → 03 → 04 → 05
 docs/
   GUIA_REVISAO_MIKE.md        roteiro de revisão
   sp_capital_ato/             resumo para redação, PDF da Etapa 1 e fontes LaTeX das Etapas 1 e 2
@@ -82,7 +82,21 @@ data/                         bases locais (não versionadas)
 
 Índices por pasta: [notebooks/README.md](notebooks/README.md), [outputs/README.md](outputs/README.md) e [docs/README.md](docs/README.md).
 
-As tabelas anuais de qualidade e os resultados de comparabilidade são calculados em memória nos notebooks 05a e 05b, diretamente dos Parquets; os CSVs duplicados foram removidos. O [dicionário analítico](docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md) concentra as definições dos 62 campos, sem cópia JSON. A [correspondência dos caminhos antigos](outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c) orienta a leitura das referências preservadas no pacote acadêmico.
+As tabelas anuais de qualidade e os resultados de comparabilidade são calculados em memória nos notebooks 01 e 02, diretamente dos Parquets; os CSVs duplicados foram removidos. O [dicionário analítico](docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md) concentra as definições dos 62 campos, sem cópia JSON. A [correspondência dos caminhos antigos](outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c) orienta a leitura das referências preservadas no pacote acadêmico.
+
+### Correspondência dos notebooks citados na Etapa 2
+
+Os documentos acadêmicos preservam a numeração histórica. Os cinco arquivos foram renomeados e cinco destinos de links Markdown foram corrigidos nos notebooks 02, 03 e 04. Código, metadados e saídas permanecem idênticos; somente esses três notebooks têm novos hashes de conteúdo. As fontes, o PDF e o ZIP acadêmicos não foram regenerados nesta reorganização.
+
+| Nome histórico na Etapa 2 | Caminho atual |
+|---|---|
+| `05a_qualidade_geografica_sp_2014_2024.ipynb` | [`01_qualidade_geografica.ipynb`](notebooks/principal/01_qualidade_geografica.ipynb) |
+| `05b_comparabilidade_sp_capital_2024.ipynb` | [`02_comparabilidade.ipynb`](notebooks/principal/02_comparabilidade.ipynb) |
+| `06_ato_sp_capital_2024.ipynb` | [`03_estimacao_ato.ipynb`](notebooks/principal/03_estimacao_ato.ipynb) |
+| `07_evolucao_ato_sp_capital_2014_2024.ipynb` | [`04_evolucao_historica.ipynb`](notebooks/principal/04_evolucao_historica.ipynb) |
+| `08_temporalidade_prenatal_sp_capital_2024.ipynb` | [`05_temporalidade_prenatal.ipynb`](notebooks/principal/05_temporalidade_prenatal.ipynb) |
+
+A leitura segue: 01 — qualidade geográfica e seleção da população; 02 — comparabilidade e propensity score; 03 — estimação ATO de 2024; 04 — evolução histórica de 2014 a 2024; 05 — temporalidade do pré-natal e seleção.
 
 ## 7. Como executar
 
@@ -101,7 +115,7 @@ jupyter lab
 - **Bases locais** (não versionadas por tamanho; [fontes oficiais](docs/sources/FONTES_OFICIAIS.md) e [localização dos manifestos e hashes](outputs/README.md#proveniência-e-dependências-preservadas)):
   - 2024: `python scripts/baixar_dados.py` baixa o ZIP oficial para `data/raw/`; `python -c "from src.sinasc import converter_zip_para_parquet; converter_zip_para_parquet('data/raw/SINASC_2024_csv.zip', 'data/processed/sinasc_2024.parquet')"` gera `data/processed/sinasc_2024.parquet`;
   - 2014–2023: `python -c "from src.temporal import preparar_anos; preparar_anos('.', range(2014, 2024))"` baixa e converte um ano por vez para `data/processed/sinasc/sinasc_<ano>.parquet`.
-- **Reexecução:** 05a, 05b e 08 são rápidos. O 07 lê diretamente os Parquets e ajusta onze escores anuais. O 06 inclui o bootstrap de 1.000 réplicas (alguns minutos); sua seção 7 usa os objetos produzidos nas seções anteriores da mesma execução.
+- **Reexecução:** 01, 02 e 05 são rápidos. O 04 lê diretamente os Parquets e ajusta onze escores anuais. O 03 inclui o bootstrap de 1.000 réplicas (alguns minutos); sua seção 7 usa os objetos produzidos nas seções anteriores da mesma execução.
 - **Gráficos estáticos:** o `kaleido` usa o Google Chrome instalado na máquina para gerar os PNG incorporados aos notebooks.
 - **Verificações:** `python -m pytest -q tests` (não precisa das bases).
 - **PySpark** não é dependência do projeto.

@@ -10,10 +10,10 @@ Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para
 
 | Notebook | Pergunta | Natureza |
 |---|---|---|
-| [05a — qualidade geográfica](principal/05a_qualidade_geografica_sp_2014_2024.ipynb) | Qual recorte tem melhor qualidade de dados? (2014–2024) | descritivo; justifica o recorte |
-| [05b — comparabilidade](principal/05b_comparabilidade_sp_capital_2024.ipynb) | T=1 e T=0 são comparáveis antes do ajuste? Há sobreposição? | diagnóstico sem o desfecho |
-| [06 — estimação ATO 2024](principal/06_ato_sp_capital_2024.ipynb) | Qual a diferença de risco ajustada, com IC? | **estimação principal** e sensibilidade |
-| [07 — série 2014–2024](principal/07_evolucao_ato_sp_capital_2014_2024.ipynb) | A direção se mantém ao longo dos anos? | estimativas pontuais anuais, descritivas |
-| [08 — temporalidade](principal/08_temporalidade_prenatal_sp_capital_2024.ipynb) | Quanto a duração gestacional restringe o comparador e a seleção? | descritivo, sem modelos |
+| [01 — qualidade geográfica](principal/01_qualidade_geografica.ipynb) | Qual recorte tem melhor qualidade de dados? (2014–2024) | descritivo; justifica o recorte |
+| [02 — comparabilidade](principal/02_comparabilidade.ipynb) | T=1 e T=0 são comparáveis antes do ajuste? Há sobreposição? | diagnóstico sem o desfecho |
+| [03 — estimação ATO 2024](principal/03_estimacao_ato.ipynb) | Qual a diferença de risco ajustada, com IC? | **estimação principal** e sensibilidade |
+| [04 — série 2014–2024](principal/04_evolucao_historica.ipynb) | A direção se mantém ao longo dos anos? | estimativas pontuais anuais, descritivas |
+| [05 — temporalidade](principal/05_temporalidade_prenatal.ipynb) | Quanto a duração gestacional restringe o comparador e a seleção? | descritivo, sem modelos |
 
-A árvore ativa contém somente estes cinco notebooks. A numeração histórica foi mantida para preservar nomes, hashes e referências acadêmicas. Os antigos notebooks nacionais 01–05 da Entrega 1 foram retirados e permanecem no histórico Git, no commit `af30d8d`.
+A árvore ativa contém somente estes cinco notebooks. A sequência atual é 01–05; além da renomeação, foram corrigidos cinco destinos de links Markdown nos notebooks 02, 03 e 04, preservando código, metadados e saídas. As referências históricas dos pacotes acadêmicos estão no [mapeamento da Etapa 2](../README.md#correspondência-dos-notebooks-citados-na-etapa-2). Os antigos notebooks nacionais 01–05 da Entrega 1 foram retirados e permanecem no histórico Git, no commit `af30d8d`.

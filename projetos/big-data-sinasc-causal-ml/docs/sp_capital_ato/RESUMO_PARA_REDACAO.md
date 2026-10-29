@@ -6,7 +6,7 @@ Convenções: p.p. = pontos percentuais; diferenças sempre calculadas como T=1 
 
 *Revisão de redação (24/10/2026):* o balanço nas covariáveis ajustadas passou a ser descrito como aproximado; a restrição do comparador aos meses 4–6 deixou de ser apresentada como atenuação demonstrada do viés temporal; a situação conjugal aparece separadamente em T=1 e T=0. Nenhum número foi alterado.
 
-*Revisão de caminhos (26/10/2026):* as fontes que apontavam para CSVs removidos passaram a indicar as tabelas calculadas nos notebooks 05a e 05b, e as menções à Entrega 1 nacional passaram a indicar o histórico Git. Nenhum número foi alterado.
+*Revisão de caminhos (26/10/2026):* as fontes que apontavam para CSVs removidos passaram a indicar as tabelas calculadas nos notebooks 01 e 02, e as menções à Entrega 1 nacional passaram a indicar o histórico Git. Nenhum número foi alterado.
 
 ---
 
@@ -39,7 +39,7 @@ Inícios nos meses 7–9 ficam fora da população. A comparação com 4–6 mes
 **Justificativa da escolha de São Paulo, capital.** A orientação metodológica foi concentrar a investigação em localidades com melhor qualidade de dados. A escolha foi feita por critérios de preenchimento e retenção, **sem usar a magnitude da associação com o desfecho**.
 
 - *Comparação geográfica de 2024* (`outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md`): a capital apresentou a maior proporção de registros com as variáveis essenciais simultaneamente válidas (`MESPRENAT` 1–9, `GRAVIDEZ` 1–3 e peso inteiro 500–6.000 g): 99,04%, contra 97,93% no estado de São Paulo e 97,16% no Sudeste. `MESPRENAT` válido: 99,15% (capital), 98,08% (estado), 97,32% (Sudeste). Retenção na especificação B: 94,95% dos 120.789 nascimentos da capital. Escolaridade, raça/cor, situação conjugal e perdas fetais também tiveram preenchimento maior na capital que no estado.
-- *Série temporal 2014–2024* (`notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb`, seções 3–6, tabela `dados`): `MESPRENAT` válido na capital foi superior ao do estado e ao do restante do estado em 11 de 11 anos, variando de 98,45% (2014) a 99,15% (2024). No período, a capital somou 1.587.749 nascimentos elegíveis (1.401.494 em T=1 e 186.255 em T=0), retenção acumulada de 94,61%.
+- *Série temporal 2014–2024* (`notebooks/principal/01_qualidade_geografica.ipynb`, seções 3–6, tabela `dados`): `MESPRENAT` válido na capital foi superior ao do estado e ao do restante do estado em 11 de 11 anos, variando de 98,45% (2014) a 99,15% (2024). No período, a capital somou 1.587.749 nascimentos elegíveis (1.401.494 em T=1 e 186.255 em T=0), retenção acumulada de 94,61%.
 - *Ponto de atenção da série:* o número de controles na capital caiu 58,44% entre 2014 (24.348; 14,76% dos elegíveis) e 2024 (10.118; 8,82%), enquanto o total de elegíveis caiu 30,48%. A queda motivou o diagnóstico de comparabilidade, mas não constitui, por si só, violação de positividade.
 
 O estado de São Paulo foi registrado como alternativa de maior abrangência; não foi analisado nesta versão.
@@ -87,7 +87,7 @@ Todas são registradas no parto e tratadas como aproximações de condições an
 
 ### 3.4 Diagnóstico de comparabilidade e de sobreposição
 
-Realizado antes da estimação, sem uso do desfecho (`notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb`).
+Realizado antes da estimação, sem uso do desfecho (`notebooks/principal/02_comparabilidade.ipynb`).
 
 **Definição de SMD.** Numéricas: $(\bar x_1-\bar x_0)/\sqrt{(s_1^2+s_0^2)/2}$. Categóricas: um indicador por nível, $(p_1-p_0)/\sqrt{[p_1(1-p_1)+p_0(1-p_0)]/2}$, com $p_g$ calculado sobre todos os elegíveis do grupo $g$ (inclusive "Ignorado"); o resumo de cada variável é o maior |SMD| entre seus níveis. Os valores 0,1 e 0,2 foram usados como referências convencionais, não como testes; p-valores não foram usados como critério de equilíbrio.
 
@@ -116,7 +116,7 @@ Essa combinação — suporte comum amplo, mas escore concentrado perto de 1 —
 
 ### 3.5 Definição do ATO e da população de sobreposição
 
-Estimação em `notebooks/principal/06_ato_sp_capital_2024.ipynb`.
+Estimação em `notebooks/principal/03_estimacao_ato.ipynb`.
 
 1. **Escore de propensão** $e(X)=P(T=1\mid X)$: regressão logística com penalização L2 (C=1), numéricas padronizadas, categóricas em indicadores, sem pesos de classe (`src/diagnosticos.py::construir_pipeline_propensity`). Ajuste na amostra inteira, porque a propriedade de balanço dos pesos de sobreposição depende do ajuste no mesmo conjunto. Convergência em 81 iterações; média do escore 0,9118, igual à proporção observada de T=1 (0,9118).
 2. **Pesos de sobreposição:** $w_i=1-e(X_i)$ se $T_i=1$; $w_i=e(X_i)$ se $T_i=0$. Os pesos são limitados a [0, 1].
@@ -187,7 +187,7 @@ Não há pesos extremos.
 
 ### 4.5 Perfil da população de sobreposição
 
-Médias ponderadas de T=1 nas covariáveis ajustadas, em que T=1 e T=0 ponderados ficam aproximadamente iguais (máximo |SMD| 0,0031), comparadas à população total. O indicador de 10–19 anos é descritivo (11,1% em T=1 e 11,3% em T=0 após a ponderação). A situação conjugal, fora do escore, **não tem proporção única** na população de sobreposição: casadas são 27,1% em T=1 e 18,6% em T=0 após a ponderação (notebook 06, seção 4).
+Médias ponderadas de T=1 nas covariáveis ajustadas, em que T=1 e T=0 ponderados ficam aproximadamente iguais (máximo |SMD| 0,0031), comparadas à população total. O indicador de 10–19 anos é descritivo (11,1% em T=1 e 11,3% em T=0 após a ponderação). A situação conjugal, fora do escore, **não tem proporção única** na população de sobreposição: casadas são 27,1% em T=1 e 18,6% em T=0 após a ponderação (notebook 03, seção 4).
 
 | Característica | População total | População de sobreposição |
 |---|---:|---:|
@@ -243,15 +243,15 @@ Caminhos relativos à raiz do projeto. Os gráficos estão incorporados aos note
 | Introdução / problema | Contexto, pergunta e literatura brasileira já levantada | `docs/literature/REFERENCIAS_CENTRAIS.md`; `docs/literature/fichas/` |
 | Dados — SINASC e dicionário | Definições de campos, códigos e papéis analíticos | `docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md`; `src/sinasc.py` (descrições oficiais e classificação temporal) |
 | Dados — escolha do recorte (2024) | Tabela de seis recortes, qualidade e retenção | `outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md`; `comparacao_recortes_2024.csv`; `qualidade_variaveis_2024.csv` |
-| Dados — série 2014–2024 | Gráficos e tabelas de qualidade e de contagens anuais | `notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb` (tabela `dados`, seções 3–6) |
+| Dados — série 2014–2024 | Gráficos e tabelas de qualidade e de contagens anuais | `notebooks/principal/01_qualidade_geografica.ipynb` (tabela `dados`, seções 3–6) |
 | Metodologia — seleção e covariáveis | Projeção SQL congelada; pipeline do escore; lista de variáveis vedadas | `src/amostra.py`; `src/diagnosticos.py` |
-| Metodologia — comparabilidade | Tabela por nível, gráfico de balanço (seção 5), escore e histograma espelhado (seção 6), faixas de pouca representação | `notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb` (tabelas `saida_balanco`, seções 4–5, e `resumo_ps`, seções 6–8) |
-| Metodologia — ATO e bootstrap | Definições (seção 2), suporte com covariáveis finais, procedimento bootstrap (seção 5) | `notebooks/principal/06_ato_sp_capital_2024.ipynb` |
-| Resultados — riscos | Tabela de riscos brutos e ponderados com IC; gráfico de riscos (seção 5) | `notebooks/principal/06_ato_sp_capital_2024.ipynb` |
-| Resultados — balanço e pesos | Tabela de pesos e n efetivo (seção 3); tabela e gráfico de balanço antes/depois (seção 4); perfil da população de sobreposição | `notebooks/principal/06_ato_sp_capital_2024.ipynb` |
-| Resultados — sensibilidade | Comparação de estimativa, balanço, n efetivo e perfil (seção 7) | `notebooks/principal/06_ato_sp_capital_2024.ipynb` |
-| Resultados — série histórica 2014–2024 | Estimativas ATO anuais, população e riscos brutos, diagnósticos de balanço, suporte e pesos, gráficos da associação e da proporção T=0 (seções 3 a 7); base da seção 9 deste resumo | `notebooks/principal/07_evolucao_ato_sp_capital_2014_2024.ipynb` |
-| Discussão — temporalidade e seleção | Duração gestacional por mês de início, baixo peso por duração, nascimentos fora da especificação B (seção 5.1) e conclusão (seção 6); base da seção 10 deste resumo | `notebooks/principal/08_temporalidade_prenatal_sp_capital_2024.ipynb` |
+| Metodologia — comparabilidade | Tabela por nível, gráfico de balanço (seção 5), escore e histograma espelhado (seção 6), faixas de pouca representação | `notebooks/principal/02_comparabilidade.ipynb` (tabelas `saida_balanco`, seções 4–5, e `resumo_ps`, seções 6–8) |
+| Metodologia — ATO e bootstrap | Definições (seção 2), suporte com covariáveis finais, procedimento bootstrap (seção 5) | `notebooks/principal/03_estimacao_ato.ipynb` |
+| Resultados — riscos | Tabela de riscos brutos e ponderados com IC; gráfico de riscos (seção 5) | `notebooks/principal/03_estimacao_ato.ipynb` |
+| Resultados — balanço e pesos | Tabela de pesos e n efetivo (seção 3); tabela e gráfico de balanço antes/depois (seção 4); perfil da população de sobreposição | `notebooks/principal/03_estimacao_ato.ipynb` |
+| Resultados — sensibilidade | Comparação de estimativa, balanço, n efetivo e perfil (seção 7) | `notebooks/principal/03_estimacao_ato.ipynb` |
+| Resultados — série histórica 2014–2024 | Estimativas ATO anuais, população e riscos brutos, diagnósticos de balanço, suporte e pesos, gráficos da associação e da proporção T=0 (seções 3 a 7); base da seção 9 deste resumo | `notebooks/principal/04_evolucao_historica.ipynb` |
+| Discussão — temporalidade e seleção | Duração gestacional por mês de início, baixo peso por duração, nascimentos fora da especificação B (seção 5.1) e conclusão (seção 6); base da seção 10 deste resumo | `notebooks/principal/05_temporalidade_prenatal.ipynb` |
 | Discussão | Interpretação e limitações já redigidas (seção 6 do notebook ATO; seção 7 do notebook de comparabilidade) | os dois notebooks acima |
 
 **Material de fase anterior, não misturar:** os documentos da Entrega 1 (`RELATORIO_FINAL_DISCIPLINA.md`, `TABELAS_RESULTADOS.md` e demais arquivos da antiga pasta `docs/entrega_1_nacional_aipw/`) foram retirados da árvore ativa e podem ser recuperados no histórico Git, commit `af30d8d`. Eles referem-se à série **nacional** 2014–2024 estimada com AIPW e erros-padrão agrupados por município. População, estimando e estimador são diferentes; seus números (por exemplo, −1,48 p.p. em 2024) não devem ser combinados com os desta versão. Podem ser citados como contexto ou comparação explícita.
@@ -318,7 +318,7 @@ Registradas para trabalhos futuros; nenhuma foi iniciada nesta versão.
 
 ## 9. Resultados históricos — 2014 a 2024
 
-Fonte: `notebooks/principal/07_evolucao_ato_sp_capital_2014_2024.ipynb` (saídas salvas). Esta seção complementa as seções 2 e 4: a especificação de 2024 (população, T, Y, covariáveis, escore logístico L2 e pesos ATO, sem recorte de suporte) foi repetida **separadamente em cada um dos onze anos**, com um modelo de escore por ano e sem modelo combinado. A estimativa de 2024 reproduz a do notebook 06. Todos os onze ajustes convergiram (53 a 97 iterações). Três registros de idade fora de 10–59 anos (um em 2017, um em 2022 e um em 2023) foram mantidos e receberam a imputação prevista no pipeline, com autorização manual; nenhum registro foi excluído.
+Fonte: `notebooks/principal/04_evolucao_historica.ipynb` (saídas salvas). Esta seção complementa as seções 2 e 4: a especificação de 2024 (população, T, Y, covariáveis, escore logístico L2 e pesos ATO, sem recorte de suporte) foi repetida **separadamente em cada um dos onze anos**, com um modelo de escore por ano e sem modelo combinado. A estimativa de 2024 reproduz a do notebook 03. Todos os onze ajustes convergiram (53 a 97 iterações). Três registros de idade fora de 10–59 anos (um em 2017, um em 2022 e um em 2023) foram mantidos e receberam a imputação prevista no pipeline, com autorização manual; nenhum registro foi excluído.
 
 | Ano | Elegíveis | T=0: n (% dos elegíveis) | Dif. bruta (p.p.) | Risco ATO T=1 / T=0 (%) | **Dif. ATO (p.p.)** | n efetivo T=1 / T=0 |
 |---|---:|---:|---:|---:|---:|---:|
@@ -356,7 +356,7 @@ Diferenças calculadas como T=1 − T=0. Riscos brutos sobre todos os nascimento
 
 ## 10. Temporalidade e seleção da exposição
 
-Fonte: `notebooks/principal/08_temporalidade_prenatal_sp_capital_2024.ipynb` (seções 5.1 e 6), análise **descritiva** de 2024, sem novos modelos. Recorte: os mesmos critérios da especificação B (seção 3.1), **antes** do filtro de início do pré-natal; duração pelas faixas oficiais de `GESTACAO`.
+Fonte: `notebooks/principal/05_temporalidade_prenatal.ipynb` (seções 5.1 e 6), análise **descritiva** de 2024, sem novos modelos. Recorte: os mesmos critérios da especificação B (seção 3.1), **antes** do filtro de início do pré-natal; duração pelas faixas oficiais de `GESTACAO`.
 
 | Início do pré-natal | Nascimentos | % de 117.422 | < 28 semanas: n (% da linha) |
 |---|---:|---:|---:|

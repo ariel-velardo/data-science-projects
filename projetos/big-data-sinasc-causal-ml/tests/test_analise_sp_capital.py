@@ -16,9 +16,9 @@ import pytest
 
 RAIZ = Path(__file__).resolve().parents[1]
 PRINCIPAL = RAIZ / "notebooks" / "principal"
-NB06 = PRINCIPAL / "06_ato_sp_capital_2024.ipynb"
-NB07 = PRINCIPAL / "07_evolucao_ato_sp_capital_2014_2024.ipynb"
-NB08 = PRINCIPAL / "08_temporalidade_prenatal_sp_capital_2024.ipynb"
+NB03 = PRINCIPAL / "03_estimacao_ato.ipynb"
+NB04 = PRINCIPAL / "04_evolucao_historica.ipynb"
+NB05 = PRINCIPAL / "05_temporalidade_prenatal.ipynb"
 MIME_PLOTLY = "application/vnd.plotly.v1+json"
 
 
@@ -103,16 +103,16 @@ def links_quebrados(arquivo):
 
 def test_estrutura_reorganizada():
     esperados = [
-        "notebooks/principal/05a_qualidade_geografica_sp_2014_2024.ipynb",
-        "notebooks/principal/05b_comparabilidade_sp_capital_2024.ipynb",
-        "notebooks/principal/06_ato_sp_capital_2024.ipynb",
-        "notebooks/principal/07_evolucao_ato_sp_capital_2014_2024.ipynb",
-        "notebooks/principal/08_temporalidade_prenatal_sp_capital_2024.ipynb",
+        "notebooks/principal/01_qualidade_geografica.ipynb",
+        "notebooks/principal/02_comparabilidade.ipynb",
+        "notebooks/principal/03_estimacao_ato.ipynb",
+        "notebooks/principal/04_evolucao_historica.ipynb",
+        "notebooks/principal/05_temporalidade_prenatal.ipynb",
         "docs/sp_capital_ato/RESUMO_PARA_REDACAO.md",
         "docs/sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf",
         "docs/GUIA_REVISAO_MIKE.md",
         "docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md",
-        # Comparação de seis recortes de 2024, não coberta pela série paulista do 05a.
+        # Comparação de seis recortes de 2024, não coberta pela série paulista do 01.
         "outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md",
         "outputs/qualidade_geografica_2024/comparacao_recortes_2024.csv",
         "outputs/qualidade_geografica_2024/qualidade_variaveis_2024.csv",
@@ -159,8 +159,8 @@ def test_notebooks_principais_validos():
 
 # ------------------------------------------------- resultados de referência
 
-def test_resultado_principal_notebook_06():
-    nb = _nb(NB06)
+def test_resultado_principal_notebook_03():
+    nb = _nb(NB03)
     populacao = _saidas_texto(_celula(nb, "38960580"))
     assert "População: 114.694 nascimentos | T=1 104.576 | T=0 10.118 | casos de baixo peso 9.850" in populacao
     bootstrap = _saidas_texto(_celula(nb, "d7f7e271"))
@@ -174,14 +174,14 @@ def test_resultado_principal_notebook_06():
 
 
 def test_perfil_ponderado_separa_grupos_na_situacao_conjugal():
-    perfil = _saidas_texto(_celula(_nb(NB06), "e7844949"))
+    perfil = _saidas_texto(_celula(_nb(NB03), "e7844949"))
     assert "T=1 ponderado (ATO)" in perfil and "T=0 ponderado (ATO)" in perfil
     assert "População de sobreposição (ATO)" not in perfil
     assert "casadas são 27,1% em T=1 e 18,6% em T=0" in perfil
 
 
-def test_serie_historica_notebook_07():
-    nb = _nb(NB07)
+def test_serie_historica_notebook_04():
+    nb = _nb(NB04)
     ato = next(t for t in _tracos(nb) if t.get("name") == "Diferença ATO (ajustada)")
     assert _vetor(ato["x"]).astype(int).tolist() == list(range(2014, 2025))
     assert np.round(_vetor(ato["y"]).astype(float), 2).tolist() == [
@@ -195,17 +195,17 @@ def test_serie_historica_notebook_07():
                                                     139283, 129761, 125306, 122244, 114694]
 
 
-def test_contagens_notebook_08():
-    texto = _saidas_texto(_celula(_nb(NB08), "complemento-temporalidade-tabela"))
+def test_contagens_notebook_05():
+    texto = _saidas_texto(_celula(_nb(NB05), "complemento-temporalidade-tabela"))
     assert "Fora de B: 2.728/117.422 (2,32%)" in texto
     assert "43 fora de B; 546 em B; 589 no total" in texto
 
 
 def test_textos_corrigidos_nao_voltam():
     proibidos = {
-        NB06: ["balanço é exato", "atenua, mas não elimina", "mesmo perfil de idade"],
-        NB07: ["estatisticamente significativa"],
-        NB08: ["as faixas são confiáveis"],
+        NB03: ["balanço é exato", "atenua, mas não elimina", "mesmo perfil de idade"],
+        NB04: ["estatisticamente significativa"],
+        NB05: ["as faixas são confiáveis"],
         RAIZ / "docs/sp_capital_ato/RESUMO_PARA_REDACAO.md": ["atenua, mas não elimina", "mesmo perfil", "quase exato"],
     }
     for caminho, frases in proibidos.items():
@@ -219,8 +219,8 @@ def test_secao_7_usa_referencias_da_execucao_corrente(monkeypatch):
     import pandas as pd
     from src.graficos import fmt_br
 
-    nb = _nb(NB06)
-    codigo = compile(_texto(_celula(nb, "sens-conjugal-2")["source"]), str(NB06), "exec")
+    nb = _nb(NB03)
+    codigo = compile(_texto(_celula(nb, "sens-conjugal-2")["source"]), str(NB03), "exec")
 
     def proibir_leitura(*args, **kwargs):
         pytest.fail("As referências da sensibilidade não devem ser recuperadas de arquivos.")
@@ -278,14 +278,14 @@ def test_secao_7_usa_referencias_da_execucao_corrente(monkeypatch):
 
 @pytest.fixture(scope="module")
 def medidas_ato():
-    """Executa a função ``medidas_ato`` exatamente como está no notebook 07."""
+    """Executa a função ``medidas_ato`` exatamente como está no notebook 04."""
     from src.diagnosticos import validar_colunas_propensity
 
     def exigir(condicao, mensagem):
         if not condicao:
             raise ValueError(mensagem)
     ambiente = {"np": np, "exigir": exigir, "validar_colunas_propensity": validar_colunas_propensity}
-    exec(_texto(_celula(_nb(NB07), "5ab39758")["source"]), ambiente)   # inclui a checagem manual do notebook
+    exec(_texto(_celula(_nb(NB04), "5ab39758")["source"]), ambiente)   # inclui a checagem manual do notebook
     return ambiente["medidas_ato"]
 
 
@@ -325,9 +325,9 @@ def test_figuras_plotly_incorporadas_nos_cinco_notebooks():
     import plotly.io as pio
 
     esperados = {
-        PRINCIPAL / "05a_qualidade_geografica_sp_2014_2024.ipynb": 2,
-        PRINCIPAL / "05b_comparabilidade_sp_capital_2024.ipynb": 2,
-        NB06: 3, NB07: 2, NB08: 2,
+        PRINCIPAL / "01_qualidade_geografica.ipynb": 2,
+        PRINCIPAL / "02_comparabilidade.ipynb": 2,
+        NB03: 3, NB04: 2, NB05: 2,
     }
     total = 0
     for caminho, quantidade in esperados.items():
