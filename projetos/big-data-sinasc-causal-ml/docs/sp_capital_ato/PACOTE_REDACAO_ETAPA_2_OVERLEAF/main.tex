@@ -1,7 +1,7 @@
 % !TEX program = xelatex
 % =====================================================================
 %  Início do pré-natal e baixo peso ao nascer — SINASC, São Paulo, 2024
-%  Material de apoio à redação — Repasse acadêmico, Etapa 2
+%  Relatório técnico-científico — Repasse acadêmico, Etapa 2
 %  (a Etapa 1 permanece como registro histórico em PACOTE_REDACAO_ETAPA_1.pdf)
 %
 %  Compilador: XeLaTeX (Overleaf: Menu > Settings > Compiler > XeLaTeX).
@@ -197,7 +197,7 @@
 \vspace*{\fill}
 
 {\footnotesize\color{iptcinza}\begin{minipage}{0.78\linewidth}
-Material de apoio à redação, elaborado no âmbito acadêmico do \docCurso{} do
+Relatório técnico-científico elaborado no âmbito acadêmico do \docCurso{} do
 Instituto de Pesquisas Tecnológicas. Não constitui publicação oficial da
 instituição nem versão final de dissertação ou artigo.
 \end{minipage}\par}
@@ -214,30 +214,53 @@ instituição nem versão final de dissertação ou artigo.
 \section*{Apresentação}
 \addcontentsline{toc}{section}{Apresentação}
 
-Este documento organiza, em formato de relatório técnico-científico, o estado atual da
-análise sobre o momento de início do pré-natal e o baixo peso ao nascer no município de
-São Paulo. É a segunda versão do material de apoio à redação (Etapa 2). Destina-se a quem
-fará a redação do trabalho acadêmico: textos, equações, tabelas e figuras podem ser
-reaproveitados diretamente, e a Seção~\ref{sec:orientacao} indica o que ainda precisa ser
-desenvolvido ou decidido. O documento da Etapa 1, restrito à estimação de 2024, permanece
-inalterado como registro histórico do que foi entregue.
+Este relatório técnico-científico apresenta uma análise observacional da relação entre o
+momento de início do pré-natal e o baixo peso ao nascer no município de São Paulo. A
+pergunta principal é se, entre nascidos vivos de mães residentes na capital em 2024, o
+início do pré-natal nos meses 1--3 está associado a menor risco de baixo peso ao nascer
+(peso inferior a 2.500 g) do que o início nos meses 4--6, após ajuste por características
+maternas observadas.
 
-Em relação à Etapa 1, esta versão: (i) incorpora as estimativas anuais de 2014 a 2024
-obtidas com a mesma especificação (Seção~\ref{sec:serie}); (ii) acrescenta a análise
-descritiva de temporalidade do início do pré-natal e de seleção da população
-(Seção~\ref{sec:selecao}) e revê, à luz dela, a discussão sobre duração gestacional;
-(iii) retira o material do piloto de vinculação com o Sistema de Informações sobre
-Mortalidade, que deixou o projeto, e mantém apenas a referência contextual à ausência
-dessa vinculação; e (iv) atualiza a indicação de origem das tabelas e figuras para os
-notebooks atuais. A pergunta, a população, o estimando, o método e os resultados de 2024
-são os mesmos da Etapa 1.
+Os dados são os microdados públicos do Sistema de Informações sobre Nascidos Vivos
+(SINASC), com um registro por Declaração de Nascido Vivo. O município de São Paulo foi
+escolhido pela qualidade de preenchimento das variáveis essenciais, critério definido sem
+uso da associação com o desfecho (Seção~\ref{sec:qualidade}). A população analítica reúne
+114.694 nascimentos de 2024, de gestação única, com peso entre 500 e 6.000 g e início do
+pré-natal nos meses 1--6: 104.576 com início nos meses 1--3 ($T=1$) e 10.118 nos meses
+4--6 ($T=0$) (Seção~\ref{sec:populacao}).
 
-Nenhuma análise foi reexecutada para prepará-lo. Os números foram transcritos das saídas
-salvas dos cinco notebooks principais do projeto (\arquivo{notebooks/principal/}, 05a a
-08) e conferidos com elas; as figuras foram redesenhadas a partir dos mesmos valores que
-geraram os gráficos dos notebooks. O resultado principal é uma associação ajustada por
-características maternas observadas, e não um efeito causal identificado. Essa distinção
-orienta todo o texto.
+As diferenças entre os grupos nas características maternas observadas foram tratadas com
+escore de propensão logístico e pesos de sobreposição (ATO), que estimam a diferença de
+risco na população em que os dois momentos de início são frequentes
+(Seção~\ref{sec:ato}). A incerteza foi quantificada por bootstrap não paramétrico com
+1.000 réplicas, com reestimação do escore em cada réplica (Seção~\ref{sec:incerteza}).
+
+Em 2024, o risco ponderado de baixo peso foi de 8,68\% em $T=1$ e de 10,42\% em $T=0$,
+diferença de $-1{,}74$\pp{} (IC 95\%: $-2{,}36$ a $-1{,}12$\pp;
+Seção~\ref{sec:resultados}). A mesma especificação, repetida separadamente em cada ano de
+2014 a 2024, produziu diferenças negativas nos onze anos, apresentadas como estimativas
+pontuais, sem intervalos de confiança anuais (Seção~\ref{sec:serie}). Uma análise
+descritiva da duração gestacional e da seleção da população examina a temporalidade do
+início do pré-natal; ela caracteriza a composição dos grupos, mas não identifica a
+magnitude nem a direção de um possível viés (Seção~\ref{sec:selecao}).
+
+O resultado principal é uma associação ajustada por características maternas observadas, e
+não um efeito causal identificado. Sua leitura causal dependeria de hipóteses não
+verificáveis com o SINASC, entre elas a ausência de confundimento não medido; permanecem
+também em aberto a temporalidade da exposição, a seleção por nascidos vivos, a dependência
+entre observações e o alcance restrito da população de sobreposição
+(Seção~\ref{sec:discussao}). Essa distinção orienta todo o texto.
+
+Esta é a segunda etapa do relatório. Em relação à primeira, restrita à estimação de 2024,
+acrescenta a série 2014--2024 e a análise de temporalidade e seleção; a pergunta, a
+população, o estimando, o método e os resultados de 2024 não mudaram. Uma exploração
+descritiva preliminar com dados do Sistema de Informações sobre Mortalidade (SIM),
+discutida na versão anterior, foi retirada do escopo: o estudo usa exclusivamente o SINASC
+e não realizou vinculação individual entre os dois sistemas.
+
+Nenhuma análise foi reexecutada para este relatório. Os números foram transcritos das
+saídas salvas dos notebooks do projeto e conferidos com elas, e as figuras foram
+redesenhadas a partir dos mesmos valores que geraram os gráficos dos notebooks.
 
 Convenções: diferenças calculadas sempre como $T=1$ menos $T=0$; p.p.\ = pontos
 percentuais; SMD = diferença média padronizada; IC 95\% = intervalo de confiança de 95\%;
@@ -1051,7 +1074,7 @@ ponderação passa a refletir o perfil da população de sobreposição, mais jo
 escolarizada (Seção~\ref{sec:perfil}). No grupo $T=0$, em que os pesos são próximos de
 uniformes, o risco praticamente não se altera (10,41\% e 10,42\%).
 
-Uma formulação adequada do resultado principal é a seguinte: \emph{na população de
+Em síntese: \emph{na população de
 sobreposição definida pelos pesos ATO, após o equilíbrio das distribuições de idade,
 escolaridade, raça/cor, paridade e perdas fetais anteriores, o risco de baixo peso ao
 nascer foi 1,74 p.p.\ menor entre nascimentos com início do pré-natal nos meses 1--3 do
@@ -1577,7 +1600,10 @@ gestantes da capital (ATE), para as que iniciaram cedo (ATT), para outros munic�
 para outros anos. Mudar as covariáveis do escore muda essa população, como mostrou a
 análise de sensibilidade. A série anual da Seção~\ref{sec:serie} não supre essa lacuna:
 cada ano tem sua própria população de sobreposição, e as estimativas anuais não descrevem
-um efeito sobre uma população fixa.
+um efeito sobre uma população fixa. Pela mesma razão, as estimativas da fase anterior do
+projeto, de âmbito nacional e obtidas com AIPW e erros-padrão agrupados por município
+(por exemplo, $-1{,}48$\pp{} em 2024), referem-se a outra população, outro estimando e
+outro estimador e não devem ser combinadas com as deste relatório.
 
 A validade da ponderação depende ainda da especificação do escore: um modelo logístico de
 efeitos principais com idade quadrática pode não representar interações relevantes entre
@@ -1597,94 +1623,31 @@ temporalidade não permite afirmar que o viés ligado à duração gestacional s
 grande ou de determinada direção. O que os dados sustentam
 é uma diferença de risco persistente após o equilíbrio das características maternas
 observadas, em uma população-alvo bem definida, cuja interpretação causal depende de
-hipóteses não verificáveis com o SINASC. Avaliar a robustez dessa associação a
-confundimento não medido, por exemplo com o valor E \cite{vanderweele2017}, é um passo
-natural para a etapa seguinte.
+hipóteses não verificáveis com o SINASC.
 
-% =====================================================================
-\section{Orientação para a redação}\label{sec:orientacao}
+\subsection{Questões em aberto}
 
-Esta seção destina-se a quem fará a redação. O documento já oferece base para as seções
-centrais do trabalho, mas não substitui a revisão bibliográfica, a argumentação e as
-decisões finais de apresentação. A Tabela~\ref{tab:roteiro} relaciona cada parte do
-trabalho ao material deste documento.
-
-\begin{table}[htbp]
-\centering
-\caption{Correspondência entre as seções do trabalho e o material deste documento}
-\label{tab:roteiro}
-\small
-\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.3cm}
-  >{\raggedright\arraybackslash}p{4.4cm} L@{}}
-\toprule
-\cab{Seção do trabalho} & \cab{Base neste documento} & \cab{A desenvolver} \\
-\midrule
-Introdução & Seção~\ref{sec:introducao} &
-  Revisão bibliográfica sobre pré-natal e baixo peso, com dados epidemiológicos de fontes
-  verificáveis \\
-Dados & Seções~\ref{sec:dados} e \ref{sec:populacao}; Tabelas~\ref{tab:recortes}
-  a~\ref{tab:fluxo}; Figura~\ref{fig:qualidade} &
-  Citação formal da base SINASC (DATASUS) segundo a ABNT \\
-Métodos & Seções~\ref{sec:comparabilidade} a~\ref{sec:incerteza}; equações
-  \eqref{eq:def} a \eqref{eq:ic}; Figura~\ref{fig:dag} &
-  Referências para o bootstrap e para o tamanho efetivo de Kish; decidir se o diagrama
-  causal entra no texto final \\
-Resultados & Seção~\ref{sec:resultados}; Tabelas~\ref{tab:populacao} a
-  \ref{tab:riscos}; Figuras~\ref{fig:balanco} e \ref{fig:riscos} &
-  Escolher o que fica no corpo do texto e o que vai para apêndice \\
-Sensibilidade & Seção~\ref{sec:sensibilidade}; Tabela~\ref{tab:sensibilidade} &
-  Decidir se é apresentada no corpo do texto ou em apêndice \\
-Série histórica & Seção~\ref{sec:serie}; Tabelas~\ref{tab:serie} e \ref{tab:seriediag};
-  Figura~\ref{fig:serie} &
-  Decidir se entra no corpo do texto ou em apêndice; apresentar como descrição, sem
-  tendência nem significância \\
-Temporalidade e seleção & Seção~\ref{sec:selecao}; Tabelas~\ref{tab:duracao} e
-  \ref{tab:selecao}; Figura~\ref{fig:duracao} &
-  Integrar à discussão de limitações, mantendo a leitura descritiva \\
-Discussão & Seção~\ref{sec:discussao} &
-  Confrontar os resultados com a literatura e discutir implicações sem linguagem causal \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\paragraph{Formulações a evitar.} Não descrever o resultado como efeito ou redução causal
-do baixo peso. Não usar expressões como ``comparando gestantes com o mesmo perfil'': a
-ponderação ATO equilibra distribuições e define uma população ponderada; não houve
-pareamento individual. Não aplicar à estimativa de sensibilidade nem às estimativas anuais
-o intervalo do modelo principal. Não chamar o estimador de duplamente robusto. Não
-descrever a série 2014--2024 como tendência, nem as oscilações anuais como mudanças do
-efeito. Não apresentar a proporção de 0,48\% de gestações com menos de 28 semanas como
-limite do viés temporal, nem a duração gestacional como variável de ajuste.
-
-\paragraph{Material de fase anterior.} Os documentos da fase nacional do projeto (Entrega
-1: série 2014--2024 estimada com AIPW e erros-padrão agrupados por município) foram
-retirados da árvore ativa e permanecem no histórico Git do projeto, no commit
-\texttt{af30d8d}. População, estimando e estimador são diferentes; seus números, como
-$-1{,}48$\pp{} em 2024, não devem ser combinados com os desta análise nem com a série
-anual da Seção~\ref{sec:serie}, embora possam ser citados como contexto em comparação
-explícita.
-
-\paragraph{Questões em aberto.} Nenhuma das questões a seguir foi iniciada nesta etapa.
+As questões a seguir não foram abordadas nesta etapa.
 \begin{enumerate}
-\item Quantificar a robustez da associação a confundimento não medido, por exemplo com o
-valor E, e buscar um controle negativo defensável.
-\item Estimar a incerteza com dependência, por bootstrap ou variância agrupada por
-estabelecimento de nascimento ou região de residência.
-\item Estimar intervalo de confiança para a sensibilidade com situação conjugal, caso ela
-seja usada além de forma descritiva.
-\item Quantificar a incerteza das estimativas anuais e dos contrastes entre anos, com
-atenção à redução do grupo $T=0$ e à mudança da população de sobreposição, antes de
-afirmar qualquer mudança temporal.
-\item Revisar com o diagrama causal o conjunto de ajuste, incluindo a situação conjugal e
-campos possivelmente anteriores à exposição ainda não usados.
-\item Avaliar desenhos que reduzam a dependência entre duração gestacional e oportunidade
-de início tardio, sem condicionar em variáveis posteriores à exposição; uma comparação
-restrita aos meses 4--5 só poderia ser lida como sensibilidade, não como correção
+\item Robustez da associação a confundimento não medido, por exemplo com o valor E
+\cite{vanderweele2017}, e busca de um controle negativo defensável.
+\item Estimação da incerteza com dependência entre observações, por bootstrap ou
+variância agrupada por estabelecimento de nascimento ou região de residência.
+\item Intervalo de confiança para a sensibilidade com situação conjugal, necessário caso
+ela seja usada além de forma descritiva.
+\item Incerteza das estimativas anuais e dos contrastes entre anos, considerando a redução
+do grupo $T=0$ e a mudança da população de sobreposição, condição para afirmar qualquer
+mudança temporal.
+\item Revisão do conjunto de ajuste com base no diagrama causal, incluindo a situação
+conjugal e campos possivelmente anteriores à exposição ainda não usados.
+\item Desenhos que reduzam a dependência entre duração gestacional e oportunidade de
+início tardio, sem condicionar em variáveis posteriores à exposição; uma comparação
+restrita aos meses 4--5 seria uma análise de sensibilidade, não uma correção
 (Seção~\ref{sec:selecao}).
-\item Se houver autorização e base adequada, avaliar a vinculação individual entre SINASC
-e SIM, incluindo óbitos fetais, para examinar a seleção por nascido vivo.
-\item Estender a especificação ao estado de São Paulo, explicitando que cada população de
-sobreposição é diferente.
+\item Vinculação individual entre SINASC e SIM, incluindo óbitos fetais, para examinar a
+seleção por nascido vivo, se houver autorização e base adequada.
+\item Extensão da especificação ao estado de São Paulo, cuja população de sobreposição
+seria diferente.
 \end{enumerate}
 
 % =====================================================================
