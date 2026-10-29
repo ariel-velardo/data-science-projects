@@ -240,7 +240,7 @@ Caminhos relativos à raiz do projeto. Os gráficos estão incorporados aos note
 
 | Seção do trabalho | Material | Onde |
 |---|---|---|
-| Introdução / problema | Contexto, pergunta e literatura brasileira já levantada | `docs/literature/REFERENCIAS_CENTRAIS.md`; `docs/literature/fichas/` |
+| Introdução / problema | Contexto, pergunta e literatura brasileira já levantada | `docs/literature/REFERENCIAS_CENTRAIS.md` (sínteses consolidadas das fichas) |
 | Dados — SINASC e dicionário | Definições de campos, códigos e papéis analíticos | `docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md`; `src/sinasc.py` (descrições oficiais e classificação temporal) |
 | Dados — escolha do recorte (2024) | Tabela de seis recortes, qualidade e retenção | `outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md`; `comparacao_recortes_2024.csv`; `qualidade_variaveis_2024.csv` |
 | Dados — série 2014–2024 | Gráficos e tabelas de qualidade e de contagens anuais | `notebooks/principal/01_qualidade_geografica.ipynb` (tabela `dados`, seções 3–6) |

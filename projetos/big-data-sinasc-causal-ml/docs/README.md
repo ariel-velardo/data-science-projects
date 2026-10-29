@@ -14,13 +14,13 @@ Os cinco [notebooks principais](../notebooks/README.md) são a fonte oficial das
 | [sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/](sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/) | Fonte LaTeX atual do documento acadêmico (Etapa 2): estimação de 2024, série 2014–2024 e temporalidade e seleção; compilada e revisada em ambiente externo, PDF não armazenado no repositório (ver [situação](sp_capital_ato/README.md#situação-do-pacote-da-etapa-2)) |
 | [sp_capital_ato/README.md](sp_capital_ato/README.md) | Índice da pasta e correspondência entre os caminhos citados no PDF e os atuais |
 | [dados/DICIONARIO_ANALITICO_SINASC_2024.md](dados/DICIONARIO_ANALITICO_SINASC_2024.md) | Definições dos 62 campos e códigos; versão consolidada em Markdown, sem duplicação JSON |
-| [literature/](literature/) e [sources/](sources/) | Referências centrais, fichas de leitura e fontes oficiais |
+| [literature/REFERENCIAS_CENTRAIS.md](literature/REFERENCIAS_CENTRAIS.md) e [sources/FONTES_OFICIAIS.md](sources/FONTES_OFICIAIS.md) | Sínteses bibliográficas consolidadas e fontes oficiais; os manifestos de artigos permanecem em `literature/` |
 
-## Manutenção
+## Referências históricas de arquivos
 
 Os CSVs anuais de qualidade e de comparabilidade foram retirados no lote 7C: os notebooks 01 e 02 calculam essas tabelas diretamente dos Parquets. Consulte a [correspondência dos outputs removidos](../outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c) ao ler citações antigas no PDF ou na fonte Overleaf, cujo conteúdo científico foi preservado; o resumo para redação já aponta para os notebooks. A comparação dos seis recortes de 2024 continua em `outputs/qualidade_geografica_2024/`, pois sua abrangência excede a do 01.
 
-[manutencao/](manutencao/ALTERACOES_REALIZADAS.md): estado inicial, alterações e validação da reorganização de outubro de 2026.
+Os registros administrativos anteriores da reorganização estão no histórico Git, no commit `3dd446f`, em `docs/manutencao/`. Não são necessários para executar ou revisar a análise atual.
 
 ## Histórico de desenvolvimento
 

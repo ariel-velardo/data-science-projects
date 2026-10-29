@@ -62,4 +62,4 @@ O projeto começou com uma análise nacional de 2024 e evoluiu para a Entrega 1,
 
 A revisão atual usa somente os cinco notebooks principais. Os registros preservados por dependência de código ou proveniência estão identificados no [índice de outputs](../outputs/README.md#proveniência-e-dependências-preservadas); não são resultados do estudo atual.
 
-A reorganização de outubro de 2026 está documentada em [manutencao/ALTERACOES_REALIZADAS.md](manutencao/ALTERACOES_REALIZADAS.md).
+Os registros administrativos anteriores da reorganização podem ser consultados no histórico Git, commit `3dd446f`, em `docs/manutencao/`.

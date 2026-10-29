@@ -70,7 +70,6 @@ notebooks/
 docs/
   GUIA_REVISAO_MIKE.md        roteiro de revisão
   sp_capital_ato/             resumo para redação, PDF da Etapa 1 e fontes LaTeX das Etapas 1 e 2
-  manutencao/                 registros da reorganização de outubro de 2026
   demais pastas               literatura, fontes oficiais e dicionário analítico
 outputs/
   qualidade_geografica_2024/ comparação de seis recortes de 2024 e justificativa preservadas

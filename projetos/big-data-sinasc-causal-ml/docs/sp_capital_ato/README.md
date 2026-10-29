@@ -45,7 +45,7 @@ Para gerar um ZIP do Overleaf a partir da versão **atual** da pasta (não equiv
 Compress-Archive -Path docs\sp_capital_ato\PACOTE_REDACAO_ETAPA_1_OVERLEAF\* -DestinationPath PACOTE_REDACAO_ETAPA_1_OVERLEAF.zip
 ```
 
-O notebook 06 recebeu correções de redação e gráficos depois da entrega (ver [ALTERACOES_REALIZADAS.md](../manutencao/ALTERACOES_REALIZADAS.md)); as estimativas citadas no PDF não mudaram.
+O notebook 06 recebeu correções de redação e gráficos depois da entrega (registro em `docs/manutencao/ALTERACOES_REALIZADAS.md`, no histórico Git, commit `3dd446f`); as estimativas citadas no PDF não mudaram.
 
 ## Situação do pacote da Etapa 2
 
