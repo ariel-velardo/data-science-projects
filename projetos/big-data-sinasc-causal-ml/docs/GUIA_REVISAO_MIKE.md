@@ -11,7 +11,7 @@ Em 2024, entre 114.694 nascidos vivos elegíveis de mães residentes na capital 
 | Ordem | Material | O que observar |
 |---|---|---|
 | 1 | [README do projeto](../README.md), seções 1–5 | pergunta, população, método, resultados e limitações em duas páginas |
-| 2 | [RESUMO_PARA_REDACAO.md](sp_capital_ato/RESUMO_PARA_REDACAO.md) | consolidação de cada decisão e de cada número, com a fonte. O [PDF da Etapa 1](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) é a versão já entregue, restrita à estimação de 2024 e anterior à retirada do SIM; não representa o estado atual do estudo. A [fonte da Etapa 2](sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/) incorpora os notebooks 04 e 05 |
+| 2 | [RESUMO_PARA_REDACAO.md](sp_capital_ato/RESUMO_PARA_REDACAO.md) | consolidação de cada decisão e de cada número, com a fonte. O [PDF da Etapa 1](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) é a versão já entregue, restrita à estimação de 2024 e anterior à retirada do SIM; não representa o estado atual do estudo. A [fonte da Etapa 2](sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/) incorpora os notebooks 04 e 05; seu PDF de 26 páginas foi compilado fora do repositório e é enviado à parte. O material da Etapa 2 usa a numeração anterior dos notebooks (tabela abaixo) |
 | 3 | [01 — qualidade geográfica](../notebooks/principal/01_qualidade_geografica.ipynb) | por que São Paulo (capital): critério de preenchimento, sem olhar o desfecho |
 | 4 | [02 — comparabilidade](../notebooks/principal/02_comparabilidade.ipynb) | desequilíbrio antes de qualquer ajuste e escore concentrado perto de 1 (≈ 91% em T=1), o que motivou o ATO em vez de IPW |
 | 5 | [03 — estimação principal](../notebooks/principal/03_estimacao_ato.ipynb) | seção 2 (método); seção 3 (pesos, n efetivo e gráfico do escore); seção 4 (balanço e perfil da população-alvo); seção 5 (riscos com IC bootstrap); seção 7 (sensibilidade com situação conjugal) |
@@ -19,6 +19,18 @@ Em 2024, entre 114.694 nascidos vivos elegíveis de mães residentes na capital 
 | 7 | [05 — temporalidade e seleção](../notebooks/principal/05_temporalidade_prenatal.ipynb) | duração gestacional por mês de início e nascimentos excluídos antes do filtro de início; leitura descritiva |
 | 8 | Diagnósticos complementares | Comparação de seis recortes de 2024 e justificativa em [`outputs/qualidade_geografica_2024/`](../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md); tabelas anuais e de comparabilidade nos próprios notebooks 01 e 02 |
 | 9 | Limitações | seção 5 do resumo e seções finais dos notebooks 03, 04 e 05 |
+
+### Numeração dos notebooks no material da Etapa 2
+
+O PDF e a fonte LaTeX da Etapa 2 foram produzidos antes da renumeração e citam os nomes antigos. A renumeração não alterou cálculos nem resultados.
+
+| Citado no PDF da Etapa 2 | Notebook atual | Conteúdo |
+|---|---|---|
+| `05a_qualidade_geografica_sp_2014_2024.ipynb` | [01_qualidade_geografica.ipynb](../notebooks/principal/01_qualidade_geografica.ipynb) | qualidade geográfica e escolha do recorte |
+| `05b_comparabilidade_sp_capital_2024.ipynb` | [02_comparabilidade.ipynb](../notebooks/principal/02_comparabilidade.ipynb) | comparabilidade e escore de propensão |
+| `06_ato_sp_capital_2024.ipynb` | [03_estimacao_ato.ipynb](../notebooks/principal/03_estimacao_ato.ipynb) | estimação ATO de 2024 e sensibilidade |
+| `07_evolucao_ato_sp_capital_2014_2024.ipynb` | [04_evolucao_historica.ipynb](../notebooks/principal/04_evolucao_historica.ipynb) | série 2014–2024 |
+| `08_temporalidade_prenatal_sp_capital_2024.ipynb` | [05_temporalidade_prenatal.ipynb](../notebooks/principal/05_temporalidade_prenatal.ipynb) | temporalidade e seleção |
 
 Os cinco notebooks principais são a fonte oficial das análises, dos gráficos e das interpretações, com 11 figuras em Plotly JSON e PNG de apoio nas saídas salvas.
 
