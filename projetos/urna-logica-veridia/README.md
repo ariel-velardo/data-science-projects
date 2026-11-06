@@ -16,6 +16,12 @@ cidade de Verídia. O projeto já tem:
   (Jogar, Resolver, Instruções, Resultados, Sair), as cinco fases jogáveis,
   mapa interativo em SVG, visualização da AVL com rotações, Modo Resolver
   com exploração passo a passo e relatório final exportável (JSON e HTML).
+- **Redesign visual (Rodada 5):** identidade inspirada nos tons azuis do
+  IPT, "prancha técnica de auditoria": área de trabalho clara e instrumentos
+  (mapa, AVL, estruturas, solver) em pranchas azul-profundo. Capa com os
+  cinco selos, estruturas da Fase 2 com frente/topo/ponteiros, mapa
+  redesenhado, rotações AVL antes/depois, passo a passo real da ordenação
+  e Resolver com reprodução automática. Funciona offline (fontes do sistema).
 
 | Fase | Enigma | Estruturas/algoritmos |
 |---|---|---|
@@ -40,7 +46,7 @@ urna-logica-veridia/
 │   ├── jogo/         regras.py (movimentos, portas, pistas, vitória), sessao.py (selos, progressão)
 │   ├── fases/        base.py + fase1_arquivo … fase5_auditoria (os cinco enigmas)
 │   ├── busca/        solver.py (BFS, DFS iterativa, DFS recursiva, métricas; visitados em AVL)
-│   ├── interface/    app NiceGUI: app.py, estado.py, componentes.py, svg.py, exportacao.py, estilos.css, telas/
+│   ├── interface/    app NiceGUI: app.py, estado.py, componentes.py, svg.py, rastro_ordenacao.py, exportacao.py, estilos.css, telas/
 │   └── demos/        demo_fases.py, demo_busca.py, experimento_ordenacao.py
 ├── scripts/          exportar_projeto.py (ZIP limpo em dist/)
 ├── tests/            testes pytest

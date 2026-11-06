@@ -1,7 +1,36 @@
 # Continuidade do Desenvolvimento
 
-Última atualização: 06/11/2026 — **Rodada 4**, conferência oficial e preparação
-para primeira publicação no repositório `data-science-projects`.
+Última atualização: 06/11/2026 — **Rodada 5**, redesign visual inspirado no IPT
+(branch local `feat/veridia-redesign-ipt`, sem commit).
+
+## Rodada 5 — redesign visual (resumo)
+
+- Worktree isolada: `C:/GitHub/data-science-projects-veridia-redesign`,
+  branch `feat/veridia-redesign-ipt` criada a partir de `f42506a`
+  (`feat/veridia-entrega`). O sparse checkout DESTA worktree foi ajustado
+  para `.github` + `projetos/urna-logica-veridia` (as outras worktrees não
+  foram tocadas). Sem commit, push ou merge.
+- Direção "prancha técnica de auditoria": papel claro + pranchas azul-profundo;
+  paleta `#0B2038 #163E63 #1679AC #76C8EC #ECF6FB`; âmbar/vermelho só
+  semânticos; Bahnschrift + Segoe UI (offline). Tema Quasar agora é claro
+  (`ui.dark_mode(False)`); selects dentro de pranchas usam `props("dark")`.
+- Arquivos alterados: `interface/estilos.css`, `app.py` (barra), `componentes.py`,
+  `svg.py` (mapa novo, AVL com h/f coloridos e nós deslocados, perfil de
+  ordem), todas as telas. Novo: `interface/rastro_ordenacao.py`.
+- Marcas (`mark`) e textos verificados pelos testes foram preservados.
+  O mapa mantém `emitEvent('veridia_local', ...)`, "Porta " apenas em portas
+  trancadas, `polyline` apenas para caminho sugerido; a AVL mantém
+  `<line>` só para arestas.
+- Cuidado NiceGUI: timers de "Reproduzir" (Fase 1 e Resolver) ficam FORA do
+  `ui.refreshable` que redesenham, senão o próprio timer é destruído a cada passo.
+- Testes: 185 aprovados. Verificação visual por Chrome headless + CDP
+  (capturas no scratchpad da sessão, não versionadas): Início, Jogar, Fases 1–5
+  (consistente e inconsistente), Resolver, Resultados, Instruções e Sair em
+  1440 px; Início, Jogar, Fases 2 e 3 e Resolver em 390 px. Clique físico
+  no SVG (nó Escola) confirmado nas duas larguras.
+- Pendências: revisão humana da identidade; conferir em navegador do aluno
+  (Bahnschrift ausente fora do Windows); Fases 1, 4 e 5 não capturadas em
+  390 px; impressão do HTML exportado não reconferida (exportação não mudou).
 
 ## Estado atual (funcionando)
 

@@ -9,7 +9,7 @@ from veridia.interface.estado import ContextoTela
 
 
 def tela(ctx: ContextoTela) -> None:
-    area = ui.column().classes("painel gap-3 leitura q-mt-lg")
+    area = ui.column().classes("painel gap-3 leitura q-mt-xl")
 
     def encerrar() -> None:
         ctx.gerenciador.descartar(ctx.identificador)

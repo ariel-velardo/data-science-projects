@@ -50,10 +50,21 @@ NAVEGACAO = (
 )
 
 
+MARCA_HEX = (
+    '<svg class="marca-hex" viewBox="0 0 22 24" aria-hidden="true">'
+    '<path d="M11 1 L21 6.5 V17.5 L11 23 L1 17.5 V6.5 Z" fill="none" stroke="#76C8EC" stroke-width="2"/>'
+    '<path d="M6.5 12.2 L9.8 15.4 L15.8 8.8" fill="none" stroke="#ECF6FB" stroke-width="2.2" '
+    'stroke-linecap="round" stroke-linejoin="round"/></svg>'
+)
+
+
 def raiz() -> None:
     ui.add_css(CSS)
-    ui.dark_mode(True)
-    ui.colors(primary="#3fc7b3", secondary="#e3a948", negative="#e5686f", positive="#3fc7b3", dark="#18222e")
+    ui.dark_mode(False)
+    ui.colors(
+        primary="#1679AC", secondary="#163E63", accent="#76C8EC",
+        positive="#1679AC", negative="#B42318", warning="#B7791F", info="#163E63", dark="#0B2038",
+    )
     ui.query("body").classes("veridia")
 
     ctx = ContextoTela(identificador=app.storage.browser["id"], gerenciador=GERENCIADOR)
@@ -67,7 +78,11 @@ def raiz() -> None:
 
     with ui.element("header").classes("barra-topo w-full"):
         with ui.row().classes("barra-topo-interna items-center justify-between w-full"):
-            with ui.row().classes("items-baseline gap-3").on("click", lambda: ui.navigate.to("/")):
+            marca = ui.row().classes("marca-bloco").props('role="link" tabindex="0" aria-label="Início"')
+            marca.on("click", lambda: ui.navigate.to("/"))
+            marca.on("keydown.enter", lambda: ui.navigate.to("/"))
+            with marca:
+                ui.html(MARCA_HEX, sanitize=False)
                 ui.label("VERÍDIA").classes("marca")
                 ui.label("O Enigma da Urna").classes("marca-sub")
 
@@ -77,7 +92,7 @@ def raiz() -> None:
 
             selos()
             ctx.atualizar_selos = selos.refresh
-            with ui.row().classes("gap-0").props('role="navigation" aria-label="Menu"'):
+            with ui.row().classes("navegacao").props('role="navigation" aria-label="Menu"'):
                 for texto, destino in NAVEGACAO:
                     ui.button(texto, on_click=lambda d=destino: ui.navigate.to(d), color=None).props("flat no-caps").classes(
                         "nav-botao"
@@ -112,7 +127,7 @@ def main(argv: list[str] | None = None) -> None:
         title="VERÍDIA — O Enigma da Urna",
         host=args.host,
         port=args.porta,
-        dark=True,
+        dark=False,
         language="pt-BR",
         storage_secret=CHAVE_COOKIE,
         reload=False,

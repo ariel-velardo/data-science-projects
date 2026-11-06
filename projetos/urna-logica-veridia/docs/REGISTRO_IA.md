@@ -216,6 +216,51 @@ derivada da main atualizada, em worktree isolada, após aprovação. A consulta
 Git remota falhou por Schannel sem credenciais; o conector GitHub confirmou
 `main` como branch padrão. Não houve commit nem push.
 
+## Rodada 5 — Redesign visual inspirado no IPT
+
+Ferramenta: Claude Code (Claude Opus 5.5), com a skill `frontend-design`.
+Branch local `feat/veridia-redesign-ipt`, derivada de `feat/veridia-entrega`
+(`f42506a`), em worktree isolada `data-science-projects-veridia-redesign`.
+
+**O que a IA fez**
+- Propôs e implementou a direção visual "prancha técnica de auditoria":
+  papel claro (`#ECF6FB`) para leitura e tabelas, pranchas azul-profundo
+  (`#0B2038`, quadriculado fino) para instrumentos; `#1679AC` na ação
+  principal; ciano `#76C8EC` como destaque; âmbar só para pistas, portas e
+  alertas; vermelho só para recusas. Tipografia offline: Bahnschrift
+  (títulos, números, selos) e Segoe UI (texto). Códigos de cor tratados
+  como referência de design, não paleta oficial; nenhum logotipo do IPT.
+- Reescreveu `estilos.css` (variáveis, botões, painéis, feedback, selos,
+  métricas, tabelas, foco visível, `prefers-reduced-motion`, responsivo) e
+  os componentes comuns (`componentes.py`: fio de custódia, cabeçalho de
+  fase com hexágono, botão de operação em duas linhas).
+- Redesenhou as telas: capa com ação principal única; Fase 1 com perfil
+  de zona/seção, barras de comparação e passo a passo; Fase 2 com fila,
+  pilha e lista ligada explícitas e transição de chegada; Fase 3 com mapa
+  novo (coordenadas e lado dos rótulos, pílulas de custo, cadeados, pistas
+  nomeadas, destino, passos numerados, nós acessíveis por teclado); Fase 4
+  com comparação atributo a atributo e nós deslocados nas rotações; Fase 5
+  com veredito consistente/inconsistente; Resolver com estrutura usada,
+  janela da ordem de exploração e reprodução automática.
+- Criou `interface/rastro_ordenacao.py`: chama o algoritmo REAL com uma
+  função de chave observada para registrar os pares comparados, conferindo
+  que o número de chamadas é 2 × comparações. Nenhum algoritmo foi alterado.
+- `svg.nos_reposicionados` compara as árvores "antes"/"depois" serializadas
+  pelo motor, só para destacar no desenho.
+
+**Não foi alterado:** `estruturas/`, `algoritmos/`, `busca/`, `jogo/`,
+`fases/`, `modelos/`, testes e exportações JSON/HTML.
+
+**Validação:** suíte completa com 185 testes aprovados antes e depois. As
+capturas foram feitas em Chrome headless controlado por CDP, com um lançador
+temporário fora do projeto que preparava sessões pelas ações reais. Também
+houve um clique físico de mouse no nó Escola do SVG, nas larguras 1440 e
+390 px.
+
+**A revisar pelo aluno:** a direção visual e a paleta; a fonte Bahnschrift,
+que só existe no Windows (em outros sistemas cai para fontes do sistema);
+os textos novos de apoio; a amostra de 8 registros no passo a passo.
+
 ## Pontos históricos que exigiam revisão humana (rodadas 1–3)
 
 Situação atual: a conferência técnica do item 1 foi executada na rodada 4.

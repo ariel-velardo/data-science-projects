@@ -57,7 +57,7 @@ def _secao(titulo: str, *paragrafos: str) -> None:
 
 
 def tela(ctx: ContextoTela) -> None:
-    with ui.column().classes("gap-5 q-mt-lg"):
+    with ui.column().classes("gap-5 q-mt-xl"):
         ui.label("Instruções").classes("titulo-2")
         _secao(
             "A história",
@@ -67,10 +67,10 @@ def tela(ctx: ContextoTela) -> None:
         )
         _secao(
             "Como jogar",
-            "Use o menu do topo para navegar. Os cinco hexágonos no topo são os selos: cinza = bloqueado, "
-            "contorno verde-água = liberado, preenchido = conquistado. Clique em um selo liberado para entrar na fase.",
+            "Use o menu do topo para navegar. Os cinco hexágonos no topo são os selos: apagado = bloqueado, "
+            "contorno ciano = liberado, ciano preenchido com ✓ = conquistado. Clique em um selo liberado para entrar na fase.",
             "Em cada fase, leia o objetivo, use os botões de ação e acompanhe a resposta no quadro de mensagens: "
-            "borda verde-água para ações aceitas, vermelha para ações recusadas (que não mudam nada no jogo).",
+            "borda azul para ações aceitas, vermelha para ações recusadas (que não mudam nada no jogo).",
             "Desfazer: nas fases 2 e 3, o botão Desfazer volta a última ação. Reiniciar fase: recomeça só aquela "
             "fase e mantém os selos já conquistados.",
         )
@@ -83,7 +83,7 @@ def tela(ctx: ContextoTela) -> None:
 
         ui.label("As cinco fases").classes("titulo-3")
         for titulo, objetivo, como, conceitos in FASES:
-            with ui.expansion(titulo).classes("w-full painel painel-plano").mark(f"instrucao-{titulo.split(':')[0]}"):
+            with ui.expansion(titulo, icon="hexagon").classes("w-full painel painel-plano").mark(f"instrucao-{titulo.split(':')[0]}"):
                 with ui.column().classes("gap-2 q-pa-md leitura"):
                     ui.label(f"Objetivo: {objetivo}")
                     ui.label(como).classes("texto-suave")

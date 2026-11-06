@@ -5,7 +5,7 @@ from __future__ import annotations
 from nicegui import ui
 
 from veridia.fases.fase5_auditoria import relatorio_para_dict
-from veridia.interface.componentes import botao, metrica
+from veridia.interface.componentes import botao, etiqueta, metrica, metricas
 from veridia.interface.estado import ContextoTela
 from veridia.interface.telas.fase5 import botoes_exportacao, relatorio_visual
 
@@ -13,7 +13,7 @@ from veridia.interface.telas.fase5 import botoes_exportacao, relatorio_visual
 def tela(ctx: ContextoTela) -> None:
     sessao = ctx.sessao
     resumo = sessao.resumo()
-    with ui.column().classes("gap-1 q-mt-lg"):
+    with ui.column().classes("gap-1 q-mt-xl"):
         ui.label("Resultados").classes("titulo-2")
         if sessao.jogo_concluido():
             ui.label("Investigação concluída: os cinco selos foram recuperados.").classes("titulo-3").style(
@@ -26,16 +26,19 @@ def tela(ctx: ContextoTela) -> None:
         for fase in resumo["fases"]:
             situacao = "Selo conquistado" if fase["selo"] else ("Liberada" if fase["liberada"] else "Bloqueada")
             classe = "ok" if fase["selo"] else ("alerta" if fase["liberada"] else "")
-            with ui.column().classes("cartao-fase gap-1").mark(f"resultado-fase-{fase['numero']}"):
-                ui.label(f"Fase {fase['numero']}: {fase['titulo']}").classes("titulo-3")
-                ui.html(f'<span class="etiqueta {classe}">{situacao}</span>')
+            estado_cartao = "conquistada" if fase["selo"] else ("liberada" if fase["liberada"] else "bloqueada")
+            with ui.column().classes(f"cartao-fase {estado_cartao} gap-2").mark(f"resultado-fase-{fase['numero']}"):
+                with ui.row().classes("items-center gap-3 no-wrap"):
+                    ui.label("✓" if fase["selo"] else str(fase["numero"])).classes("cartao-hex")
+                    ui.label(fase["titulo"]).classes("titulo-3")
+                etiqueta(situacao, classe or "neutra")
                 if fase["selo"] and not fase["concluida_agora"]:
                     ui.label("Fase reiniciada depois do selo.").classes("texto-suave").style("font-size: 0.85rem")
 
     f1, f3, f4 = sessao.fases[1], sessao.fases[3], sessao.fases[4]
     with ui.column().classes("painel w-full gap-3 q-mt-md"):
         ui.label("Métricas da partida").classes("titulo-3")
-        with ui.row().classes("gap-6"):
+        with metricas():
             metrica("ações registradas", resumo["acoes_registradas"])
             if f1.metricas is not None:
                 metrica(f"comparações ({f1.metricas.algoritmo})", f1.metricas.comparacoes)
@@ -67,12 +70,12 @@ def tela(ctx: ContextoTela) -> None:
                 }
                 for r in reversed(registros)
             ]
-            ui.table(rows=linhas, columns=colunas, row_key="ordem", pagination=10).props("dense flat dark wrap-cells").classes(
+            ui.table(rows=linhas, columns=colunas, row_key="ordem", pagination=10).props("dense flat wrap-cells").classes(
                 "w-full"
             ).mark("tabela-historico")
 
     relatorio = sessao.fases[5].relatorio
-    with ui.column().classes("visor w-full gap-3 q-mt-md"):
+    with ui.column().classes("painel w-full gap-3 q-mt-md"):
         ui.label("Relatório da Auditoria Final").classes("titulo-3")
         if relatorio is None:
             ui.label("A auditoria ainda não foi executada. Ela fica disponível na Fase 5.").classes("texto-suave").mark(
@@ -83,4 +86,5 @@ def tela(ctx: ContextoTela) -> None:
         else:
             dados = relatorio_para_dict(relatorio)
             relatorio_visual(dados)
+            ui.separator()
             botoes_exportacao(dados)
