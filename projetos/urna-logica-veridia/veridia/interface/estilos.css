@@ -1,0 +1,175 @@
+/* VERÍDIA — central de auditoria digital.
+   Paleta: abismo (fundo), grafite (painéis), linha (bordas), água (ação/sucesso),
+   âmbar (pistas e bloqueios), coral (erro). Fontes do sistema: funciona offline. */
+
+:root {
+  --abismo: #0b1a2b;
+  --abismo-fundo: #08131f;
+  --grafite: #18222e;
+  --grafite-claro: #212e3c;
+  --linha: #2a3848;
+  --agua: #3fc7b3;
+  --agua-suave: rgba(63, 199, 179, 0.14);
+  --ambar: #e3a948;
+  --ambar-suave: rgba(227, 169, 72, 0.14);
+  --coral: #e5686f;
+  --coral-suave: rgba(229, 104, 111, 0.14);
+  --texto: #dbe5ee;
+  --texto-suave: #8fa1b3;
+  --fonte: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --fonte-dados: "Cascadia Mono", "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+  --raio-painel: 8px;
+  --raio-visor: 12px;
+}
+
+body, .q-page, .nicegui-content {
+  background: var(--abismo) !important;
+  color: var(--texto);
+  font-family: var(--fonte);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.nicegui-content { padding: 0 !important; }
+
+h1, h2, h3, .titulo-1, .titulo-2, .titulo-3 { font-family: var(--fonte); color: var(--texto); margin: 0; }
+.titulo-1 { font-size: 2.6rem; font-weight: 650; letter-spacing: -0.02em; line-height: 1.1; }
+.titulo-2 { font-size: 1.55rem; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+.titulo-3 { font-size: 1.1rem; font-weight: 600; line-height: 1.3; }
+.texto-suave { color: var(--texto-suave); }
+.leitura { max-width: 68ch; }
+.dados { font-family: var(--fonte-dados); font-size: 0.86rem; }
+
+/* ---------- moldura ---------- */
+.moldura { width: 100%; max-width: 1240px; margin: 0 auto; padding: 0 24px 48px; }
+
+.barra-topo {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(8, 19, 31, 0.92);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--linha);
+}
+.barra-topo-interna { max-width: 1240px; margin: 0 auto; padding: 10px 24px; gap: 20px; }
+.marca { font-weight: 700; font-size: 1.15rem; letter-spacing: 0.08em; color: var(--texto); cursor: pointer; }
+.marca-sub { color: var(--texto-suave); font-size: 0.85rem; }
+
+.barra-topo .nav-botao.q-btn { color: var(--texto-suave) !important; text-transform: none; font-weight: 500; }
+.barra-topo .nav-botao.q-btn:hover, .barra-topo .nav-botao.q-btn:focus-visible { color: var(--texto) !important; }
+
+/* ---------- trilho de selos (o elemento marcante) ---------- */
+.trilho { gap: 6px; align-items: center; }
+.selo {
+  width: 38px; height: 42px;
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.95rem;
+  background: var(--linha); color: var(--texto-suave);
+  transition: background 200ms ease, transform 200ms ease;
+  user-select: none;
+}
+.selo-anel { padding: 2px; clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); background: transparent; }
+.selo-anel.atual { background: var(--texto); }
+.selo.bloqueado { opacity: 0.45; cursor: not-allowed; }
+.selo.liberado { background: var(--grafite-claro); color: var(--agua); box-shadow: inset 0 0 0 2px var(--agua); cursor: pointer; }
+.selo.conquistado { background: var(--agua); color: var(--abismo-fundo); cursor: pointer; }
+.selo.conquistado.recem { animation: carimbo 700ms ease-out; }
+.trilho-ponte { width: 10px; height: 2px; background: var(--linha); }
+.trilho-ponte.feita { background: var(--agua); }
+@keyframes carimbo { 0% { transform: scale(1.6); } 60% { transform: scale(0.92); } 100% { transform: scale(1); } }
+
+/* ---------- painéis ---------- */
+.painel {
+  background: var(--grafite);
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-painel);
+  padding: 18px 20px;
+}
+.visor {
+  background: var(--abismo-fundo);
+  border: 1px solid rgba(63, 199, 179, 0.25);
+  border-radius: var(--raio-visor);
+  padding: 16px;
+}
+.painel-plano { padding: 0; }
+
+.feedback { border-left: 3px solid var(--linha); padding: 10px 14px; background: var(--grafite-claro); border-radius: 0 6px 6px 0; }
+.feedback.ok { border-left-color: var(--agua); }
+.feedback.erro { border-left-color: var(--coral); background: var(--coral-suave); }
+.feedback.selo-ganho { border-left-color: var(--agua); background: var(--agua-suave); }
+.historico-linha { font-size: 0.85rem; color: var(--texto-suave); }
+.historico-linha.erro { color: var(--coral); }
+
+/* ---------- botões ---------- */
+.q-btn { text-transform: none !important; letter-spacing: 0 !important; font-weight: 600; border-radius: 6px; }
+.botao-principal.q-btn { background: var(--agua) !important; color: var(--abismo-fundo) !important; }
+.botao-secundario.q-btn { background: transparent !important; color: var(--texto) !important; box-shadow: inset 0 0 0 1px var(--linha); }
+.botao-secundario.q-btn:hover { box-shadow: inset 0 0 0 1px var(--agua); }
+.botao-perigo.q-btn { background: transparent !important; color: var(--coral) !important; box-shadow: inset 0 0 0 1px rgba(229, 104, 111, 0.5); }
+.q-btn:focus-visible { outline: 2px solid var(--ambar); outline-offset: 2px; }
+
+/* ---------- métricas ---------- */
+.metrica { min-width: 120px; }
+.metrica-valor { font-family: var(--fonte-dados); font-size: 1.35rem; font-weight: 600; color: var(--texto); }
+.metrica-rotulo { font-size: 0.8rem; color: var(--texto-suave); }
+
+/* ---------- menu inicial ---------- */
+.capa { padding: 56px 0 28px; }
+.capa-texto { max-width: 62ch; font-size: 1.05rem; color: var(--texto-suave); }
+.opcao-menu {
+  background: var(--grafite); border: 1px solid var(--linha); border-radius: var(--raio-painel);
+  padding: 18px 20px; cursor: pointer; transition: border-color 150ms ease;
+}
+.opcao-menu:hover, .opcao-menu:focus-visible { border-color: var(--agua); outline: none; }
+.opcao-menu .titulo-3 { color: var(--texto); }
+
+/* ---------- cartões de fase ---------- */
+.cartao-fase { background: var(--grafite); border: 1px solid var(--linha); border-radius: var(--raio-painel); padding: 16px 18px; }
+.cartao-fase.bloqueada { opacity: 0.55; }
+.cartao-fase.conquistada { border-color: rgba(63, 199, 179, 0.6); }
+.etiqueta { display: inline-block; font-size: 0.78rem; padding: 2px 8px; border-radius: 999px; background: var(--linha); color: var(--texto-suave); }
+.etiqueta.ok { background: var(--agua-suave); color: var(--agua); }
+.etiqueta.alerta { background: var(--ambar-suave); color: var(--ambar); }
+.etiqueta.erro { background: var(--coral-suave); color: var(--coral); }
+
+/* ---------- Fase 2: estruturas lineares ---------- */
+.ficha {
+  font-family: var(--fonte-dados); font-weight: 600;
+  min-width: 52px; height: 40px; padding: 0 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 6px; background: var(--grafite-claro); border: 1px solid var(--linha); color: var(--texto);
+}
+.ficha.destaque { border-color: var(--agua); box-shadow: 0 0 0 2px var(--agua-suave); }
+.ficha.alvo-ok { background: var(--agua-suave); border-color: var(--agua); color: var(--agua); }
+.ficha.alvo-erro { background: var(--coral-suave); border-color: var(--coral); color: var(--coral); }
+.ficha.fantasma { background: transparent; border-style: dashed; color: var(--texto-suave); }
+.ficha.arquivada { opacity: 0.7; }
+.seta-lista { color: var(--texto-suave); font-family: var(--fonte-dados); }
+.pilha-coluna { display: flex; flex-direction: column-reverse; gap: 6px; }
+.rotulo-ponta { font-size: 0.75rem; color: var(--agua); }
+
+/* ---------- SVGs ---------- */
+.svg-mapa { width: 100%; max-width: 860px; height: auto; display: block; }
+.svg-mapa .no-clicavel { cursor: pointer; }
+.svg-mapa .no-clicavel:hover circle.corpo { stroke-width: 3.5; }
+.svg-arvore { max-width: 100%; height: auto; display: block; }
+
+/* ---------- tabelas ---------- */
+.q-table__container { background: var(--grafite) !important; border: 1px solid var(--linha); border-radius: var(--raio-painel); }
+.q-table th { color: var(--texto-suave) !important; font-weight: 600; }
+.q-table td { font-family: var(--fonte-dados); font-size: 0.84rem; }
+
+/* ---------- relatório ---------- */
+.verificacao { padding: 8px 0; border-bottom: 1px solid var(--linha); }
+.verificacao:last-child { border-bottom: 0; }
+.marca-ok { color: var(--agua); font-weight: 700; }
+.marca-erro { color: var(--coral); font-weight: 700; }
+
+@media (max-width: 760px) {
+  .titulo-1 { font-size: 2rem; }
+  .moldura { padding: 0 14px 32px; }
+  .barra-topo-interna { padding: 8px 14px; flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

@@ -1,0 +1,4 @@
+# Interface gráfica NiceGUI e testes de integração da interface.
+-r requirements.txt
+nicegui>=4.0,<5
+pytest-asyncio>=0.24

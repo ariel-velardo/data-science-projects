@@ -1,0 +1,908 @@
+{
+  "data": "2026-11-06",
+  "repeticoes": 5,
+  "seed": 2026,
+  "aquecimento": false,
+  "ambiente": {
+    "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "plataforma": "Windows-10-10.0.26200-SP0",
+    "processador": "AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",
+    "pacotes": {
+      "nicegui": "4.0.0",
+      "pytest": "9.2.0",
+      "pytest-asyncio": "1.4.1.post1"
+    }
+  },
+  "ordenacao": [
+    {
+      "n": 100,
+      "cenario": "aleatorio",
+      "algoritmo": "bubble_sort",
+      "comparacoes": 4914,
+      "movimentacoes": 5312,
+      "tempos_ms": [
+        5.366999888792634,
+        3.4450998064130545,
+        4.295899998396635,
+        3.203200176358223,
+        4.5987998601049185
+      ],
+      "mediana_ms": 4.295899998396635,
+      "min_ms": 3.203200176358223,
+      "max_ms": 5.366999888792634
+    },
+    {
+      "n": 100,
+      "cenario": "aleatorio",
+      "algoritmo": "merge_sort",
+      "comparacoes": 531,
+      "movimentacoes": 1282,
+      "tempos_ms": [
+        0.5926999729126692,
+        0.9500999003648758,
+        0.6577000021934509,
+        0.5169000942260027,
+        0.8763999212533236
+      ],
+      "mediana_ms": 0.6577000021934509,
+      "min_ms": 0.5169000942260027,
+      "max_ms": 0.9500999003648758
+    },
+    {
+      "n": 100,
+      "cenario": "aleatorio",
+      "algoritmo": "quick_sort",
+      "comparacoes": 1122,
+      "movimentacoes": 380,
+      "tempos_ms": [
+        0.8632000535726547,
+        1.3419999741017818,
+        1.104600029066205,
+        0.6989999674260616,
+        1.1442000977694988
+      ],
+      "mediana_ms": 1.104600029066205,
+      "min_ms": 0.6989999674260616,
+      "max_ms": 1.3419999741017818
+    },
+    {
+      "n": 100,
+      "cenario": "ordenado",
+      "algoritmo": "bubble_sort",
+      "comparacoes": 99,
+      "movimentacoes": 0,
+      "tempos_ms": [
+        0.10029994882643223,
+        0.10480009950697422,
+        0.055900076404213905,
+        0.08110003545880318,
+        0.09320001117885113
+      ],
+      "mediana_ms": 0.09320001117885113,
+      "min_ms": 0.055900076404213905,
+      "max_ms": 0.10480009950697422
+    },
+    {
+      "n": 100,
+      "cenario": "ordenado",
+      "algoritmo": "merge_sort",
+      "comparacoes": 316,
+      "movimentacoes": 988,
+      "tempos_ms": [
+        0.6279998924583197,
+        0.6399000994861126,
+        0.31409994699060917,
+        0.5463999696075916,
+        0.5648999940603971
+      ],
+      "mediana_ms": 0.5648999940603971,
+      "min_ms": 0.31409994699060917,
+      "max_ms": 0.6399000994861126
+    },
+    {
+      "n": 100,
+      "cenario": "ordenado",
+      "algoritmo": "quick_sort",
+      "comparacoes": 1068,
+      "movimentacoes": 0,
+      "tempos_ms": [
+        0.7848001550883055,
+        1.2818998657166958,
+        1.1072000488638878,
+        1.156400190666318,
+        1.023799879476428
+      ],
+      "mediana_ms": 1.1072000488638878,
+      "min_ms": 0.7848001550883055,
+      "max_ms": 1.2818998657166958
+    },
+    {
+      "n": 100,
+      "cenario": "inverso",
+      "algoritmo": "bubble_sort",
+      "comparacoes": 4950,
+      "movimentacoes": 9900,
+      "tempos_ms": [
+        5.6616999208927155,
+        5.011799978092313,
+        5.261000012978911,
+        3.9184000343084335,
+        4.74420003592968
+      ],
+      "mediana_ms": 5.011799978092313,
+      "min_ms": 3.9184000343084335,
+      "max_ms": 5.6616999208927155
+    },
+    {
+      "n": 100,
+      "cenario": "inverso",
+      "algoritmo": "merge_sort",
+      "comparacoes": 356,
+      "movimentacoes": 1344,
+      "tempos_ms": [
+        0.7162000983953476,
+        0.5165999755263329,
+        0.7082000374794006,
+        0.4064000677317381,
+        0.7448000833392143
+      ],
+      "mediana_ms": 0.7082000374794006,
+      "min_ms": 0.4064000677317381,
+      "max_ms": 0.7448000833392143
+    },
+    {
+      "n": 100,
+      "cenario": "inverso",
+      "algoritmo": "quick_sort",
+      "comparacoes": 1069,
+      "movimentacoes": 104,
+      "tempos_ms": [
+        1.483399886637926,
+        0.7070000283420086,
+        0.8471000473946333,
+        0.6626001559197903,
+        1.1253999546170235
+      ],
+      "mediana_ms": 0.8471000473946333,
+      "min_ms": 0.6626001559197903,
+      "max_ms": 1.483399886637926
+    },
+    {
+      "n": 500,
+      "cenario": "aleatorio",
+      "algoritmo": "bubble_sort",
+      "comparacoes": 124540,
+      "movimentacoes": 133444,
+      "tempos_ms": [
+        138.4857001248747,
+        91.90699993632734,
+        126.41629995778203,
+        126.36989983730018,
+        107.47329983860254
+      ],
+      "mediana_ms": 126.36989983730018,
+      "min_ms": 91.90699993632734,
+      "max_ms": 138.4857001248747
+    },
+    {
+      "n": 500,
+      "cenario": "aleatorio",
+      "algoritmo": "merge_sort",
+      "comparacoes": 3847,
+      "movimentacoes": 8670,
+      "tempos_ms": [
+        5.297499941661954,
+        4.6159999910742044,
+        6.127400090917945,
+        6.154600065201521,
+        3.6243998911231756
+      ],
+      "mediana_ms": 5.297499941661954,
+      "min_ms": 3.6243998911231756,
+      "max_ms": 6.154600065201521
+    },
+    {
+      "n": 500,
+      "cenario": "aleatorio",
+      "algoritmo": "quick_sort",
+      "comparacoes": 7005,
+      "movimentacoes": 2544,
+      "tempos_ms": [
+        9.941000025719404,
+        6.6772999707609415,
+        5.124500021338463,
+        7.746100192889571,
+        4.298300016671419
+      ],
+      "mediana_ms": 6.6772999707609415,
+      "min_ms": 4.298300016671419,
+      "max_ms": 9.941000025719404
+    },
+    {
+      "n": 500,
+      "cenario": "ordenado",
+      "algoritmo": "bubble_sort",
+      "comparacoes": 499,
+      "movimentacoes": 0,
+      "tempos_ms": [
+        0.4922000225633383,
+        0.35840016789734364,
+        0.5244000349193811,
+        0.4960999358445406,
+        0.3451998345553875
+      ],
+      "mediana_ms": 0.4922000225633383,
+      "min_ms": 0.3451998345553875,
+      "max_ms": 0.5244000349193811
+    },
+    {
+      "n": 500,
+      "cenario": "ordenado",
+      "algoritmo": "merge_sort",
+      "comparacoes": 2216,
+      "movimentacoes": 6704,
+      "tempos_ms": [
+        3.416100051254034,
+        2.784400014206767,
+        3.8900000508874655,
+        4.000399960204959,
+        2.237300155684352
+      ],
+      "mediana_ms": 3.416100051254034,
+      "min_ms": 2.237300155684352,
+      "max_ms": 4.000399960204959
+    },
+    {
+      "n": 500,
+      "cenario": "ordenado",
+      "algoritmo": "quick_sort",
+      "comparacoes": 6484,
+      "movimentacoes": 0,
+      "tempos_ms": [
+        6.683400133624673,
+        4.270500037819147,
+        6.216100184246898,
+        5.441799992695451,
+        3.7227000575512648
+      ],
+      "mediana_ms": 5.441799992695451,
+      "min_ms": 3.7227000575512648,
+      "max_ms": 6.683400133624673
+    },
+    {
+      "n": 500,
+      "cenario": "inverso",
+      "algoritmo": "bubble_sort",
+      "comparacoes": 124750,
+      "movimentacoes": 249500,
+      "tempos_ms": [
+        118.67679981514812,
+        108.57429984025657,
+        133.98750009946525,
+        128.08519997633994,
+        120.88000006042421
+      ],
+      "mediana_ms": 120.88000006042421,
+      "min_ms": 108.57429984025657,
+      "max_ms": 133.98750009946525
+    },
+    {
+      "n": 500,
+      "cenario": "inverso",
+      "algoritmo": "merge_sort",
+      "comparacoes": 2272,
+      "movimentacoes": 8976,
+      "tempos_ms": [
+        3.600599942728877,
+        2.954800147563219,
+        3.0828998424112797,
+        4.391399910673499,
+        2.884400077164173
+      ],
+      "mediana_ms": 3.0828998424112797,
+      "min_ms": 2.884400077164173,
+      "max_ms": 4.391399910673499
+    },
+    {
+      "n": 500,
+      "cenario": "inverso",
+      "algoritmo": "quick_sort",
+      "comparacoes": 6485,
+      "movimentacoes": 504,
+      "tempos_ms": [
+        3.790999995544553,
+        4.906299989670515,
+        5.777799990028143,
+        5.984500050544739,
+        3.753500059247017
+      ],
+      "mediana_ms": 4.906299989670515,
+      "min_ms": 3.753500059247017,
+      "max_ms": 5.984500050544739
+    },
+    {
+      "n": 1000,
+      "cenario": "aleatorio",
+      "algoritmo": "bubble_sort",
+      "comparacoes": 497222,
+      "movimentacoes": 515162,
+      "tempos_ms": [
+        367.3857001122087,
+        356.71019996516407,
+        466.81739995256066,
+        472.9283000342548,
+        411.682500038296
+      ],
+      "mediana_ms": 411.682500038296,
+      "min_ms": 356.71019996516407,
+      "max_ms": 472.9283000342548
+    },
+    {
+      "n": 1000,
+      "cenario": "aleatorio",
+      "algoritmo": "merge_sort",
+      "comparacoes": 8686,
+      "movimentacoes": 19283,
+      "tempos_ms": [
+        8.93560005351901,
+        10.51609986461699,
+        12.250799918547273,
+        12.856199871748686,
+        11.811599833890796
+      ],
+      "mediana_ms": 11.811599833890796,
+      "min_ms": 8.93560005351901,
+      "max_ms": 12.856199871748686
+    },
+    {
+      "n": 1000,
+      "cenario": "aleatorio",
+      "algoritmo": "quick_sort",
+      "comparacoes": 15146,
+      "movimentacoes": 5292,
+      "tempos_ms": [
+        11.66800013743341,
+        9.872300084680319,
+        16.58960012719035,
+        9.937299881130457,
+        12.543699936941266
+      ],
+      "mediana_ms": 11.66800013743341,
+      "min_ms": 9.872300084680319,
+      "max_ms": 16.58960012719035
+    },
+    {
+      "n": 1000,
+      "cenario": "ordenado",
+      "algoritmo": "bubble_sort",
+      "comparacoes": 999,
+      "movimentacoes": 0,
+      "tempos_ms": [
+        0.7350998930633068,
+        0.6448000203818083,
+        1.0730999056249857,
+        0.566599890589714,
+        0.559499952942133
+      ],
+      "mediana_ms": 0.6448000203818083,
+      "min_ms": 0.559499952942133,
+      "max_ms": 1.0730999056249857
+    },
+    {
+      "n": 1000,
+      "cenario": "ordenado",
+      "algoritmo": "merge_sort",
+      "comparacoes": 4932,
+      "movimentacoes": 14908,
+      "tempos_ms": [
+        7.60039989836514,
+        7.31119979172945,
+        8.88530001975596,
+        4.730199929326773,
+        4.855500068515539
+      ],
+      "mediana_ms": 7.31119979172945,
+      "min_ms": 4.730199929326773,
+      "max_ms": 8.88530001975596
+    },
+    {
+      "n": 1000,
+      "cenario": "ordenado",
+      "algoritmo": "quick_sort",
+      "comparacoes": 13975,
+      "movimentacoes": 4,
+      "tempos_ms": [
+        11.391700012609363,
+        10.247400030493736,
+        12.22650008276105,
+        9.022600017488003,
+        9.37379989773035
+      ],
+      "mediana_ms": 10.247400030493736,
+      "min_ms": 9.022600017488003,
+      "max_ms": 12.22650008276105
+    },
+    {
+      "n": 1000,
+      "cenario": "inverso",
+      "algoritmo": "bubble_sort",
+      "comparacoes": 499500,
+      "movimentacoes": 998996,
+      "tempos_ms": [
+        425.29339995235205,
+        489.37369999475777,
+        489.37650001607835,
+        441.9822001364082,
+        450.1587999984622
+      ],
+      "mediana_ms": 450.1587999984622,
+      "min_ms": 425.29339995235205,
+      "max_ms": 489.37650001607835
+    },
+    {
+      "n": 1000,
+      "cenario": "inverso",
+      "algoritmo": "merge_sort",
+      "comparacoes": 5045,
+      "movimentacoes": 19951,
+      "tempos_ms": [
+        5.894499830901623,
+        8.066600188612938,
+        5.486999871209264,
+        5.687199998646975,
+        6.048399955034256
+      ],
+      "mediana_ms": 5.894499830901623,
+      "min_ms": 5.486999871209264,
+      "max_ms": 8.066600188612938
+    },
+    {
+      "n": 1000,
+      "cenario": "inverso",
+      "algoritmo": "quick_sort",
+      "comparacoes": 13976,
+      "movimentacoes": 1008,
+      "tempos_ms": [
+        9.369099978357553,
+        10.816799942404032,
+        9.384499862790108,
+        8.974999887868762,
+        9.124499978497624
+      ],
+      "mediana_ms": 9.369099978357553,
+      "min_ms": 8.974999887868762,
+      "max_ms": 10.816799942404032
+    }
+  ],
+  "busca": [
+    {
+      "energia_inicial": 18,
+      "algoritmo": "BFS",
+      "encontrou": true,
+      "movimentos": 8,
+      "custo": 15,
+      "expandidos": 308,
+      "fronteira": 135,
+      "avl_n": 425,
+      "avl_altura": 11,
+      "rotacoes": {
+        "esquerda": 132,
+        "direita": 170,
+        "dupla_esq_dir": 48,
+        "dupla_dir_esq": 41
+      },
+      "tempos_ms": [
+        22.593099856749177,
+        19.459599861875176,
+        20.07480012252927,
+        24.296000134199858,
+        23.630700074136257
+      ],
+      "mediana_ms": 22.593099856749177,
+      "min_ms": 19.459599861875176,
+      "max_ms": 24.296000134199858
+    },
+    {
+      "energia_inicial": 18,
+      "algoritmo": "DFS",
+      "encontrou": true,
+      "movimentos": 10,
+      "custo": 17,
+      "expandidos": 188,
+      "fronteira": 15,
+      "avl_n": 188,
+      "avl_altura": 9,
+      "rotacoes": {
+        "esquerda": 75,
+        "direita": 53,
+        "dupla_esq_dir": 11,
+        "dupla_dir_esq": 25
+      },
+      "tempos_ms": [
+        6.989500019699335,
+        7.724200142547488,
+        8.121799910441041,
+        6.880099885165691,
+        7.170600118115544
+      ],
+      "mediana_ms": 7.170600118115544,
+      "min_ms": 6.880099885165691,
+      "max_ms": 8.121799910441041
+    },
+    {
+      "energia_inicial": 18,
+      "algoritmo": "DFS_RECURSIVA",
+      "encontrou": true,
+      "movimentos": 10,
+      "custo": 17,
+      "expandidos": 188,
+      "fronteira": 12,
+      "avl_n": 188,
+      "avl_altura": 9,
+      "rotacoes": {
+        "esquerda": 75,
+        "direita": 53,
+        "dupla_esq_dir": 11,
+        "dupla_dir_esq": 25
+      },
+      "tempos_ms": [
+        8.281199960038066,
+        7.874600123614073,
+        9.164500050246716,
+        11.462299851700664,
+        11.088900035247207
+      ],
+      "mediana_ms": 9.164500050246716,
+      "min_ms": 7.874600123614073,
+      "max_ms": 11.462299851700664
+    },
+    {
+      "energia_inicial": 15,
+      "algoritmo": "BFS",
+      "encontrou": true,
+      "movimentos": 8,
+      "custo": 15,
+      "expandidos": 259,
+      "fronteira": 82,
+      "avl_n": 302,
+      "avl_altura": 10,
+      "rotacoes": {
+        "esquerda": 94,
+        "direita": 115,
+        "dupla_esq_dir": 32,
+        "dupla_dir_esq": 26
+      },
+      "tempos_ms": [
+        17.393300076946616,
+        23.052599979564548,
+        17.17340014874935,
+        11.91080012358725,
+        11.963299941271544
+      ],
+      "mediana_ms": 17.17340014874935,
+      "min_ms": 11.91080012358725,
+      "max_ms": 23.052599979564548
+    },
+    {
+      "energia_inicial": 15,
+      "algoritmo": "DFS",
+      "encontrou": true,
+      "movimentos": 8,
+      "custo": 15,
+      "expandidos": 139,
+      "fronteira": 12,
+      "avl_n": 139,
+      "avl_altura": 8,
+      "rotacoes": {
+        "esquerda": 61,
+        "direita": 43,
+        "dupla_esq_dir": 9,
+        "dupla_dir_esq": 25
+      },
+      "tempos_ms": [
+        5.8021999429911375,
+        4.74420003592968,
+        4.996199859306216,
+        5.602299934253097,
+        6.137399934232235
+      ],
+      "mediana_ms": 5.602299934253097,
+      "min_ms": 4.74420003592968,
+      "max_ms": 6.137399934232235
+    },
+    {
+      "energia_inicial": 15,
+      "algoritmo": "DFS_RECURSIVA",
+      "encontrou": true,
+      "movimentos": 8,
+      "custo": 15,
+      "expandidos": 139,
+      "fronteira": 10,
+      "avl_n": 139,
+      "avl_altura": 8,
+      "rotacoes": {
+        "esquerda": 61,
+        "direita": 43,
+        "dupla_esq_dir": 9,
+        "dupla_dir_esq": 25
+      },
+      "tempos_ms": [
+        7.5611998327076435,
+        7.397399982437491,
+        7.53260008059442,
+        7.1350999642163515,
+        8.380800019949675
+      ],
+      "mediana_ms": 7.53260008059442,
+      "min_ms": 7.1350999642163515,
+      "max_ms": 8.380800019949675
+    },
+    {
+      "energia_inicial": 14,
+      "algoritmo": "BFS",
+      "encontrou": false,
+      "movimentos": null,
+      "custo": null,
+      "expandidos": 249,
+      "fronteira": 66,
+      "avl_n": 249,
+      "avl_altura": 9,
+      "rotacoes": {
+        "esquerda": 78,
+        "direita": 100,
+        "dupla_esq_dir": 32,
+        "dupla_dir_esq": 22
+      },
+      "tempos_ms": [
+        15.33449999988079,
+        17.06039998680353,
+        17.276299884542823,
+        16.02970017120242,
+        16.63980004377663
+      ],
+      "mediana_ms": 16.63980004377663,
+      "min_ms": 15.33449999988079,
+      "max_ms": 17.276299884542823
+    },
+    {
+      "energia_inicial": 14,
+      "algoritmo": "DFS",
+      "encontrou": false,
+      "movimentos": null,
+      "custo": null,
+      "expandidos": 249,
+      "fronteira": 14,
+      "avl_n": 249,
+      "avl_altura": 9,
+      "rotacoes": {
+        "esquerda": 128,
+        "direita": 99,
+        "dupla_esq_dir": 30,
+        "dupla_dir_esq": 43
+      },
+      "tempos_ms": [
+        13.533700024709105,
+        18.573899986222386,
+        14.307100092992187,
+        13.782799942418933,
+        15.077299904078245
+      ],
+      "mediana_ms": 14.307100092992187,
+      "min_ms": 13.533700024709105,
+      "max_ms": 18.573899986222386
+    },
+    {
+      "energia_inicial": 14,
+      "algoritmo": "DFS_RECURSIVA",
+      "encontrou": false,
+      "movimentos": null,
+      "custo": null,
+      "expandidos": 249,
+      "fronteira": 15,
+      "avl_n": 249,
+      "avl_altura": 9,
+      "rotacoes": {
+        "esquerda": 128,
+        "direita": 99,
+        "dupla_esq_dir": 30,
+        "dupla_dir_esq": 43
+      },
+      "tempos_ms": [
+        16.085400013253093,
+        18.827799940481782,
+        15.934100141748786,
+        13.432899955660105,
+        19.12190020084381
+      ],
+      "mediana_ms": 16.085400013253093,
+      "min_ms": 13.432899955660105,
+      "max_ms": 19.12190020084381
+    }
+  ],
+  "cofre": {
+    "rotacoes_observadas": [
+      {
+        "rotulo_inserido": "D",
+        "rotacoes": {
+          "esquerda": 1
+        },
+        "antes": {
+          "rotulo": "A",
+          "chave": "('PRACA', (), (), 18)",
+          "altura": 2,
+          "fator": -1,
+          "esquerda": null,
+          "direita": {
+            "rotulo": "B",
+            "chave": "('PRACA', ('autenticacao',), (), 18)",
+            "altura": 1,
+            "fator": 0,
+            "esquerda": null,
+            "direita": null
+          }
+        },
+        "depois": {
+          "rotulo": "B",
+          "chave": "('PRACA', ('autenticacao',), (), 18)",
+          "altura": 2,
+          "fator": 0,
+          "esquerda": {
+            "rotulo": "A",
+            "chave": "('PRACA', (), (), 18)",
+            "altura": 1,
+            "fator": 0,
+            "esquerda": null,
+            "direita": null
+          },
+          "direita": {
+            "rotulo": "D",
+            "chave": "('TORRE', ('autenticacao', 'lacre'), (), 15)",
+            "altura": 1,
+            "fator": 0,
+            "esquerda": null,
+            "direita": null
+          }
+        }
+      },
+      {
+        "rotulo_inserido": "G",
+        "rotacoes": {
+          "direita": 1
+        },
+        "antes": {
+          "rotulo": "B",
+          "chave": "('PRACA', ('autenticacao',), (), 18)",
+          "altura": 3,
+          "fator": 1,
+          "esquerda": {
+            "rotulo": "A",
+            "chave": "('PRACA', (), (), 18)",
+            "altura": 2,
+            "fator": 1,
+            "esquerda": {
+              "rotulo": "E",
+              "chave": "('PRACA', (), (), 17)",
+              "altura": 1,
+              "fator": 0,
+              "esquerda": null,
+              "direita": null
+            },
+            "direita": null
+          },
+          "direita": {
+            "rotulo": "D",
+            "chave": "('TORRE', ('autenticacao', 'lacre'), (), 15)",
+            "altura": 1,
+            "fator": 0,
+            "esquerda": null,
+            "direita": null
+          }
+        },
+        "depois": {
+          "rotulo": "B",
+          "chave": "('PRACA', ('autenticacao',), (), 18)",
+          "altura": 3,
+          "fator": 1,
+          "esquerda": {
+            "rotulo": "E",
+            "chave": "('PRACA', (), (), 17)",
+            "altura": 2,
+            "fator": 0,
+            "esquerda": {
+              "rotulo": "G",
+              "chave": "('ESCOLA', (), (), 17)",
+              "altura": 1,
+              "fator": 0,
+              "esquerda": null,
+              "direita": null
+            },
+            "direita": {
+              "rotulo": "A",
+              "chave": "('PRACA', (), (), 18)",
+              "altura": 1,
+              "fator": 0,
+              "esquerda": null,
+              "direita": null
+            }
+          },
+          "direita": {
+            "rotulo": "D",
+            "chave": "('TORRE', ('autenticacao', 'lacre'), (), 15)",
+            "altura": 1,
+            "fator": 0,
+            "esquerda": null,
+            "direita": null
+          }
+        }
+      }
+    ],
+    "fatores": [
+      {
+        "rotulo": "G",
+        "altura": 1,
+        "fator": 0
+      },
+      {
+        "rotulo": "E",
+        "altura": 2,
+        "fator": 0
+      },
+      {
+        "rotulo": "A",
+        "altura": 1,
+        "fator": 0
+      },
+      {
+        "rotulo": "B",
+        "altura": 3,
+        "fator": 0
+      },
+      {
+        "rotulo": "H",
+        "altura": 1,
+        "fator": 0
+      },
+      {
+        "rotulo": "D",
+        "altura": 2,
+        "fator": 1
+      }
+    ],
+    "busca_existente": {
+      "encontrado": true,
+      "rotulo": "A"
+    },
+    "busca_inexistente": {
+      "encontrado": false
+    }
+  },
+  "arvore_pequena": {
+    "visita": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "caminho": [
+      "0->1",
+      "1->3"
+    ],
+    "arestas": [
+      [
+        0,
+        1,
+        "0->1"
+      ],
+      [
+        0,
+        2,
+        "0->2"
+      ],
+      [
+        1,
+        3,
+        "1->3"
+      ]
+    ]
+  }
+}

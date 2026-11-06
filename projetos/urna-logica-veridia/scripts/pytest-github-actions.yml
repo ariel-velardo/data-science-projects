@@ -1,0 +1,36 @@
+# Configuracao preparada para o repositorio data-science-projects.
+# Para ativar, instalar na RAIZ do repositorio como:
+# .github/workflows/veridia-pytest.yml
+# Nesta pasta scripts/ o GitHub NAO executa este arquivo.
+name: VERIDIA - pytest
+
+on:
+  push:
+    paths:
+      - 'projetos/urna-logica-veridia/**'
+      - '.github/workflows/veridia-pytest.yml'
+  pull_request:
+    paths:
+      - 'projetos/urna-logica-veridia/**'
+      - '.github/workflows/veridia-pytest.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: projetos/urna-logica-veridia
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Instalar dependencias no runner
+        run: python -m pip install -r requirements-interface.txt
+      - name: Executar suite completa
+        run: python -m pytest

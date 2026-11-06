@@ -1,0 +1,3 @@
+# Dependências de desenvolvimento e testes da fundação técnica.
+# A lógica do jogo usa apenas a biblioteca padrão do Python.
+pytest>=8

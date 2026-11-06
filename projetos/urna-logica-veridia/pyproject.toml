@@ -1,0 +1,11 @@
+[project]
+name = "veridia"
+version = "0.1.0"
+description = "VERÍDIA — O Enigma da Urna: jogo educacional de Estruturas de Dados e Análise de Algoritmos (EP Urna Lógica, IPT)."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"
+asyncio_default_fixture_loop_scope = "function"
