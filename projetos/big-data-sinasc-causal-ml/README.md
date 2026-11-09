@@ -97,6 +97,8 @@ Os documentos acadêmicos preservam a numeração histórica. Os cinco arquivos 
 
 A leitura segue: 01 — qualidade geográfica e seleção da população; 02 — comparabilidade e propensity score; 03 — estimação ATO de 2024; 04 — evolução histórica de 2014 a 2024; 05 — temporalidade do pré-natal e seleção.
 
+**Títulos internos dos notebooks.** O conteúdo interno preserva a numeração histórica. O `03_estimacao_ato.ipynb` abre com o título "06 — Estimação ajustada com pesos de sobreposição (ATO)", o `04_evolucao_historica.ipynb` com "07 — Evolução da associação ajustada pelo ATO" e o `05_temporalidade_prenatal.ipynb` com "08 — Temporalidade do pré-natal e duração da gestação"; os títulos do 01 e do 02 não têm número. Nas células, "notebook 06" e "notebook 08" designam os atuais 03 e 05, e os prefixos `06_`, `07_` e `08_` em nomes de figuras seguem a mesma numeração. Exceção: o "notebook 02 (seção 4)" citado no 05 é o antigo `02_preparacao_e_desenho.ipynb` da Entrega 1 nacional (commit `af30d8d`), não o atual `02_comparabilidade.ipynb`.
+
 ## 7. Como executar
 
 Use o ambiente virtual **deste projeto** (`.venv` dentro de `projetos/big-data-sinasc-causal-ml/`). No PowerShell, a partir desta pasta:
@@ -118,6 +120,7 @@ jupyter lab
 - **Gráficos estáticos:** o `kaleido` usa o Google Chrome instalado na máquina para gerar os PNG incorporados aos notebooks.
 - **Verificações:** `python -m pytest -q tests` (não precisa das bases).
 - **PySpark** não é dependência do projeto.
+- **Limites da reprodução:** os notebooks têm resultados persistidos em suas saídas salvas. A auditoria final, feita somente por leitura, não executou uma reprodução integral em ambiente externo limpo. Para reexecutar, os dados oficiais precisam ser obtidos conforme as instruções acima; os arquivos disponibilizados pelas fontes podem ser atualizados, e um novo download pode diferir dos hashes registrados nos manifestos e dos resultados salvos.
 
 ## 8. Como visualizar os gráficos
 
