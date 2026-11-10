@@ -1,0 +1,47 @@
+{
+  "falhas": 0,
+  "resumo": [
+    {
+      "navegador": "chrome",
+      "excecoes": 0,
+      "consoleErros": [],
+      "requisicoesExternas": 0,
+      "filtrosTestados": 67,
+      "filtrosFalhos": 0,
+      "exportacaoPng": true,
+      "interacao": {
+        "graficos": 28,
+        "tooltipsLidos": 144,
+        "zoom": 28,
+        "restauracao": 28,
+        "png": 28
+      },
+      "graficosPorViewport": {
+        "desktop": 28,
+        "tablet": 28,
+        "celular": 28
+      }
+    },
+    {
+      "navegador": "edge",
+      "excecoes": 0,
+      "consoleErros": [],
+      "requisicoesExternas": 0,
+      "filtrosTestados": 67,
+      "filtrosFalhos": 0,
+      "exportacaoPng": true,
+      "interacao": {
+        "graficos": 28,
+        "tooltipsLidos": 144,
+        "zoom": 28,
+        "restauracao": 28,
+        "png": 28
+      },
+      "graficosPorViewport": {
+        "desktop": 28,
+        "tablet": 28,
+        "celular": 28
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+# Preserva os bytes e hashes dos quatro artefatos gerados em clones e exports.
+.gitattributes text eol=lf
+dist/sinasc_dashboard_ipt.html text eol=lf
+dist/dados_painel.json text eol=lf
+dist/MANIFESTO_PROVENIENCIA.json text eol=lf
+dist/MATRIZ_RASTREABILIDADE.md text eol=lf
