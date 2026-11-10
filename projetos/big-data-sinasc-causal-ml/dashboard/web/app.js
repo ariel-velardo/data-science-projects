@@ -461,7 +461,7 @@
         marker: { size: 14, symbol: l.simbolo, color: l.cor, line: { width: 2, color: l.cor } },
         error_x: l.ic ? { type: "data", symmetric: false, array: [l.ic[1] - l.v], arrayminus: [l.v - l.ic[0]], color: l.cor, thickness: 2.2, width: 7 } : undefined,
         customdata: [l.ic ? br(l.ic[0], 2) + " a " + br(l.ic[1], 2) + " p.p." : "sem intervalo de confiança"],
-        hovertemplate: "<b>" + l.nome + "</b><br>%{x:.2f} p.p.<br>IC 95%: %{customdata[0]}<extra></extra>",
+        hovertemplate: "<b>" + l.nome + "</b><br>%{x:.2f} p.p.<br>IC 95%: %{customdata}<extra></extra>",
       })),
       layout: layout({ showlegend: false, margin: { t: 8, r: 18, b: 44, l: 16 }, xaxis: { title: { text: "Diferença de risco (p.p.)" }, range: [-3, 0.3], zeroline: true, zerolinewidth: 1.4, zerolinecolor: COR.tinta }, yaxis: { type: "category", showgrid: false } }),
     };

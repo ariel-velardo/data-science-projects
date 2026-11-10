@@ -12,11 +12,14 @@ Ative a `.venv` do projeto (`projetos/big-data-sinasc-causal-ml/.venv`). A parti
 python dashboard/construir.py
 python -m pytest dashboard/tests -q
 node dashboard/verificacao/verificar_navegador.mjs
+node dashboard/verificacao/verificar_tooltips.mjs
 ```
 
 A geração lê somente notebooks salvos, CSVs e Markdown versionados. Não requer os Parquets, não reexecuta o bootstrap e não recalcula estimativas. O mesmo conteúdo de entrada produz os mesmos hashes (há teste para isso).
 
 O verificador usa Chrome e Edge instalados e o Node 22 ou superior, sem dependências adicionais. Ele abre o arquivo com a rede desligada, percorre as sete abas em três larguras, aciona todos os filtros e grava `verificacao/relatorio_navegador.json` e as capturas em `verificacao/capturas/`.
+
+O teste `verificar_tooltips.mjs` compara o texto completo dos oito pontos de `a_difs`, `e_difs`, `e_incerteza` e `e_sens`, movendo o mouse em Chrome e Edge offline. Confere diferenças em p.p., os IC existentes e a ausência explícita de IC na sensibilidade. Aceita um caminho de HTML como argumento para validar também a cópia extraída do pacote acadêmico. O resultado é impresso em JSON; os perfis isolados ficam no diretório temporário para diagnóstico.
 
 ## Organização
 
