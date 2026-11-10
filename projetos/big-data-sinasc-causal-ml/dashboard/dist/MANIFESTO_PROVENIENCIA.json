@@ -1,0 +1,72 @@
+{
+  "artefato": "sinasc_dashboard_ipt.html",
+  "fontes": [
+    {
+      "caminho": "notebooks/principal/01_qualidade_geografica.ipynb",
+      "sha256": "14662abd0ee2adc2c955c2d4163dc3e7ad14f784a57f86ce67c2b40afb9c35ad"
+    },
+    {
+      "caminho": "notebooks/principal/02_comparabilidade.ipynb",
+      "sha256": "3424bb456527f96eef3ed3831a816a747597234239f255df042f8787394232ad"
+    },
+    {
+      "caminho": "notebooks/principal/03_estimacao_ato.ipynb",
+      "sha256": "e4dc79bc03703a1fdae5edc35678839819eb1d47d2770a0a81f765a99a7ce08b"
+    },
+    {
+      "caminho": "notebooks/principal/04_evolucao_historica.ipynb",
+      "sha256": "6ea8ef56df94441c370cf050f7502c3313c4412074a2cf11ad357c34bc56c3a9"
+    },
+    {
+      "caminho": "notebooks/principal/05_temporalidade_prenatal.ipynb",
+      "sha256": "b44b6f2ecc56e839a0cdf9a3ed5359e0b3368dfdf547c0be9dee07baa7edc8c6"
+    },
+    {
+      "caminho": "outputs/qualidade_geografica_2024/comparacao_recortes_2024.csv",
+      "sha256": "3b7f1a4beba517f6fca2af171999130052fffee986706d314c0142e373016aec"
+    },
+    {
+      "caminho": "outputs/qualidade_geografica_2024/qualidade_variaveis_2024.csv",
+      "sha256": "e9d27aa1f415289c4bc4754494ba2b2b9658696e4c00e38beb692f0fec038098"
+    },
+    {
+      "caminho": "outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md",
+      "sha256": "6297767455371b0d9bd366f571658b4a1572ee8a25555135d630301282dcc259"
+    },
+    {
+      "caminho": "docs/sp_capital_ato/RESUMO_PARA_REDACAO.md",
+      "sha256": "5b58b225ffecfc113c8cde8fb34905b0300abc476d1bfdcd7a373a6932bb91ca"
+    },
+    {
+      "caminho": "docs/GUIA_REVISAO_MIKE.md",
+      "sha256": "3473cdeb01be2619449274718367b9b08a49b3d28e82998a39b17afa0d2f9f92"
+    },
+    {
+      "caminho": "docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md",
+      "sha256": "ae009868e8184d4afc60d1a96383836c9224389da8d9b78e334a1e3ca9c31207"
+    },
+    {
+      "caminho": "docs/methodology/DAG_INICIAL.md",
+      "sha256": "e681e0610d11c6fdc67e86650a2e4845df5f4bb3b56d9254fdc29e1cdfff64d6"
+    },
+    {
+      "caminho": "docs/sp_capital_ato/PACOTE_REDACAO_ETAPA_1_OVERLEAF/figuras/fig4_dag.tex",
+      "sha256": "bdf3268d3d634a0cf836e9886d4067a11c2ab7ce6bef2e99b85df3ee993efea4"
+    },
+    {
+      "caminho": "docs/sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/logo_ipt.pdf",
+      "sha256": "a3a4c4785d9e57e04c7a58cef15d19bc83188ad32aaf457bd5551a96da56dae3"
+    }
+  ],
+  "granularidade": "agregados por recorte, ano, grupo, categoria ou faixa; sem registros individuais",
+  "limitacao_conhecida": "as estimativas permanecem as dos notebooks salvos; o painel não reexecuta análises",
+  "microdados_lidos": false,
+  "plotly_python": "6.9.0",
+  "referencia_origem": "fd0d319e4b77dfa973b87f1a3c6fc6872968225e",
+  "regra_divulgacao": "contagens de 1 a 9 exibidas como <10; histogramas agrupados até 0 ou pelo menos 10 registros por grupo",
+  "saidas": {
+    "MATRIZ_RASTREABILIDADE.md": "3454331cc723ced1d3381402f5c653fdb02f6b0d4bc08f84a624310bfad404dc",
+    "dados_painel.json": "4ab01b24827709b3bde532d5d76beb7362d7ac751e894ff5809619c042c5b7c0",
+    "sinasc_dashboard_ipt.html": "b28045fcfa5488262dea14b9515780e347ade89eda5a05baebe6b58a4966bdd1"
+  }
+}

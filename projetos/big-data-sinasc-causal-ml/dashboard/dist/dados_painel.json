@@ -1,0 +1,3696 @@
+{
+ "balanco": {
+  "ato": [
+   {
+    "nivel": "média",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Idade materna (anos) — média",
+    "smd_antes": 0.27,
+    "smd_depois": 0.0,
+    "t0_ato": "27,6",
+    "t0_bruto": "27,5",
+    "t1_ato": "27,6",
+    "t1_bruto": "29,3",
+    "variavel": "Idade materna (anos)"
+   },
+   {
+    "nivel": "média",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Idade materna² — média",
+    "smd_antes": 0.253,
+    "smd_depois": 0.0,
+    "t0_ato": "810,8",
+    "t0_bruto": "802,4",
+    "t1_ato": "810,8",
+    "t1_bruto": "902,3",
+    "variavel": "Idade materna²"
+   },
+   {
+    "nivel": "10–19 anos",
+    "papel": "Fora do escore: apenas diagnóstico",
+    "rotulo": "Idade materna (descritiva) — 10–19 anos",
+    "smd_antes": -0.186,
+    "smd_depois": -0.006,
+    "t0_ato": "11,3%",
+    "t0_bruto": "11,9%",
+    "t1_ato": "11,1%",
+    "t1_bruto": "6,6%",
+    "variavel": "Idade materna (descritiva)"
+   },
+   {
+    "nivel": "Sem escolaridade",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Escolaridade — Sem escolaridade",
+    "smd_antes": -0.012,
+    "smd_depois": 0.0,
+    "t0_ato": "0,0%",
+    "t0_bruto": "0,0%",
+    "t1_ato": "0,0%",
+    "t1_bruto": "0,0%",
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Fundamental I",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Escolaridade — Fundamental I",
+    "smd_antes": -0.062,
+    "smd_depois": 0.0,
+    "t0_ato": "1,0%",
+    "t0_bruto": "1,1%",
+    "t1_ato": "1,0%",
+    "t1_bruto": "0,6%",
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Fundamental II",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Escolaridade — Fundamental II",
+    "smd_antes": -0.206,
+    "smd_depois": 0.0,
+    "t0_ato": "14,1%",
+    "t0_bruto": "14,9%",
+    "t1_ato": "14,1%",
+    "t1_bruto": "8,3%",
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Médio",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Escolaridade — Médio",
+    "smd_antes": -0.234,
+    "smd_depois": 0.0,
+    "t0_ato": "65,2%",
+    "t0_bruto": "65,4%",
+    "t1_ato": "65,2%",
+    "t1_bruto": "54,0%",
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Superior incompleto",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Escolaridade — Superior incompleto",
+    "smd_antes": 0.014,
+    "smd_depois": 0.0,
+    "t0_ato": "5,7%",
+    "t0_bruto": "5,6%",
+    "t1_ato": "5,7%",
+    "t1_bruto": "5,9%",
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Superior completo",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Escolaridade — Superior completo",
+    "smd_antes": 0.452,
+    "smd_depois": 0.0,
+    "t0_ato": "13,8%",
+    "t0_bruto": "12,9%",
+    "t1_ato": "13,8%",
+    "t1_bruto": "31,1%",
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Ignorado/ausente",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Escolaridade — Ignorado/ausente",
+    "smd_antes": -0.022,
+    "smd_depois": -0.003,
+    "t0_ato": "0,1%",
+    "t0_bruto": "0,1%",
+    "t1_ato": "0,0%",
+    "t1_bruto": "0,0%",
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Branca",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Raça/cor — Branca",
+    "smd_antes": 0.199,
+    "smd_depois": 0.0,
+    "t0_ato": "36,7%",
+    "t0_bruto": "36,1%",
+    "t1_ato": "36,7%",
+    "t1_bruto": "45,9%",
+    "variavel": "Raça/cor"
+   },
+   {
+    "nivel": "Preta",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Raça/cor — Preta",
+    "smd_antes": -0.056,
+    "smd_depois": 0.0,
+    "t0_ato": "12,6%",
+    "t0_bruto": "12,7%",
+    "t1_ato": "12,7%",
+    "t1_bruto": "10,9%",
+    "variavel": "Raça/cor"
+   },
+   {
+    "nivel": "Amarela",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Raça/cor — Amarela",
+    "smd_antes": 0.057,
+    "smd_depois": 0.001,
+    "t0_ato": "0,6%",
+    "t0_bruto": "0,6%",
+    "t1_ato": "0,6%",
+    "t1_bruto": "1,1%",
+    "variavel": "Raça/cor"
+   },
+   {
+    "nivel": "Parda",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Raça/cor — Parda",
+    "smd_antes": -0.168,
+    "smd_depois": 0.0,
+    "t0_ato": "49,8%",
+    "t0_bruto": "50,3%",
+    "t1_ato": "49,7%",
+    "t1_bruto": "41,9%",
+    "variavel": "Raça/cor"
+   },
+   {
+    "nivel": "Indígena",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Raça/cor — Indígena",
+    "smd_antes": -0.032,
+    "smd_depois": -0.001,
+    "t0_ato": "0,2%",
+    "t0_bruto": "0,3%",
+    "t1_ato": "0,2%",
+    "t1_bruto": "0,1%",
+    "variavel": "Raça/cor"
+   },
+   {
+    "nivel": "Ignorado/ausente",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Raça/cor — Ignorado/ausente",
+    "smd_antes": 0.004,
+    "smd_depois": 0.001,
+    "t0_ato": "0,0%",
+    "t0_bruto": "0,0%",
+    "t1_ato": "0,0%",
+    "t1_bruto": "0,0%",
+    "variavel": "Raça/cor"
+   },
+   {
+    "nivel": "Nulípara",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Paridade — Nulípara",
+    "smd_antes": 0.166,
+    "smd_depois": 0.0,
+    "t0_ato": "32,9%",
+    "t0_bruto": "32,4%",
+    "t1_ato": "32,9%",
+    "t1_bruto": "40,4%",
+    "variavel": "Paridade"
+   },
+   {
+    "nivel": "Multípara",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Paridade — Multípara",
+    "smd_antes": -0.166,
+    "smd_depois": 0.0,
+    "t0_ato": "67,1%",
+    "t0_bruto": "67,6%",
+    "t1_ato": "67,1%",
+    "t1_bruto": "59,6%",
+    "variavel": "Paridade"
+   },
+   {
+    "nivel": "Nenhuma",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Perdas fetais anteriores — Nenhuma",
+    "smd_antes": -0.037,
+    "smd_depois": 0.0,
+    "t0_ato": "79,2%",
+    "t0_bruto": "79,5%",
+    "t1_ato": "79,2%",
+    "t1_bruto": "78,0%",
+    "variavel": "Perdas fetais anteriores"
+   },
+   {
+    "nivel": "Uma",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Perdas fetais anteriores — Uma",
+    "smd_antes": 0.041,
+    "smd_depois": 0.0,
+    "t0_ato": "15,9%",
+    "t0_bruto": "15,6%",
+    "t1_ato": "15,9%",
+    "t1_bruto": "17,1%",
+    "variavel": "Perdas fetais anteriores"
+   },
+   {
+    "nivel": "Duas ou mais",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Perdas fetais anteriores — Duas ou mais",
+    "smd_antes": 0.0,
+    "smd_depois": 0.0,
+    "t0_ato": "4,9%",
+    "t0_bruto": "4,9%",
+    "t1_ato": "4,9%",
+    "t1_bruto": "4,9%",
+    "variavel": "Perdas fetais anteriores"
+   },
+   {
+    "nivel": "Ignorado/ausente",
+    "papel": "Covariável ajustada no escore",
+    "rotulo": "Perdas fetais anteriores — Ignorado/ausente",
+    "smd_antes": -0.004,
+    "smd_depois": 0.0,
+    "t0_ato": "0,0%",
+    "t0_bruto": "0,0%",
+    "t1_ato": "0,0%",
+    "t1_bruto": "0,0%",
+    "variavel": "Perdas fetais anteriores"
+   },
+   {
+    "nivel": "Solteira",
+    "papel": "Fora do escore: apenas diagnóstico",
+    "rotulo": "Situação conjugal (não ajustada) — Solteira",
+    "smd_antes": -0.279,
+    "smd_depois": -0.117,
+    "t0_ato": "58,6%",
+    "t0_bruto": "59,1%",
+    "t1_ato": "52,8%",
+    "t1_bruto": "45,3%",
+    "variavel": "Situação conjugal (não ajustada)"
+   },
+   {
+    "nivel": "Casada",
+    "papel": "Fora do escore: apenas diagnóstico",
+    "rotulo": "Situação conjugal (não ajustada) — Casada",
+    "smd_antes": 0.421,
+    "smd_depois": 0.194,
+    "t0_ato": "18,6%",
+    "t0_bruto": "18,1%",
+    "t1_ato": "27,1%",
+    "t1_bruto": "36,5%",
+    "variavel": "Situação conjugal (não ajustada)"
+   },
+   {
+    "nivel": "Viúva",
+    "papel": "Fora do escore: apenas diagnóstico",
+    "rotulo": "Situação conjugal (não ajustada) — Viúva",
+    "smd_antes": 0.0,
+    "smd_depois": 0.002,
+    "t0_ato": "0,1%",
+    "t0_bruto": "0,1%",
+    "t1_ato": "0,1%",
+    "t1_bruto": "0,1%",
+    "variavel": "Situação conjugal (não ajustada)"
+   },
+   {
+    "nivel": "Separada/divorciada",
+    "papel": "Fora do escore: apenas diagnóstico",
+    "rotulo": "Situação conjugal (não ajustada) — Separada/divorciada",
+    "smd_antes": 0.022,
+    "smd_depois": 0.003,
+    "t0_ato": "1,5%",
+    "t0_bruto": "1,5%",
+    "t1_ato": "1,6%",
+    "t1_bruto": "1,8%",
+    "variavel": "Situação conjugal (não ajustada)"
+   },
+   {
+    "nivel": "União estável",
+    "papel": "Fora do escore: apenas diagnóstico",
+    "rotulo": "Situação conjugal (não ajustada) — União estável",
+    "smd_antes": -0.125,
+    "smd_depois": -0.07,
+    "t0_ato": "21,1%",
+    "t0_bruto": "21,2%",
+    "t1_ato": "18,4%",
+    "t1_bruto": "16,3%",
+    "variavel": "Situação conjugal (não ajustada)"
+   },
+   {
+    "nivel": "Ignorado/ausente",
+    "papel": "Fora do escore: apenas diagnóstico",
+    "rotulo": "Situação conjugal (não ajustada) — Ignorado/ausente",
+    "smd_antes": 0.01,
+    "smd_depois": 0.009,
+    "t0_ato": "0,0%",
+    "t0_bruto": "0,0%",
+    "t1_ato": "0,1%",
+    "t1_bruto": "0,1%",
+    "variavel": "Situação conjugal (não ajustada)"
+   }
+  ],
+  "diagnostico": [
+   {
+    "rotulo": "Escolaridade — Superior incompleto",
+    "smd": 0.014
+   },
+   {
+    "rotulo": "Escolaridade — Superior completo",
+    "smd": 0.452
+   },
+   {
+    "rotulo": "Situação conjugal — Casada",
+    "smd": 0.421
+   },
+   {
+    "rotulo": "Situação conjugal — Viúva",
+    "smd": 0.0
+   },
+   {
+    "rotulo": "Situação conjugal — Separada/divorciada",
+    "smd": 0.022
+   },
+   {
+    "rotulo": "Idade materna (anos)",
+    "smd": 0.27
+   },
+   {
+    "rotulo": "Raça/cor — Branca",
+    "smd": 0.199
+   },
+   {
+    "rotulo": "Raça/cor — Amarela",
+    "smd": 0.057
+   },
+   {
+    "rotulo": "Paridade — Nulípara",
+    "smd": 0.166
+   },
+   {
+    "rotulo": "Perdas fetais anteriores — Uma",
+    "smd": 0.041
+   },
+   {
+    "rotulo": "Perdas fetais anteriores — Duas ou mais",
+    "smd": 0.0
+   },
+   {
+    "rotulo": "Idade materna (faixa) (descritiva) — 35–59 anos",
+    "smd": 0.167
+   },
+   {
+    "rotulo": "Escolaridade — Sem escolaridade",
+    "smd": -0.012
+   },
+   {
+    "rotulo": "Escolaridade — Fundamental I",
+    "smd": -0.062
+   },
+   {
+    "rotulo": "Escolaridade — Fundamental II",
+    "smd": -0.206
+   },
+   {
+    "rotulo": "Escolaridade — Médio",
+    "smd": -0.234
+   },
+   {
+    "rotulo": "Situação conjugal — Solteira",
+    "smd": -0.279
+   },
+   {
+    "rotulo": "Situação conjugal — União estável",
+    "smd": -0.125
+   },
+   {
+    "rotulo": "Raça/cor — Preta",
+    "smd": -0.056
+   },
+   {
+    "rotulo": "Raça/cor — Parda",
+    "smd": -0.168
+   },
+   {
+    "rotulo": "Raça/cor — Indígena",
+    "smd": -0.032
+   },
+   {
+    "rotulo": "Paridade — Multípara",
+    "smd": -0.166
+   },
+   {
+    "rotulo": "Perdas fetais anteriores — Nenhuma",
+    "smd": -0.037
+   },
+   {
+    "rotulo": "Idade materna (faixa) (descritiva) — 10–19 anos",
+    "smd": -0.186
+   },
+   {
+    "rotulo": "Idade materna (faixa) (descritiva) — 20–34 anos",
+    "smd": -0.031
+   },
+   {
+    "rotulo": "Escolaridade — Ignorado/ausente",
+    "smd": -0.022
+   },
+   {
+    "rotulo": "Situação conjugal — Ignorado/ausente",
+    "smd": 0.01
+   },
+   {
+    "rotulo": "Raça/cor — Ignorado/ausente",
+    "smd": 0.004
+   },
+   {
+    "rotulo": "Perdas fetais anteriores — Ignorado/ausente",
+    "smd": -0.004
+   }
+  ],
+  "resumo": [
+   {
+    "nivel": "Superior completo",
+    "smd_max": 0.452,
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Casada",
+    "smd_max": 0.421,
+    "variavel": "Situação conjugal"
+   },
+   {
+    "nivel": "— (média)",
+    "smd_max": 0.27,
+    "variavel": "Idade materna (anos)"
+   },
+   {
+    "nivel": "Branca",
+    "smd_max": 0.199,
+    "variavel": "Raça/cor"
+   },
+   {
+    "nivel": "Nulípara",
+    "smd_max": 0.166,
+    "variavel": "Paridade"
+   },
+   {
+    "nivel": "Uma",
+    "smd_max": 0.041,
+    "variavel": "Perdas fetais anteriores"
+   }
+  ]
+ },
+ "destaques": {
+  "n_casos": 9850,
+  "n_elegiveis": 114694,
+  "n_t0": 10118,
+  "n_t1": 104576,
+  "pct_t0": 8.82,
+  "pct_t1": 91.18,
+  "sens_mudanca": 0.11,
+  "smd_casada_antes": 0.421,
+  "smd_casada_depois": 0.194,
+  "smd_max_ato": 0.0031
+ },
+ "escores": {
+  "diagnostico": {
+   "caixas": [
+    {
+     "e0": 0.7,
+     "e1": 0.7875,
+     "pct_t0": 0.35,
+     "pct_t1": 0.12
+    },
+    {
+     "e0": 0.7875,
+     "e1": 0.8,
+     "pct_t0": 1.02,
+     "pct_t1": 0.32
+    },
+    {
+     "e0": 0.8,
+     "e1": 0.8125,
+     "pct_t0": 1.48,
+     "pct_t1": 0.63
+    },
+    {
+     "e0": 0.8125,
+     "e1": 0.825,
+     "pct_t0": 1.84,
+     "pct_t1": 0.95
+    },
+    {
+     "e0": 0.825,
+     "e1": 0.8375,
+     "pct_t0": 2.66,
+     "pct_t1": 1.43
+    },
+    {
+     "e0": 0.8375,
+     "e1": 0.85,
+     "pct_t0": 8.61,
+     "pct_t1": 4.05
+    },
+    {
+     "e0": 0.85,
+     "e1": 0.8625,
+     "pct_t0": 10.85,
+     "pct_t1": 6.37
+    },
+    {
+     "e0": 0.8625,
+     "e1": 0.875,
+     "pct_t0": 9.93,
+     "pct_t1": 6.59
+    },
+    {
+     "e0": 0.875,
+     "e1": 0.8875,
+     "pct_t0": 11.88,
+     "pct_t1": 8.32
+    },
+    {
+     "e0": 0.8875,
+     "e1": 0.9,
+     "pct_t0": 15.02,
+     "pct_t1": 12.42
+    },
+    {
+     "e0": 0.9,
+     "e1": 0.9125,
+     "pct_t0": 8.89,
+     "pct_t1": 8.83
+    },
+    {
+     "e0": 0.9125,
+     "e1": 0.925,
+     "pct_t0": 5.9,
+     "pct_t1": 6.53
+    },
+    {
+     "e0": 0.925,
+     "e1": 0.9375,
+     "pct_t0": 5.58,
+     "pct_t1": 6.76
+    },
+    {
+     "e0": 0.9375,
+     "e1": 0.95,
+     "pct_t0": 6.29,
+     "pct_t1": 9.24
+    },
+    {
+     "e0": 0.95,
+     "e1": 0.9625,
+     "pct_t0": 4.8,
+     "pct_t1": 9.34
+    },
+    {
+     "e0": 0.9625,
+     "e1": 0.975,
+     "pct_t0": 3.85,
+     "pct_t1": 12.95
+    },
+    {
+     "e0": 0.975,
+     "e1": 0.9875,
+     "pct_t0": 1.05,
+     "pct_t1": 5.13
+    }
+   ],
+   "fora_eixo_t0": 0,
+   "fora_eixo_t1": "<10",
+   "percentis": [
+    {
+     "item": "Mínimo",
+     "t0": 0.7122,
+     "t1": 0.5144
+    },
+    {
+     "item": "P1",
+     "t0": 0.7967,
+     "t1": 0.8113
+    },
+    {
+     "item": "P5",
+     "t0": 0.8279,
+     "t1": 0.8438
+    },
+    {
+     "item": "P25",
+     "t0": 0.8602,
+     "t1": 0.8826
+    },
+    {
+     "item": "Mediana",
+     "t0": 0.8886,
+     "t1": 0.9124
+    },
+    {
+     "item": "P75",
+     "t0": 0.9173,
+     "t1": 0.9531
+    },
+    {
+     "item": "P95",
+     "t0": 0.962,
+     "t1": 0.975
+    },
+    {
+     "item": "P99",
+     "t0": 0.9751,
+     "t1": 0.9783
+    },
+    {
+     "item": "Máximo",
+     "t0": 0.9811,
+     "t1": 0.9856
+    }
+   ]
+  },
+  "final": {
+   "caixas": [
+    {
+     "e0": 0.62,
+     "e1": 0.74,
+     "pct_t0": 0.21,
+     "pct_t1": 0.05,
+     "peso_t0": 0.17,
+     "peso_t1": 0.18
+    },
+    {
+     "e0": 0.74,
+     "e1": 0.76,
+     "pct_t0": 0.27,
+     "pct_t1": 0.08,
+     "peso_t0": 0.22,
+     "peso_t1": 0.23
+    },
+    {
+     "e0": 0.76,
+     "e1": 0.77,
+     "pct_t0": 0.3,
+     "pct_t1": 0.1,
+     "peso_t0": 0.25,
+     "peso_t1": 0.27
+    },
+    {
+     "e0": 0.77,
+     "e1": 0.78,
+     "pct_t0": 0.38,
+     "pct_t1": 0.13,
+     "peso_t0": 0.33,
+     "peso_t1": 0.35
+    },
+    {
+     "e0": 0.78,
+     "e1": 0.79,
+     "pct_t0": 0.5,
+     "pct_t1": 0.18,
+     "peso_t0": 0.44,
+     "peso_t1": 0.46
+    },
+    {
+     "e0": 0.79,
+     "e1": 0.8,
+     "pct_t0": 1.11,
+     "pct_t1": 0.37,
+     "peso_t0": 0.99,
+     "peso_t1": 0.88
+    },
+    {
+     "e0": 0.8,
+     "e1": 0.81,
+     "pct_t0": 0.97,
+     "pct_t1": 0.43,
+     "peso_t0": 0.87,
+     "peso_t1": 0.97
+    },
+    {
+     "e0": 0.81,
+     "e1": 0.82,
+     "pct_t0": 1.29,
+     "pct_t1": 0.52,
+     "peso_t0": 1.18,
+     "peso_t1": 1.11
+    },
+    {
+     "e0": 0.82,
+     "e1": 0.83,
+     "pct_t0": 2.12,
+     "pct_t1": 0.95,
+     "peso_t0": 1.96,
+     "peso_t1": 1.92
+    },
+    {
+     "e0": 0.83,
+     "e1": 0.84,
+     "pct_t0": 2.36,
+     "pct_t1": 1.13,
+     "peso_t0": 2.21,
+     "peso_t1": 2.16
+    },
+    {
+     "e0": 0.84,
+     "e1": 0.85,
+     "pct_t0": 3.9,
+     "pct_t1": 2.01,
+     "peso_t0": 3.7,
+     "peso_t1": 3.62
+    },
+    {
+     "e0": 0.85,
+     "e1": 0.86,
+     "pct_t0": 5.43,
+     "pct_t1": 3.12,
+     "peso_t0": 5.2,
+     "peso_t1": 5.22
+    },
+    {
+     "e0": 0.86,
+     "e1": 0.87,
+     "pct_t0": 6.86,
+     "pct_t1": 4.54,
+     "peso_t0": 6.65,
+     "peso_t1": 7.1
+    },
+    {
+     "e0": 0.87,
+     "e1": 0.88,
+     "pct_t0": 7.73,
+     "pct_t1": 5.29,
+     "peso_t0": 7.58,
+     "peso_t1": 7.67
+    },
+    {
+     "e0": 0.88,
+     "e1": 0.89,
+     "pct_t0": 11.8,
+     "pct_t1": 8.72,
+     "peso_t0": 11.71,
+     "peso_t1": 11.61
+    },
+    {
+     "e0": 0.89,
+     "e1": 0.9,
+     "pct_t0": 14.41,
+     "pct_t1": 11.69,
+     "peso_t0": 14.45,
+     "peso_t1": 14.27
+    },
+    {
+     "e0": 0.9,
+     "e1": 0.91,
+     "pct_t0": 10.46,
+     "pct_t1": 9.9,
+     "peso_t0": 10.61,
+     "peso_t1": 10.9
+    },
+    {
+     "e0": 0.91,
+     "e1": 0.92,
+     "pct_t0": 8.09,
+     "pct_t1": 8.33,
+     "peso_t0": 8.31,
+     "peso_t1": 8.14
+    },
+    {
+     "e0": 0.92,
+     "e1": 0.93,
+     "pct_t0": 5.03,
+     "pct_t1": 5.97,
+     "peso_t0": 5.22,
+     "peso_t1": 5.19
+    },
+    {
+     "e0": 0.93,
+     "e1": 0.94,
+     "pct_t0": 3.45,
+     "pct_t1": 4.41,
+     "peso_t0": 3.61,
+     "peso_t1": 3.35
+    },
+    {
+     "e0": 0.94,
+     "e1": 0.95,
+     "pct_t0": 3.61,
+     "pct_t1": 5.22,
+     "peso_t0": 3.82,
+     "peso_t1": 3.28
+    },
+    {
+     "e0": 0.95,
+     "e1": 0.96,
+     "pct_t0": 3.45,
+     "pct_t1": 8.29,
+     "peso_t0": 3.69,
+     "peso_t1": 4.34
+    },
+    {
+     "e0": 0.96,
+     "e1": 0.97,
+     "pct_t0": 4.28,
+     "pct_t1": 10.5,
+     "peso_t0": 4.63,
+     "peso_t1": 4.17
+    },
+    {
+     "e0": 0.97,
+     "e1": 0.98,
+     "pct_t0": 2.01,
+     "pct_t1": 8.06,
+     "peso_t0": 2.19,
+     "peso_t1": 2.61
+    }
+   ],
+   "fora_eixo_t0": 0,
+   "fora_eixo_t1": 0,
+   "percentis": [
+    {
+     "item": "Mínimo",
+     "t0": 0.691,
+     "t1": 0.6232
+    },
+    {
+     "item": "P1",
+     "t0": 0.7732,
+     "t1": 0.8027
+    },
+    {
+     "item": "P5",
+     "t0": 0.8192,
+     "t1": 0.845
+    },
+    {
+     "item": "P25",
+     "t0": 0.8678,
+     "t1": 0.887
+    },
+    {
+     "item": "Mediana",
+     "t0": 0.8936,
+     "t1": 0.9124
+    },
+    {
+     "item": "P75",
+     "t0": 0.9169,
+     "t1": 0.953
+    },
+    {
+     "item": "P95",
+     "t0": 0.9643,
+     "t1": 0.9719
+    },
+    {
+     "item": "P99",
+     "t0": 0.9719,
+     "t1": 0.9725
+    },
+    {
+     "item": "Máximo",
+     "t0": 0.976,
+     "t1": 0.976
+    }
+   ]
+  },
+  "regioes": [
+   {
+    "n_t0": 0,
+    "n_t1": 0,
+    "pct_t0": 0.0,
+    "pct_t1": 0.0,
+    "regiao": "escore < 0,01"
+   },
+   {
+    "n_t0": 0,
+    "n_t1": 0,
+    "pct_t0": 0.0,
+    "pct_t1": 0.0,
+    "regiao": "escore < 0,05"
+   },
+   {
+    "n_t0": 982,
+    "n_t1": 28683,
+    "pct_t0": 9.71,
+    "pct_t1": 27.43,
+    "regiao": "escore > 0,95"
+   },
+   {
+    "n_t0": 0,
+    "n_t1": 0,
+    "pct_t0": 0.0,
+    "pct_t1": 0.0,
+    "regiao": "escore > 0,99"
+   }
+  ]
+ },
+ "figuras_origem": {
+  "01": 2,
+  "02": 2,
+  "03": 3,
+  "04": 2,
+  "05": 2
+ },
+ "funil": {
+  "elegiveis": 114694,
+  "etapas": [
+   {
+    "chave": "qualidade",
+    "n": 1028,
+    "pct": 0.85,
+    "restante": 119761,
+    "rotulo": "Variáveis essenciais inválidas"
+   },
+   {
+    "chave": "multipla",
+    "n": 3210,
+    "pct": 2.66,
+    "restante": 116551,
+    "rotulo": "Gestação múltipla"
+   },
+   {
+    "chave": "peso",
+    "n": 122,
+    "pct": 0.1,
+    "restante": 116429,
+    "rotulo": "Peso fora de 500–6.000 g"
+   },
+   {
+    "chave": "mes79",
+    "n": 1735,
+    "pct": 1.44,
+    "restante": 114694,
+    "rotulo": "Início nos meses 7–9"
+   }
+  ],
+  "inicial": 120789
+ },
+ "meta": {
+  "cores_logotipo": [
+   "#00B3E2",
+   "#123C59",
+   "#636362"
+  ],
+  "fontes": [
+   {
+    "caminho": "notebooks/principal/01_qualidade_geografica.ipynb",
+    "sha256": "14662abd0ee2adc2c955c2d4163dc3e7ad14f784a57f86ce67c2b40afb9c35ad"
+   },
+   {
+    "caminho": "notebooks/principal/02_comparabilidade.ipynb",
+    "sha256": "3424bb456527f96eef3ed3831a816a747597234239f255df042f8787394232ad"
+   },
+   {
+    "caminho": "notebooks/principal/03_estimacao_ato.ipynb",
+    "sha256": "e4dc79bc03703a1fdae5edc35678839819eb1d47d2770a0a81f765a99a7ce08b"
+   },
+   {
+    "caminho": "notebooks/principal/04_evolucao_historica.ipynb",
+    "sha256": "6ea8ef56df94441c370cf050f7502c3313c4412074a2cf11ad357c34bc56c3a9"
+   },
+   {
+    "caminho": "notebooks/principal/05_temporalidade_prenatal.ipynb",
+    "sha256": "b44b6f2ecc56e839a0cdf9a3ed5359e0b3368dfdf547c0be9dee07baa7edc8c6"
+   },
+   {
+    "caminho": "outputs/qualidade_geografica_2024/comparacao_recortes_2024.csv",
+    "sha256": "3b7f1a4beba517f6fca2af171999130052fffee986706d314c0142e373016aec"
+   },
+   {
+    "caminho": "outputs/qualidade_geografica_2024/qualidade_variaveis_2024.csv",
+    "sha256": "e9d27aa1f415289c4bc4754494ba2b2b9658696e4c00e38beb692f0fec038098"
+   },
+   {
+    "caminho": "outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md",
+    "sha256": "6297767455371b0d9bd366f571658b4a1572ee8a25555135d630301282dcc259"
+   },
+   {
+    "caminho": "docs/sp_capital_ato/RESUMO_PARA_REDACAO.md",
+    "sha256": "5b58b225ffecfc113c8cde8fb34905b0300abc476d1bfdcd7a373a6932bb91ca"
+   },
+   {
+    "caminho": "docs/GUIA_REVISAO_MIKE.md",
+    "sha256": "3473cdeb01be2619449274718367b9b08a49b3d28e82998a39b17afa0d2f9f92"
+   },
+   {
+    "caminho": "docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md",
+    "sha256": "ae009868e8184d4afc60d1a96383836c9224389da8d9b78e334a1e3ca9c31207"
+   },
+   {
+    "caminho": "docs/methodology/DAG_INICIAL.md",
+    "sha256": "e681e0610d11c6fdc67e86650a2e4845df5f4bb3b56d9254fdc29e1cdfff64d6"
+   },
+   {
+    "caminho": "docs/sp_capital_ato/PACOTE_REDACAO_ETAPA_1_OVERLEAF/figuras/fig4_dag.tex",
+    "sha256": "bdf3268d3d634a0cf836e9886d4067a11c2ab7ce6bef2e99b85df3ee993efea4"
+   },
+   {
+    "caminho": "docs/sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/logo_ipt.pdf",
+    "sha256": "a3a4c4785d9e57e04c7a58cef15d19bc83188ad32aaf457bd5551a96da56dae3"
+   }
+  ],
+  "matriz": [
+   [
+    "Nascimentos por recorte, 2024",
+    "comparacao_recortes_2024.csv",
+    "Contagem por residência materna; recortes sobrepostos",
+    "registros",
+    "não se aplica",
+    "B: tabela e indicador por recorte"
+   ],
+   [
+    "Variáveis essenciais válidas",
+    "comparacao_recortes_2024.csv",
+    "Mês 1–9, gravidez 1–3 e peso 500–6.000 g simultaneamente",
+    "%",
+    "Nascimentos do recorte",
+    "B: indicador por recorte"
+   ],
+   [
+    "Mês de início válido",
+    "comparacao_recortes_2024.csv",
+    "Mês de início entre 1 e 9",
+    "%",
+    "Nascimentos do recorte",
+    "B: indicador por recorte"
+   ],
+   [
+    "Peso válido e gravidez válida",
+    "comparacao_recortes_2024.csv",
+    "Peso na faixa operacional; gravidez 1–3",
+    "%",
+    "Nascimentos do recorte",
+    "B: indicador por recorte"
+   ],
+   [
+    "Retenção na especificação B",
+    "comparacao_recortes_2024.csv",
+    "Elegíveis divididos pelos nascimentos",
+    "%",
+    "Nascimentos do recorte",
+    "B: indicador por recorte"
+   ],
+   [
+    "Proporção de T=0 por recorte",
+    "comparacao_recortes_2024.csv",
+    "T=0 dividido pelos elegíveis",
+    "%",
+    "Elegíveis do recorte",
+    "B: indicador por recorte"
+   ],
+   [
+    "Exclusões sequenciais por recorte",
+    "comparacao_recortes_2024.csv",
+    "Quatro etapas, mutuamente exclusivas",
+    "% e registros",
+    "Nascimentos do recorte",
+    "B: barras empilhadas"
+   ],
+   [
+    "T=1 e T=0 por recorte",
+    "comparacao_recortes_2024.csv",
+    "Início nos meses 1–3 e 4–6",
+    "registros",
+    "não se aplica",
+    "B: barras por grupo"
+   ],
+   [
+    "Qualidade por variável e recorte",
+    "qualidade_variaveis_2024.csv",
+    "Válido quando há regra; preenchido quando a validade não é confirmada",
+    "%",
+    "Nascimentos do recorte",
+    "B: mapa de calor"
+   ],
+   [
+    "Mês válido por ano",
+    "NB 01, célula 18",
+    "Mês 1–9, capital, estado e restante",
+    "%",
+    "Nascimentos do recorte e do ano",
+    "B: linhas"
+   ],
+   [
+    "Grupos por ano e recorte",
+    "NB 01, célula 21",
+    "Especificação B em cada ano",
+    "registros",
+    "não se aplica",
+    "B: linhas"
+   ],
+   [
+    "Retenção anual da capital",
+    "NB 01, célula 16",
+    "Elegíveis divididos pelos nascimentos",
+    "%",
+    "Nascimentos da capital no ano",
+    "B: tabela anual"
+   ],
+   [
+    "Consistência por campo",
+    "NB 01, célula 24",
+    "Mínimo, máximo e vantagem sobre o restante do estado",
+    "% e p.p.",
+    "Nascimentos do recorte e do ano",
+    "B: tabela"
+   ],
+   [
+    "Funil da população",
+    "comparacao_recortes_2024.csv, linha da capital",
+    "Subtrações sequenciais conferidas contra os elegíveis",
+    "registros",
+    "Nascimentos da capital (120.789)",
+    "C: funil e barras"
+   ],
+   [
+    "Mês de início entre elegíveis",
+    "NB 05, célula 11",
+    "Mês dividido pelo total",
+    "%",
+    "Elegíveis da capital em 2024 (114.694)",
+    "A: faixa da gestação; C: barras"
+   ],
+   [
+    "Perfil materno por grupo",
+    "NB 02, célula 12",
+    "Percentual em uma casa; contagens por categoria não exibidas",
+    "%",
+    "Grupo; total recalculado com os dois grupos",
+    "C: barras e tabela"
+   ],
+   [
+    "Idade materna média e DP",
+    "NB 02, célula 12",
+    "Valores salvos",
+    "anos",
+    "Grupo",
+    "C: indicador"
+   ],
+   [
+    "População-alvo do ATO",
+    "NB 03, célula 20",
+    "Médias e proporções brutas e ponderadas",
+    "% e anos",
+    "Grupo com pesos normalizados",
+    "D: tabela"
+   ],
+   [
+    "SMD antes e depois do ATO",
+    "NB 03, célula 18",
+    "SMD assinado com denominador não ponderado; exibido em módulo",
+    "adimensional",
+    "Grupos T=1 e T=0",
+    "D: gráfico de balanço"
+   ],
+   [
+    "SMD assinado pré-estimação",
+    "NB 02, célula 15",
+    "Diagnóstico com situação conjugal, sem desfecho",
+    "adimensional",
+    "Grupos T=1 e T=0",
+    "D: barras divergentes"
+   ],
+   [
+    "Distribuição do escore, diagnóstico",
+    "NB 02, célula 22",
+    "Fora da partição; caixas agrupadas até 0 ou pelo menos 10 registros",
+    "% do grupo",
+    "Grupo",
+    "D: histograma espelhado"
+   ],
+   [
+    "Distribuição do escore e dos pesos, modelo final",
+    "NB 03, célula 15",
+    "Mesma regra de agrupamento",
+    "% do grupo e % da soma dos pesos",
+    "Grupo; soma dos pesos do grupo",
+    "D: histograma espelhado"
+   ],
+   [
+    "Percentis do escore",
+    "NB 02, célula 20; NB 03, célula 11",
+    "Valores salvos",
+    "escore",
+    "Grupo",
+    "D: tabela"
+   ],
+   [
+    "Regiões extremas do escore",
+    "NB 02, célula 20",
+    "Limites fixos",
+    "registros e %",
+    "Grupo",
+    "D: tabela"
+   ],
+   [
+    "Pesos e n efetivo",
+    "NB 03, célula 13",
+    "Kish; pesos 1−e em T=1 e e em T=0",
+    "peso, registros e %",
+    "Grupo",
+    "D: barras e tabela"
+   ],
+   [
+    "Situação conjugal, diagnóstico",
+    "NB 03, célula 18",
+    "Fora do modelo principal",
+    "adimensional",
+    "Grupos T=1 e T=0",
+    "D: balanço por nível"
+   ],
+   [
+    "Riscos brutos",
+    "NB 03, célula 22",
+    "Casos divididos pelos nascimentos; IC bootstrap por percentis",
+    "%",
+    "Grupo",
+    "A e E: riscos"
+   ],
+   [
+    "Riscos ponderados ATO",
+    "NB 03, célula 22",
+    "Pesos normalizados no grupo; IC bootstrap por percentis",
+    "%",
+    "Soma dos pesos do grupo",
+    "A e E: riscos"
+   ],
+   [
+    "Diferença bruta",
+    "NB 03, célula 22",
+    "T=1 − T=0; IC bootstrap por percentis",
+    "p.p.",
+    "Grupos T=1 e T=0",
+    "E: intervalos"
+   ],
+   [
+    "Diferença ATO e IC 95%",
+    "NB 03, célula 22",
+    "T=1 − T=0; 1.000 réplicas com reestimação do escore",
+    "p.p.",
+    "Grupos ponderados",
+    "A e E: intervalos"
+   ],
+   [
+    "Conferência do bootstrap",
+    "NB 03, célula 22",
+    "Erro-padrão, média das réplicas e intervalo normal",
+    "p.p.",
+    "1.000 réplicas",
+    "E: comparação de intervalos"
+   ],
+   [
+    "Sensibilidade com situação conjugal",
+    "NB 03, células 31 e 33",
+    "Estimativa pontual, sem bootstrap e sem IC",
+    "p.p. e %",
+    "Grupos ponderados",
+    "E: gráfico e tabela"
+   ],
+   [
+    "Diferença ATO anual",
+    "NB 04, células 19 e 27",
+    "Modelo separado em cada ano; sem IC anual e sem teste entre anos",
+    "p.p.",
+    "Grupos ponderados do ano",
+    "F: linhas"
+   ],
+   [
+    "Diferença bruta anual",
+    "NB 04, células 17 e 27",
+    "T=1 − T=0",
+    "p.p.",
+    "Grupos do ano",
+    "F: linhas"
+   ],
+   [
+    "Riscos anuais brutos e ATO",
+    "NB 04, células 17 e 19",
+    "Valores salvos",
+    "%",
+    "Grupo do ano",
+    "F: linhas"
+   ],
+   [
+    "Elegíveis, T=1 e T=0 por ano",
+    "NB 04, célula 17",
+    "Especificação B",
+    "registros",
+    "não se aplica",
+    "F: barras empilhadas"
+   ],
+   [
+    "Início tardio (T=0) por ano",
+    "NB 04, células 17 e 29",
+    "T=0 dividido pelos elegíveis",
+    "%",
+    "Elegíveis do ano",
+    "F: linha"
+   ],
+   [
+    "Totais do período selecionado",
+    "NB 04, célula 17",
+    "Soma de anos disjuntos; percentual recalculado sobre a soma de elegíveis",
+    "registros e %",
+    "Elegíveis do período",
+    "F: indicadores"
+   ],
+   [
+    "Diagnósticos anuais",
+    "NB 04, células 19, 21, 23 e 24",
+    "Balanço, suporte, pesos e n efetivo do modelo anual",
+    "vários",
+    "Grupo do ano",
+    "F: gráfico e tabela"
+   ],
+   [
+    "Início nos meses 4–6 por duração",
+    "NB 05, célula 11",
+    "Faixas agrupadas: < 28, 28–31, 32–36 e ≥ 37 semanas",
+    "%",
+    "Nascimentos da faixa",
+    "G: barras empilhadas"
+   ],
+   [
+    "Baixo peso por duração",
+    "NB 05, célula 18",
+    "Mesmas faixas agrupadas",
+    "%",
+    "Nascimentos da faixa",
+    "G: barras"
+   ],
+   [
+    "Baixo peso por mês de início",
+    "NB 05, célula 20",
+    "Parcelas pré-termo e a termo",
+    "%",
+    "Nascimentos do mês com duração conhecida",
+    "G: barras empilhadas"
+   ],
+   [
+    "Incluídos e excluídos pelo início",
+    "NB 05, célula 28",
+    "Antes do filtro de início; células de 1 a 9 exibidas como < 10; linhas 7–9 e ausente com contagens em múltiplos de 10 e percentuais inteiros",
+    "registros e %",
+    "Linha da tabela",
+    "G: barras e tabela"
+   ],
+   [
+    "Início ausente ou ignorado",
+    "RESUMO_PARA_REDACAO.md, seção 10",
+    "Campo ausente e código 99",
+    "registros",
+    "Antes do filtro (117.422)",
+    "G: texto"
+   ],
+   [
+    "DAG conceitual",
+    "fig4_dag.tex; DAG_INICIAL.md",
+    "Hipótese de trabalho, sem estimação",
+    "não se aplica",
+    "não se aplica",
+    "G: diagrama"
+   ]
+  ],
+  "matriz_colunas": [
+   "Indicador",
+   "Fonte",
+   "Regra",
+   "Unidade",
+   "Denominador",
+   "Visualização"
+  ],
+  "plotly_python": "6.9.0",
+  "referencia_origem": "fd0d319e4b77dfa973b87f1a3c6fc6872968225e"
+ },
+ "perfil": {
+  "idade": {
+   "dp_t0": 6.9,
+   "dp_t1": 6.6,
+   "media_t0": 27.5,
+   "media_t1": 29.3,
+   "smd": 0.27
+  },
+  "ordem_variaveis": [
+   "Idade materna (faixa)",
+   "Escolaridade",
+   "Raça/cor",
+   "Situação conjugal",
+   "Paridade",
+   "Perdas fetais anteriores"
+  ],
+  "populacao_alvo": [
+   {
+    "nivel": "média",
+    "papel": "ajustada no escore",
+    "t0_ato": 27.6,
+    "t0_bruto": 27.5,
+    "t1_ato": 27.6,
+    "t1_bruto": 29.3,
+    "total": 29.1,
+    "unidade": "anos",
+    "variavel": "Idade materna (anos)"
+   },
+   {
+    "nivel": "10–19 anos",
+    "papel": "descritiva (idade e idade² no escore)",
+    "t0_ato": 11.3,
+    "t0_bruto": 11.9,
+    "t1_ato": 11.1,
+    "t1_bruto": 6.6,
+    "total": 7.1,
+    "unidade": "%",
+    "variavel": "Idade materna (descritiva)"
+   },
+   {
+    "nivel": "Fundamental II",
+    "papel": "ajustada no escore",
+    "t0_ato": 14.1,
+    "t0_bruto": 14.9,
+    "t1_ato": 14.1,
+    "t1_bruto": 8.3,
+    "total": 8.9,
+    "unidade": "%",
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Médio",
+    "papel": "ajustada no escore",
+    "t0_ato": 65.2,
+    "t0_bruto": 65.4,
+    "t1_ato": 65.2,
+    "t1_bruto": 54.0,
+    "total": 55.0,
+    "unidade": "%",
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Superior completo",
+    "papel": "ajustada no escore",
+    "t0_ato": 13.8,
+    "t0_bruto": 12.9,
+    "t1_ato": 13.8,
+    "t1_bruto": 31.1,
+    "total": 29.5,
+    "unidade": "%",
+    "variavel": "Escolaridade"
+   },
+   {
+    "nivel": "Branca",
+    "papel": "ajustada no escore",
+    "t0_ato": 36.7,
+    "t0_bruto": 36.1,
+    "t1_ato": 36.7,
+    "t1_bruto": 45.9,
+    "total": 45.0,
+    "unidade": "%",
+    "variavel": "Raça/cor"
+   },
+   {
+    "nivel": "Parda",
+    "papel": "ajustada no escore",
+    "t0_ato": 49.8,
+    "t0_bruto": 50.3,
+    "t1_ato": 49.7,
+    "t1_bruto": 41.9,
+    "total": 42.7,
+    "unidade": "%",
+    "variavel": "Raça/cor"
+   },
+   {
+    "nivel": "Preta",
+    "papel": "ajustada no escore",
+    "t0_ato": 12.6,
+    "t0_bruto": 12.7,
+    "t1_ato": 12.7,
+    "t1_bruto": 10.9,
+    "total": 11.1,
+    "unidade": "%",
+    "variavel": "Raça/cor"
+   },
+   {
+    "nivel": "Nulípara",
+    "papel": "ajustada no escore",
+    "t0_ato": 32.9,
+    "t0_bruto": 32.4,
+    "t1_ato": 32.9,
+    "t1_bruto": 40.4,
+    "total": 39.7,
+    "unidade": "%",
+    "variavel": "Paridade"
+   },
+   {
+    "nivel": "Nenhuma",
+    "papel": "ajustada no escore",
+    "t0_ato": 79.2,
+    "t0_bruto": 79.5,
+    "t1_ato": 79.2,
+    "t1_bruto": 78.0,
+    "total": 78.1,
+    "unidade": "%",
+    "variavel": "Perdas fetais anteriores"
+   },
+   {
+    "nivel": "Casada",
+    "papel": "fora do escore (diagnóstico)",
+    "t0_ato": 18.6,
+    "t0_bruto": 18.1,
+    "t1_ato": 27.1,
+    "t1_bruto": 36.5,
+    "total": 34.8,
+    "unidade": "%",
+    "variavel": "Situação conjugal (não ajustada)"
+   }
+  ],
+  "variaveis": {
+   "Escolaridade": [
+    {
+     "dif_pp": -0.0,
+     "nivel": "Sem escolaridade",
+     "pct_t0": 0.0,
+     "pct_t1": 0.0,
+     "pct_total": 0.0,
+     "smd": -0.012
+    },
+    {
+     "dif_pp": -0.6,
+     "nivel": "Fundamental I",
+     "pct_t0": 1.1,
+     "pct_t1": 0.6,
+     "pct_total": 0.6,
+     "smd": -0.062
+    },
+    {
+     "dif_pp": -6.6,
+     "nivel": "Fundamental II",
+     "pct_t0": 14.9,
+     "pct_t1": 8.3,
+     "pct_total": 8.9,
+     "smd": -0.206
+    },
+    {
+     "dif_pp": -11.4,
+     "nivel": "Médio",
+     "pct_t0": 65.4,
+     "pct_t1": 54.0,
+     "pct_total": 55.0,
+     "smd": -0.234
+    },
+    {
+     "dif_pp": 0.3,
+     "nivel": "Superior incompleto",
+     "pct_t0": 5.6,
+     "pct_t1": 5.9,
+     "pct_total": 5.9,
+     "smd": 0.014
+    },
+    {
+     "dif_pp": 18.3,
+     "nivel": "Superior completo",
+     "pct_t0": 12.9,
+     "pct_t1": 31.1,
+     "pct_total": 29.5,
+     "smd": 0.452
+    },
+    {
+     "dif_pp": -0.0,
+     "nivel": "Ignorado/ausente",
+     "pct_t0": 0.1,
+     "pct_t1": 0.0,
+     "pct_total": 0.0,
+     "smd": -0.022
+    }
+   ],
+   "Idade materna (faixa)": [
+    {
+     "dif_pp": -5.4,
+     "nivel": "10–19 anos",
+     "pct_t0": 11.9,
+     "pct_t1": 6.6,
+     "pct_total": 7.1,
+     "smd": -0.186
+    },
+    {
+     "dif_pp": -1.4,
+     "nivel": "20–34 anos",
+     "pct_t0": 70.1,
+     "pct_t1": 68.6,
+     "pct_total": 68.8,
+     "smd": -0.031
+    },
+    {
+     "dif_pp": 6.8,
+     "nivel": "35–59 anos",
+     "pct_t0": 18.0,
+     "pct_t1": 24.8,
+     "pct_total": 24.2,
+     "smd": 0.167
+    }
+   ],
+   "Paridade": [
+    {
+     "dif_pp": 8.0,
+     "nivel": "Nulípara",
+     "pct_t0": 32.4,
+     "pct_t1": 40.4,
+     "pct_total": 39.7,
+     "smd": 0.166
+    },
+    {
+     "dif_pp": -8.0,
+     "nivel": "Multípara",
+     "pct_t0": 67.6,
+     "pct_t1": 59.6,
+     "pct_total": 60.3,
+     "smd": -0.166
+    }
+   ],
+   "Perdas fetais anteriores": [
+    {
+     "dif_pp": -1.5,
+     "nivel": "Nenhuma",
+     "pct_t0": 79.5,
+     "pct_t1": 78.0,
+     "pct_total": 78.1,
+     "smd": -0.037
+    },
+    {
+     "dif_pp": 1.5,
+     "nivel": "Uma",
+     "pct_t0": 15.6,
+     "pct_t1": 17.1,
+     "pct_total": 17.0,
+     "smd": 0.041
+    },
+    {
+     "dif_pp": 0.0,
+     "nivel": "Duas ou mais",
+     "pct_t0": 4.9,
+     "pct_t1": 4.9,
+     "pct_total": 4.9,
+     "smd": 0.0
+    },
+    {
+     "dif_pp": -0.0,
+     "nivel": "Ignorado/ausente",
+     "pct_t0": 0.0,
+     "pct_t1": 0.0,
+     "pct_total": 0.0,
+     "smd": -0.004
+    }
+   ],
+   "Raça/cor": [
+    {
+     "dif_pp": 9.7,
+     "nivel": "Branca",
+     "pct_t0": 36.1,
+     "pct_t1": 45.9,
+     "pct_total": 45.0,
+     "smd": 0.199
+    },
+    {
+     "dif_pp": -1.8,
+     "nivel": "Preta",
+     "pct_t0": 12.7,
+     "pct_t1": 10.9,
+     "pct_total": 11.1,
+     "smd": -0.056
+    },
+    {
+     "dif_pp": 0.5,
+     "nivel": "Amarela",
+     "pct_t0": 0.6,
+     "pct_t1": 1.1,
+     "pct_total": 1.1,
+     "smd": 0.057
+    },
+    {
+     "dif_pp": -8.3,
+     "nivel": "Parda",
+     "pct_t0": 50.3,
+     "pct_t1": 41.9,
+     "pct_total": 42.7,
+     "smd": -0.168
+    },
+    {
+     "dif_pp": -0.1,
+     "nivel": "Indígena",
+     "pct_t0": 0.3,
+     "pct_t1": 0.1,
+     "pct_total": 0.1,
+     "smd": -0.032
+    },
+    {
+     "dif_pp": 0.0,
+     "nivel": "Ignorado/ausente",
+     "pct_t0": 0.0,
+     "pct_t1": 0.0,
+     "pct_total": 0.0,
+     "smd": 0.004
+    }
+   ],
+   "Situação conjugal": [
+    {
+     "dif_pp": -13.8,
+     "nivel": "Solteira",
+     "pct_t0": 59.1,
+     "pct_t1": 45.3,
+     "pct_total": 46.5,
+     "smd": -0.279
+    },
+    {
+     "dif_pp": 18.4,
+     "nivel": "Casada",
+     "pct_t0": 18.1,
+     "pct_t1": 36.5,
+     "pct_total": 34.8,
+     "smd": 0.421
+    },
+    {
+     "dif_pp": 0.0,
+     "nivel": "Viúva",
+     "pct_t0": 0.1,
+     "pct_t1": 0.1,
+     "pct_total": 0.1,
+     "smd": 0.0
+    },
+    {
+     "dif_pp": 0.3,
+     "nivel": "Separada/divorciada",
+     "pct_t0": 1.5,
+     "pct_t1": 1.8,
+     "pct_total": 1.8,
+     "smd": 0.022
+    },
+    {
+     "dif_pp": -4.9,
+     "nivel": "União estável",
+     "pct_t0": 21.2,
+     "pct_t1": 16.3,
+     "pct_total": 16.7,
+     "smd": -0.125
+    },
+    {
+     "dif_pp": 0.0,
+     "nivel": "Ignorado/ausente",
+     "pct_t0": 0.0,
+     "pct_t1": 0.1,
+     "pct_total": 0.1,
+     "smd": 0.01
+    }
+   ]
+  }
+ },
+ "pesos": [
+  {
+   "item": "n",
+   "t0": 10118.0,
+   "t1": 104576.0
+  },
+  {
+   "item": "n efetivo (Kish)",
+   "t0": 10096.0,
+   "t1": 84995.0
+  },
+  {
+   "item": "mínimo",
+   "t0": 0.691,
+   "t1": 0.024
+  },
+  {
+   "item": "P1",
+   "t0": 0.7732,
+   "t1": 0.0275
+  },
+  {
+   "item": "mediana",
+   "t0": 0.8936,
+   "t1": 0.0876
+  },
+  {
+   "item": "P99",
+   "t0": 0.9719,
+   "t1": 0.1973
+  },
+  {
+   "item": "máximo",
+   "t0": 0.976,
+   "t1": 0.3768
+  },
+  {
+   "item": "participação máxima (%)",
+   "t0": 0.0108,
+   "t1": 0.0042
+  },
+  {
+   "item": "n efetivo / n (%)",
+   "t0": 99.8,
+   "t1": 81.3
+  }
+ ],
+ "qualidade_anual": {
+  "acumulado": [
+   {
+    "n_elegiveis": 1587749,
+    "n_nascimentos": 1678121,
+    "n_t0": 186255,
+    "n_t1": 1401494,
+    "pct_mes": 98.87,
+    "pct_retencao": 94.61,
+    "pct_t0": 11.73,
+    "recorte": "SP — capital"
+   },
+   {
+    "n_elegiveis": 5811572,
+    "n_nascimentos": 6227156,
+    "n_t0": 673909,
+    "n_t1": 5137663,
+    "pct_mes": 97.39,
+    "pct_retencao": 93.33,
+    "pct_t0": 11.6,
+    "recorte": "SP — estado"
+   },
+   {
+    "n_elegiveis": 4223823,
+    "n_nascimentos": 4549035,
+    "n_t0": 487654,
+    "n_t1": 3736169,
+    "pct_mes": 96.84,
+    "pct_retencao": 92.85,
+    "pct_t0": 11.55,
+    "recorte": "SP — restante"
+   }
+  ],
+  "campos": [
+   {
+    "anos_inferior": 0,
+    "anos_superior": 11,
+    "indicador": "MESPRENAT válido",
+    "maior_vantagem": 4.62,
+    "max_capital": 99.15,
+    "menor_vantagem": 0.81,
+    "min_capital": 98.45
+   },
+   {
+    "anos_inferior": 1,
+    "anos_superior": 10,
+    "indicador": "GRAVIDEZ válida",
+    "maior_vantagem": 0.08,
+    "max_capital": 100.0,
+    "menor_vantagem": -0.0,
+    "min_capital": 99.98
+   },
+   {
+    "anos_inferior": 0,
+    "anos_superior": 11,
+    "indicador": "PESO na faixa",
+    "maior_vantagem": 0.07,
+    "max_capital": 99.93,
+    "menor_vantagem": 0.0,
+    "min_capital": 99.89
+   },
+   {
+    "anos_inferior": 0,
+    "anos_superior": 1,
+    "indicador": "IDADEMAE preenchida",
+    "maior_vantagem": 0.0,
+    "max_capital": 100.0,
+    "menor_vantagem": 0.0,
+    "min_capital": 100.0
+   },
+   {
+    "anos_inferior": 0,
+    "anos_superior": 11,
+    "indicador": "ESCMAE2010 válida",
+    "maior_vantagem": 1.62,
+    "max_capital": 99.99,
+    "menor_vantagem": 0.12,
+    "min_capital": 99.82
+   },
+   {
+    "anos_inferior": 0,
+    "anos_superior": 11,
+    "indicador": "RACACORMAE válida",
+    "maior_vantagem": 2.34,
+    "max_capital": 99.98,
+    "menor_vantagem": 0.38,
+    "min_capital": 99.87
+   },
+   {
+    "anos_inferior": 0,
+    "anos_superior": 11,
+    "indicador": "ESTCIVMAE válida",
+    "maior_vantagem": 0.72,
+    "max_capital": 99.94,
+    "menor_vantagem": 0.19,
+    "min_capital": 99.72
+   },
+   {
+    "anos_inferior": 0,
+    "anos_superior": 0,
+    "indicador": "PARIDADE válida",
+    "maior_vantagem": 0.0,
+    "max_capital": 100.0,
+    "menor_vantagem": 0.0,
+    "min_capital": 100.0
+   },
+   {
+    "anos_inferior": 0,
+    "anos_superior": 11,
+    "indicador": "QTDFILMORT preenchido",
+    "maior_vantagem": 3.41,
+    "max_capital": 99.99,
+    "menor_vantagem": 0.23,
+    "min_capital": 99.7
+   }
+  ],
+  "capital": [
+   {
+    "ano": 2014,
+    "n_elegiveis": 164987,
+    "n_t0": 24348,
+    "n_t1": 140639,
+    "pct_mes_capital": 98.45,
+    "pct_mes_estado": 95.17,
+    "pct_mes_restante": 93.89,
+    "pct_retencao": 93.83
+   },
+   {
+    "ano": 2015,
+    "n_elegiveis": 165787,
+    "n_t0": 24345,
+    "n_t1": 141442,
+    "pct_mes_capital": 98.48,
+    "pct_mes_estado": 95.15,
+    "pct_mes_restante": 93.86,
+    "pct_retencao": 94.03
+   },
+   {
+    "ano": 2016,
+    "n_elegiveis": 158025,
+    "n_t0": 21102,
+    "n_t1": 136923,
+    "pct_mes_capital": 98.8,
+    "pct_mes_estado": 96.74,
+    "pct_mes_restante": 95.95,
+    "pct_retencao": 94.45
+   },
+   {
+    "ano": 2017,
+    "n_elegiveis": 160429,
+    "n_t0": 18959,
+    "n_t1": 141470,
+    "pct_mes_capital": 99.01,
+    "pct_mes_estado": 97.74,
+    "pct_mes_restante": 97.25,
+    "pct_retencao": 94.76
+   },
+   {
+    "ano": 2018,
+    "n_elegiveis": 156806,
+    "n_t0": 17814,
+    "n_t1": 138992,
+    "pct_mes_capital": 99.03,
+    "pct_mes_estado": 98.08,
+    "pct_mes_restante": 97.73,
+    "pct_retencao": 94.83
+   },
+   {
+    "ano": 2019,
+    "n_elegiveis": 150427,
+    "n_t0": 17581,
+    "n_t1": 132846,
+    "pct_mes_capital": 98.95,
+    "pct_mes_estado": 98.2,
+    "pct_mes_restante": 97.91,
+    "pct_retencao": 94.85
+   },
+   {
+    "ano": 2020,
+    "n_elegiveis": 139283,
+    "n_t0": 15443,
+    "n_t1": 123840,
+    "pct_mes_capital": 98.8,
+    "pct_mes_estado": 97.92,
+    "pct_mes_restante": 97.6,
+    "pct_retencao": 94.66
+   },
+   {
+    "ano": 2021,
+    "n_elegiveis": 129761,
+    "n_t0": 12705,
+    "n_t1": 117056,
+    "pct_mes_capital": 98.9,
+    "pct_mes_estado": 98.17,
+    "pct_mes_restante": 97.91,
+    "pct_retencao": 94.9
+   },
+   {
+    "ano": 2022,
+    "n_elegiveis": 125306,
+    "n_t0": 12370,
+    "n_t1": 112936,
+    "pct_mes_capital": 99.1,
+    "pct_mes_estado": 98.33,
+    "pct_mes_restante": 98.07,
+    "pct_retencao": 94.89
+   },
+   {
+    "ano": 2023,
+    "n_elegiveis": 122244,
+    "n_t0": 11470,
+    "n_t1": 110774,
+    "pct_mes_capital": 99.14,
+    "pct_mes_estado": 98.54,
+    "pct_mes_restante": 98.34,
+    "pct_retencao": 94.97
+   },
+   {
+    "ano": 2024,
+    "n_elegiveis": 114694,
+    "n_t0": 10118,
+    "n_t1": 104576,
+    "pct_mes_capital": 99.15,
+    "pct_mes_estado": 98.08,
+    "pct_mes_restante": 97.71,
+    "pct_retencao": 94.95
+   }
+  ],
+  "mesprenat": {
+   "SP — capital": [
+    {
+     "ano": 2014,
+     "n_nascimentos": 175840,
+     "n_validos": 173111,
+     "pct": 98.45
+    },
+    {
+     "ano": 2015,
+     "n_nascimentos": 176313,
+     "n_validos": 173640,
+     "pct": 98.48
+    },
+    {
+     "ano": 2016,
+     "n_nascimentos": 167303,
+     "n_validos": 165292,
+     "pct": 98.8
+    },
+    {
+     "ano": 2017,
+     "n_nascimentos": 169299,
+     "n_validos": 167621,
+     "pct": 99.01
+    },
+    {
+     "ano": 2018,
+     "n_nascimentos": 165355,
+     "n_validos": 163755,
+     "pct": 99.03
+    },
+    {
+     "ano": 2019,
+     "n_nascimentos": 158587,
+     "n_validos": 156925,
+     "pct": 98.95
+    },
+    {
+     "ano": 2020,
+     "n_nascimentos": 147133,
+     "n_validos": 145373,
+     "pct": 98.8
+    },
+    {
+     "ano": 2021,
+     "n_nascimentos": 136732,
+     "n_validos": 135234,
+     "pct": 98.9
+    },
+    {
+     "ano": 2022,
+     "n_nascimentos": 132050,
+     "n_validos": 130857,
+     "pct": 99.1
+    },
+    {
+     "ano": 2023,
+     "n_nascimentos": 128720,
+     "n_validos": 127619,
+     "pct": 99.14
+    },
+    {
+     "ano": 2024,
+     "n_nascimentos": 120789,
+     "n_validos": 119768,
+     "pct": 99.15
+    }
+   ],
+   "SP — estado": [
+    {
+     "ano": 2014,
+     "n_nascimentos": 625687,
+     "n_validos": 595453,
+     "pct": 95.17
+    },
+    {
+     "ano": 2015,
+     "n_nascimentos": 634026,
+     "n_validos": 603272,
+     "pct": 95.15
+    },
+    {
+     "ano": 2016,
+     "n_nascimentos": 601437,
+     "n_validos": 581833,
+     "pct": 96.74
+    },
+    {
+     "ano": 2017,
+     "n_nascimentos": 611803,
+     "n_validos": 597957,
+     "pct": 97.74
+    },
+    {
+     "ano": 2018,
+     "n_nascimentos": 606146,
+     "n_validos": 594522,
+     "pct": 98.08
+    },
+    {
+     "ano": 2019,
+     "n_nascimentos": 583191,
+     "n_validos": 572675,
+     "pct": 98.2
+    },
+    {
+     "ano": 2020,
+     "n_nascimentos": 552310,
+     "n_validos": 540831,
+     "pct": 97.92
+    },
+    {
+     "ano": 2021,
+     "n_nascimentos": 525239,
+     "n_validos": 515630,
+     "pct": 98.17
+    },
+    {
+     "ano": 2022,
+     "n_nascimentos": 512520,
+     "n_validos": 503981,
+     "pct": 98.33
+    },
+    {
+     "ano": 2023,
+     "n_nascimentos": 503910,
+     "n_validos": 496577,
+     "pct": 98.54
+    },
+    {
+     "ano": 2024,
+     "n_nascimentos": 470887,
+     "n_validos": 461835,
+     "pct": 98.08
+    }
+   ],
+   "SP — restante": [
+    {
+     "ano": 2014,
+     "n_nascimentos": 449847,
+     "n_validos": 422342,
+     "pct": 93.89
+    },
+    {
+     "ano": 2015,
+     "n_nascimentos": 457713,
+     "n_validos": 429632,
+     "pct": 93.86
+    },
+    {
+     "ano": 2016,
+     "n_nascimentos": 434134,
+     "n_validos": 416541,
+     "pct": 95.95
+    },
+    {
+     "ano": 2017,
+     "n_nascimentos": 442504,
+     "n_validos": 430336,
+     "pct": 97.25
+    },
+    {
+     "ano": 2018,
+     "n_nascimentos": 440791,
+     "n_validos": 430767,
+     "pct": 97.73
+    },
+    {
+     "ano": 2019,
+     "n_nascimentos": 424604,
+     "n_validos": 415750,
+     "pct": 97.91
+    },
+    {
+     "ano": 2020,
+     "n_nascimentos": 405177,
+     "n_validos": 395458,
+     "pct": 97.6
+    },
+    {
+     "ano": 2021,
+     "n_nascimentos": 388507,
+     "n_validos": 380396,
+     "pct": 97.91
+    },
+    {
+     "ano": 2022,
+     "n_nascimentos": 380470,
+     "n_validos": 373124,
+     "pct": 98.07
+    },
+    {
+     "ano": 2023,
+     "n_nascimentos": 375190,
+     "n_validos": 368958,
+     "pct": 98.34
+    },
+    {
+     "ano": 2024,
+     "n_nascimentos": 350098,
+     "n_validos": 342067,
+     "pct": 97.71
+    }
+   ]
+  },
+  "tamanhos": {
+   "SP — capital": {
+    "t0": [
+     24348,
+     24345,
+     21102,
+     18959,
+     17814,
+     17581,
+     15443,
+     12705,
+     12370,
+     11470,
+     10118
+    ],
+    "t1": [
+     140639,
+     141442,
+     136923,
+     141470,
+     138992,
+     132846,
+     123840,
+     117056,
+     112936,
+     110774,
+     104576
+    ]
+   },
+   "SP — estado": {
+    "t0": [
+     81198,
+     79780,
+     71392,
+     68565,
+     66224,
+     63215,
+     57894,
+     49992,
+     49072,
+     46051,
+     40526
+    ],
+    "t1": [
+     487986,
+     497680,
+     486589,
+     505081,
+     503959,
+     486007,
+     460462,
+     444364,
+     433756,
+     429572,
+     402207
+    ]
+   },
+   "SP — restante": {
+    "t0": [
+     56850,
+     55435,
+     50290,
+     49606,
+     48410,
+     45634,
+     42451,
+     37287,
+     36702,
+     34581,
+     30408
+    ],
+    "t1": [
+     347347,
+     356238,
+     349666,
+     363611,
+     364967,
+     353161,
+     336622,
+     327308,
+     320820,
+     318798,
+     297631
+    ]
+   }
+  }
+ },
+ "qualidade_variaveis": {
+  "nomes": {
+   "ESCMAE2010": "Escolaridade",
+   "ESTCIVMAE": "Situação conjugal",
+   "GRAVIDEZ": "Tipo de gravidez",
+   "IDADEMAE": "Idade materna",
+   "MESPRENAT": "Mês de início do pré-natal",
+   "PARIDADE": "Paridade",
+   "PESO": "Peso ao nascer",
+   "QTDFILMORT": "Perdas fetais anteriores",
+   "RACACORMAE": "Raça/cor"
+  },
+  "ordem": [
+   "MESPRENAT",
+   "PESO",
+   "GRAVIDEZ",
+   "IDADEMAE",
+   "ESCMAE2010",
+   "RACACORMAE",
+   "ESTCIVMAE",
+   "PARIDADE",
+   "QTDFILMORT"
+  ],
+  "registros": [
+   {
+    "ausente": 1.33,
+    "medida": "válido",
+    "recorte": "sudeste",
+    "valor": 97.32,
+    "variavel": "MESPRENAT"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "sudeste",
+    "valor": 99.86,
+    "variavel": "PESO"
+   },
+   {
+    "ausente": 0.03,
+    "medida": "válido",
+    "recorte": "sudeste",
+    "valor": 99.96,
+    "variavel": "GRAVIDEZ"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "preenchido",
+    "recorte": "sudeste",
+    "valor": 100.0,
+    "variavel": "IDADEMAE"
+   },
+   {
+    "ausente": 0.6,
+    "medida": "válido",
+    "recorte": "sudeste",
+    "valor": 99.26,
+    "variavel": "ESCMAE2010"
+   },
+   {
+    "ausente": 1.23,
+    "medida": "válido",
+    "recorte": "sudeste",
+    "valor": 98.77,
+    "variavel": "RACACORMAE"
+   },
+   {
+    "ausente": 0.29,
+    "medida": "válido",
+    "recorte": "sudeste",
+    "valor": 99.52,
+    "variavel": "ESTCIVMAE"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "sudeste",
+    "valor": 100.0,
+    "variavel": "PARIDADE"
+   },
+   {
+    "ausente": 0.8,
+    "medida": "preenchido",
+    "recorte": "sudeste",
+    "valor": 99.2,
+    "variavel": "QTDFILMORT"
+   },
+   {
+    "ausente": 1.26,
+    "medida": "válido",
+    "recorte": "sp_estado",
+    "valor": 98.08,
+    "variavel": "MESPRENAT"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "sp_estado",
+    "valor": 99.86,
+    "variavel": "PESO"
+   },
+   {
+    "ausente": 0.02,
+    "medida": "válido",
+    "recorte": "sp_estado",
+    "valor": 99.98,
+    "variavel": "GRAVIDEZ"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "preenchido",
+    "recorte": "sp_estado",
+    "valor": 100.0,
+    "variavel": "IDADEMAE"
+   },
+   {
+    "ausente": 0.68,
+    "medida": "válido",
+    "recorte": "sp_estado",
+    "valor": 99.26,
+    "variavel": "ESCMAE2010"
+   },
+   {
+    "ausente": 0.88,
+    "medida": "válido",
+    "recorte": "sp_estado",
+    "valor": 99.12,
+    "variavel": "RACACORMAE"
+   },
+   {
+    "ausente": 0.12,
+    "medida": "válido",
+    "recorte": "sp_estado",
+    "valor": 99.77,
+    "variavel": "ESTCIVMAE"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "sp_estado",
+    "valor": 100.0,
+    "variavel": "PARIDADE"
+   },
+   {
+    "ausente": 0.35,
+    "medida": "preenchido",
+    "recorte": "sp_estado",
+    "valor": 99.65,
+    "variavel": "QTDFILMORT"
+   },
+   {
+    "ausente": 0.75,
+    "medida": "válido",
+    "recorte": "sp_capital",
+    "valor": 99.15,
+    "variavel": "MESPRENAT"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "sp_capital",
+    "valor": 99.89,
+    "variavel": "PESO"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "sp_capital",
+    "valor": 99.99,
+    "variavel": "GRAVIDEZ"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "preenchido",
+    "recorte": "sp_capital",
+    "valor": 100.0,
+    "variavel": "IDADEMAE"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "sp_capital",
+    "valor": 99.98,
+    "variavel": "ESCMAE2010"
+   },
+   {
+    "ausente": 0.04,
+    "medida": "válido",
+    "recorte": "sp_capital",
+    "valor": 99.96,
+    "variavel": "RACACORMAE"
+   },
+   {
+    "ausente": 0.06,
+    "medida": "válido",
+    "recorte": "sp_capital",
+    "valor": 99.92,
+    "variavel": "ESTCIVMAE"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "sp_capital",
+    "valor": 100.0,
+    "variavel": "PARIDADE"
+   },
+   {
+    "ausente": 0.03,
+    "medida": "preenchido",
+    "recorte": "sp_capital",
+    "valor": 99.97,
+    "variavel": "QTDFILMORT"
+   },
+   {
+    "ausente": 1.92,
+    "medida": "válido",
+    "recorte": "mg",
+    "valor": 95.65,
+    "variavel": "MESPRENAT"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "mg",
+    "valor": 99.86,
+    "variavel": "PESO"
+   },
+   {
+    "ausente": 0.07,
+    "medida": "válido",
+    "recorte": "mg",
+    "valor": 99.93,
+    "variavel": "GRAVIDEZ"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "preenchido",
+    "recorte": "mg",
+    "valor": 100.0,
+    "variavel": "IDADEMAE"
+   },
+   {
+    "ausente": 0.7,
+    "medida": "válido",
+    "recorte": "mg",
+    "valor": 99.11,
+    "variavel": "ESCMAE2010"
+   },
+   {
+    "ausente": 2.36,
+    "medida": "válido",
+    "recorte": "mg",
+    "valor": 97.64,
+    "variavel": "RACACORMAE"
+   },
+   {
+    "ausente": 0.5,
+    "medida": "válido",
+    "recorte": "mg",
+    "valor": 99.22,
+    "variavel": "ESTCIVMAE"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "mg",
+    "valor": 100.0,
+    "variavel": "PARIDADE"
+   },
+   {
+    "ausente": 0.91,
+    "medida": "preenchido",
+    "recorte": "mg",
+    "valor": 99.09,
+    "variavel": "QTDFILMORT"
+   },
+   {
+    "ausente": 0.91,
+    "medida": "válido",
+    "recorte": "rj",
+    "valor": 97.1,
+    "variavel": "MESPRENAT"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "rj",
+    "valor": 99.83,
+    "variavel": "PESO"
+   },
+   {
+    "ausente": 0.02,
+    "medida": "válido",
+    "recorte": "rj",
+    "valor": 99.98,
+    "variavel": "GRAVIDEZ"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "preenchido",
+    "recorte": "rj",
+    "valor": 100.0,
+    "variavel": "IDADEMAE"
+   },
+   {
+    "ausente": 0.39,
+    "medida": "válido",
+    "recorte": "rj",
+    "valor": 99.26,
+    "variavel": "ESCMAE2010"
+   },
+   {
+    "ausente": 0.89,
+    "medida": "válido",
+    "recorte": "rj",
+    "valor": 99.11,
+    "variavel": "RACACORMAE"
+   },
+   {
+    "ausente": 0.51,
+    "medida": "válido",
+    "recorte": "rj",
+    "valor": 99.12,
+    "variavel": "ESTCIVMAE"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "rj",
+    "valor": 100.0,
+    "variavel": "PARIDADE"
+   },
+   {
+    "ausente": 2.12,
+    "medida": "preenchido",
+    "recorte": "rj",
+    "valor": 97.88,
+    "variavel": "QTDFILMORT"
+   },
+   {
+    "ausente": 0.67,
+    "medida": "válido",
+    "recorte": "es",
+    "valor": 98.16,
+    "variavel": "MESPRENAT"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "es",
+    "valor": 99.9,
+    "variavel": "PESO"
+   },
+   {
+    "ausente": 0.02,
+    "medida": "válido",
+    "recorte": "es",
+    "valor": 99.98,
+    "variavel": "GRAVIDEZ"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "preenchido",
+    "recorte": "es",
+    "valor": 100.0,
+    "variavel": "IDADEMAE"
+   },
+   {
+    "ausente": 0.03,
+    "medida": "válido",
+    "recorte": "es",
+    "valor": 99.95,
+    "variavel": "ESCMAE2010"
+   },
+   {
+    "ausente": 0.66,
+    "medida": "válido",
+    "recorte": "es",
+    "valor": 99.34,
+    "variavel": "RACACORMAE"
+   },
+   {
+    "ausente": 0.12,
+    "medida": "válido",
+    "recorte": "es",
+    "valor": 99.79,
+    "variavel": "ESTCIVMAE"
+   },
+   {
+    "ausente": 0.0,
+    "medida": "válido",
+    "recorte": "es",
+    "valor": 100.0,
+    "variavel": "PARIDADE"
+   },
+   {
+    "ausente": 0.32,
+    "medida": "preenchido",
+    "recorte": "es",
+    "valor": 99.68,
+    "variavel": "QTDFILMORT"
+   }
+  ]
+ },
+ "recortes": [
+  {
+   "excl": {
+    "mes79": {
+     "n": 13284,
+     "pct": 1.47
+    },
+    "multipla": {
+     "n": 22564,
+     "pct": 2.5
+    },
+    "peso": {
+     "n": 1059,
+     "pct": 0.12
+    },
+    "qualidade": {
+     "n": 24460,
+     "pct": 2.7
+    }
+   },
+   "id": "sudeste",
+   "n_elegiveis": 842998,
+   "n_nascimentos": 904365,
+   "n_t0": 84074,
+   "n_t1": 758924,
+   "nome": "Sudeste",
+   "pct_essenciais": 97.16,
+   "pct_gravidez": 99.96,
+   "pct_mesprenat": 97.32,
+   "pct_peso": 99.86,
+   "pct_retencao": 93.21,
+   "pct_t0": 9.97,
+   "tipo": "regiao"
+  },
+  {
+   "excl": {
+    "mes79": {
+     "n": 6415,
+     "pct": 1.36
+    },
+    "multipla": {
+     "n": 12064,
+     "pct": 2.56
+    },
+    "peso": {
+     "n": 547,
+     "pct": 0.12
+    },
+    "qualidade": {
+     "n": 9128,
+     "pct": 1.94
+    }
+   },
+   "id": "sp_estado",
+   "n_elegiveis": 442733,
+   "n_nascimentos": 470887,
+   "n_t0": 40526,
+   "n_t1": 402207,
+   "nome": "São Paulo — estado",
+   "pct_essenciais": 97.93,
+   "pct_gravidez": 99.98,
+   "pct_mesprenat": 98.08,
+   "pct_peso": 99.86,
+   "pct_retencao": 94.02,
+   "pct_t0": 9.15,
+   "tipo": "estado"
+  },
+  {
+   "excl": {
+    "mes79": {
+     "n": 1735,
+     "pct": 1.44
+    },
+    "multipla": {
+     "n": 3210,
+     "pct": 2.66
+    },
+    "peso": {
+     "n": 122,
+     "pct": 0.1
+    },
+    "qualidade": {
+     "n": 1028,
+     "pct": 0.85
+    }
+   },
+   "id": "sp_capital",
+   "n_elegiveis": 114694,
+   "n_nascimentos": 120789,
+   "n_t0": 10118,
+   "n_t1": 104576,
+   "nome": "São Paulo — capital",
+   "pct_essenciais": 99.04,
+   "pct_gravidez": 99.99,
+   "pct_mesprenat": 99.15,
+   "pct_peso": 99.89,
+   "pct_retencao": 94.95,
+   "pct_t0": 8.82,
+   "tipo": "municipio"
+  },
+  {
+   "excl": {
+    "mes79": {
+     "n": 3143,
+     "pct": 1.43
+    },
+    "multipla": {
+     "n": 5594,
+     "pct": 2.54
+    },
+    "peso": {
+     "n": 244,
+     "pct": 0.11
+    },
+    "qualidade": {
+     "n": 9638,
+     "pct": 4.38
+    }
+   },
+   "id": "mg",
+   "n_elegiveis": 201200,
+   "n_nascimentos": 219819,
+   "n_t0": 18574,
+   "n_t1": 182626,
+   "nome": "Minas Gerais",
+   "pct_essenciais": 95.49,
+   "pct_gravidez": 99.93,
+   "pct_mesprenat": 95.65,
+   "pct_peso": 99.86,
+   "pct_retencao": 91.53,
+   "pct_t0": 9.23,
+   "tipo": "estado"
+  },
+  {
+   "excl": {
+    "mes79": {
+     "n": 3018,
+     "pct": 1.84
+    },
+    "multipla": {
+     "n": 3737,
+     "pct": 2.28
+    },
+    "peso": {
+     "n": 227,
+     "pct": 0.14
+    },
+    "qualidade": {
+     "n": 4771,
+     "pct": 2.91
+    }
+   },
+   "id": "rj",
+   "n_elegiveis": 151969,
+   "n_nascimentos": 163722,
+   "n_t0": 20070,
+   "n_t1": 131899,
+   "nome": "Rio de Janeiro",
+   "pct_essenciais": 96.93,
+   "pct_gravidez": 99.98,
+   "pct_mesprenat": 97.1,
+   "pct_peso": 99.83,
+   "pct_retencao": 92.82,
+   "pct_t0": 13.21,
+   "tipo": "estado"
+  },
+  {
+   "excl": {
+    "mes79": {
+     "n": 708,
+     "pct": 1.42
+    },
+    "multipla": {
+     "n": 1169,
+     "pct": 2.34
+    },
+    "peso": {
+     "n": 41,
+     "pct": 0.08
+    },
+    "qualidade": {
+     "n": 923,
+     "pct": 1.85
+    }
+   },
+   "id": "es",
+   "n_elegiveis": 47096,
+   "n_nascimentos": 49937,
+   "n_t0": 4904,
+   "n_t1": 42192,
+   "nome": "Espírito Santo",
+   "pct_essenciais": 98.06,
+   "pct_gravidez": 99.98,
+   "pct_mesprenat": 98.16,
+   "pct_peso": 99.9,
+   "pct_retencao": 94.31,
+   "pct_t0": 10.41,
+   "tipo": "estado"
+  }
+ ],
+ "resultados": {
+  "bootstrap": {
+   "convergidas": 1000,
+   "ep": 0.32,
+   "ic_normal": [
+    -2.37,
+    -1.11
+   ],
+   "media_replicas": -1.75,
+   "replicas": 1000,
+   "semente": 20240925
+  },
+  "dif_ato": {
+   "ic": [
+    -2.36,
+    -1.12
+   ],
+   "valor": -1.74
+  },
+  "dif_ato_abs": 1.74,
+  "dif_ato_precisa": -1.7374,
+  "dif_bruta": {
+   "ic": [
+    -2.61,
+    -1.37
+   ],
+   "valor": -2.0
+  },
+  "dif_bruta_precisa": -1.9951,
+  "t0": {
+   "casos": 1053,
+   "ic_ato": [
+    9.85,
+    11.0
+   ],
+   "ic_bruto": [
+    9.84,
+    11.0
+   ],
+   "n": 10118,
+   "risco_ato": 10.42,
+   "risco_bruto": 10.41
+  },
+  "t1": {
+   "casos": 8797,
+   "ic_ato": [
+    8.49,
+    8.87
+   ],
+   "ic_bruto": [
+    8.25,
+    8.59
+   ],
+   "n": 104576,
+   "risco_ato": 8.68,
+   "risco_bruto": 8.41
+  }
+ },
+ "sensibilidade": {
+  "dif": -1.63,
+  "ic": null,
+  "linhas": [
+   {
+    "item": "Diferença de riscos T=1 − T=0 (p.p.)",
+    "principal": -1.74,
+    "sensibilidade": -1.63
+   },
+   {
+    "item": "Risco ponderado T=1 (%)",
+    "principal": 8.68,
+    "sensibilidade": 8.77
+   },
+   {
+    "item": "Risco ponderado T=0 (%)",
+    "principal": 10.42,
+    "sensibilidade": 10.4
+   },
+   {
+    "item": "Maior |SMD| — conjunto diagnóstico comum",
+    "principal": 0.1945,
+    "sensibilidade": 0.0111
+   },
+   {
+    "item": "Maior |SMD| — termos ajustados de cada modelo",
+    "principal": 0.0031,
+    "sensibilidade": 0.0039
+   },
+   {
+    "item": "Maior |SMD| — situação conjugal (todos os níveis)",
+    "principal": 0.1945,
+    "sensibilidade": 0.0014
+   },
+   {
+    "item": "SMD — casada (T=1 − T=0)",
+    "principal": 0.1945,
+    "sensibilidade": 0.0001
+   },
+   {
+    "item": "Tamanho efetivo T=1 (Kish)",
+    "principal": 84995.0,
+    "sensibilidade": 82323.0
+   },
+   {
+    "item": "Tamanho efetivo T=0 (Kish)",
+    "principal": 10096.0,
+    "sensibilidade": 10094.0
+   }
+  ],
+  "perfil": [
+   {
+    "item": "Idade materna (anos) — média",
+    "p_t0": "27,6",
+    "p_t1": "27,6",
+    "s_t0": "27,6",
+    "s_t1": "27,6"
+   },
+   {
+    "item": "Idade materna (descritiva) — 10–19 anos",
+    "p_t0": "11,3%",
+    "p_t1": "11,1%",
+    "s_t0": "11,4%",
+    "s_t1": "11,1%"
+   },
+   {
+    "item": "Escolaridade — Médio",
+    "p_t0": "65,2%",
+    "p_t1": "65,2%",
+    "s_t0": "65,2%",
+    "s_t1": "65,2%"
+   },
+   {
+    "item": "Escolaridade — Superior completo",
+    "p_t0": "13,8%",
+    "p_t1": "13,8%",
+    "s_t0": "13,8%",
+    "s_t1": "13,8%"
+   },
+   {
+    "item": "Raça/cor — Branca",
+    "p_t0": "36,7%",
+    "p_t1": "36,7%",
+    "s_t0": "36,7%",
+    "s_t1": "36,7%"
+   },
+   {
+    "item": "Paridade — Nulípara",
+    "p_t0": "32,9%",
+    "p_t1": "32,9%",
+    "s_t0": "33,0%",
+    "s_t1": "33,0%"
+   },
+   {
+    "item": "Perdas fetais anteriores — Nenhuma",
+    "p_t0": "79,2%",
+    "p_t1": "79,2%",
+    "s_t0": "79,2%",
+    "s_t1": "79,2%"
+   },
+   {
+    "item": "Situação conjugal — Casada",
+    "p_t0": "18,6%",
+    "p_t1": "27,1%",
+    "s_t0": "19,2%",
+    "s_t1": "19,2%"
+   }
+  ]
+ },
+ "serie": [
+  {
+   "ano": 2014,
+   "dif_ato": -1.11,
+   "dif_bruta": -1.28,
+   "ess_pct_t0": 99.21,
+   "ess_pct_t1": 77.42,
+   "ess_t0": 24155,
+   "ess_t1": 108879,
+   "iteracoes": 97,
+   "media_escore": 0.8524,
+   "n_elegiveis": 164987,
+   "n_fora_t0": 0,
+   "n_fora_t1": 10,
+   "n_t0": 24348,
+   "n_t1": 140639,
+   "pct_t0": 14.76,
+   "risco_ato_t0": 8.72,
+   "risco_ato_t1": 7.61,
+   "risco_bruto_t0": 8.72,
+   "risco_bruto_t1": 7.44,
+   "smd_adolescente": 0.0059,
+   "smd_antes": 0.5482,
+   "smd_conjugal": 0.2026,
+   "smd_depois": 0.0022,
+   "suporte_max": 0.9795,
+   "suporte_min": 0.324
+  },
+  {
+   "ano": 2015,
+   "dif_ato": -0.99,
+   "dif_bruta": -1.17,
+   "ess_pct_t0": 99.21,
+   "ess_pct_t1": 77.9,
+   "ess_t0": 24153,
+   "ess_t1": 110184,
+   "iteracoes": 77,
+   "media_escore": 0.8532,
+   "n_elegiveis": 165787,
+   "n_fora_t0": "<10",
+   "n_fora_t1": 0,
+   "n_t0": 24345,
+   "n_t1": 141442,
+   "pct_t0": 14.68,
+   "risco_ato_t0": 8.6,
+   "risco_ato_t1": 7.61,
+   "risco_bruto_t0": 8.63,
+   "risco_bruto_t1": 7.46,
+   "smd_adolescente": 0.0074,
+   "smd_antes": 0.5324,
+   "smd_conjugal": 0.1839,
+   "smd_depois": 0.001,
+   "suporte_max": 0.988,
+   "suporte_min": 0.3428
+  },
+  {
+   "ano": 2016,
+   "dif_ato": -1.08,
+   "dif_bruta": -1.32,
+   "ess_pct_t0": 99.41,
+   "ess_pct_t1": 79.44,
+   "ess_t0": 20978,
+   "ess_t1": 108773,
+   "iteracoes": 53,
+   "media_escore": 0.8665,
+   "n_elegiveis": 158025,
+   "n_fora_t0": 0,
+   "n_fora_t1": 40,
+   "n_t0": 21102,
+   "n_t1": 136923,
+   "pct_t0": 13.35,
+   "risco_ato_t0": 8.88,
+   "risco_ato_t1": 7.8,
+   "risco_bruto_t0": 8.88,
+   "risco_bruto_t1": 7.56,
+   "smd_adolescente": 0.0031,
+   "smd_antes": 0.5022,
+   "smd_conjugal": 0.1908,
+   "smd_depois": 0.001,
+   "suporte_max": 0.9694,
+   "suporte_min": 0.3938
+  },
+  {
+   "ano": 2017,
+   "dif_ato": -1.57,
+   "dif_bruta": -1.77,
+   "ess_pct_t0": 99.58,
+   "ess_pct_t1": 79.2,
+   "ess_t0": 18879,
+   "ess_t1": 112037,
+   "iteracoes": 93,
+   "media_escore": 0.8818,
+   "n_elegiveis": 160429,
+   "n_fora_t0": 0,
+   "n_fora_t1": 15,
+   "n_t0": 18959,
+   "n_t1": 141470,
+   "pct_t0": 11.82,
+   "risco_ato_t0": 9.24,
+   "risco_ato_t1": 7.68,
+   "risco_bruto_t0": 9.26,
+   "risco_bruto_t1": 7.49,
+   "smd_adolescente": 0.0014,
+   "smd_antes": 0.514,
+   "smd_conjugal": 0.1898,
+   "smd_depois": 0.0027,
+   "suporte_max": 0.9739,
+   "suporte_min": 0.502
+  },
+  {
+   "ano": 2018,
+   "dif_ato": -1.8,
+   "dif_bruta": -2.05,
+   "ess_pct_t0": 99.55,
+   "ess_pct_t1": 77.98,
+   "ess_t0": 17733,
+   "ess_t1": 108388,
+   "iteracoes": 87,
+   "media_escore": 0.8864,
+   "n_elegiveis": 156806,
+   "n_fora_t0": "<10",
+   "n_fora_t1": "<10",
+   "n_t0": 17814,
+   "n_t1": 138992,
+   "pct_t0": 11.36,
+   "risco_ato_t0": 9.55,
+   "risco_ato_t1": 7.75,
+   "risco_bruto_t0": 9.55,
+   "risco_bruto_t1": 7.5,
+   "smd_adolescente": 0.0153,
+   "smd_antes": 0.5181,
+   "smd_conjugal": 0.1991,
+   "smd_depois": 0.0036,
+   "suporte_max": 0.9753,
+   "suporte_min": 0.4415
+  },
+  {
+   "ano": 2019,
+   "dif_ato": -1.19,
+   "dif_bruta": -1.43,
+   "ess_pct_t0": 99.59,
+   "ess_pct_t1": 79.86,
+   "ess_t0": 17509,
+   "ess_t1": 106088,
+   "iteracoes": 89,
+   "media_escore": 0.8831,
+   "n_elegiveis": 150427,
+   "n_fora_t0": 0,
+   "n_fora_t1": 55,
+   "n_t0": 17581,
+   "n_t1": 132846,
+   "pct_t0": 11.69,
+   "risco_ato_t0": 9.06,
+   "risco_ato_t1": 7.87,
+   "risco_bruto_t0": 9.09,
+   "risco_bruto_t1": 7.66,
+   "smd_adolescente": 0.0005,
+   "smd_antes": 0.4879,
+   "smd_conjugal": 0.2066,
+   "smd_depois": 0.003,
+   "suporte_max": 0.9712,
+   "suporte_min": 0.5907
+  },
+  {
+   "ano": 2020,
+   "dif_ato": -0.58,
+   "dif_bruta": -0.75,
+   "ess_pct_t0": 99.65,
+   "ess_pct_t1": 80.19,
+   "ess_t0": 15389,
+   "ess_t1": 99307,
+   "iteracoes": 70,
+   "media_escore": 0.8891,
+   "n_elegiveis": 139283,
+   "n_fora_t0": 0,
+   "n_fora_t1": "<10",
+   "n_t0": 15443,
+   "n_t1": 123840,
+   "pct_t0": 11.09,
+   "risco_ato_t0": 8.2,
+   "risco_ato_t1": 7.62,
+   "risco_bruto_t0": 8.2,
+   "risco_bruto_t1": 7.45,
+   "smd_adolescente": 0.0017,
+   "smd_antes": 0.49,
+   "smd_conjugal": 0.1953,
+   "smd_depois": 0.007,
+   "suporte_max": 0.973,
+   "suporte_min": 0.5014
+  },
+  {
+   "ano": 2021,
+   "dif_ato": -1.73,
+   "dif_bruta": -1.97,
+   "ess_pct_t0": 99.69,
+   "ess_pct_t1": 78.73,
+   "ess_t0": 12666,
+   "ess_t1": 92163,
+   "iteracoes": 62,
+   "media_escore": 0.9021,
+   "n_elegiveis": 129761,
+   "n_fora_t0": 0,
+   "n_fora_t1": 112,
+   "n_t0": 12705,
+   "n_t1": 117056,
+   "pct_t0": 9.79,
+   "risco_ato_t0": 9.77,
+   "risco_ato_t1": 8.04,
+   "risco_bruto_t0": 9.76,
+   "risco_bruto_t1": 7.79,
+   "smd_adolescente": 0.0123,
+   "smd_antes": 0.5093,
+   "smd_conjugal": 0.1943,
+   "smd_depois": 0.0016,
+   "suporte_max": 0.981,
+   "suporte_min": 0.5557
+  },
+  {
+   "ano": 2022,
+   "dif_ato": -1.77,
+   "dif_bruta": -2.06,
+   "ess_pct_t0": 99.68,
+   "ess_pct_t1": 78.68,
+   "ess_t0": 12331,
+   "ess_t1": 88856,
+   "iteracoes": 96,
+   "media_escore": 0.9013,
+   "n_elegiveis": 125306,
+   "n_fora_t0": "<10",
+   "n_fora_t1": "<10",
+   "n_t0": 12370,
+   "n_t1": 112936,
+   "pct_t0": 9.87,
+   "risco_ato_t0": 10.23,
+   "risco_ato_t1": 8.46,
+   "risco_bruto_t0": 10.23,
+   "risco_bruto_t1": 8.18,
+   "smd_adolescente": 0.0062,
+   "smd_antes": 0.5063,
+   "smd_conjugal": 0.1997,
+   "smd_depois": 0.0044,
+   "suporte_max": 0.9812,
+   "suporte_min": 0.5875
+  },
+  {
+   "ano": 2023,
+   "dif_ato": -1.9,
+   "dif_bruta": -2.2,
+   "ess_pct_t0": 99.74,
+   "ess_pct_t1": 80.36,
+   "ess_t0": 11440,
+   "ess_t1": 89016,
+   "iteracoes": 67,
+   "media_escore": 0.9062,
+   "n_elegiveis": 122244,
+   "n_fora_t0": 0,
+   "n_fora_t1": 51,
+   "n_t0": 11470,
+   "n_t1": 110774,
+   "pct_t0": 9.38,
+   "risco_ato_t0": 10.56,
+   "risco_ato_t1": 8.66,
+   "risco_bruto_t0": 10.57,
+   "risco_bruto_t1": 8.37,
+   "smd_adolescente": 0.008,
+   "smd_antes": 0.4662,
+   "smd_conjugal": 0.1967,
+   "smd_depois": 0.0043,
+   "suporte_max": 0.9769,
+   "suporte_min": 0.6555
+  },
+  {
+   "ano": 2024,
+   "dif_ato": -1.74,
+   "dif_bruta": -2.0,
+   "ess_pct_t0": 99.78,
+   "ess_pct_t1": 81.28,
+   "ess_t0": 10096,
+   "ess_t1": 84995,
+   "iteracoes": 81,
+   "media_escore": 0.9118,
+   "n_elegiveis": 114694,
+   "n_fora_t0": 0,
+   "n_fora_t1": "<10",
+   "n_t0": 10118,
+   "n_t1": 104576,
+   "pct_t0": 8.82,
+   "risco_ato_t0": 10.42,
+   "risco_ato_t1": 8.68,
+   "risco_bruto_t0": 10.41,
+   "risco_bruto_t1": 8.41,
+   "smd_adolescente": 0.0064,
+   "smd_antes": 0.4518,
+   "smd_conjugal": 0.1945,
+   "smd_depois": 0.0031,
+   "suporte_max": 0.976,
+   "suporte_min": 0.691
+  }
+ ],
+ "serie_nota_imputacao": "Em menos de 10 registros da série, a idade fora de 10–59 anos recebeu a imputação prevista no pipeline; nenhum registro foi excluído.",
+ "temporalidade": {
+  "ausentes": {
+   "campo_ausente": 889,
+   "codigo_99": 104,
+   "total": 993
+  },
+  "distribuicao_meses": [
+   {
+    "mes": "Mês 1",
+    "pct": 30.71
+   },
+   {
+    "mes": "Mês 2",
+    "pct": 47.47
+   },
+   {
+    "mes": "Mês 3",
+    "pct": 13.0
+   },
+   {
+    "mes": "Mês 4",
+    "pct": 4.68
+   },
+   {
+    "mes": "Mês 5",
+    "pct": 2.62
+   },
+   {
+    "mes": "Mês 6",
+    "pct": 1.52
+   }
+  ],
+  "por_faixa": [
+   {
+    "faixa": "< 28",
+    "n": 546,
+    "n_baixo_peso": 513,
+    "pct_baixo_peso": 93.96,
+    "pct_meses": [
+     25.46,
+     51.1,
+     12.64,
+     4.58,
+     3.66,
+     2.56
+    ],
+    "pct_t0": 10.81
+   },
+   {
+    "faixa": "28–31",
+    "n": 981,
+    "n_baixo_peso": 904,
+    "pct_baixo_peso": 92.15,
+    "pct_meses": [
+     28.03,
+     44.75,
+     15.7,
+     5.3,
+     3.98,
+     2.24
+    ],
+    "pct_t0": 11.52
+   },
+   {
+    "faixa": "32–36",
+    "n": 9525,
+    "n_baixo_peso": 4574,
+    "pct_baixo_peso": 48.02,
+    "pct_meses": [
+     29.97,
+     46.71,
+     13.35,
+     4.9,
+     3.32,
+     1.74
+    ],
+    "pct_t0": 9.96
+   },
+   {
+    "faixa": "≥ 37",
+    "n": 103635,
+    "n_baixo_peso": 3859,
+    "pct_baixo_peso": 3.72,
+    "pct_meses": [
+     30.83,
+     47.54,
+     12.94,
+     4.65,
+     2.54,
+     1.49
+    ],
+    "pct_t0": 8.68
+   }
+  ],
+  "por_mes": [
+   {
+    "mes": "Mês 1",
+    "n": 35224,
+    "pct_preterm": 4.89,
+    "pct_termo": 3.05,
+    "pct_total": 7.93
+   },
+   {
+    "mes": "Mês 2",
+    "n": 54440,
+    "pct_preterm": 5.11,
+    "pct_termo": 3.41,
+    "pct_total": 8.52
+   },
+   {
+    "mes": "Mês 3",
+    "n": 14907,
+    "pct_preterm": 5.66,
+    "pct_termo": 3.47,
+    "pct_total": 9.13
+   },
+   {
+    "mes": "Mês 4",
+    "n": 5365,
+    "pct_preterm": 5.59,
+    "pct_termo": 3.91,
+    "pct_total": 9.51
+   },
+   {
+    "mes": "Mês 5",
+    "n": 3004,
+    "pct_preterm": 7.12,
+    "pct_termo": 4.29,
+    "pct_total": 11.42
+   },
+   {
+    "mes": "Mês 6",
+    "n": 1747,
+    "pct_preterm": 7.33,
+    "pct_termo": 4.12,
+    "pct_total": 11.45
+   }
+  ],
+  "selecao": [
+   {
+    "de28a36": {
+     "n": 9444,
+     "pct": 9.03
+    },
+    "ge37": {
+     "n": 94640,
+     "pct": 90.5
+    },
+    "grupo": "Início nos meses 1–3",
+    "lt28": {
+     "n": 487,
+     "pct": 0.47
+    },
+    "n": 104576,
+    "pct_total": 89.06
+   },
+   {
+    "de28a36": {
+     "n": 1062,
+     "pct": 10.5
+    },
+    "ge37": {
+     "n": 8995,
+     "pct": 88.9
+    },
+    "grupo": "Início nos meses 4–6",
+    "lt28": {
+     "n": 59,
+     "pct": 0.58
+    },
+    "n": 10118,
+    "pct_total": 8.62
+   },
+   {
+    "de28a36": {
+     "aprox": true,
+     "n": 180,
+     "pct": 10
+    },
+    "ge37": {
+     "aprox": true,
+     "n": 1550,
+     "pct": 89
+    },
+    "grupo": "Início nos meses 7–9",
+    "lt28": {
+     "n": "<10",
+     "pct": "<1"
+    },
+    "n": 1735,
+    "pct_total": 1.48
+   },
+   {
+    "de28a36": {
+     "aprox": true,
+     "n": 220,
+     "pct": 22
+    },
+    "ge37": {
+     "aprox": true,
+     "n": 730,
+     "pct": 74
+    },
+    "grupo": "Ausente, ignorada ou outra",
+    "lt28": {
+     "aprox": true,
+     "n": 40,
+     "pct": 4
+    },
+    "n": 993,
+    "pct_total": 0.85
+   },
+   {
+    "de28a36": {
+     "n": 10506,
+     "pct": 9.16
+    },
+    "ge37": {
+     "n": 103635,
+     "pct": 90.36
+    },
+    "grupo": "Incluídos em B (1–6)",
+    "lt28": {
+     "n": 546,
+     "pct": 0.48
+    },
+    "n": 114694,
+    "pct_total": 97.68
+   },
+   {
+    "de28a36": {
+     "n": 396,
+     "pct": 14.52
+    },
+    "ge37": {
+     "n": 2286,
+     "pct": 83.8
+    },
+    "grupo": "Fora de B",
+    "lt28": {
+     "n": 43,
+     "pct": 1.58
+    },
+    "n": 2728,
+    "pct_total": 2.32
+   },
+   {
+    "de28a36": {
+     "n": 10902,
+     "pct": 9.28
+    },
+    "ge37": {
+     "n": 105921,
+     "pct": 90.21
+    },
+    "grupo": "Total antes do filtro",
+    "lt28": {
+     "n": 589,
+     "pct": 0.5
+    },
+    "n": 117422,
+    "pct_total": 100.0
+   }
+  ]
+ }
+}

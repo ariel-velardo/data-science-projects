@@ -28,6 +28,9 @@ docs/sp_capital_ato/artigos/*.pdf
 *.html
 # Exceção: gráficos interativos exportados dos notebooks principais (ver README)
 !outputs/figuras_interativas/*.html
+# Exceção: painel acadêmico final, autossuficiente (ver dashboard/README.md)
+!dashboard/dist/sinasc_dashboard_ipt.html
+!dashboard/web/modelo.html
 
 # Caches de ferramentas
 .pytest_cache/

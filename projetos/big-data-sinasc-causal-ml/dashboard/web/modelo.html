@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'">
+<title>Pré-natal e baixo peso, SINASC</title>
+<style>
+<!--ESTILO-->
+</style>
+</head>
+<body>
+<header class="topo">
+  <div class="topo-interno">
+    <div class="marca"><!--LOGO--></div>
+    <div class="topo-titulo">
+      <p class="titulo-painel">Início do pré-natal e baixo peso ao nascer</p>
+      <p class="sub-painel">SINASC, São Paulo (capital), 2014–2024</p>
+    </div>
+  </div>
+  <nav class="abas" role="tablist" aria-label="Seções do painel">
+    <button role="tab" id="aba-a" aria-controls="painel-a" data-aba="a">Visão geral</button>
+    <button role="tab" id="aba-b" aria-controls="painel-b" data-aba="b">Qualidade dos dados</button>
+    <button role="tab" id="aba-c" aria-controls="painel-c" data-aba="c">Funil e perfil</button>
+    <button role="tab" id="aba-d" aria-controls="painel-d" data-aba="d">Comparabilidade</button>
+    <button role="tab" id="aba-e" aria-controls="painel-e" data-aba="e">Resultados</button>
+    <button role="tab" id="aba-f" aria-controls="painel-f" data-aba="f">Série 2014–2024</button>
+    <button role="tab" id="aba-g" aria-controls="painel-g" data-aba="g">Temporalidade e método</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- A. VISÃO GERAL -->
+<section class="painel" id="painel-a" role="tabpanel" aria-labelledby="aba-a">
+  <div class="abertura">
+    <div class="abertura-texto">
+      <h1>Começar o pré-natal no primeiro trimestre está associado a menor risco de baixo peso ao nascer?</h1>
+      <p class="lead">Entre nascidos vivos de mães residentes no município de São Paulo em 2024, o estudo compara o início do pré-natal nos meses 1–3 com o início nos meses 4–6, após ajuste por características maternas observadas.</p>
+    </div>
+    <div class="faixa-gestacao" aria-label="Distribuição dos elegíveis por mês de início do pré-natal">
+      <div id="faixa-meses" class="faixa-meses"></div>
+      <p class="faixa-legenda">Mês de início do pré-natal. A altura de cada coluna é a participação do mês entre os [[destaques.n_elegiveis|int]] elegíveis de 2024. Os meses 7–9 ficam fora da população analítica.</p>
+    </div>
+  </div>
+
+  <div class="resultado-central">
+    <div>
+      <h2>Associação ajustada principal, 2024</h2>
+      <p class="numero-central">[[resultados.dif_ato.valor|pp]] p.p.</p>
+      <p class="ic-central">IC 95% bootstrap: [[resultados.dif_ato.ic.0|pp]] a [[resultados.dif_ato.ic.1|pp]] p.p.</p>
+    </div>
+    <p class="resultado-leitura">Na população de sobreposição, comparando grupos ponderados com distribuições aproximadamente iguais de idade, escolaridade, raça/cor, paridade e perdas fetais anteriores, o início nos meses 1–3 esteve associado a um risco de peso abaixo de 2.500 g [[resultados.dif_ato_abs|d2]] ponto percentual menor que o início nos meses 4–6. É uma associação ajustada por covariáveis observadas; o desenho não identifica um efeito causal.</p>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><span class="kpi-rotulo">Elegíveis em 2024</span><span class="kpi-valor">[[destaques.n_elegiveis|int]]</span><span class="kpi-nota">[[recortes.2.pct_retencao|d2]]% dos [[recortes.2.n_nascimentos|int]] nascimentos</span></div>
+    <div class="kpi t1"><span class="kpi-rotulo">T=1, início nos meses 1–3</span><span class="kpi-valor">[[destaques.n_t1|int]]</span><span class="kpi-nota">[[destaques.pct_t1|d2]]% dos elegíveis</span></div>
+    <div class="kpi t0"><span class="kpi-rotulo">T=0, início nos meses 4–6</span><span class="kpi-valor">[[destaques.n_t0|int]]</span><span class="kpi-nota">[[destaques.pct_t0|d2]]% dos elegíveis</span></div>
+    <div class="kpi"><span class="kpi-rotulo">Casos de baixo peso</span><span class="kpi-valor">[[destaques.n_casos|int]]</span><span class="kpi-nota">peso abaixo de 2.500 g</span></div>
+    <div class="kpi"><span class="kpi-rotulo">Risco ponderado T=1</span><span class="kpi-valor">[[resultados.t1.risco_ato|d2]]%</span><span class="kpi-nota">bruto: [[resultados.t1.risco_bruto|d2]]%</span></div>
+    <div class="kpi"><span class="kpi-rotulo">Risco ponderado T=0</span><span class="kpi-valor">[[resultados.t0.risco_ato|d2]]%</span><span class="kpi-nota">bruto: [[resultados.t0.risco_bruto|d2]]%</span></div>
+  </div>
+
+  <div class="duas">
+    <figure class="fig" data-fig="a_difs" data-altura="280">
+      <figcaption><span class="tag tag-bruta">Associação bruta</span><span class="tag tag-ajustada">Associação ajustada</span><span class="tag tag-inferencia">Inferência estatística</span><h3>Diferença de risco em 2024</h3><p>Diferença T=1 − T=0, em pontos percentuais, com IC 95% bootstrap.</p></figcaption>
+    </figure>
+    <div class="bloco">
+      <h3>Desenho do estudo</h3>
+      <dl class="definicoes">
+        <dt>Unidade</dt><dd>Declaração de Nascido Vivo, um registro por nascimento. Não é coorte de gestantes.</dd>
+        <dt>População</dt><dd>Nascimentos de mães residentes na capital, gestação única, peso de 500 a 6.000 g, início nos meses 1–6 (especificação B).</dd>
+        <dt>Período</dt><dd>Estimação principal em 2024. A mesma especificação foi repetida em cada ano de 2014 a 2024, de forma descritiva.</dd>
+        <dt>Comparação</dt><dd>T=1, meses 1–3, contra T=0, meses 4–6.</dd>
+        <dt>Desfecho</dt><dd>Peso ao nascer inferior a 2.500 g.</dd>
+        <dt>Ajuste</dt><dd>Escore de propensão logístico L2 e pesos de sobreposição (ATO), com idade, idade², escolaridade, raça/cor, paridade e perdas fetais anteriores.</dd>
+        <dt>Incerteza</dt><dd>Bootstrap não paramétrico com [[resultados.bootstrap.replicas|int]] réplicas, reestimando o escore em cada uma. Só para 2024.</dd>
+      </dl>
+    </div>
+  </div>
+
+  <div class="bloco">
+    <h3>Como ler as etiquetas deste painel</h3>
+    <ul class="legenda-tags">
+      <li><span class="tag tag-desc">Descritivo</span>Contagens e percentuais observados.</li>
+      <li><span class="tag tag-bruta">Associação bruta</span>Comparação entre grupos sem ajuste.</li>
+      <li><span class="tag tag-ajustada">Associação ajustada</span>Comparação ponderada por características observadas (ATO).</li>
+      <li><span class="tag tag-inferencia">Inferência estatística</span>Incerteza amostral estimada por bootstrap.</li>
+      <li><span class="tag tag-diag">Diagnóstico</span>Verificação de balanço, suporte e pesos.</li>
+      <li><span class="tag tag-hip">Hipótese não demonstrada</span>Mecanismo plausível que os dados não testam.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- B. QUALIDADE -->
+<section class="painel" id="painel-b" role="tabpanel" aria-labelledby="aba-b" hidden>
+  <h2 class="titulo-secao">Por que a capital paulista</h2>
+  <p class="intro">O recorte foi escolhido por critérios de preenchimento e retenção, sem usar a magnitude da associação com o desfecho. Em 2024, a capital teve a maior proporção de registros com as variáveis essenciais válidas ([[recortes.2.pct_essenciais|d2]]%) e a maior retenção ([[recortes.2.pct_retencao|d2]]%).</p>
+  <p class="aviso">Sudeste, estado de São Paulo e capital se sobrepõem: a capital está contida no estado, e o estado no Sudeste. Não some valores entre esses recortes.</p>
+
+  <figure class="fig" data-fig="b_indicador" data-altura="340">
+    <figcaption><span class="tag tag-desc">Descritivo</span><h3>Comparação dos seis recortes, 2024</h3><p>A capital aparece em destaque. O eixo dos percentuais é ampliado para mostrar diferenças pequenas; por isso usa pontos, e não barras.</p></figcaption>
+    <div class="filtros"><label>Indicador
+      <select data-filtro="b_metrica">
+        <option value="pct_essenciais">Variáveis essenciais válidas (%)</option>
+        <option value="pct_mesprenat">Mês de início válido (%)</option>
+        <option value="pct_peso">Peso válido (%)</option>
+        <option value="pct_gravidez">Tipo de gravidez válido (%)</option>
+        <option value="pct_retencao">Retenção na especificação B (%)</option>
+        <option value="pct_t0">T=0 entre os elegíveis (%)</option>
+      </select></label></div>
+  </figure>
+
+  <div class="duas">
+    <figure class="fig" data-fig="b_exclusoes" data-altura="360">
+      <figcaption><span class="tag tag-desc">Descritivo</span><h3>Perdas até a elegibilidade</h3><p>Exclusões sequenciais, em % dos nascimentos de cada recorte.</p></figcaption>
+    </figure>
+    <figure class="fig" data-fig="b_grupos" data-altura="360">
+      <figcaption><span class="tag tag-desc">Descritivo</span><h3>Elegíveis por grupo</h3><p>Número de nascimentos em T=1 e T=0 em 2024. Cada barra deve ser lida isoladamente.</p></figcaption>
+    </figure>
+  </div>
+
+  <figure class="fig" data-fig="b_variaveis" data-altura="420">
+    <figcaption><span class="tag tag-desc">Descritivo</span><h3>Qualidade por variável e recorte, 2024</h3><p>Idade e perdas fetais mostram preenchimento, pois o dicionário não confirma seus limites nem sentinelas. As demais mostram validade.</p></figcaption>
+    <div class="filtros"><label>Medida
+      <select data-filtro="b_medida">
+        <option value="valor">Válido ou preenchido (%)</option>
+        <option value="ausente">Campo ausente (%)</option>
+      </select></label></div>
+  </figure>
+
+  <h2 class="titulo-secao">Qualidade ao longo do tempo</h2>
+  <div class="duas">
+    <figure class="fig" data-fig="b_mesprenat" data-altura="340">
+      <figcaption><span class="tag tag-desc">Descritivo</span><h3>Mês de início válido, 2014–2024</h3><p>A capital supera o estado e o restante do estado nos 11 anos. O estado contém a capital.</p></figcaption>
+    </figure>
+    <figure class="fig" data-fig="b_serie_grupos" data-altura="340">
+      <figcaption><span class="tag tag-desc">Descritivo</span><h3>Tamanho dos grupos por ano</h3><p>Elegíveis na especificação B por recorte.</p></figcaption>
+      <div class="filtros"><label>Grupo
+        <select data-filtro="b_grupo">
+          <option value="t0">T=0, meses 4–6</option>
+          <option value="t1">T=1, meses 1–3</option>
+        </select></label></div>
+    </figure>
+  </div>
+  <div class="bloco"><h3>Série anual da capital</h3><div data-tabela="b_anual"></div></div>
+  <div class="bloco"><h3>Consistência dos campos, capital contra o restante do estado</h3><p class="nota">Vantagem em pontos percentuais; anos em que a capital foi superior ou inferior ao restante do estado.</p><div data-tabela="b_campos"></div></div>
+</section>
+
+<!-- C. FUNIL -->
+<section class="painel" id="painel-c" role="tabpanel" aria-labelledby="aba-c" hidden>
+  <h2 class="titulo-secao">Da população inicial à população analítica</h2>
+  <p class="intro">As exclusões são sequenciais e mutuamente exclusivas. Registros com covariáveis incompletas não foram excluídos, e nenhum registro foi retirado por suporte do escore.</p>
+  <div class="duas funil-grade">
+    <div class="bloco">
+      <h3>Funil de 2024</h3>
+      <div id="funil"></div>
+    </div>
+    <div class="coluna">
+      <figure class="fig" data-fig="c_exclusoes" data-altura="240">
+        <figcaption><span class="tag tag-desc">Descritivo</span><h3>Registros excluídos em cada etapa</h3></figcaption>
+      </figure>
+      <figure class="fig" data-fig="c_meses" data-altura="250">
+        <figcaption><span class="tag tag-desc">Descritivo</span><h3>Mês de início entre os elegíveis</h3><p>% dos [[destaques.n_elegiveis|int]] elegíveis.</p></figcaption>
+      </figure>
+    </div>
+  </div>
+  <p class="aviso aviso-neutro">Três populações não devem ser confundidas: [[funil.inicial|int]] nascimentos iniciais; [[temporalidade.selecao.6.n|int]] na população pré-filtro do notebook 05, com gestação única e peso de 500 a 6.000 g, ainda sem o filtro de início; e [[destaques.n_elegiveis|int]] elegíveis. Os [[temporalidade.ausentes.total|int]] registros sem início informado estão na primeira etapa do funil. Ver a aba Temporalidade e método.</p>
+
+  <h2 class="titulo-secao">Quem são as mães em cada grupo</h2>
+  <div class="kpis kpis-3">
+    <div class="kpi t1"><span class="kpi-rotulo">Idade média em T=1</span><span class="kpi-valor">[[perfil.idade.media_t1|d1]] anos</span><span class="kpi-nota">desvio-padrão [[perfil.idade.dp_t1|d1]]</span></div>
+    <div class="kpi t0"><span class="kpi-rotulo">Idade média em T=0</span><span class="kpi-valor">[[perfil.idade.media_t0|d1]] anos</span><span class="kpi-nota">desvio-padrão [[perfil.idade.dp_t0|d1]]</span></div>
+    <div class="kpi"><span class="kpi-rotulo">SMD da idade média</span><span class="kpi-valor">[[perfil.idade.smd|d3]]</span><span class="kpi-nota">antes de qualquer ajuste</span></div>
+  </div>
+  <figure class="fig" data-fig="c_perfil" data-altura="360">
+    <figcaption><span class="tag tag-desc">Descritivo</span><h3>Perfil materno por grupo, 2024</h3><p>% de cada grupo, sem ponderação. As diferenças descrevem composição, não efeito.</p></figcaption>
+    <div class="filtros"><label>Característica <select data-filtro="c_variavel"></select></label></div>
+  </figure>
+  <div class="bloco"><h3>Tabela da característica selecionada</h3><p class="nota">Percentuais com uma casa decimal. As contagens por categoria não são exibidas, para não expor células pequenas.</p><div data-tabela="c_perfil"></div></div>
+</section>
+
+<!-- D. COMPARABILIDADE -->
+<section class="painel" id="painel-d" role="tabpanel" aria-labelledby="aba-d" hidden>
+  <h2 class="titulo-secao">Os grupos são comparáveis?</h2>
+  <p class="intro">Antes do ajuste, T=1 reúne mães mais velhas e mais escolarizadas. A ponderação ATO aproxima os grupos nas covariáveis incluídas no escore: o maior |SMD| ajustado caiu de [[balanco.resumo.0.smd_max|d3]] para [[destaques.smd_max_ato|d4]]. Esse balanço é esperado por construção e não demonstra ausência de confundimento.</p>
+
+  <figure class="fig" data-fig="d_love" data-altura="auto">
+    <figcaption><span class="tag tag-diag">Diagnóstico</span><h3>Balanço antes e depois da ponderação</h3><p>|SMD| por nível. Referências convencionais em 0,1 e 0,2, sem caráter de teste.</p></figcaption>
+    <div class="filtros"><label>Covariável
+      <select data-filtro="d_bloco">
+        <option value="">Todas</option>
+        <option value="Idade">Idade materna</option>
+        <option value="Escolaridade">Escolaridade</option>
+        <option value="Raça">Raça/cor</option>
+        <option value="Paridade">Paridade</option>
+        <option value="Perdas">Perdas fetais anteriores</option>
+        <option value="Situação">Situação conjugal</option>
+      </select></label></div>
+  </figure>
+
+  <figure class="fig" data-fig="d_smd" data-altura="auto">
+    <figcaption><span class="tag tag-diag">Diagnóstico</span><h3>Diferenças padronizadas assinadas, antes do ajuste</h3><p>Diagnóstico sem desfecho, feito antes da estimação. Valor positivo: mais frequente em T=1. Usa o filtro de covariável acima.</p></figcaption>
+  </figure>
+
+  <h2 class="titulo-secao">Escore de propensão e sobreposição</h2>
+  <figure class="fig" data-fig="d_ps" data-altura="400">
+    <figcaption><span class="tag tag-diag">Diagnóstico</span><h3>Distribuição do escore por grupo</h3><p>Histograma espelhado. Caixas das caudas foram unidas até que cada grupo tenha 0 ou pelo menos 10 registros, e por isso têm largura maior.</p></figcaption>
+    <div class="filtros">
+      <label>Modelo
+        <select data-filtro="d_modelo">
+          <option value="final">Modelo final do ATO</option>
+          <option value="diagnostico">Diagnóstico fora da partição</option>
+        </select></label>
+      <label>Medida
+        <select data-filtro="d_medida">
+          <option value="pct">% dos registros do grupo</option>
+          <option value="peso">% da soma dos pesos ATO</option>
+        </select></label>
+    </div>
+    <p class="nota" id="nota-ps"></p>
+  </figure>
+
+  <div class="duas">
+    <div class="bloco"><h3>Percentis do escore</h3><div data-tabela="d_percentis"></div></div>
+    <div class="bloco"><h3>Regiões extremas, diagnóstico</h3><p class="nota">Discriminação modesta: AUC fora da partição de 0,655. Nenhum registro abaixo de 0,05 ou acima de 0,99.</p><div data-tabela="d_regioes"></div></div>
+  </div>
+
+  <h2 class="titulo-secao">Pesos e tamanho amostral efetivo</h2>
+  <div class="duas">
+    <figure class="fig" data-fig="d_ess" data-altura="300">
+      <figcaption><span class="tag tag-diag">Diagnóstico</span><h3>Registros e tamanho efetivo de Kish</h3><p>n efetivo de [[pesos.8.t1|d1]]% em T=1 e [[pesos.8.t0|d1]]% em T=0.</p></figcaption>
+    </figure>
+    <div class="bloco"><h3>Resumo dos pesos ATO</h3><p class="nota">T=1 recebe peso 1−e; T=0 recebe peso e. Os pesos ficam entre 0 e 1.</p><div data-tabela="d_pesos"></div></div>
+  </div>
+  <div class="bloco"><h3>População-alvo do ATO</h3><p class="nota">A população de sobreposição é mais jovem e menos escolarizada que a população total. Situação conjugal não tem proporção única, porque ficou fora do escore.</p><div data-tabela="d_alvo"></div></div>
+
+  <h2 class="titulo-secao">Situação conjugal, um diagnóstico separado</h2>
+  <p class="intro">A situação conjugal foi excluída do modelo principal porque casamento ou união podem ocorrer depois do início do pré-natal. Permanece desequilibrada: "casada" tem SMD de [[destaques.smd_casada_antes|d3]] antes e [[destaques.smd_casada_depois|d3]] depois da ponderação.</p>
+  <figure class="fig" data-fig="d_conjugal" data-altura="300">
+    <figcaption><span class="tag tag-diag">Diagnóstico</span><h3>Situação conjugal fora do escore</h3><p>|SMD| por nível, antes e depois da ponderação principal.</p></figcaption>
+  </figure>
+</section>
+
+<!-- E. RESULTADOS -->
+<section class="painel" id="painel-e" role="tabpanel" aria-labelledby="aba-e" hidden>
+  <h2 class="titulo-secao">Resultados de 2024</h2>
+  <p class="intro">Risco é a proporção de nascimentos com peso abaixo de 2.500 g. Os riscos brutos usam todos os nascimentos do grupo; os riscos ATO usam pesos normalizados dentro do grupo.</p>
+  <div class="duas">
+    <figure class="fig" data-fig="e_riscos" data-altura="360">
+      <figcaption><span class="tag tag-bruta">Associação bruta</span><span class="tag tag-ajustada">Associação ajustada</span><span class="tag tag-inferencia">Inferência estatística</span><h3>Risco de baixo peso por grupo</h3><p>Pontos vazados: bruto. Pontos cheios: ponderado ATO. Barras: IC 95% bootstrap.</p></figcaption>
+    </figure>
+    <figure class="fig" data-fig="e_difs" data-altura="360">
+      <figcaption><span class="tag tag-bruta">Associação bruta</span><span class="tag tag-ajustada">Associação ajustada</span><span class="tag tag-inferencia">Inferência estatística</span><h3>Diferença T=1 − T=0</h3><p>Em pontos percentuais. A linha vertical marca o zero.</p></figcaption>
+    </figure>
+  </div>
+  <div class="bloco"><h3>Riscos brutos e ponderados</h3><div data-tabela="e_riscos"></div></div>
+
+  <div class="duas">
+    <figure class="fig" data-fig="e_incerteza" data-altura="300">
+      <figcaption><span class="tag tag-inferencia">Inferência estatística</span><h3>Incerteza da diferença ATO</h3><p>Intervalo por percentis das [[resultados.bootstrap.replicas|int]] réplicas e intervalo normal de conferência.</p></figcaption>
+      <p class="nota">Erro-padrão bootstrap: [[resultados.bootstrap.ep|d2]] p.p. Média das réplicas: [[resultados.bootstrap.media_replicas|pp]] p.p. Convergiram [[resultados.bootstrap.convergidas|int]] de [[resultados.bootstrap.replicas|int]] réplicas. O intervalo cobre a variabilidade amostral, não vieses de confundimento, mensuração ou seleção, e pode ser estreito demais por tratar nascimentos como independentes.</p>
+    </figure>
+    <figure class="fig" data-fig="e_sens" data-altura="300">
+      <figcaption><span class="tag tag-ajustada">Associação ajustada</span><h3>Sensibilidade com situação conjugal</h3><p>Estimativa pontual exploratória, sem bootstrap e sem intervalo de confiança.</p></figcaption>
+      <p class="nota">A diferença entre as duas estimativas é de [[destaques.sens_mudanca|d2]] p.p., sem teste. Incluir a situação conjugal altera os pesos e pode alterar a população-alvo; o IC do modelo principal não se aplica a esta estimativa.</p>
+    </figure>
+  </div>
+  <div class="bloco"><h3>Modelo principal e sensibilidade</h3><div data-tabela="e_sens"></div></div>
+
+  <div class="bloco leitura">
+    <h3>Como interpretar</h3>
+    <ul>
+      <li>A diferença é aditiva: [[resultados.dif_ato.valor|pp]] pontos percentuais, comparando dois riscos ponderados. Não deve ser lida como percentual de redução.</li>
+      <li>O intervalo de confiança não inclui zero. Isso descreve a incerteza amostral da associação ajustada e não resolve confundimento não medido.</li>
+      <li>O resultado vale para a população de sobreposição, e não para todas as gestantes da capital (ATE) nem só para as que iniciaram cedo (ATT).</li>
+      <li>O estimador usa um único modelo de escore, sem modelo de desfecho, e não é duplamente robusto.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- F. SÉRIE -->
+<section class="painel" id="painel-f" role="tabpanel" aria-labelledby="aba-f" hidden>
+  <h2 class="titulo-secao">A mesma especificação em cada ano</h2>
+  <p class="intro">Cada ano tem modelo de escore próprio e população de sobreposição própria, portanto a série não descreve uma associação em população fixa.</p>
+  <p class="aviso">Não há intervalos de confiança anuais nem testes entre anos. O IC 95% publicado pertence somente a 2024, cujo ponto na série coincide com a estimativa principal. As variações ao longo do tempo são descritivas e não representam tendência causal.</p>
+
+  <div class="filtros filtros-periodo">
+    <label>De <select data-filtro="f_ini" data-anos="2014"></select></label>
+    <label>Até <select data-filtro="f_fim" data-anos="2024"></select></label>
+    <p class="nota" id="aviso-periodo" role="status"></p>
+  </div>
+  <div class="kpis kpis-4" id="kpis-periodo"></div>
+
+  <figure class="fig" data-fig="f_dif" data-altura="360">
+    <figcaption><span class="tag tag-ajustada">Associação ajustada</span><span class="tag tag-bruta">Associação bruta</span><h3>Diferença de risco por ano</h3><p>T=1 − T=0, em pontos percentuais. Estimativas pontuais.</p></figcaption>
+  </figure>
+  <div class="duas">
+    <figure class="fig" data-fig="f_riscos" data-altura="340">
+      <figcaption><span class="tag tag-ajustada">Associação ajustada</span><span class="tag tag-bruta">Associação bruta</span><h3>Riscos por grupo</h3><p>Em % de cada grupo no ano. O seletor alterna entre risco ponderado ATO e risco bruto.</p></figcaption>
+      <div class="filtros"><label>Tipo de risco
+        <select data-filtro="f_risco">
+          <option value="ato">Ponderado ATO</option>
+          <option value="bruto">Bruto</option>
+        </select></label></div>
+    </figure>
+    <figure class="fig" data-fig="f_t0" data-altura="340">
+      <figcaption><span class="tag tag-desc">Descritivo</span><h3>Início tardio (T=0) entre os elegíveis</h3><p>% dos elegíveis do ano. Há pequenas reversões em 2019 e 2022.</p></figcaption>
+    </figure>
+  </div>
+  <figure class="fig" data-fig="f_elegiveis" data-altura="340">
+    <figcaption><span class="tag tag-desc">Descritivo</span><h3>Elegíveis por ano</h3><p>T=1 e T=0 somam os elegíveis do ano.</p></figcaption>
+  </figure>
+  <figure class="fig" data-fig="f_diag" data-altura="320">
+    <figcaption><span class="tag tag-diag">Diagnóstico</span><h3>Diagnósticos anuais</h3><p>Calculados em cada modelo anual, sem combinação entre anos.</p></figcaption>
+    <div class="filtros"><label>Diagnóstico
+      <select data-filtro="f_diagnostico">
+        <option value="smd">Maior |SMD| antes e depois do ATO</option>
+        <option value="conjugal">|SMD| da situação conjugal após ATO</option>
+        <option value="ess">n efetivo / n (%)</option>
+        <option value="suporte">Limites do suporte comum</option>
+        <option value="escore">Média do escore</option>
+      </select></label></div>
+  </figure>
+  <div class="bloco"><h3>Tabela anual</h3><p class="nota">Respeita o período selecionado. [[serie_nota_imputacao]]</p><div data-tabela="f_anual"></div></div>
+</section>
+
+<!-- G. TEMPORALIDADE -->
+<section class="painel" id="painel-g" role="tabpanel" aria-labelledby="aba-g" hidden>
+  <h2 class="titulo-secao">Início do pré-natal e duração da gestação</h2>
+  <p class="intro">Gestações mais curtas têm menos tempo para que o pré-natal comece tardiamente, e a prematuridade está fortemente ligada ao baixo peso. Esta seção é descritiva, referente a 2024. Durações abaixo de 22 semanas foram unidas à faixa seguinte, e 42 semanas ou mais à faixa de 37 semanas ou mais, para evitar células pequenas.</p>
+  <div class="duas">
+    <figure class="fig" data-fig="g_t0_duracao" data-altura="340">
+      <figcaption><span class="tag tag-desc">Descritivo</span><h3>Início nos meses 4–6, por duração</h3><p>% dos nascimentos de cada faixa de duração.</p></figcaption>
+    </figure>
+    <figure class="fig" data-fig="g_lbw_duracao" data-altura="340">
+      <figcaption><span class="tag tag-desc">Descritivo</span><h3>Baixo peso por duração da gestação</h3><p>% dos nascimentos de cada faixa.</p></figcaption>
+    </figure>
+  </div>
+  <figure class="fig" data-fig="g_lbw_mes" data-altura="340">
+    <figcaption><span class="tag tag-desc">Descritivo</span><h3>Baixo peso por mês de início</h3><p>% dos nascimentos do mês com duração conhecida, separados em pré-termo e a termo. Valores arredondados podem não somar exatamente.</p></figcaption>
+  </figure>
+
+  <h2 class="titulo-secao">Quem ficou fora pelo filtro de início</h2>
+  <div class="duas">
+    <figure class="fig" data-fig="g_inclusao" data-altura="300">
+      <figcaption><span class="tag tag-desc">Descritivo</span><h3>Gestações com menos de 28 semanas</h3><p>% de cada grupo, antes do filtro de início.</p></figcaption>
+    </figure>
+    <div class="bloco">
+      <h3>Início ausente ou ignorado</h3>
+      <p>Dos [[temporalidade.selecao.6.n|int]] nascimentos anteriores ao filtro, [[temporalidade.ausentes.total|int]] não têm início informado: [[temporalidade.ausentes.campo_ausente|int]] com campo ausente e [[temporalidade.ausentes.codigo_99|int]] com código 99 (ignorado). Informação ausente não equivale a ausência de pré-natal.</p>
+      <p>A diferença de composição entre incluídos e excluídos descreve seleção observada. Ela não identifica magnitude nem direção de um possível viés causal.</p>
+    </div>
+  </div>
+  <div class="bloco"><h3>Incluídos e excluídos, por duração</h3><p class="nota">Células de 1 a 9 aparecem como &lt; 10. Nas linhas "Início nos meses 7–9" e "Ausente, ignorada ou outra", as contagens estão em múltiplos de 10 e os percentuais em inteiros, para que uma célula suprimida não seja recuperada por subtração.</p><div data-tabela="g_selecao"></div></div>
+
+  <h2 class="titulo-secao">Hipóteses e covariáveis</h2>
+  <div class="bloco">
+    <span class="tag tag-hip">Hipótese não demonstrada</span>
+    <h3>Diagrama causal conceitual</h3>
+    <p class="nota">As setas são hipóteses de trabalho, não relações estimadas. Contorno azul: observado. Contorno cinza: posterior à exposição, não ajustado. Tracejado: não observado ou mecanismo possível. Contorno duplo: seleção por nascido vivo.</p>
+    <div class="dag-rolagem">
+      <svg class="dag" viewBox="0 0 900 470" role="img" aria-labelledby="dag-titulo">
+        <title id="dag-titulo">Diagrama causal conceitual, com setas que representam hipóteses de trabalho: características observadas ligadas ao início do pré-natal e ao baixo peso; fatores não registrados; mediadores e seleção por nascido vivo à parte.</title>
+        <defs>
+          <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0B63B0"/></marker>
+          <marker id="seta-cinza" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6B7C8C"/></marker>
+        </defs>
+        <g class="dag-no obs"><rect x="180" y="16" width="540" height="72" rx="6"/><text x="450" y="44"><tspan class="f">X: características maternas observadas e ajustadas</tspan><tspan x="450" dy="22">idade, escolaridade, raça/cor, paridade, perdas fetais anteriores</tspan></text></g>
+        <g class="dag-no obs"><rect x="20" y="170" width="230" height="72" rx="6"/><text x="135" y="198"><tspan class="f">T: início do pré-natal</tspan><tspan x="135" dy="22">meses 1–3 contra 4–6</tspan></text></g>
+        <g class="dag-no obs"><rect x="650" y="170" width="230" height="72" rx="6"/><text x="765" y="198"><tspan class="f">Y: baixo peso ao nascer</tspan><tspan x="765" dy="22">peso abaixo de 2.500 g</tspan></text></g>
+        <g class="dag-no pos"><rect x="315" y="262" width="270" height="72" rx="6"/><text x="450" y="290"><tspan class="f">M: assistência e curso da gestação</tspan><tspan x="450" dy="22">consultas, idade gestacional; não ajustados</tspan></text></g>
+        <g class="dag-no nao"><rect x="315" y="370" width="565" height="84" rx="6"/><text x="598" y="396"><tspan class="f">U: fatores não registrados no SINASC</tspan><tspan x="598" dy="20">renda, plano privado ou SUS, planejamento da gestação, tabagismo,</tspan><tspan x="598" dy="20">estado nutricional, condições clínicas prévias, acesso à unidade</tspan></text></g>
+        <g class="dag-no sel"><rect x="20" y="382" width="230" height="64" rx="6"/><rect x="25" y="387" width="220" height="54" rx="4"/><text x="135" y="408"><tspan class="f">C: nascimento vivo</tspan><tspan x="135" dy="20">análise restrita a C = 1</tspan></text></g>
+        <path class="a" d="M240 88L160 166" marker-end="url(#seta)"/>
+        <path class="a" d="M660 88L740 166" marker-end="url(#seta)"/>
+        <path class="a forte" d="M252 206L646 206" marker-end="url(#seta)"/>
+        <text class="rot" x="450" y="196">relação investigada</text>
+        <path class="c" d="M240 240L312 282" marker-end="url(#seta-cinza)"/>
+        <path class="c" d="M587 282L660 240" marker-end="url(#seta-cinza)"/>
+        <path class="c tr" d="M328 368L190 244" marker-end="url(#seta-cinza)"/>
+        <path class="c tr" d="M790 368L770 244" marker-end="url(#seta-cinza)"/>
+        <path class="c tr" d="M110 244L110 380" marker-end="url(#seta-cinza)"/>
+        <text class="rot" x="72" y="316">possível</text>
+      </svg>
+    </div>
+  </div>
+  <div class="bloco"><h3>Covariáveis e justificativa</h3><div class="rolagem"><table>
+    <caption class="sr">Covariáveis e papel no modelo</caption>
+    <thead><tr><th>Covariável</th><th>Papel</th><th>Justificativa e cuidado</th></tr></thead>
+    <tbody>
+      <tr><td>Idade materna</td><td>No escore, com termo quadrático</td><td>O desequilíbrio se concentra nas adolescentes.</td></tr>
+      <tr><td>Escolaridade</td><td>No escore</td><td>Capta parte do gradiente socioeconômico. Pode mudar durante a gestação em adolescentes.</td></tr>
+      <tr><td>Raça/cor</td><td>No escore</td><td>Característica registrada. "Ignorado" é indicador de ausência.</td></tr>
+      <tr><td>Paridade</td><td>No escore</td><td>Nulípara ou multípara.</td></tr>
+      <tr><td>Perdas fetais anteriores</td><td>No escore, com ressalva</td><td>Anterior à exposição, mistura perdas espontâneas e abortos, com provável sub-registro.</td></tr>
+      <tr><td>Situação conjugal</td><td>Fora do escore</td><td>Temporalidade frágil. Usada só em diagnóstico e sensibilidade.</td></tr>
+      <tr><td>Consultas, idade gestacional, tipo de parto, Apgar</td><td>Vedadas</td><td>Posteriores à exposição, mediadoras ou ligadas ao desfecho.</td></tr>
+    </tbody></table></div></div>
+
+  <h2 class="titulo-secao">O método em linguagem simples</h2>
+  <div class="tres">
+    <div class="bloco"><h3>Escore de propensão</h3><p>É a probabilidade estimada de início nos meses 1–3, dadas as características observadas. Foi ajustado sem usar o desfecho.</p></div>
+    <div class="bloco"><h3>Pesos ATO</h3><p>Cada nascimento recebe peso maior quando seu perfil é comum nos dois grupos. O resultado se refere a essa população de sobreposição.</p></div>
+    <div class="bloco"><h3>Bootstrap</h3><p>Os [[destaques.n_elegiveis|int]] nascimentos são reamostrados [[resultados.bootstrap.replicas|int]] vezes, com novo ajuste do escore em cada réplica. O IC 95% usa os percentis 2,5 e 97,5.</p></div>
+  </div>
+  <div class="bloco calculadora">
+    <h3>Experimente o peso de sobreposição</h3>
+    <p class="nota">Exemplo aritmético das fórmulas, sem dados do estudo. Mova o escore e compare com o peso do inverso da probabilidade, que cresce quando e se aproxima de 1.</p>
+    <label for="calc-e">Escore e(X): <output id="calc-saida-e"></output></label>
+    <input type="range" id="calc-e" min="0.60" max="0.98" step="0.01" value="0.91">
+    <dl class="calc-grade">
+      <div><dt>Peso ATO em T=1 (1 − e)</dt><dd id="calc-w1"></dd></div>
+      <div><dt>Peso ATO em T=0 (e)</dt><dd id="calc-w0"></dd></div>
+      <div><dt>Inverso em T=1 (1 / e)</dt><dd id="calc-i1"></dd></div>
+      <div><dt>Inverso em T=0 (1 / (1 − e))</dt><dd id="calc-i0"></dd></div>
+    </dl>
+  </div>
+
+  <h2 class="titulo-secao">Limitações e perguntas em aberto</h2>
+  <div class="duas">
+    <div class="bloco leitura"><h3>Limitações</h3><ul>
+      <li><strong>Confundimento não observado.</strong> Renda, plano privado ou SUS, planejamento da gestação, tabagismo, estado nutricional, condições clínicas prévias e acesso à unidade de saúde não estão no SINASC.</li>
+      <li><strong>Exposição retrospectiva.</strong> O mês de início é registrado no parto, por recordação ou transcrição. Erros entre meses adjacentes são plausíveis e não foram quantificados.</li>
+      <li><strong>Duração gestacional.</strong> Restringir T=0 aos meses 4–6 reduz a janela de início tardio, mas não foi demonstrado quanto altera o viés nem em que direção.</li>
+      <li><strong>Seleção por nascidos vivos.</strong> Não há vinculação com o SIM; óbitos fetais não são observados.</li>
+      <li><strong>Covariáveis medidas no parto.</strong> Sua condição anterior à exposição é aproximada.</li>
+      <li><strong>Alcance.</strong> O ATO vale para a população de sobreposição, mais jovem e menos escolarizada que o total.</li>
+      <li><strong>Independência.</strong> O bootstrap trata nascimentos como independentes; o IC pode ser estreito demais.</li>
+    </ul></div>
+    <div class="bloco leitura"><h3>Perguntas em aberto</h3><ol>
+      <li>Qual a robustez da associação a confundimento não medido?</li>
+      <li>Como incorporar dependência por estabelecimento ou região?</li>
+      <li>Qual a incerteza da sensibilidade com situação conjugal e das estimativas anuais?</li>
+      <li>O conjunto de ajuste deve mudar à luz do diagrama causal?</li>
+      <li>Que desenho reduz a dependência entre duração gestacional e oportunidade de início tardio?</li>
+      <li>É viável a vinculação individual SINASC–SIM, com autorização?</li>
+      <li>A associação se mantém em outros recortes, com populações-alvo explicitadas?</li>
+    </ol></div>
+  </div>
+
+  <h2 class="titulo-secao">Fontes e documentação</h2>
+  <div class="bloco">
+    <p>Todos os números vêm das saídas salvas dos cinco notebooks principais e dos CSVs versionados do projeto, na referência <code>[[meta.referencia_origem]]</code>. Nenhuma estimativa foi recalculada, e nenhum microdado foi lido para gerar este painel. Os resultados históricos nacionais (AIPW) são de outra população e outro estimador, e não são apresentados aqui.</p>
+    <p class="nota">Paleta derivada das cores do arquivo vetorial do logotipo presente no pacote acadêmico; não se trata de paleta oficial documentada do IPT.</p>
+    <details class="dados"><summary>Fontes utilizadas, com SHA-256</summary><div data-tabela="g_fontes"></div></details>
+    <details class="dados"><summary>Matriz de rastreabilidade dos indicadores</summary><div data-tabela="g_matriz"></div></details>
+    <details class="dados"><summary>Referências metodológicas principais</summary><ul class="refs">
+      <li>LI, F.; MORGAN, K. L.; ZASLAVSKY, A. M. Balancing covariates via propensity score weighting. Journal of the American Statistical Association, v. 113, n. 521, p. 390–400, 2018. DOI: 10.1080/01621459.2016.1260466.</li>
+      <li>AUSTIN, P. C.; STUART, E. A. Moving towards best practice when using inverse probability of treatment weighting (IPTW) using the propensity score to estimate causal treatment effects in observational studies. Statistics in Medicine, v. 34, p. 3661–3679, 2015. DOI: 10.1002/sim.6607.</li>
+      <li>CRUMP, R. K.; HOTZ, V. J.; IMBENS, G. W.; MITNIK, O. A. Dealing with limited overlap in estimation of average treatment effects. Biometrika, v. 96, n. 1, p. 187–199, 2009. DOI: 10.1093/biomet/asn055.</li>
+      <li>HERNÁN, M. A.; ROBINS, J. M. Causal Inference: What If. Boca Raton: Chapman &amp; Hall/CRC. Versão de 21 nov. 2025.</li>
+      <li>WILCOX, A. J.; WEINBERG, C. R.; BASSO, O. On the pitfalls of adjusting for gestational age at birth. American Journal of Epidemiology, v. 174, n. 9, p. 1062–1068, 2011. DOI: 10.1093/aje/kwr230.</li>
+      <li>BONILHA, E. A. et al. Coverage, completeness and reliability of the data in the Information System on Live Births in public maternity wards in the municipality in São Paulo, Brazil, 2011. Epidemiologia e Serviços de Saúde, v. 27, e201712811, 2018. DOI: 10.5123/S1679-49742018000100011.</li>
+    </ul></details>
+  </div>
+</section>
+</main>
+
+<footer class="rodape">
+  <p>Material complementar aos notebooks e ao relatório técnico-científico. Instituto de Pesquisas Tecnológicas. Associação ajustada por covariáveis observadas; não constitui demonstração de causalidade.</p>
+</footer>
+
+<script type="application/json" id="dados-painel"><!--DADOS--></script>
+<script><!--PLOTLY--></script>
+<script><!--APP--></script>
+</body>
+</html>
