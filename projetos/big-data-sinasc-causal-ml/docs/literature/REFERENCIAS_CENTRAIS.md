@@ -1,6 +1,6 @@
 # Referências centrais
 
-Seleção dirigida de 12 referências, não revisão sistemática. O mapa inicial e a auditoria do gate permanecem preservados. Priorizados pré-natal/SINASC, predição, AIPW, ajuste cruzado, heterogeneidade, clusters e seleção. Títulos e citações mantêm o idioma original; a análise está em PT-BR. DOIs de versões públicas estão identificados quando distintos do publicado.
+Seleção dirigida de 12 referências levantadas no desenvolvimento, não revisão sistemática. Priorizados pré-natal/SINASC, predição, AIPW, ajuste cruzado, heterogeneidade, clusters e seleção. Títulos e citações mantêm o idioma original; a análise está em PT-BR. DOIs de versões públicas estão identificados quando distintos do publicado.
 
 ## vale2021
 
@@ -194,4 +194,6 @@ DOI: [10.1007/s40471-018-0172-x](https://doi.org/10.1007/s40471-018-0172-x). [Fo
 | Limitacoes | Não fornece uma correção identificada para esta extração do SINASC. |
 | Uso | Delimitar o estimando aos registros selecionados e impedir extrapolação a concepções. |
 
-[Manifesto de PDFs](MANIFESTO_ARTIGOS.md) · [Fichas](fichas/).
+As sínteses das 12 fichas foram consolidadas neste índice: pergunta, população, dados, método, resultados, limitações e uso no projeto. Nas referências sem PDF obtido, a leitura ficou limitada ao resumo/trechos públicos e ao mapa já auditado; nas demais, houve leitura dirigida de resumo, métodos e discussão. Não transportar efeitos ou garantias desses artigos automaticamente para o SINASC 2024.
+
+O [manifesto histórico de PDFs](MANIFESTO_ARTIGOS.md) e seu [registro estruturado](manifesto_artigos.json) preservam URLs, disponibilidade, tentativas de acesso e hashes dos arquivos obtidos. As menções a fichas nesse manifesto descrevem a organização anterior. As fichas e a cópia `referencias_centrais.json`, redundantes com este índice e o manifesto, podem ser recuperadas no histórico Git, commit `3dd446f`.

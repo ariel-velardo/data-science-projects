@@ -1,0 +1,35 @@
+PACOTE DE REDAÇÃO — ETAPA 1
+Projeto LaTeX do documento "Início do pré-natal e baixo peso ao nascer" (SINASC, São Paulo, 2024)
+
+1. Importar no Overleaf
+   New Project > Upload Project > selecionar PACOTE_REDACAO_ETAPA_1_OVERLEAF.zip.
+
+2. Arquivo principal
+   main.tex (contém o documento completo).
+
+3. Compilador
+   XeLaTeX: Menu > Settings > Compiler > XeLaTeX.
+   O projeto usa fontes OpenType da família Libertinus (incluídas no TeX Live do Overleaf)
+   e não compila com pdfLaTeX. A bibliografia usa BibTeX, executado automaticamente.
+
+4. Título, autores e identificação
+   Bloco "Identificação do documento", no início de main.tex: \docTitulo, \docSubtitulo,
+   \docAutores, \docOrientacao etc. Autores e orientação ficam ocultos na capa enquanto
+   estiverem vazios.
+
+5. Texto
+   As seções estão em main.tex, na ordem do sumário (\section{...}).
+
+6. Figuras
+   Pasta figuras/: um arquivo .tex por figura (pgfplots/TikZ), com os valores numéricos
+   escritos no próprio arquivo e a origem indicada no cabeçalho. Estilo e cores dos
+   gráficos: bloco "Figuras" do preâmbulo de main.tex.
+
+7. Referências
+   referencias.bib (BibTeX, estilo ABNT autor-data via abntex2cite). Para acrescentar uma
+   obra, inclua a entrada no .bib e cite com \cite{chave} (autor e ano entre parênteses)
+   ou \citeonline{chave} (autor no texto). Só aparecem na lista as obras citadas.
+
+8. Logotipo
+   logo_ipt.pdf é o arquivo oficial do IPT (ipt.br > Comunicação Institucional), sem
+   alterações. O recorte da margem branca é feito no próprio \includegraphics da capa.

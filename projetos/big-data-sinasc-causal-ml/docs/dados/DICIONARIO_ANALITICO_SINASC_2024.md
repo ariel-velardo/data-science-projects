@@ -4,7 +4,7 @@
 
 OPORT_DN: **NÃO_CONFIRMANDO_DOCUMENTALMENTE**. O layout disponível termina em 2019; não é um layout específico de 2024. Domínios numéricos e códigos não enumerados no layout não são inventados. PARIDADE e perdas seguem as regras operacionais do contrato, distintas da comprovação documental de todos os códigos.
 
-[Fontes oficiais](../sources/FONTES_OFICIAIS.md) · [Versão JSON versionada](../../outputs/tables/dicionario_analitico_sinasc_2024.json). CSV local no mesmo diretório do JSON, ignorado pela política geral.
+[Fontes oficiais](../sources/FONTES_OFICIAIS.md). Fonte comum aos 62 campos: layout oficial 1996–2019, schema auditado de 2024 e manual de 2022 para MESPRENAT. As definições estão consolidadas nesta versão Markdown; a cópia JSON redundante foi removida no lote 7C. Os códigos de ignorado confirmados constam dos domínios; “Não confirmado” nos percentuais mantém a distinção entre desconhecido e zero. A tabela e seus papéis/fases registram o contrato histórico; a especificação vigente está nos cinco notebooks principais.
 
 | Campo | Descrição | Tipo | Domínio / códigos | Ausente (%) | Ignorado (%) | Ausente + ignorado (%) | Exemplos frequentes | Papel | Fases | Observação |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

@@ -1,5 +1,7 @@
 # Manifesto dos artigos
 
+> **Escopo.** Este manifesto é um registro histórico das tentativas de obtenção automática de PDFs e não é a bibliografia do relatório. A bibliografia efetivamente utilizada no relatório da Etapa 2 é a de [`referencias.bib`](../sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/referencias.bib) (19 referências), indexada em [`artigos/LEIA_ME.md`](../sp_capital_ato/artigos/LEIA_ME.md); a síntese bibliográfica consolidada está em [`REFERENCIAS_CENTRAIS.md`](REFERENCIAS_CENTRAIS.md). As entradas `ranjbar2023`, `chernozhukov2018`, `kennedy2023` e `chiang2022` não constam de `referencias.bib`. A pasta `pdfs/` e as fichas mencionadas abaixo não integram a árvore atual.
+
 PDFs obtidos somente por URLs públicas de editoras, PMC, instituições ou autores. Falhas HTTP, respostas HTML e desafios de acesso são registrados, sem contornar paywalls ou bloqueios. PDFs e textos extraídos permanecem locais; o staging inclui apenas manifesto, referências e fichas. Não se exige PDF para navegar no relatório.
 
 | Referência | PDF obtido? | Origem | URL tentada | Arquivo local | Motivo |

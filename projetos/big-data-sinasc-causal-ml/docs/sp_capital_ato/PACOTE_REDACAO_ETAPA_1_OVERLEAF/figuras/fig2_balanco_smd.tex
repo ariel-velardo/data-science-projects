@@ -1,0 +1,104 @@
+% Figura 2 — |SMD| por nível de covariável, antes e depois da ponderação ATO.
+% Valores copiados do gráfico Plotly salvo em
+% notebooks/principal/06_ato_sp_capital_2024.ipynb (seção 4).
+% SMD com denominador não ponderado, igual antes e depois.
+% Colunas: linha (posição vertical, 34 = topo), antes, depois.
+\pgfplotstableread{
+linha antes   depois
+33    0.2703  0.0002
+32    0.2529  0.0001
+31    0.1857  0.0064
+29    0.0116  0.0003
+28    0.0619  0.0003
+27    0.2057  0.0001
+26    0.2338  0.0002
+25    0.0137  0.0003
+24    0.4518  0.0003
+23    0.0215  0.0031
+21    0.1990  0.0000
+20    0.0558  0.0002
+19    0.0567  0.0006
+18    0.1678  0.0002
+17    0.0322  0.0013
+16    0.0042  0.0013
+14    0.1659  0.0002
+13    0.1659  0.0002
+11    0.0375  0.0001
+10    0.0414  0.0002
+9     0.0002  0.0000
+8     0.0035  0.0003
+6     0.2785  0.1172
+5     0.4214  0.1945
+4     0.0001  0.0020
+3     0.0218  0.0031
+2     0.1254  0.0704
+1     0.0101  0.0090
+}\dadosbalanco
+\newcommand{\grupo}[1]{\textbf{\color{iptazul}#1}}
+\newcommand{\nivel}[1]{\hspace*{0.9em}#1}
+\newcommand{\seg}[3]{\draw[iptcinza!45, line width=0.7pt] (axis cs:#2,#1) -- (axis cs:#3,#1);}
+\begin{tikzpicture}
+\begin{axis}[
+  estilo ipt,
+  set layers,
+  scale only axis,
+  width=7.9cm, height=12.0cm,
+  xmin=-0.012, xmax=0.48,
+  ymin=0.4, ymax=34.6,
+  xtick={0,0.1,0.2,0.3,0.4},
+  xticklabel style={/pgf/number format/.cd, fixed, precision=1, use comma},
+  xmajorgrids,
+  ytick={1,...,34},
+  major y tick style={draw=none},
+  yticklabel style={text width=5.3cm, align=left, font=\sffamily\footnotesize},
+  yticklabels={
+    \nivel{Ignorado/ausente}, \nivel{União estável}, \nivel{Separada/divorciada},
+    \nivel{Viúva}, \nivel{Casada}, \nivel{Solteira},
+    \grupo{Situação conjugal (não ajustada)},
+    \nivel{Ignorado/ausente}, \nivel{Duas ou mais}, \nivel{Uma}, \nivel{Nenhuma},
+    \grupo{Perdas fetais anteriores},
+    \nivel{Multípara}, \nivel{Nulípara},
+    \grupo{Paridade},
+    \nivel{Ignorado/ausente}, \nivel{Indígena}, \nivel{Parda}, \nivel{Amarela},
+    \nivel{Preta}, \nivel{Branca},
+    \grupo{Raça/cor},
+    \nivel{Ignorado/ausente}, \nivel{Superior completo}, \nivel{Superior incompleto},
+    \nivel{Médio}, \nivel{Fundamental II}, \nivel{Fundamental I}, \nivel{Sem escolaridade},
+    \grupo{Escolaridade},
+    \nivel{10–19 anos (descritiva)}, \nivel{Quadrado da idade (média)}, \nivel{Média (anos)},
+    \grupo{Idade materna},
+  },
+  xlabel={Diferença média padronizada absoluta (|SMD|)},
+  legend style={at={(0.5,1.01)}, anchor=south, legend columns=2,
+    /tikz/every even column/.append style={column sep=1.2em}},
+]
+% Fundo da covariável não incluída no modelo principal
+\begin{pgfonlayer}{axis background}
+  \fill[iptazul!6] (axis cs:-0.012,0.4) rectangle (axis cs:0.48,7.5);
+  % separadores entre grupos de covariáveis
+  \draw[iptcinza!35, line width=0.4pt] (axis cs:-0.012,7.5) -- (axis cs:0.48,7.5);
+  \draw[iptcinza!35, line width=0.4pt] (axis cs:-0.012,12.5) -- (axis cs:0.48,12.5);
+  \draw[iptcinza!35, line width=0.4pt] (axis cs:-0.012,15.5) -- (axis cs:0.48,15.5);
+  \draw[iptcinza!35, line width=0.4pt] (axis cs:-0.012,22.5) -- (axis cs:0.48,22.5);
+  \draw[iptcinza!35, line width=0.4pt] (axis cs:-0.012,30.5) -- (axis cs:0.48,30.5);
+  \draw[iptcinza!80, dashed, line width=0.6pt] (axis cs:0.1,0.4) -- (axis cs:0.1,34.6);
+\end{pgfonlayer}
+% Segmentos ligando antes e depois: \seg{linha}{antes}{depois}
+\seg{33}{0.2703}{0.0002} \seg{32}{0.2529}{0.0001} \seg{31}{0.1857}{0.0064}
+\seg{29}{0.0116}{0.0003} \seg{28}{0.0619}{0.0003} \seg{27}{0.2057}{0.0001}
+\seg{26}{0.2338}{0.0002} \seg{25}{0.0137}{0.0003} \seg{24}{0.4518}{0.0003}
+\seg{23}{0.0215}{0.0031} \seg{21}{0.1990}{0.0000} \seg{20}{0.0558}{0.0002}
+\seg{19}{0.0567}{0.0006} \seg{18}{0.1678}{0.0002} \seg{17}{0.0322}{0.0013}
+\seg{16}{0.0042}{0.0013} \seg{14}{0.1659}{0.0002} \seg{13}{0.1659}{0.0002}
+\seg{11}{0.0375}{0.0001} \seg{10}{0.0414}{0.0002} \seg{9}{0.0002}{0.0000}
+\seg{8}{0.0035}{0.0003}  \seg{6}{0.2785}{0.1172}  \seg{5}{0.4214}{0.1945}
+\seg{4}{0.0001}{0.0020}  \seg{3}{0.0218}{0.0031}  \seg{2}{0.1254}{0.0704}
+\seg{1}{0.0101}{0.0090}
+\addplot[only marks, mark=o, mark size=2.4pt, cinzaserie, line width=0.9pt]
+  table[x=antes, y=linha] {\dadosbalanco};
+\addlegendentry{Antes da ponderação}
+\addplot[only marks, mark=*, mark size=2.2pt, iptazul]
+  table[x=depois, y=linha] {\dadosbalanco};
+\addlegendentry{Após ponderação ATO}
+\end{axis}
+\end{tikzpicture}

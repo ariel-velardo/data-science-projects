@@ -1,0 +1,81 @@
+% Figura 3 — Riscos brutos e ponderados (ATO) e diferenças T=1 − T=0, com IC 95%
+% bootstrap por percentis (1.000 réplicas, escore reestimado em cada réplica).
+% Painel (a): valores do gráfico Plotly salvo em
+%   notebooks/principal/06_ato_sp_capital_2024.ipynb (seção 5), em pontos percentuais.
+% Painel (b): diferenças e intervalos da tabela de riscos do mesmo notebook (seção 5).
+% Os dois painéis são alinhados pela base da área de plotagem (baseline=(eixo.south)).
+\begin{minipage}[b]{0.49\linewidth}
+\centering
+\begin{tikzpicture}[baseline=(eixo.south)]
+\begin{axis}[
+  name=eixo,
+  estilo ipt,
+  scale only axis,
+  width=5.0cm, height=4.8cm,
+  title={(a) Risco de baixo peso por grupo},
+  xmin=0.45, xmax=2.55,
+  xtick={1,2},
+  xticklabels={{$T=1$\\meses 1–3}, {$T=0$\\meses 4–6}},
+  xticklabel style={align=center},
+  ymin=7.6, ymax=11.4,
+  ytick={8,9,10,11},
+  ymajorgrids,
+  ylabel={Risco de peso $<$ 2.500 g (\%)},
+  legend style={at={(0.03,0.97)}, anchor=north west},
+  error bars/error bar style={line width=0.9pt},
+  error bars/error mark options={rotate=90, mark size=2.6pt, line width=0.9pt},
+]
+\addplot[serie secundaria, only marks, mark=o, mark size=2.6pt,
+  error bars/.cd, y dir=both, y explicit]
+  coordinates {(0.86,8.4121) += (0,0.1777) -= (0,0.1647)
+               (1.86,10.4072) += (0,0.5903) -= (0,0.5698)};
+\addlegendentry{Bruto}
+\addplot[serie principal, only marks, mark=diamond*, mark size=3.2pt,
+  error bars/.cd, y dir=both, y explicit]
+  coordinates {(1.14,8.6809) += (0,0.1853) -= (0,0.1916)
+               (2.14,10.4183) += (0,0.5835) -= (0,0.5720)};
+\addlegendentry{Ponderado (ATO)}
+\node[rotulo valor, anchor=east] at (axis cs:0.80,8.4121) {8,41};
+\node[rotulo valor, anchor=west] at (axis cs:1.20,8.6809) {8,68};
+\node[rotulo valor, anchor=east] at (axis cs:1.80,10.4072) {10,41};
+\node[rotulo valor, anchor=west] at (axis cs:2.20,10.4183) {10,42};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}%
+\hfill
+\begin{minipage}[b]{0.49\linewidth}
+\centering
+\begin{tikzpicture}[baseline=(eixo.south)]
+\begin{axis}[
+  name=eixo,
+  estilo ipt,
+  scale only axis,
+  width=5.0cm, height=4.8cm,
+  title={(b) Diferença $T=1$ − $T=0$ (p.p.)},
+  xmin=-3.2, xmax=0.6,
+  xtick={-3,-2,-1,0},
+  xmajorgrids,
+  ymin=0.35, ymax=2.75,
+  ytick={1,2},
+  yticklabels={Ponderada (ATO), Bruta},
+  yticklabel style={font=\sffamily\footnotesize},
+  major y tick style={draw=none},
+  xlabel={Diferença de riscos (p.p.)},
+  error bars/error bar style={line width=0.9pt},
+  error bars/error mark options={rotate=90, mark size=2.6pt, line width=0.9pt},
+]
+\draw[iptcinza, dashed, line width=0.6pt] (axis cs:0,0.35) -- (axis cs:0,2.75);
+\addplot[serie secundaria, only marks, mark=o, mark size=2.6pt,
+  error bars/.cd, x dir=both, x explicit]
+  coordinates {(-2.00,2) += (0.63,0) -= (0.61,0)};
+\addplot[serie principal, only marks, mark=diamond*, mark size=3.2pt,
+  error bars/.cd, x dir=both, x explicit]
+  coordinates {(-1.74,1) += (0.62,0) -= (0.62,0)};
+% Rótulos centrados na área de plotagem, acima de cada estimativa
+\node[rotulo valor, anchor=south] at (axis cs:-1.30,2.16)
+  {$-$2,00 \ (IC 95\%: $-$2,61 a $-$1,37)};
+\node[rotulo valor, anchor=south, font=\sffamily\scriptsize\bfseries, text=iptazul]
+  at (axis cs:-1.30,1.16) {$-$1,74 \ (IC 95\%: $-$2,36 a $-$1,12)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}

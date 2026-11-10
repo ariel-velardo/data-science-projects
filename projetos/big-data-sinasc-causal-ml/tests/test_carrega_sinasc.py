@@ -6,7 +6,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from src.carrega_sinasc import (
+from src.sinasc import (
     descobrir_csv_no_zip,
     detectar_formato_csv,
     iterar_csv_em_chunks,

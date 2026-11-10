@@ -1,0 +1,46 @@
+% Diagrama causal conceitual (DAG de trabalho); Figura 6 na Etapa 2 (Figura 4 na Etapa 1).
+% Elaborado a partir de docs/methodology/DAG_INICIAL.md e das limitações registradas
+% em docs/sp_capital_ato/RESUMO_PARA_REDACAO.md. As setas representam hipóteses de trabalho,
+% não relações estimadas. Contorno contínuo: observado; tracejado: não observado;
+% contorno duplo: seleção pela condição de nascido vivo.
+\begin{tikzpicture}[
+  font=\sffamily\footnotesize,
+  >={Stealth[length=2.4mm, width=1.8mm]},
+  no/.style={draw=iptazul, line width=0.8pt, rounded corners=2pt, align=center,
+    inner sep=5pt, fill=white, text=iptcinza!25!black,
+    execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000}},
+  nao observado/.style={no, draw=iptcinza!80, dashed},
+  posterior/.style={no, draw=iptcinza!80},
+  selecao/.style={no, double=white, double distance=1.3pt},
+  seta/.style={->, line width=0.85pt, iptazul},
+  seta fraca/.style={->, line width=0.85pt, iptcinza!80},
+  seta hipotetica/.style={->, line width=0.85pt, iptcinza!80, dashed},
+  rotulo/.style={font=\sffamily\scriptsize, text=iptcinza!40!black, fill=white, inner sep=1.5pt},
+]
+\node[no, text width=3.4cm] (T) at (0,0)
+  {\textbf{T} --- início do pré-natal\\meses 1–3 \emph{versus} 4–6};
+\node[no, text width=3.9cm] (Y) at (10.6,0)
+  {\textbf{Y} --- baixo peso ao nascer\\(peso $<$ 2.500 g)};
+\node[no, text width=9.4cm] (X) at (5.3,2.55)
+  {\textbf{X} --- características maternas observadas e ajustadas\\
+   idade, escolaridade, raça/cor, paridade, perdas fetais anteriores};
+\node[posterior, text width=5.2cm] (M) at (5.3,-1.05)
+  {\textbf{M} --- assistência e curso da gestação\\
+   consultas e idade gestacional\\(posteriores a T; não ajustados)};
+\node[nao observado, text width=6.6cm] (U) at (7.3,-3.55)
+  {\textbf{U} --- fatores não registrados no SINASC\\
+   renda, plano privado ou SUS, planejamento da gestação, tabagismo,
+   estado nutricional, condições clínicas prévias, acesso à unidade de saúde};
+\node[selecao, text width=3.7cm] (C) at (0,-3.55)
+  {\textbf{C} --- nascimento vivo\\análise restrita a $C\!=\!1$};
+
+\draw[seta] ($(X.south west)+(0.9,0)$) -- (T.north);
+\draw[seta] ($(X.south east)+(-0.9,0)$) -- (Y.north);
+\draw[seta, line width=1.6pt] (T.east) -- node[rotulo, above=2pt] {relação investigada} (Y.west);
+\draw[seta fraca] (T.south east) -- (M.west);
+\draw[seta fraca] (M.east) -- (Y.south west);
+\draw[seta hipotetica] ($(U.north west)+(0.4,0)$) -- ($(T.south)+(0.6,0)$);
+\draw[seta hipotetica] ($(U.north east)+(-0.7,0)$) -- (Y.south);
+\draw[seta hipotetica] ($(T.south)+(-0.5,0)$) -- node[rotulo, left=2pt, pos=0.5] {possível}
+  ($(C.north)+(-0.5,0)$);
+\end{tikzpicture}

@@ -1,0 +1,62 @@
+% Figura 4 (Etapa 2) — Série anual 2014–2024 da especificação principal.
+% Painel (a): diferenças T=1 − T=0 (p.p.), ponderada (ATO) e bruta, copiadas do gráfico
+%   Plotly salvo em notebooks/principal/07_evolucao_ato_sp_capital_2014_2024.ipynb (seção 5).
+% Painel (b): % de T=0 entre os elegíveis do ano, do gráfico Plotly do mesmo notebook
+%   (seção 6).
+% Estimativas pontuais de onze modelos anuais independentes, sem intervalo de confiança.
+\begin{tikzpicture}
+\begin{axis}[
+  estilo ipt,
+  width=0.94\linewidth, height=6.0cm,
+  title={(a) Diferença de riscos $T=1$ − $T=0$ (p.p.)},
+  xmin=2013.6, xmax=2024.4,
+  xtick={2014,...,2024},
+  xticklabel style={/pgf/number format/1000 sep={}},
+  ymin=-2.5, ymax=0.4,
+  ytick={-2.5,-2,...,0},
+  ymajorgrids,
+  ylabel={Diferença de riscos (p.p.)},
+  legend style={at={(0.02,0.97)}, anchor=north west},
+]
+\draw[iptcinza, dashed, line width=0.6pt] (axis cs:2013.6,0) -- (axis cs:2024.4,0);
+\addplot[serie secundaria, dashed, mark=o] coordinates {
+  (2014,-1.2846) (2015,-1.1740) (2016,-1.3195) (2017,-1.7729) (2018,-2.0461)
+  (2019,-1.4339) (2020,-0.7471) (2021,-1.9731) (2022,-2.0564) (2023,-2.1965)
+  (2024,-1.9951)};
+\addlegendentry{Bruta (sem ponderação)}
+\addplot[serie principal, mark=*] coordinates {
+  (2014,-1.1069) (2015,-0.9870) (2016,-1.0788) (2017,-1.5665) (2018,-1.8002)
+  (2019,-1.1886) (2020,-0.5776) (2021,-1.7269) (2022,-1.7690) (2023,-1.9027)
+  (2024,-1.7374)};
+\addlegendentry{Ponderada (ATO)}
+% Rótulos seletivos da série ATO: primeiro ano, extremos e último ano
+\node[rotulo valor, anchor=south, yshift=2pt] at (axis cs:2014,-1.1069) {$-$1,11};
+\node[rotulo valor, anchor=south, yshift=2pt] at (axis cs:2020,-0.5776) {$-$0,58};
+\node[rotulo valor, anchor=south, yshift=2pt] at (axis cs:2023,-1.9027) {$-$1,90};
+\node[rotulo valor, anchor=south, yshift=2pt] at (axis cs:2024,-1.7374) {$-$1,74};
+\end{axis}
+\end{tikzpicture}
+
+\vspace{8pt}
+\begin{tikzpicture}
+\begin{axis}[
+  estilo ipt,
+  width=0.94\linewidth, height=4.6cm,
+  title={(b) Grupo de comparação ($T=0$) entre os elegíveis (\%)},
+  xmin=2013.6, xmax=2024.4,
+  xtick={2014,...,2024},
+  xticklabel style={/pgf/number format/1000 sep={}},
+  ymin=0, ymax=17,
+  ytick={0,4,...,16},
+  ymajorgrids,
+  xlabel={Ano de nascimento},
+  ylabel={$T=0$ (\% dos elegíveis)},
+]
+\addplot[serie secundaria, mark=diamond*] coordinates {
+  (2014,14.7575) (2015,14.6845) (2016,13.3536) (2017,11.8177) (2018,11.3605)
+  (2019,11.6874) (2020,11.0875) (2021,9.7911) (2022,9.8718) (2023,9.3829)
+  (2024,8.8217)};
+\node[rotulo valor, anchor=south, yshift=2pt] at (axis cs:2014,14.7575) {14,76};
+\node[rotulo valor, anchor=south, yshift=2pt] at (axis cs:2024,8.8217) {8,82};
+\end{axis}
+\end{tikzpicture}

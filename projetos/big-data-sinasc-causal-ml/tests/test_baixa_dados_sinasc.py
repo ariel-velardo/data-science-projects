@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 
-from src.baixa_dados_sinasc import calcular_sha256, verificar_arquivo_existente
+from src.sinasc import calcular_sha256, verificar_arquivo_existente
 
 
 def test_calcula_sha256_em_fluxo(tmp_path: Path) -> None:

@@ -1,6 +1,7 @@
-"""Modelos congelados e benchmark de risco; não estima efeitos causais."""
-import warnings
+"""Modelos congelados e benchmark preditivo."""
+from __future__ import annotations
 
+import warnings
 import numpy as np
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import HistGradientBoostingClassifier
@@ -12,20 +13,20 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OrdinalEncoder
 from threadpoolctl import threadpool_limits
-
-from src.audita_covariaveis import COLUNAS_PROPENSITY_PRINCIPAL, validar_colunas_propensity
-from src.diagnostica_overlap import construir_pipeline_propensity
+from src.diagnosticos import COLUNAS_PROPENSITY_PRINCIPAL
+from src.diagnosticos import validar_colunas_propensity
+from src.diagnosticos import construir_pipeline_propensity
 
 SEED = 20240925
-NUM = ['IDADEMAE_NUM']
-CAT = [c for c in COLUNAS_PROPENSITY_PRINCIPAL if c not in NUM]
 
+NUM = ['IDADEMAE_NUM']
+
+CAT = [c for c in COLUNAS_PROPENSITY_PRINCIPAL if c not in NUM]
 
 def validar_x(x):
     validar_colunas_propensity(x.columns)
     if set(x.columns) != set(COLUNAS_PROPENSITY_PRINCIPAL):
         raise ValueError('X deve conter exatamente as sete covariáveis congeladas, sem T ou Y.')
-
 
 def criar_modelo(tipo):
     if tipo == 'logistica':
@@ -46,7 +47,6 @@ def criar_modelo(tipo):
         )),
     ])
 
-
 def ajustar_modelo(modelo, x, y):
     """Captura convergência; um retry técnico explícito para logística."""
     validar_x(x)
@@ -65,11 +65,9 @@ def ajustar_modelo(modelo, x, y):
             modelo.set_params(modelo__max_iter=1500)
     raise RuntimeError('Modelo não convergiu após ajuste técnico de max_iter.')
 
-
 def predizer(modelo, x):
     with threadpool_limits(limits=4):
         return modelo.predict_proba(x)[:, 1]
-
 
 def avaliar_probabilidades(y, p):
     if not np.isfinite(p).all() or np.any((p < 0) | (p > 1)):
@@ -80,11 +78,9 @@ def avaliar_probabilidades(y, p):
             'recall_05': float(recall), 'f1_05': float(f1), 'limiar': .5,
             'prevalencia': float(np.mean(y)), 'media_predita': float(np.mean(p))}
 
-
 def _reduzir_curva(a, b, n=201):
     i = np.unique(np.linspace(0, len(a)-1, min(n, len(a))).astype(int))
     return {'x': np.asarray(a)[i].tolist(), 'y': np.asarray(b)[i].tolist()}
-
 
 def benchmark(x, y):
     validar_x(x)
@@ -105,3 +101,14 @@ def benchmark(x, y):
             'x': list(x.columns), 'usa_tratamento': False, 'modelos': resultados,
             'nota_pr_auc': 'Average precision; não área trapezoidal.',
             'brier_baseline_prevalencia_treino': float(np.mean((y[te]-y[tr].mean())**2))}
+
+
+def executar_preditivo(raiz):
+    """Executa somente o benchmark preditivo congelado."""
+    from src.amostra import carregar_exercicio
+    from src.sinasc import _salvar_json
+    _, x, _, y, provenance = carregar_exercicio(raiz)
+    resultado = benchmark(x, y)
+    resultado['provenance'] = provenance
+    _salvar_json(raiz/'outputs/diagnostics/fase2_modelagem_preditiva.json', resultado)
+    return resultado
