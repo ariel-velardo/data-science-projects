@@ -19,6 +19,7 @@ PRINCIPAL = RAIZ / "notebooks" / "principal"
 NB03 = PRINCIPAL / "03_estimacao_ato.ipynb"
 NB04 = PRINCIPAL / "04_evolucao_historica.ipynb"
 NB05 = PRINCIPAL / "05_temporalidade_prenatal.ipynb"
+NB06 = PRINCIPAL / "06_analise_preditiva_e_peso.ipynb"
 MIME_PLOTLY = "application/vnd.plotly.v1+json"
 
 
@@ -108,6 +109,7 @@ def test_estrutura_reorganizada():
         "notebooks/principal/03_estimacao_ato.ipynb",
         "notebooks/principal/04_evolucao_historica.ipynb",
         "notebooks/principal/05_temporalidade_prenatal.ipynb",
+        "notebooks/principal/06_analise_preditiva_e_peso.ipynb",
         "docs/sp_capital_ato/RESUMO_PARA_REDACAO.md",
         "docs/sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf",
         "docs/GUIA_REVISAO_MIKE.md",
@@ -167,6 +169,15 @@ def test_resultado_principal_notebook_03():
     assert "Bootstrap: 1000 réplicas" in bootstrap and "1000/1000" in bootstrap
     linha = re.search(r"<th>Diferença T=1 − T=0</th>(.*?)</tr>", bootstrap, re.S).group(1)
     assert re.findall(r"<td>([^<]*)</td>", linha) == ["", "", "-2,00 p.p.", "-2,61 a -1,37", "-1,74 p.p.", "-2,36 a -1,12"]
+    rr = re.search(r"<th>Risco relativo T=1 / T=0 \(razão\)</th>(.*?)</tr>", bootstrap, re.S).group(1)
+    assert re.findall(r"<td>([^<]*)</td>", rr) == ["", "", "0,81", "0,76 a 0,86", "0,83", "0,78 a 0,89"]
+    # Sensibilidade da inferência: confere réplicas e valores apresentados, sem exigir significância.
+    agrupado = _saidas_texto(_celula(nb, "ato-variancia-estab-2"))
+    assert "Bootstrap por estabelecimento: 1000 réplicas" in agrupado and "1000/1000" in agrupado
+    sensibilidade = re.search(r"<th>Dependência dentro do estabelecimento \(sensibilidade\)</th>(.*?)</tr>",
+                              agrupado, re.S).group(1)
+    assert re.findall(r"<td>([^<]*)</td>", sensibilidade) == [
+        "276 estabelecimentos + 593 nascimentos isolados", "-1,74", "0,42", "-2,60 a -0,96"]
     risco = next(t for t in _tracos(nb) if t.get("name") == "Risco ponderado ATO")
     assert np.round(_vetor(risco["y"]).astype(float), 2).tolist() == [8.68, 10.42]
     pesos = _saidas_texto(_celula(nb, "360e6d38"))
@@ -203,7 +214,8 @@ def test_contagens_notebook_05():
 
 def test_textos_corrigidos_nao_voltam():
     proibidos = {
-        NB03: ["balanço é exato", "atenua, mas não elimina", "mesmo perfil de idade"],
+        NB03: ["balanço é exato", "atenua, mas não elimina", "mesmo perfil de idade",
+               "tende a superestimar", "cenário conservador", "substituto do IC principal"],
         NB04: ["estatisticamente significativa"],
         NB05: ["as faixas são confiáveis"],
         RAIZ / "docs/sp_capital_ato/RESUMO_PARA_REDACAO.md": ["atenua, mas não elimina", "mesmo perfil", "quase exato"],
@@ -320,14 +332,14 @@ def test_riscos_normalizados_nao_dependem_da_escala_dos_pesos(medidas_ato):
 
 # ------------------------------------------------- apresentação e documentos
 
-def test_figuras_plotly_incorporadas_nos_cinco_notebooks():
+def test_figuras_plotly_incorporadas_nos_notebooks_principais():
     """Valida os artefatos; a interatividade visual requer um visualizador compatível com Plotly."""
     import plotly.io as pio
 
     esperados = {
         PRINCIPAL / "01_qualidade_geografica.ipynb": 2,
         PRINCIPAL / "02_comparabilidade.ipynb": 2,
-        NB03: 3, NB04: 2, NB05: 2,
+        NB03: 3, NB04: 2, NB05: 2, NB06: 3,
     }
     total = 0
     for caminho, quantidade in esperados.items():
@@ -351,7 +363,7 @@ def test_figuras_plotly_incorporadas_nos_cinco_notebooks():
                 figuras.append(figura)
         assert len(figuras) == quantidade, caminho.name
         total += len(figuras)
-    assert total == 11
+    assert total == 14
 
 
 def test_links_relativos_e_ancoras(tmp_path):

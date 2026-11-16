@@ -2,7 +2,7 @@
 
 ## Análise atual — São Paulo (capital), ATO
 
-Os cinco [notebooks principais](../notebooks/README.md) são a fonte oficial das análises, dos gráficos e das interpretações; as pastas abaixo preservam resultados complementares.
+Os seis [notebooks principais](../notebooks/README.md) são a fonte oficial das análises, dos gráficos e das interpretações; as pastas abaixo preservam resultados complementares.
 
 Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
 
@@ -10,7 +10,7 @@ Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para
 |---|---|---|
 | [`qualidade_geografica_2024/`](qualidade_geografica_2024/RECOMENDACAO_RECORTE.md) | recomendação e dois CSVs da comparação de seis recortes em 2024, com conteúdo não coberto pela série paulista do 01 | comparação geográfica de 2024 documentada na recomendação |
 
-Os cinco notebooks não dependem dos CSVs removidos: calculam suas tabelas diretamente dos Parquets e mantêm os resultados nas saídas salvas. O 01 produz os indicadores anuais em `dados`; o 02 produz o balanço em `saida_balanco` e os diagnósticos do escore em `resumo_ps`. Os notebooks 03, 04 e 05 também não gravam arquivos de resultados externos.
+Os seis notebooks não dependem dos CSVs removidos: calculam suas tabelas diretamente dos Parquets e mantêm os resultados nas saídas salvas. O 01 produz os indicadores anuais em `dados`; o 02 produz o balanço em `saida_balanco` e os diagnósticos do escore em `resumo_ps`. Os notebooks 03 a 06 também não gravam arquivos de resultados externos.
 
 ### Comparação geográfica preservada
 
@@ -38,6 +38,6 @@ A inspeção do código atual não identificou consumidores desses quatro arquiv
 
 O ZIP SINASC 2024 tem seu hash em `data/raw/source_manifest.json`; esse manifesto não contém o hash do Parquet. O hash do Parquet 2024 permanece em `diagnostics/fase2_aipw.json`, campo `provenance.parquet_sha256`: `a7a1618e555d1417f692b5334b2a0fd01cfee911b3d45c0e0623346f3b8a12b5`. Esses arquivos e os dez manifestos anuais preservam a proveniência dos onze Parquets. O dicionário analítico cobre os 62 campos brutos na versão [Markdown](../docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md).
 
-**Pendência para outro lote:** `src.amostra.carregar_exercicio` ainda lê os dois JSONs da Fase 1 e é chamado por `src.modelagem_preditiva.executar_preditivo`. Essa rotina histórica não é utilizada pelos cinco notebooks principais. Os módulos e os três JSONs foram preservados sem alteração; as estimativas nacionais contidas neles não integram os resultados atuais. Separar a proveniência de 2024 desse registro histórico também fica para uma limpeza posterior.
+**Pendência para outro lote:** `src.amostra.carregar_exercicio` ainda lê os dois JSONs da Fase 1 e é chamado por `src.modelagem_preditiva.executar_preditivo`. Essa rotina histórica não é utilizada pelos seis notebooks principais. Os módulos e os três JSONs foram preservados sem alteração; as estimativas nacionais contidas neles não integram os resultados atuais. Separar a proveniência de 2024 desse registro histórico também fica para uma limpeza posterior.
 
 Os resultados da Entrega 1 nacional, da extensão V1/V2 e `diagnostics/fase3_sensibilidades.json` foram retirados da árvore ativa; seus arquivos versionados permanecem recuperáveis no commit `af30d8d`.

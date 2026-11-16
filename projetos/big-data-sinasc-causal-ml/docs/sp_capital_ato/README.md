@@ -10,7 +10,7 @@ Documentos da fase atual do projeto: SINASC 2024, mães residentes no município
 | [PACOTE_REDACAO_ETAPA_2_OVERLEAF/](PACOTE_REDACAO_ETAPA_2_OVERLEAF/) | Fonte LaTeX **atual** (Etapa 2, 27/10/2026): estimação de 2024 (notebook 06), série anual 2014–2024 (notebook 07), temporalidade e seleção (notebook 08), sem material do piloto SIM e com a origem de tabelas e figuras apontando para os nomes históricos dos notebooks. Compilar com XeLaTeX; instruções em `LEIA_ME.txt`. Situação do PDF e do ZIP abaixo |
 | [artigos/LEIA_ME.md](artigos/LEIA_ME.md) | Índice das referências citadas; os PDFs de acesso aberto ficam só na cópia local (fora do Git) |
 
-Os notebooks desta fase estão em [`notebooks/principal/`](../../notebooks/principal/) (01 a 05). Os números antigos nas descrições dos pacotes são históricos; consulte o [mapeamento da Etapa 2](../../README.md#correspondência-dos-notebooks-citados-na-etapa-2) para os caminhos atuais.
+Os notebooks desta fase estão em [`notebooks/principal/`](../../notebooks/principal/) (01 a 06; o 06, análise complementar de regressão logística do desfecho e peso contínuo, é posterior aos pacotes acadêmicos e não é citado neles). Os números antigos nas descrições dos pacotes são históricos; consulte o [mapeamento da Etapa 2](../../README.md#correspondência-dos-notebooks-citados-na-etapa-2) para os caminhos atuais.
 
 **Não confundir com a Entrega 1:** série nacional 2014–2024 estimada com AIPW, retirada da árvore ativa e recuperável no commit `af30d8d`, em `docs/entrega_1_nacional_aipw/`. População, estimando e estimador são diferentes, e os números das duas fases não devem ser combinados. As menções à entrega nacional no resumo para redação e no pacote acadêmico preservado referem-se a esse material histórico.
 
