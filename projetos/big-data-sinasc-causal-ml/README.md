@@ -49,6 +49,8 @@ Em 2024: **114.694 nascimentos elegíveis**, 104.576 em T=1 e 10.118 em T=0, nen
 - Sensibilidade com situação conjugal no escore: −1,63 p.p., estimativa pontual **sem IC**. Ela também muda a população-alvo.
 - **Série 2014–2024** ([notebook 04](notebooks/principal/04_evolucao_historica.ipynb)): diferença ATO negativa nos onze anos, de −0,58 p.p. (2020) a −1,90 p.p. (2023), sem tendência monotônica. São estimativas pontuais, **sem IC anual e sem teste de diferença entre anos**; cada ano tem sua própria população de sobreposição.
 - **Temporalidade** ([notebook 05](notebooks/principal/05_temporalidade_prenatal.ipynb)): a análise descreve a composição por duração gestacional e a seleção antes do filtro de início do pré-natal; não identifica a magnitude nem a direção do possível viés temporal.
+- **Análise complementar** ([notebook 06](notebooks/principal/06_analise_preditiva_e_peso.ipynb)): regressão logística do desfecho (< 2.600 g, comparado com < 2.500 g), com OR ajustadas e desempenho preditivo fora da amostra, e peso ao nascer em gramas por mês de início (Welch). É previsão e associação, não estimação causal; não altera o ATO.
+- **Relatório de análises comentadas** ([docs/relatorio_analises_comentadas](docs/relatorio_analises_comentadas/README.md)): PDF de 5 páginas e fonte LaTeX que explicam e interpretam as três análises.
 
 Consolidação com a origem de cada número: [RESUMO_PARA_REDACAO.md](docs/sp_capital_ato/RESUMO_PARA_REDACAO.md).
 
@@ -66,7 +68,7 @@ Consolidação com a origem de cada número: [RESUMO_PARA_REDACAO.md](docs/sp_ca
 
 ```text
 notebooks/
-  principal/                  análise atual (SP capital, ATO) — ler na ordem 01 → 02 → 03 → 04 → 05
+  principal/                  análise atual (SP capital, ATO) — ler na ordem 01 → 02 → 03 → 04 → 05; 06 é complementar
 docs/
   GUIA_REVISAO_MIKE.md        roteiro de revisão
   sp_capital_ato/             resumo para redação, PDF da Etapa 1 e fontes LaTeX das Etapas 1 e 2
@@ -95,7 +97,7 @@ Os documentos acadêmicos preservam a numeração histórica. Os cinco arquivos 
 | `07_evolucao_ato_sp_capital_2014_2024.ipynb` | [`04_evolucao_historica.ipynb`](notebooks/principal/04_evolucao_historica.ipynb) |
 | `08_temporalidade_prenatal_sp_capital_2024.ipynb` | [`05_temporalidade_prenatal.ipynb`](notebooks/principal/05_temporalidade_prenatal.ipynb) |
 
-A leitura segue: 01 — qualidade geográfica e seleção da população; 02 — comparabilidade e propensity score; 03 — estimação ATO de 2024; 04 — evolução histórica de 2014 a 2024; 05 — temporalidade do pré-natal e seleção.
+A leitura segue: 01 — qualidade geográfica e seleção da população; 02 — comparabilidade e propensity score; 03 — estimação ATO de 2024; 04 — evolução histórica de 2014 a 2024; 05 — temporalidade do pré-natal e seleção; 06 — análise complementar (logística do desfecho e peso contínuo), cujo título interno não tem número para não se confundir com o "06" histórico.
 
 **Títulos internos dos notebooks.** O conteúdo interno preserva a numeração histórica. O `03_estimacao_ato.ipynb` abre com o título "06 — Estimação ajustada com pesos de sobreposição (ATO)", o `04_evolucao_historica.ipynb` com "07 — Evolução da associação ajustada pelo ATO" e o `05_temporalidade_prenatal.ipynb` com "08 — Temporalidade do pré-natal e duração da gestação"; os títulos do 01 e do 02 não têm número. Nas células, "notebook 06" e "notebook 08" designam os atuais 03 e 05, e os prefixos `06_`, `07_` e `08_` em nomes de figuras seguem a mesma numeração. Exceção: o "notebook 02 (seção 4)" citado no 05 é o antigo `02_preparacao_e_desenho.ipynb` da Entrega 1 nacional (commit `af30d8d`), não o atual `02_comparabilidade.ipynb`.
 
@@ -124,7 +126,7 @@ jupyter lab
 
 ## 8. Como visualizar os gráficos
 
-Os cinco [notebooks principais](notebooks/README.md) são a fonte oficial das análises, dos gráficos e das interpretações. Suas saídas salvas contêm 11 figuras em Plotly JSON com PNG de apoio.
+Os seis [notebooks principais](notebooks/README.md) são a fonte oficial das análises, dos gráficos e das interpretações. Suas saídas salvas contêm 14 figuras em Plotly JSON com PNG de apoio.
 
 Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
 
@@ -132,7 +134,7 @@ Em visualizadores compatíveis, o hover mostra valores, intervalos e tamanhos de
 
 ## 9. Fases anteriores do projeto
 
-A árvore ativa contém somente os cinco notebooks da pesquisa sobre São Paulo (capital). A antiga Entrega 1 nacional AIPW e os artefatos da extensão V1/V2 foram retirados; os arquivos versionados deste lote podem ser recuperados no commit `af30d8d`. As fases removidas usam outras populações e estimadores, e seus números não devem ser combinados com os do estudo atual.
+A árvore ativa contém somente os seis notebooks da pesquisa sobre São Paulo (capital). A antiga Entrega 1 nacional AIPW e os artefatos da extensão V1/V2 foram retirados; os arquivos versionados deste lote podem ser recuperados no commit `af30d8d`. As fases removidas usam outras populações e estimadores, e seus números não devem ser combinados com os do estudo atual.
 
 Os registros históricos ainda necessários à preparação dos dados, à proveniência ou a funções preservadas estão identificados no [índice de outputs](outputs/README.md#proveniência-e-dependências-preservadas). A limpeza dessas funções fica para outro lote.
 

@@ -2,13 +2,14 @@
 
 Para revisar a análise atual, comece pelo [guia de revisão](GUIA_REVISAO_MIKE.md).
 
-Os cinco [notebooks principais](../notebooks/README.md) são a fonte oficial das análises, dos gráficos e das interpretações. Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
+Os seis [notebooks principais](../notebooks/README.md) são a fonte oficial das análises, dos gráficos e das interpretações. Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
 
 ## Análise atual — São Paulo (capital), ATO
 
 | Documento | Finalidade |
 | --- | --- |
 | [GUIA_REVISAO_MIKE.md](GUIA_REVISAO_MIKE.md) | Ordem de leitura, o que foi realizado e o que permanece em aberto |
+| [relatorio_analises_comentadas/](relatorio_analises_comentadas/README.md) | Relatório de análises comentadas (PDF e fonte LaTeX): peso ao nascer, regressão logística do desfecho e ATO, com a interpretação de cada análise |
 | [sp_capital_ato/RESUMO_PARA_REDACAO.md](sp_capital_ato/RESUMO_PARA_REDACAO.md) | Problema, dados, método, resultados, limitações e referências, com a fonte de cada número |
 | [sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) | Documento acadêmico da Etapa 1 tal como entregue (estimação de 2024), registro histórico não atualizado; a [fonte LaTeX da Etapa 1](sp_capital_ato/PACOTE_REDACAO_ETAPA_1_OVERLEAF/) foi alterada na retirada do SIM e não corresponde exatamente ao PDF |
 | [sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/](sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/) | Fonte LaTeX atual do documento acadêmico (Etapa 2): estimação de 2024, série 2014–2024 e temporalidade e seleção; compilada e revisada em ambiente externo, PDF não armazenado no repositório (ver [situação](sp_capital_ato/README.md#situação-do-pacote-da-etapa-2)) |

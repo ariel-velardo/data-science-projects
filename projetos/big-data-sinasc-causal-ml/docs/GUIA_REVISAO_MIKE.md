@@ -17,8 +17,9 @@ Em 2024, entre 114.694 nascidos vivos elegíveis de mães residentes na capital 
 | 5 | [03 — estimação principal](../notebooks/principal/03_estimacao_ato.ipynb) | seção 2 (método); seção 3 (pesos, n efetivo e gráfico do escore); seção 4 (balanço e perfil da população-alvo); seção 5 (riscos com IC bootstrap); seção 7 (sensibilidade com situação conjugal) |
 | 6 | [04 — série 2014–2024](../notebooks/principal/04_evolucao_historica.ipynb) | mesma especificação ano a ano; estimativas pontuais, sem IC anual; queda do grupo T=0 de 14,8% para 8,8% dos elegíveis |
 | 7 | [05 — temporalidade e seleção](../notebooks/principal/05_temporalidade_prenatal.ipynb) | duração gestacional por mês de início e nascimentos excluídos antes do filtro de início; leitura descritiva |
-| 8 | Diagnósticos complementares | Comparação de seis recortes de 2024 e justificativa em [`outputs/qualidade_geografica_2024/`](../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md); tabelas anuais e de comparabilidade nos próprios notebooks 01 e 02 |
-| 9 | Limitações | seção 5 do resumo e seções finais dos notebooks 03, 04 e 05 |
+| 8 | [06 — análise complementar](../notebooks/principal/06_analise_preditiva_e_peso.ipynb) | logística do desfecho (< 2.600 g e < 2.500 g) com OR ajustadas e desempenho fora da amostra; peso em gramas por mês de início (Welch). Previsão e associação, não estimação causal; não altera o ATO |
+| 9 | Diagnósticos complementares | Comparação de seis recortes de 2024 e justificativa em [`outputs/qualidade_geografica_2024/`](../outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md); tabelas anuais e de comparabilidade nos próprios notebooks 01 e 02 |
+| 10 | Limitações | seção 5 do resumo e seções finais dos notebooks 03, 04, 05 e 06 |
 
 ### Numeração dos notebooks no material da Etapa 2
 
@@ -32,7 +33,7 @@ O PDF e a fonte LaTeX da Etapa 2 foram produzidos antes da renumeração e citam
 | `07_evolucao_ato_sp_capital_2014_2024.ipynb` | [04_evolucao_historica.ipynb](../notebooks/principal/04_evolucao_historica.ipynb) | série 2014–2024 |
 | `08_temporalidade_prenatal_sp_capital_2024.ipynb` | [05_temporalidade_prenatal.ipynb](../notebooks/principal/05_temporalidade_prenatal.ipynb) | temporalidade e seleção |
 
-Os cinco notebooks principais são a fonte oficial das análises, dos gráficos e das interpretações, com 11 figuras em Plotly JSON e PNG de apoio nas saídas salvas.
+Os seis notebooks principais são a fonte oficial das análises, dos gráficos e das interpretações, com 14 figuras em Plotly JSON e PNG de apoio nas saídas salvas. O 06 é posterior ao material da Etapa 2 e não é citado nele.
 
 Os CSVs duplicados de qualidade anual e comparabilidade foram removidos; nenhum deles é necessário à execução dos notebooks. Para referências antigas no material acadêmico preservado, consulte a [correspondência dos outputs](../outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c). As definições dos campos permanecem no [dicionário em Markdown](dados/DICIONARIO_ANALITICO_SINASC_2024.md).
 
@@ -72,6 +73,6 @@ Nenhum dos itens abaixo foi iniciado.
 
 O projeto começou com uma análise nacional de 2024 e evoluiu para a Entrega 1, uma série nacional 2014–2024 estimada com AIPW. Essas fases foram retiradas da árvore ativa; os materiais versionados da Entrega 1 permanecem no histórico Git, no commit `af30d8d`. A análise atual mudou população, estimando e estimador. Os números das fases não devem ser combinados; por exemplo, −1,48 p.p. nacional (AIPW, 2024) e −1,74 p.p. na capital (ATO, 2024) respondem a perguntas diferentes.
 
-A revisão atual usa somente os cinco notebooks principais. Os registros preservados por dependência de código ou proveniência estão identificados no [índice de outputs](../outputs/README.md#proveniência-e-dependências-preservadas); não são resultados do estudo atual.
+A revisão atual usa somente os seis notebooks principais. Os registros preservados por dependência de código ou proveniência estão identificados no [índice de outputs](../outputs/README.md#proveniência-e-dependências-preservadas); não são resultados do estudo atual.
 
 Os registros administrativos anteriores da reorganização podem ser consultados no histórico Git, commit `3dd446f`, em `docs/manutencao/`.

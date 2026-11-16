@@ -1,0 +1,204 @@
+% Relatório de análises comentadas — SINASC (início do pré-natal e baixo peso ao nascer), versão de 16/11/2026.
+% Fonte própria deste relatório: não reutiliza nem altera o relatório acadêmico da Etapa 2.
+% Mesmo conteúdo do PDF de referência RELATORIO_ANALISES_COMENTADAS_SINASC.pdf (gerado a partir de HTML pelo Chrome).
+% ATENÇÃO: a compilação desta fonte em LaTeX ainda precisa ser validada (não havia LaTeX no ambiente de preparo).
+% Compilador recomendado: pdfLaTeX (padrão do Overleaf); XeLaTeX também é suportado. Figuras em figuras/.
+\documentclass[10pt,a4paper]{article}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{helvet}
+\else
+  \usepackage{fontspec}
+  \setmainfont{TeX Gyre Heros}
+  \setsansfont{TeX Gyre Heros}
+\fi
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[brazil]{babel}
+\usepackage[a4paper,top=12mm,bottom=11mm,left=14mm,right=14mm]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{graphicx,array,needspace}
+\usepackage[most]{tcolorbox}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Relatório de análises comentadas -- início do pré-natal e baixo peso ao nascer (SINASC 2024)}}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\raggedright
+
+\definecolor{iptescuro}{HTML}{133C5A}
+\definecolor{iptazul}{HTML}{00598E}
+\definecolor{iptciano}{HTML}{04B4E3}
+\definecolor{iptcinza}{HTML}{5A6B78}
+\definecolor{iptgrade}{HTML}{D9E7EE}
+\definecolor{iptfundo}{HTML}{F5F7F9}
+\definecolor{iptgrupo}{HTML}{E6EEF3}
+
+\newcommand{\menos}{\ensuremath{-}}
+\newcommand{\seta}{\ensuremath{\rightarrow}}
+\newcommand{\vezes}{\ensuremath{\times}}
+\newcommand{\menor}{\ensuremath{<}}
+\newcommand{\maior}{\ensuremath{>}}
+\newcommand{\secao}[2]{\par\needspace{6\baselineskip}\vspace{8pt}{\color{iptescuro}\bfseries\large{\color{iptazul}#1}~#2}\par
+  \vspace{-2pt}{\color{iptgrade}\rule{\linewidth}{0.8pt}}\par\vspace{1pt}}
+\newtcolorbox{caixa}{enhanced, colback=iptfundo, boxrule=0pt, frame hidden, sharp corners,
+  borderline west={2.4pt}{0pt}{iptciano}, left=7pt, right=6pt, top=4pt, bottom=4pt, before skip=5pt, after skip=7pt}
+\newcommand{\figura}[3]{\par\vspace{4pt}\begin{minipage}{\linewidth}\centering
+  {\setlength{\fboxsep}{0pt}\fcolorbox{iptgrade}{white}{\includegraphics[width=#2\linewidth]{figuras/#1}}}\par\vspace{2pt}
+  \begin{minipage}{#2\linewidth}\raggedright\footnotesize\color{iptcinza}#3\end{minipage}\end{minipage}\par\vspace{7pt}}
+
+\begin{document}
+
+\small
+
+\begin{tcolorbox}[enhanced, colback=iptescuro, boxrule=0pt, frame hidden, sharp corners, borderline south={2.5pt}{0pt}{iptciano}, left=9pt, right=9pt, top=6pt, bottom=7pt]
+
+{\color{white}\scriptsize IPT --- MESTRADO EM COMPUTAÇÃO APLICADA \textperiodcentered{} PROJETO SINASC}\par\vspace{2pt}
+
+{\color{white}\bfseries\LARGE Início do pré-natal e baixo peso ao nascer}\par\vspace{2pt}
+
+{\color{white}\footnotesize Relatório de análises comentadas \textperiodcentered{} SINASC 2024, município de São Paulo \textperiodcentered{} versão de 16/11/2026}
+
+\end{tcolorbox}
+
+{\color{iptcinza}Para cada análise, este relatório explica por que ela foi feita, como foi implementada, qual foi o resultado e como interpretá-lo. Os números vêm das saídas validadas dos notebooks 03 (ATO) e 06 (regressão logística e peso ao nascer).\par}
+
+\secao{1.}{Objetivo e população}
+
+{\color{iptescuro}\bfseries Pergunta.} Queremos saber se o início do pré-natal nos meses 1--3 da gestação está associado a menor risco de baixo peso ao nascer (abaixo de 2.500~g), em comparação com o início nos meses 4--6. Usamos os microdados do SINASC, que registram cada nascido vivo a partir da Declaração de Nascido Vivo. O recorte é o município de São Paulo em 2024, escolhido pela qualidade de preenchimento das variáveis, sem olhar o desfecho.\par
+
+{\color{iptescuro}\bfseries População.} Entram nascidos vivos de gestação única, com peso entre 500 e 6.000~g, mãe residente na capital e mês de início do pré-natal entre 1 e 6: são \textbf{114.694 nascimentos}, dos quais 104.576 com início nos meses 1--3 (grupo T~=~1, ou X1~=~1) e 10.118 nos meses 4--6 (T~=~0). Desses, 9.850 (8,59\%) pesaram menos de 2.500~g. Os inícios nos meses 7--9 ficam fora da comparação principal porque só existem em gestações que chegaram ao sétimo mês, o que distorceria o grupo de comparação. As três análises respondem a perguntas diferentes (Tabela A).\par
+
+\par\vspace{4pt}\needspace{7\baselineskip}
+{\footnotesize\bfseries\color{iptescuro} Tabela A --- Três análises, três perguntas\par}\vspace{2pt}
+{\footnotesize\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{4pt}\arrayrulecolor{iptgrade}
+\begin{tabular}{>{\raggedright\arraybackslash}p{\dimexpr0.21\linewidth-2\tabcolsep\relax} >{\raggedright\arraybackslash}p{\dimexpr0.37\linewidth-2\tabcolsep\relax} >{\raggedright\arraybackslash}p{\dimexpr0.18\linewidth-2\tabcolsep\relax} >{\raggedright\arraybackslash}p{\dimexpr0.24\linewidth-2\tabcolsep\relax}}
+\rowcolor{iptazul}\textcolor{white}{\bfseries Análise} & \textcolor{white}{\bfseries Pergunta} & \textcolor{white}{\bfseries Medida} & \textcolor{white}{\bfseries Ajuste} \\ \hline
+\textbf{Comparação de médias} (Welch) & O peso médio difere entre os grupos de início do pré-natal? & Diferença de médias (g) & Nenhum: compara os grupos como eles são \\ \hline
+\textbf{Regressão logística} do desfecho & Mães com o mesmo perfil observado têm chances diferentes de baixo peso? Quanto esse perfil prevê o desfecho? & OR ajustada; ROC-AUC & Covariáveis incluídas no modelo do desfecho \\ \hline
+\textbf{ATO} (pesos de sobreposição) & Qual é a diferença de risco entre grupos com características observadas equilibradas? & Diferença de riscos (p.p.); RR & Pesos do escore de propensão; vale para a população de sobreposição \\ \hline
+\end{tabular}\par}\par\vspace{6pt}
+
+
+\secao{2.}{Peso ao nascer como variável contínua}
+
+{\color{iptescuro}\bfseries Por quê.} O corte de 2.500~g transforma o peso em sim ou não e descarta em que parte da distribuição os grupos diferem. Analisar o peso em gramas, como sugeriu a professora, mostra se a distribuição inteira se desloca e dá uma medida direta do tamanho da diferença.\par
+
+{\color{iptescuro}\bfseries Como.} Comparamos os dois grupos principais (meses 1--3 e 4--6) e, depois, cada mês de 1 a 6. Para cada grupo calculamos n, média com IC~95\%, desvio-padrão e percentis (Tabela B). A diferença entre os grupos principais usa o teste t de Welch, e a comparação dos seis meses usa a ANOVA de Welch. As duas versões não supõem variâncias iguais, o que importa aqui: os grupos têm tamanhos muito diferentes (104.576 e 10.118) e desvios-padrão distintos (522 e 555~g). Os meses 7--9 e os 993 registros sem mês válido aparecem só para descrição.\par
+
+\par\vspace{4pt}\needspace{7\baselineskip}
+{\footnotesize\bfseries\color{iptescuro} Tabela B --- Peso ao nascer (g) por grupo de início do pré-natal\par}\vspace{2pt}
+{\footnotesize\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{4pt}\arrayrulecolor{iptgrade}
+\begin{tabular}{>{\raggedright\arraybackslash}p{\dimexpr0.3\linewidth-2\tabcolsep\relax} >{\centering\arraybackslash}p{\dimexpr0.11\linewidth-2\tabcolsep\relax} >{\centering\arraybackslash}p{\dimexpr0.24\linewidth-2\tabcolsep\relax} >{\centering\arraybackslash}p{\dimexpr0.09\linewidth-2\tabcolsep\relax} >{\centering\arraybackslash}p{\dimexpr0.11\linewidth-2\tabcolsep\relax} >{\centering\arraybackslash}p{\dimexpr0.15\linewidth-2\tabcolsep\relax}}
+\rowcolor{iptazul}\textcolor{white}{\bfseries Grupo} & \textcolor{white}{\bfseries n} & \textcolor{white}{\bfseries Média (IC 95\%)} & \textcolor{white}{\bfseries DP} & \textcolor{white}{\bfseries Mediana} & \textcolor{white}{\bfseries \% \menor{} 2.500 g} \\ \hline
+\textbf{Meses 1--3} & 104.576 & 3.155 (3.152 a 3.158) & 522 & 3.190 & 8,41 \\ \hline
+\textbf{Meses 4--6} & 10.118 & 3.131 (3.121 a 3.142) & 555 & 3.173 & 10,41 \\ \hline
+\rowcolor{iptfundo}Meses 7--9 (só descrição) & 1.735 & 3.165 (3.140 a 3.190) & 525 & 3.200 & 8,65 \\ \hline
+\rowcolor{iptfundo}Sem mês válido (só descrição) & 993 & 2.804 (2.757 a 2.850) & 742 & 2.910 & 25,58 \\ \hline
+\end{tabular}\par}\par\vspace{2pt}{\scriptsize\color{iptcinza} Meses 1--3 menos meses 4--6: +23~g (IC 95\% de Welch: 12 a 34~g). ANOVA de Welch para os meses 1 a 6: F(5; 10.456)~=~9,3; p~\menor{}~0,001.\par}\par\vspace{6pt}
+
+
+{\color{iptescuro}\bfseries Resultado.} Os nascidos de mães com início nos meses 1--3 pesaram em média \textbf{23~g a mais} (IC~95\% de Welch: 12 a 34~g). Entre os meses 1 e 6, as médias caem de 3.165~g para 3.107~g (Figura 1), e a ANOVA de Welch indica diferença entre os meses (F(5; 10.456)~=~9,3; p~\menor{}~0,001).\par
+
+{\color{iptescuro}\bfseries Leitura.} A diferença é estatisticamente clara, mas pequena diante da variação individual do peso, com desvio-padrão acima de 500~g. Com mais de 100 mil nascimentos, o tamanho da diferença em gramas pesa mais que o valor-p. Esta comparação não ajusta por nenhuma característica materna: descreve os grupos como eles são.\par
+
+\figura{fig1_peso_por_mes_notebook06.png}{0.82}{{\color{iptescuro}\bfseries Figura 1 --- notebook 06.} Peso médio ao nascer por mês de início do pré-natal, com IC~95\% (t). Meses 7--9 e registros sem mês válido aparecem só para descrição.}
+
+\secao{3.}{Regressão logística para baixo peso}
+
+{\color{iptescuro}\bfseries Por quê.} A professora sugeriu modelar diretamente o desfecho com uma regressão logística, para estimar a associação do início precoce com o baixo peso entre mães com características semelhantes. O mesmo modelo permite uma segunda pergunta, diferente da primeira: quanto essas características conseguem prever o baixo peso.\par
+
+{\color{iptescuro}\bfseries Desfechos e variáveis.} Usamos dois desfechos: peso abaixo de 2.600~g, limite pedido pela professora, e abaixo de 2.500~g, o padrão da OMS e o desfecho do estudo. O modelo principal (M3) inclui X1 (início nos meses 1--3), idade e idade\textsuperscript{2}, escolaridade, raça/cor, paridade e perdas fetais anteriores, todas anteriores à gestação. Variáveis do parto ou da assistência (semanas de gestação, número de consultas, tipo de parto, Apgar) ficam de fora, porque são posteriores ao início do pré-natal ou podem ser consequências dele.\par
+
+{\color{iptescuro}\bfseries Tratamento dos dados.} Categorias com menos de 100 nascimentos foram agrupadas antes do ajuste: ``sem escolaridade'' (33 nascimentos) entrou com ``fundamental I'', e os 94 registros com alguma característica ``ignorada'' receberam a categoria mais frequente, o que é uma imputação pela moda. Para conferir o efeito dessa escolha, repetimos o modelo só com os casos completos, sem esses 94 registros.\par
+
+{\color{iptescuro}\bfseries Validação cruzada.} Para medir a capacidade preditiva sem otimismo, dividimos os nascimentos em cinco partes. Cada parte é prevista por um modelo ajustado nas outras quatro, de modo que nenhum nascimento é avaliado pelo modelo que o usou no ajuste. Comparamos o M3 com modelos de referência: M0 (só a prevalência), M1 (só X1) e M3 sem X1.\par
+
+{\color{iptescuro}\bfseries Como ler as medidas.} A razão de chances (OR) compara as chances, p/(1~\menos{}~p), de baixo peso entre os grupos, mantendo fixas as demais variáveis; OR abaixo de 1 indica chances menores. A OR não é um risco relativo: como o baixo peso não é raro, as duas medidas não coincidem. A ROC-AUC é a probabilidade de que, num par formado por um caso e um não caso, o modelo atribua risco maior ao caso: 0,5 equivale ao acaso, e 1, à separação perfeita.\par
+
+\par\vspace{4pt}\needspace{7\baselineskip}
+{\footnotesize\bfseries\color{iptescuro} Tabela C --- Regressão logística: associação de X1 e capacidade preditiva\par}\vspace{2pt}
+{\footnotesize\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{4pt}\arrayrulecolor{iptgrade}
+\begin{tabular}{>{\raggedright\arraybackslash}p{\dimexpr0.5\linewidth-2\tabcolsep\relax} >{\centering\arraybackslash}p{\dimexpr0.25\linewidth-2\tabcolsep\relax} >{\centering\arraybackslash}p{\dimexpr0.25\linewidth-2\tabcolsep\relax}}
+\rowcolor{iptazul}\textcolor{white}{\bfseries Medida} & \textcolor{white}{\bfseries Peso \menor{} 2.500 g} & \textcolor{white}{\bfseries Peso \menor{} 2.600 g} \\ \hline
+\rowcolor{iptgrupo}\multicolumn{3}{>{\raggedright\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}}{\bfseries\color{iptescuro} Associação: OR de X1 (IC 95\%)} \\ \hline
+OR bruta (só X1) & 0,79 (0,74 a 0,85) & 0,81 (0,76 a 0,86) \\ \hline
+\textbf{OR ajustada (M3)} & \textbf{0,81} (0,76 a 0,87) & \textbf{0,83} (0,78 a 0,88) \\ \hline
+OR ajustada, casos completos (sem os 94 ignorados) & 0,82 (0,76 a 0,87) & 0,83 (0,78 a 0,88) \\ \hline
+\rowcolor{iptgrupo}\multicolumn{3}{>{\raggedright\arraybackslash}p{\dimexpr\linewidth-2\tabcolsep\relax}}{\bfseries\color{iptescuro} Previsão fora da amostra: ROC-AUC} \\ \hline
+M0: só a prevalência & 0,500 & 0,500 \\ \hline
+M1: só X1 & 0,508 & 0,508 \\ \hline
+M3 sem X1 & 0,569 & 0,563 \\ \hline
+\textbf{M3} & \textbf{0,571} & \textbf{0,565} \\ \hline
+Average precision do M3 (prevalência) & 0,107 (0,086) & 0,138 (0,113) \\ \hline
+\end{tabular}\par}\par\vspace{2pt}{\scriptsize\color{iptcinza} OR com IC de Wald. Métricas por validação cruzada estratificada em 5 dobras, sem IC (o bootstrap das métricas está pendente). A inclinação de calibração do M3 é 0,97 nos dois desfechos.\par}\par\vspace{6pt}
+
+
+{\color{iptescuro}\bfseries Resultado.} Ajustada pelas demais variáveis, a OR de X1 é \textbf{0,81} (IC~95\% 0,76 a 0,87) para peso abaixo de 2.500~g e \textbf{0,83} (0,78 a 0,88) abaixo de 2.600~g. Sem os 94 registros com dado ignorado, fica em 0,82 e 0,83. Fora da amostra, o M3 tem ROC-AUC de \textbf{0,571} e \textbf{0,565}, contra 0,500 do M0, e acrescentar X1 muda a AUC em apenas +0,002 (para \menor{} 2.600~g).\par
+
+{\color{iptescuro}\bfseries Leitura.} Entre mães com o mesmo perfil observado, o início nos meses 1--3 está associado a chances menores de baixo peso, com OR semelhantes sem os registros ignorados (0,82 e 0,83). Na Figura 2, a multiparidade também se associa a chances menores (OR 0,71), e as perdas fetais anteriores, a chances maiores. Ainda assim, as características maternas disponíveis separam mal casos e não casos: X1 se associa ao desfecho, mas quase não melhora a previsão.\par
+
+\begin{caixa}{\color{iptescuro}\bfseries Associação e previsão são perguntas diferentes.} Uma variável pode ter associação estatisticamente clara com o desfecho e, ainda assim, quase não ajudar a prever quem terá baixo peso, porque o desfecho depende de muitos fatores que o SINASC não registra. Nenhuma das duas medidas, sozinha, indica efeito causal.\end{caixa}
+
+\figura{fig2_razoes_de_chances_notebook06.png}{0.82}{{\color{iptescuro}\bfseries Figura 2 --- notebook 06.} OR ajustadas do M3 para os dois limites de peso, com IC~95\% de Wald (escala logarítmica). Referências: escolaridade média, raça/cor branca, nulípara e nenhuma perda fetal.}
+
+\secao{4.}{Análise ATO: ponderação por sobreposição}
+
+{\color{iptescuro}\bfseries Por quê.} Os grupos diferem antes de qualquer análise. As mães com início nos meses 4--6 são mais jovens (idade média de 27,5 contra 29,3 anos) e menos escolarizadas (12,9\% contra 31,1\% com superior completo), e a maior diferença padronizada (SMD) entre os grupos chega a 0,452. Para comparar o risco de baixo peso entre grupos parecidos, é preciso equilibrar essas características, e o ATO faz isso com pesos, sem modelar o desfecho.\par
+
+{\color{iptescuro}\bfseries O escore de propensão.} Primeiro estimamos, para cada nascimento, a probabilidade de o pré-natal ter começado nos meses 1--3 dadas as características maternas: e(X)~=~P(T~=~1~\textbar{}~X). É uma regressão logística, mas com objetivo diferente da seção 3: modela a exposição, e não o desfecho, e serve apenas para construir os pesos. Por isso é avaliada pelo equilíbrio que produz entre os grupos, não pela capacidade preditiva, e o peso ao nascer não entra nela.\par
+
+{\color{iptescuro}\bfseries Por que pesos de sobreposição.} A Figura 3 mostra o escore concentrado em valores altos, com média de 0,9118 e suporte comum entre 0,6910 e 0,9760. Na ponderação clássica (IPW), as mães de T~=~0 com escore próximo de 1 receberiam pesos 1/(1~\menos{}~e) muito grandes, e poucos nascimentos dominariam a estimativa. Os pesos de sobreposição (1~\menos{}~e para T~=~1 e e para T~=~0) ficam entre 0 e 1 e dão mais importância aos perfis em que os dois momentos de início são comuns. Com eles, a maior SMD cai de 0,452 para 0,0031, e o tamanho efetivo de T~=~0 se mantém (10.096 de 10.118).\par
+
+\figura{fig3_escore_e_pesos_notebook03.png}{0.82}{{\color{iptescuro}\bfseries Figura 3 --- notebook 03.} Distribuição do escore de propensão sem ponderação e com os pesos ATO. Os pesos dão mais importância à região em que os dois grupos coexistem.}
+
+{\color{iptescuro}\bfseries A população de sobreposição.} O resultado vale para a população implícita nesses pesos: mães cujo perfil é compatível com os dois momentos de início. Ela é mais jovem e menos escolarizada que o total (idade média de 27,6 anos e 13,8\% com superior completo, contra 29,1 anos e 29,5\%). Não é a população inteira (ATE) nem só a das mães com início precoce (ATT).\par
+
+{\color{iptescuro}\bfseries Incerteza.} O IC vem de um bootstrap com 1.000 réplicas: em cada uma, sorteamos nascimentos com reposição, reestimamos o escore e recalculamos os riscos. Nascimentos do mesmo estabelecimento podem compartilhar fatores não medidos; por isso repetimos o bootstrap sorteando estabelecimentos inteiros (276 estabelecimentos, mais 593 nascimentos fora deles). Os dois intervalos são sensibilidades sob hipóteses diferentes de dependência, e nenhuma é superior por construção.\par
+
+\par\vspace{4pt}\needspace{7\baselineskip}
+{\footnotesize\bfseries\color{iptescuro} Tabela D --- ATO: risco de baixo peso (\menor{} 2.500 g)\par}\vspace{2pt}
+{\footnotesize\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{4pt}\arrayrulecolor{iptgrade}
+\begin{tabular}{>{\raggedright\arraybackslash}p{\dimexpr0.36\linewidth-2\tabcolsep\relax} >{\centering\arraybackslash}p{\dimexpr0.32\linewidth-2\tabcolsep\relax} >{\centering\arraybackslash}p{\dimexpr0.32\linewidth-2\tabcolsep\relax}}
+\rowcolor{iptazul}\textcolor{white}{\bfseries Medida} & \textcolor{white}{\bfseries Sem ajuste} & \textcolor{white}{\bfseries Ponderado (ATO)} \\ \hline
+Risco, meses 1--3 (\%) & 8,41 (8,25 a 8,59) & 8,68 (8,49 a 8,87) \\ \hline
+Risco, meses 4--6 (\%) & 10,41 (9,84 a 11,00) & 10,42 (9,85 a 11,00) \\ \hline
+\textbf{Diferença T~=~1 \menos{} T~=~0 (p.p.)} & \menos{}2,00 (\menos{}2,61 a \menos{}1,37) & \textbf{\menos{}1,74} (\menos{}2,36 a \menos{}1,12) \\ \hline
+\rowcolor{iptfundo}IC com agrupamento por estabelecimento & --- & (\menos{}2,60 a \menos{}0,96) \\ \hline
+Risco relativo T~=~1 / T~=~0 & 0,81 (0,76 a 0,86) & 0,83 (0,78 a 0,89) \\ \hline
+\end{tabular}\par}\par\vspace{2pt}{\scriptsize\color{iptcinza} IC 95\% por bootstrap percentil com 1.000 réplicas e reestimação do escore. No agrupado, os 593 nascimentos fora de estabelecimento de saúde são reamostrados como independentes.\par}\par\vspace{6pt}
+
+
+{\color{iptescuro}\bfseries Resultado.} Na população de sobreposição, o risco ponderado de baixo peso é de 8,68\% com início nos meses 1--3 e de 10,42\% nos meses 4--6: diferença de \textbf{\menos{}1,74 ponto percentual}. O IC 95\% vai de \menos{}2,36 a \menos{}1,12 com nascimentos independentes e de \menos{}2,60 a \menos{}0,96 com agrupamento por estabelecimento, que tem erro-padrão 1,30 vez maior. O risco relativo é 0,83 (0,78 a 0,89); sem ajuste, a diferença era de \menos{}2,00~p.p.\par
+
+{\color{iptescuro}\bfseries Leitura.} Depois de equilibrar as características observadas, o início nos meses 1--3 continua associado a menor risco de baixo peso, e o ajuste reduziu em cerca de 13\% a magnitude da diferença bruta. Nas duas hipóteses de inferência, o IC não inclui zero. É uma associação ajustada na população de sobreposição, não um efeito causal identificado.\par
+
+\figura{fig4_riscos_ato_notebook03.png}{0.82}{{\color{iptescuro}\bfseries Figura 4 --- notebook 03.} Risco de baixo peso sem ajuste e ponderado pelo ATO, por grupo, e diferença T~=~1 \menos{} T~=~0 com IC~95\% (nascimentos independentes).}
+
+\secao{5.}{Limitações e síntese}
+
+{\color{iptescuro}\bfseries Associação, não causa.} As três análises descrevem associações. Para lê-las como efeito causal, não poderia haver fatores relevantes fora do ajuste, e há candidatos claros ausentes do SINASC: renda, plano de saúde, planejamento da gravidez, tabagismo, estado nutricional e acesso aos serviços. A situação conjugal, registrada no parto, ficou fora do ajuste principal; incluí-la no escore muda a diferença ATO para \menos{}1,63~p.p., estimativa pontual sem IC.\par
+
+{\color{iptescuro}\bfseries Temporalidade e seleção.} O mês de início e as características maternas são registrados no parto, e gestações mais curtas têm menos tempo para um início tardio, o que pode distorcer a comparação. Só entram nascidos vivos. Os 993 nascimentos sem mês de início válido (889 sem registro e 104 com o código 99, ``ignorado'') ficaram fora: 910 deles têm zero consulta de pré-natal registrada, e 25,6\% pesaram menos de 2.500~g, contra 8,6\% na população analisada. Excluí-los pode introduzir viés de seleção, de direção desconhecida.\par
+
+{\color{iptescuro}\bfseries Previsão e inferência.} A capacidade preditiva é limitada (ROC-AUC de 0,571 e 0,565) e foi avaliada só em 2024, de forma retrospectiva e com validação interna; não é um modelo de previsão clínica. Os IC supõem nascimentos independentes, exceto a sensibilidade agrupada do ATO, e o limite de 2.600~g não é um ponto de corte padrão.\par
+
+{\color{iptescuro}\bfseries Três abordagens, uma mesma direção.} As três análises apontam na mesma direção, mas medem coisas diferentes e não devem ser comparadas número a número (Tabela E). A diferença de médias não tem ajuste; a OR é uma razão de chances condicional, na população inteira; o ATO é uma diferença de riscos na população de sobreposição.\par
+
+\par\vspace{4pt}\needspace{7\baselineskip}
+{\footnotesize\bfseries\color{iptescuro} Tabela E --- As três abordagens lado a lado\par}\vspace{2pt}
+{\footnotesize\renewcommand{\arraystretch}{1.2}\setlength{\tabcolsep}{4pt}\arrayrulecolor{iptgrade}
+\begin{tabular}{>{\raggedright\arraybackslash}p{\dimexpr0.21\linewidth-2\tabcolsep\relax} >{\raggedright\arraybackslash}p{\dimexpr0.36\linewidth-2\tabcolsep\relax} >{\raggedright\arraybackslash}p{\dimexpr0.43\linewidth-2\tabcolsep\relax}}
+\rowcolor{iptazul}\textcolor{white}{\bfseries Abordagem} & \textcolor{white}{\bfseries Resultado principal} & \textcolor{white}{\bfseries O que mede} \\ \hline
+\textbf{Comparação de médias} & +23~g (IC 95\%: 12 a 34~g) & Diferença de peso médio entre os meses 1--3 e 4--6, sem ajuste \\ \hline
+\textbf{Regressão logística} & OR 0,81 (\menor{} 2.500~g) e 0,83 (\menor{} 2.600~g); ROC-AUC 0,571 e 0,565 & Associação condicional às covariáveis, na população inteira; capacidade preditiva limitada \\ \hline
+\textbf{ATO} & \menos{}1,74~p.p. (IC 95\%: \menos{}2,36 a \menos{}1,12; agrupado: \menos{}2,60 a \menos{}0,96) & Diferença de riscos entre grupos equilibrados, na população de sobreposição \\ \hline
+\end{tabular}\par}\par\vspace{6pt}
+
+
+\begin{caixa}{\color{iptescuro}\bfseries Síntese.} Em São Paulo, em 2024, o início do pré-natal nos meses 1--3 esteve associado a um peso médio ligeiramente maior (+23~g), a chances menores de baixo peso entre mães com o mesmo perfil observado (OR 0,81) e a um risco 1,74 ponto percentual menor na população de sobreposição. As características maternas registradas, porém, preveem mal o baixo peso. Os resultados são consistentes como associações ajustadas, mas não demonstram que antecipar o pré-natal, por si só, reduziria o baixo peso.\end{caixa}
+
+\par\vspace{6pt}{\color{iptgrade}\rule{\linewidth}{0.5pt}}\par{\scriptsize\color{iptcinza} Fonte: SINASC 2024 (Ministério da Saúde/DATASUS). Valores transcritos das saídas validadas dos notebooks 03 (ATO) e 06 (regressão logística, previsão e peso ao nascer), executados em 13/11/2026. Elaboração própria.\par}
+
+\end{document}
