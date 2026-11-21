@@ -14,7 +14,7 @@ import pytest
 from scipy import stats
 from sklearn.base import BaseEstimator, ClassifierMixin
 
-from src.logistica_desfecho import (CATEGORIAS, MODELOS, PREDITORES_M3, X1, ajustar_modelo, codificar_preditores,
+from src.logistica_desfecho import (CATEGORIAS, MODELOS, PREDITORES_M3, ROTULOS_MODELOS, X1, ajustar_modelo, codificar_preditores,
                                     construir_modelo, curva_calibracao, definir_desfechos, metricas_probabilisticas,
                                     prever_fora_da_amostra, razoes_de_chances, validar_preditores)
 from src.peso_continuo import anova_welch, comparar_medias_welch, resumir_peso
@@ -224,27 +224,58 @@ def _textos(celula):
     return "\n".join(partes)
 
 
-def test_notebook_06_executado_sem_erros_e_com_tres_figuras():
+def test_notebook_06_executado_sem_erros_e_com_oito_figuras():
     nb = _nb06()
     codigo = [c for c in nb["cells"] if c["cell_type"] == "code"]
     assert [c["execution_count"] for c in codigo] == list(range(1, len(codigo) + 1))
     assert not any(o["output_type"] == "error" for c in codigo for o in c.get("outputs", []))
     figuras = [o for c in codigo for o in c.get("outputs", []) if "application/vnd.plotly.v1+json" in o.get("data", {})]
-    assert len(figuras) == 3 and all("image/png" in o["data"] for o in figuras)
+    # OR, peso em gramas, ROC, precisão × sensibilidade, calibração e três figuras SHAP, cada uma com seu PNG.
+    assert len(figuras) == 8 and all("image/png" in o["data"] for o in figuras)
+    titulos = [o["data"]["application/vnd.plotly.v1+json"]["layout"]["title"]["text"].split("<br>")[0] for o in figuras]
+    esperados = ["Regressão logística ajustada — razões de chances para baixo peso ao nascer",
+                 "Peso médio ao nascer por mês de início do pré-natal", "Curva ROC dos modelos",
+                 "Precisão versus sensibilidade dos modelos", "Calibração das probabilidades previstas",
+                 "Importância global das variáveis na regressão logística para baixo peso ao nascer",
+                 "Contribuições SHAP das variáveis categóricas e do início do pré-natal",
+                 "Contribuição SHAP da idade materna"]
+    assert all(e in t for e, t in zip(esperados, titulos)), titulos
+
+
+def test_notebook_06_sem_codigos_internos_no_texto_ao_leitor():
+    """M0, M1, M3, P6 e P9 ficam na implementação e na nota única de correspondência da introdução."""
+    import re
+    codigos = re.compile(r"\b(M0|M1|M3|P6|P9)\b")
+    for c in _nb06()["cells"]:
+        texto = "".join(c["source"]) if c["cell_type"] == "markdown" else ""
+        if c["id"] == "nb06-titulo":
+            texto = texto.split("Correspondência com o código")[0]
+        for o in c.get("outputs", []):
+            dados = o.get("data", {})
+            figura = dados.get("application/vnd.plotly.v1+json")
+            if figura:
+                texto += json.dumps(figura["layout"].get("title"), ensure_ascii=False)
+                texto += json.dumps(figura["layout"].get("annotations"), ensure_ascii=False)
+                texto += " ".join(str(t.get("name", "")) + str(t.get("hovertemplate", "")) for t in figura["data"])
+            else:
+                texto += _textos({"outputs": [o]})
+        assert not codigos.search(texto), (c["id"], codigos.findall(texto))
 
 
 def test_notebook_06_reproduz_populacoes_do_03_e_conclui_verificacoes():
     nb = _nb06()
     textos = {c["id"]: _textos(c) for c in nb["cells"] if c["cell_type"] == "code"}
     tudo = "\n".join(textos.values())
-    assert "P6: 114.694 nascimentos | X1=1 104.576 | X1=0 10.118 | < 2.500 g 9.850 | < 2.600 g 12.962" in tudo
-    assert "P9: 116.429 nascimentos" in tudo
+    assert ("Amostra principal (início nos meses 1–6): 114.694 nascimentos | meses 1–3: 104.576 | meses 4–6: 10.118 | "
+            "< 2.500 g: 9.850 | < 2.600 g: 12.962") in tudo
+    assert "Amostra de sensibilidade (início nos meses 1–9): 116.429 nascimentos" in tudo
     assert "sem mês válido: 993 (889 sem código e 104 com o código 99" in tudo
-    assert "Preditores do M3: " + ", ".join(PREDITORES_M3) in tudo
+    assert "Preditores da regressão logística ajustada (nomes no código): " + ", ".join(PREDITORES_M3) in tudo
     assert "Verificações do notebook 06 concluídas" in textos["nb06-verificacoes"]
     # Sensibilidade por casos completos ao lado da especificação principal, que não muda.
     associacao = textos["nb06-associacao"]
-    assert "OR ajustada (M3, P6, casos completos)" in associacao and "Sem os 94 registros" in associacao
+    assert "OR ajustada, casos completos" in associacao and "Sem os 94 registros" in associacao
     assert "0,83 (0,78 a 0,88)" in associacao and "0,81 (0,76 a 0,87)" in associacao
     desempenho = textos["nb06-desempenho"]
-    assert all(m in desempenho for m in MODELOS) and desempenho.count("< 2.600 g") >= 4
+    assert all(m in desempenho for m in ROTULOS_MODELOS.values()) and set(ROTULOS_MODELOS) == set(MODELOS)
+    assert "0,565" in desempenho and "0,571" in desempenho
