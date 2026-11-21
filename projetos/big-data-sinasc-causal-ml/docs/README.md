@@ -1,6 +1,6 @@
 # Documentação do projeto
 
-Para revisar a análise atual, comece pelo [guia de revisão](GUIA_REVISAO_MIKE.md).
+Para uma visão completa das análises, comece pelo [relatório de análises estatísticas](relatorio_analises_comentadas/README.md); o [guia de leitura](GUIA_DE_LEITURA.md) indica a ordem dos materiais.
 
 Os seis [notebooks principais](../notebooks/README.md) são a fonte oficial das análises, dos gráficos e das interpretações. Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
 
@@ -8,8 +8,8 @@ Os seis [notebooks principais](../notebooks/README.md) são a fonte oficial das 
 
 | Documento | Finalidade |
 | --- | --- |
-| [GUIA_REVISAO_MIKE.md](GUIA_REVISAO_MIKE.md) | Ordem de leitura, o que foi realizado e o que permanece em aberto |
-| [relatorio_analises_comentadas/](relatorio_analises_comentadas/README.md) | Relatório de análises comentadas (PDF e fonte LaTeX): peso ao nascer, regressão logística do desfecho e ATO, com a interpretação de cada análise |
+| [GUIA_DE_LEITURA.md](GUIA_DE_LEITURA.md) | Ordem de leitura, análises realizadas, limitações e questões metodológicas em aberto |
+| [relatorio_analises_comentadas/](relatorio_analises_comentadas/README.md) | Relatório de análises estatísticas (PDF, fonte LaTeX e figuras): população, peso ao nascer (Welch), regressão logística do desfecho (equação, variáveis, razões de chances, avaliação preditiva e SHAP) e ATO, com a interpretação de cada análise; versões anteriores em `historico/` |
 | [sp_capital_ato/RESUMO_PARA_REDACAO.md](sp_capital_ato/RESUMO_PARA_REDACAO.md) | Problema, dados, método, resultados, limitações e referências, com a fonte de cada número |
 | [sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf](sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf) | Documento acadêmico da Etapa 1 tal como entregue (estimação de 2024), registro histórico não atualizado; a [fonte LaTeX da Etapa 1](sp_capital_ato/PACOTE_REDACAO_ETAPA_1_OVERLEAF/) foi alterada na retirada do SIM e não corresponde exatamente ao PDF |
 | [sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/](sp_capital_ato/PACOTE_REDACAO_ETAPA_2_OVERLEAF/) | Fonte LaTeX atual do documento acadêmico (Etapa 2): estimação de 2024, série 2014–2024 e temporalidade e seleção; compilada e revisada em ambiente externo, PDF não armazenado no repositório (ver [situação](sp_capital_ato/README.md#situação-do-pacote-da-etapa-2)) |
@@ -19,7 +19,7 @@ Os seis [notebooks principais](../notebooks/README.md) são a fonte oficial das 
 
 ## Referências históricas de arquivos
 
-Os CSVs anuais de qualidade e de comparabilidade foram retirados no lote 7C: os notebooks 01 e 02 calculam essas tabelas diretamente dos Parquets. Consulte a [correspondência dos outputs removidos](../outputs/README.md#correspondência-dos-outputs-removidos-no-lote-7c) ao ler citações antigas no PDF ou na fonte Overleaf, cujo conteúdo científico foi preservado; o resumo para redação já aponta para os notebooks. A comparação dos seis recortes de 2024 continua em `outputs/qualidade_geografica_2024/`, pois sua abrangência excede a do 01.
+Os CSVs anuais de qualidade e de comparabilidade foram retirados: os notebooks 01 e 02 calculam essas tabelas diretamente dos Parquets. Consulte a [correspondência dos outputs removidos](../outputs/README.md#correspondência-dos-outputs-removidos) ao ler citações antigas no PDF ou na fonte Overleaf, cujo conteúdo científico foi preservado; o resumo para redação já aponta para os notebooks. A comparação dos seis recortes de 2024 continua em `outputs/qualidade_geografica_2024/`, pois sua abrangência excede a do 01.
 
 Os registros administrativos anteriores da reorganização estão no histórico Git, no commit `3dd446f`, em `docs/manutencao/`. Não são necessários para executar ou revisar a análise atual.
 

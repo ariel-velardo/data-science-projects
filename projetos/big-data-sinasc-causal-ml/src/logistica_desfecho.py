@@ -44,6 +44,15 @@ MODELOS = {
     "M3": PREDITORES_M3,
     "M3 sem X1": tuple(p for p in PREDITORES_M3 if p != X1),
 }
+# Nomes de apresentação (tabelas, legendas e textos); as chaves internas acima ficam só na implementação.
+ROTULOS_MODELOS = {
+    "M0": "Modelo de referência (prevalência)",
+    "M1": "Modelo com início do pré-natal",
+    "M3": "Regressão logística ajustada (pré-natal e características maternas)",
+    "M3 sem X1": "Modelo ajustado apenas com características maternas",
+}
+ROTULOS_AMOSTRAS = {"P6": "amostra principal (início nos meses 1–6)",
+                    "P9": "amostra de sensibilidade (início nos meses 1–9)"}
 
 
 _AVISO_C_INFINITO = "Setting penalty=None will ignore the C and l1_ratio parameters"
@@ -70,7 +79,7 @@ def ajustar_modelo(modelo, x: pd.DataFrame, y: np.ndarray):
 
 
 def definir_desfechos(peso: pd.Series) -> pd.DataFrame:
-    """Y_2500 = peso < 2.500 g (desfecho do estudo); Y_2600 = peso < 2.600 g (limite pedido pela professora)."""
+    """Y_2500 = peso < 2.500 g (desfecho do estudo, critério da OMS); Y_2600 = peso < 2.600 g (sensibilidade do corte)."""
     peso = pd.Series(peso, dtype=float)
     if peso.isna().any() or not peso.between(500, 6000).all():
         raise ValueError("Peso nulo ou fora de 500–6.000 g: fora da elegibilidade do estudo.")
@@ -208,3 +217,118 @@ def razoes_de_chances(modelo: Pipeline, x: pd.DataFrame, y: np.ndarray) -> tuple
                    "condicao": float(np.linalg.cond(informacao)),
                    "iteracoes": int(np.max(regressao.n_iter_))}
     return tabela, diagnostico
+
+
+# ------------------------------------------------------------------ equação e dicionário do M3
+
+# Rótulos dos níveis depois da agregação de CATEGORIAS; a referência é o primeiro nível de cada tupla.
+ROTULOS_NIVEIS = {
+    "ESCOLARIDADE_MAE": {"3": "médio", "0-1": "nenhuma ou fundamental I", "2": "fundamental II",
+                         "4": "superior incompleto", "5": "superior completo"},
+    "RACA_COR_MAE": {"1": "branca", "2": "preta", "3": "amarela", "4": "parda", "5": "indígena"},
+    "PARIDADE_CAT": {"0": "nulípara", "1": "multípara"},
+    "PERDAS_FETAIS_CAT": {"0": "nenhuma", "1": "uma", "2_OU_MAIS": "duas ou mais"},
+}
+
+# Dicionário das variáveis do M3: origem no SINASC, nome no modelo, codificação, referência e ignorados.
+DICIONARIO_M3 = (
+    {"sinasc": "PESO", "modelo": "Y_2500 / Y_2600", "significado": "Peso ao nascer (g); define os desfechos",
+     "tipo": "desfecho binário", "codificacao": "Y_2500 = 1 se PESO < 2.500 g; Y_2600 = 1 se PESO < 2.600 g; 0 caso contrário",
+     "referencia": "Y = 0", "ignorados": "Fora da população: só entram pesos de 500 a 6.000 g"},
+    {"sinasc": "MESPRENAT", "modelo": X1, "significado": "Mês de gestação no início do pré-natal",
+     "tipo": "exposição binária", "codificacao": "1 = meses 1–3; 0 = meses 4–6 (amostra principal)", "referencia": "meses 4–6 (X1 = 0)",
+     "ignorados": "Vazio ou 99: fora da população (993 registros)"},
+    {"sinasc": "IDADEMAE", "modelo": "IDADEMAE_NUM, IDADEMAE_QUAD", "significado": "Idade da mãe (anos)",
+     "tipo": "numérica", "codificacao": "idade e idade², cada termo padronizado: (valor − média)/DP da amostra de ajuste",
+     "referencia": "—", "ignorados": "Nenhum na amostra principal (idade fora de 10–59 viraria nulo e o modelo falharia)"},
+    {"sinasc": "ESCMAE2010", "modelo": "ESCOLARIDADE_MAE", "significado": "Escolaridade da mãe (categorias de 2010)",
+     "tipo": "categórica ordinal", "codificacao": "4 indicadores 0/1: nenhuma ou fund. I (0 e 1 agregados), fund. II, "
+     "superior incompleto, superior completo", "referencia": "médio (3)", "ignorados": "Código 9 ou vazio → médio (moda)"},
+    {"sinasc": "RACACORMAE", "modelo": "RACA_COR_MAE", "significado": "Raça/cor da mãe", "tipo": "categórica nominal",
+     "codificacao": "4 indicadores 0/1: preta, amarela, parda, indígena", "referencia": "branca (1)",
+     "ignorados": "Código 9 ou vazio → branca (moda)"},
+    {"sinasc": "PARIDADE", "modelo": "PARIDADE_CAT", "significado": "Primeira gestação ou não", "tipo": "binária",
+     "codificacao": "1 indicador 0/1: multípara", "referencia": "nulípara (0)", "ignorados": "Nenhum na amostra principal"},
+    {"sinasc": "QTDFILMORT", "modelo": "PERDAS_FETAIS_CAT", "significado": "Perdas fetais e abortos anteriores",
+     "tipo": "categórica ordinal", "codificacao": "2 indicadores 0/1: uma; duas ou mais", "referencia": "nenhuma (0)",
+     "ignorados": "Código 99 ou vazio → nenhuma (moda)"},
+)
+
+
+def nome_do_termo(termo: str) -> str:
+    """Rótulo legível de um termo do desenho do M3 (nome de saída do ``ColumnTransformer``)."""
+    fixos = {"Intercepto": "Intercepto", X1: "X1: início nos meses 1–3", "IDADEMAE_NUM": "Idade (padronizada)",
+             "IDADEMAE_QUAD": "Idade² (padronizada)"}
+    if termo in fixos:
+        return fixos[termo]
+    for variavel, rotulos in ROTULOS_NIVEIS.items():
+        if termo.startswith(variavel + "_") and termo[len(variavel) + 1:] in rotulos:
+            nome = {"ESCOLARIDADE_MAE": "Escolaridade", "RACA_COR_MAE": "Raça/cor", "PARIDADE_CAT": "Paridade",
+                    "PERDAS_FETAIS_CAT": "Perdas fetais"}[variavel]
+            return f"{nome}: {rotulos[termo[len(variavel) + 1:]]}"
+    raise KeyError(termo)
+
+
+def coeficientes_modelo(modelo: Pipeline) -> pd.DataFrame:
+    """Coeficientes efetivamente estimados pelo pipeline ajustado, na escala do desenho e na escala original.
+
+    Escala do desenho: a que o ``LogisticRegression`` vê (idade e idade² padronizadas; X1 e indicadores em 0/1).
+    Escala original: equação algebricamente equivalente com idade em anos e idade² em anos², obtida com a média e o
+    desvio-padrão do ``StandardScaler`` ajustado (b = β/σ; o intercepto absorve −Σ β·μ/σ). X1 e indicadores não
+    mudam. Nada é reconstruído a partir de OR arredondadas.
+    """
+    preprocessamento, regressao = modelo[:-1][-1], modelo[-1]
+    nomes = list(preprocessamento.get_feature_names_out())
+    beta = pd.Series(regressao.coef_.ravel(), index=nomes)
+    tabela = pd.DataFrame({"coef_desenho": pd.concat([pd.Series({"Intercepto": float(regressao.intercept_[0])}), beta])})
+    original = tabela.coef_desenho.copy()
+    tabela["media_padronizacao"] = np.nan
+    tabela["dp_padronizacao"] = np.nan
+    if "numericas" in preprocessamento.named_transformers_:
+        escala = preprocessamento.named_transformers_["numericas"]
+        for termo, media, dp in zip(escala.feature_names_in_, escala.mean_, escala.scale_):
+            tabela.loc[termo, ["media_padronizacao", "dp_padronizacao"]] = [media, dp]
+            original[termo] = beta[termo] / dp
+            original["Intercepto"] -= beta[termo] * media / dp
+    tabela["coef_original"] = original
+    tabela["rotulo"] = [nome_do_termo(t) for t in tabela.index]
+    return tabela
+
+
+def preditor_linear_escala_original(coeficientes: pd.DataFrame, x: pd.DataFrame) -> np.ndarray:
+    """η = logit P(Y=1 | X) calculado só com a tabela ``coef_original`` e os preditores codificados (sem o pipeline).
+
+    Serve para verificar a equação publicada: deve coincidir com ``decision_function`` do pipeline.
+    """
+    b = coeficientes.coef_original
+    eta = np.full(len(x), b["Intercepto"], dtype=float)
+    for termo, valor in b.drop("Intercepto").items():
+        if termo in (X1, *NUMERICAS):
+            eta += valor * x[termo].to_numpy(dtype=float)
+            continue
+        variavel = next(v for v in CATEGORIAS if termo.startswith(v + "_"))
+        eta += valor * (x[variavel].astype(str).to_numpy() == termo[len(variavel) + 1:])
+    return eta
+
+
+def resumo_descritivo_m3(x: pd.DataFrame, y_2500: np.ndarray, y_2600: np.ndarray) -> pd.DataFrame:
+    """n, % e proporção de cada desfecho por nível das variáveis do M3 (já codificadas e agregadas)."""
+    y25, y26 = np.asarray(y_2500), np.asarray(y_2600)
+    linhas = []
+
+    def linha(variavel, nivel, mascara):
+        n = int(mascara.sum())
+        linhas.append({"variavel": variavel, "nivel": nivel, "n": n, "pct": 100 * n / len(x),
+                       "pct_y2500": 100 * y25[mascara].mean(), "pct_y2600": 100 * y26[mascara].mean()})
+
+    for valor, nome in [(1, "meses 1–3"), (0, "meses 4–6")]:
+        linha("X1", nome, x[X1].to_numpy() == valor)
+    idade = x.IDADEMAE_NUM.to_numpy(dtype=float)
+    for nome, mascara in [("< 20 anos", idade < 20), ("20–34 anos", (idade >= 20) & (idade < 35)),
+                          ("≥ 35 anos", idade >= 35)]:
+        linha("Idade", nome, mascara)
+    for variavel, rotulos in ROTULOS_NIVEIS.items():
+        valores = x[variavel].astype(str).to_numpy()
+        for codigo, nome in rotulos.items():
+            linha(variavel, nome, valores == codigo)
+    return pd.DataFrame(linhas)

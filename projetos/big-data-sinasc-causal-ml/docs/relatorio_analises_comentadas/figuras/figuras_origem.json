@@ -1,0 +1,72 @@
+{
+ "fig1_peso_por_mes": {
+  "notebook": "06_analise_preditiva_e_peso.ipynb",
+  "celula": "nb06-peso",
+  "indice": 0,
+  "titulo_original": "<b>Peso médio ao nascer por mês de início do pré-natal</b><br><span style='font-size:13px;color:#4A5A66'>São Paulo (capital), 2024 · nascimentos de gestação única, peso 500–6.000 g</span>",
+  "n_tracos": 3,
+  "notas_removidas": [
+   "Barras: IC 95% da média (t), supondo nascimentos independentes.",
+   "Meses 7–9 e sem mês válido (MESPRENAT vazio ou 99): fora das comparações; os meses 7–9 só reúnem gestações que chegaram ao 7º mês.",
+   "Fonte: SINASC 2024 (Ministério da Saúde/DATASUS). Elaboração própria."
+  ],
+  "largura": 720,
+  "altura": 340
+ },
+ "fig2_calibracao": {
+  "notebook": "06_analise_preditiva_e_peso.ipynb",
+  "celula": "nb06-calibracao",
+  "indice": 0,
+  "titulo_original": "<b>Calibração das probabilidades previstas — regressão logística ajustada</b><br><span style='font-size:13px;color:#4A5A66'>São Paulo (capital), 2024 · amostra principal (n = 114.694) · decis de risco previsto fora da amostra</span>",
+  "n_tracos": 3,
+  "notas_removidas": [
+   "Cada ponto é um decil de risco previsto: risco médio previsto × proporção observada de baixo peso. Barras: IC 95% de Wilson.",
+   "Pontos sobre a diagonal indicam probabilidades bem calibradas. Calibração preditiva, não efeito causal.",
+   "Fonte: SINASC 2024 (Ministério da Saúde/DATASUS). Elaboração própria."
+  ],
+  "largura": 640,
+  "altura": 420
+ },
+ "fig3_shap_categoricas": {
+  "notebook": "06_analise_preditiva_e_peso.ipynb",
+  "celula": "nb06-shap",
+  "indice": 1,
+  "titulo_original": "<b>Contribuições SHAP das variáveis categóricas e do início do pré-natal — peso < 2.500 g</b><br><span style='font-size:13px;color:#4A5A66'>10.000 nascimentos sorteados da amostra principal · φ relativo ao logit médio φ₀ = -2,39</span>",
+  "n_tracos": 1,
+  "notas_removidas": [
+   "O tamanho do marcador cresce com a frequência do nível na amostra. φ > 0: previsão acima da média; φ < 0: abaixo.",
+   "Contribuições em log-odds, não em pontos percentuais. Comportamento do modelo preditivo, não efeito causal.",
+   "Fonte: SINASC 2024 (Ministério da Saúde/DATASUS). Elaboração própria."
+  ],
+  "largura": 760,
+  "altura": 460
+ },
+ "fig4_shap_idade": {
+  "notebook": "06_analise_preditiva_e_peso.ipynb",
+  "celula": "nb06-shap",
+  "indice": 2,
+  "titulo_original": "<b>Contribuição SHAP da idade materna (idade e idade² em conjunto) — peso < 2.500 g</b><br><span style='font-size:13px;color:#4A5A66'>10.000 nascimentos sorteados da amostra principal · φ relativo ao logit médio φ₀ = -2,39</span>",
+  "n_tracos": 1,
+  "notas_removidas": [
+   "Cada ponto é uma idade em anos; o tamanho cresce com o número de mães dessa idade na amostra.",
+   "Contribuições em log-odds, não em pontos percentuais. Comportamento do modelo preditivo, não efeito causal.",
+   "Fonte: SINASC 2024 (Ministério da Saúde/DATASUS). Elaboração própria."
+  ],
+  "largura": 640,
+  "altura": 340
+ },
+ "fig5_escore_propensao": {
+  "notebook": "03_estimacao_ato.ipynb",
+  "celula": "escore-pesos-2",
+  "indice": 0,
+  "titulo_original": "<b>Escore de propensão e pesos de sobreposição (ATO)</b><br><span style='font-size:13px;color:#4A5A66'>São Paulo (capital), 2024 · modelo final do escore: idade, idade², escolaridade, raça/cor, paridade e perdas fetais</span>",
+  "n_tracos": 4,
+  "notas_removidas": [
+   "Suporte comum observado: 0,6910 a 0,9760; nenhum registro excluído. Tamanho efetivo (Kish): T=1 84.995 de 104.576; T=0 10.096 de 10.118.",
+   "A ponderação aproxima as distribuições do escore, mas não iguala variáveis fora do modelo nem comprova ausência de confundimento.",
+   "Fonte: SINASC 2024 (Ministério da Saúde/DATASUS). Elaboração própria."
+  ],
+  "largura": 760,
+  "altura": 330
+ }
+}

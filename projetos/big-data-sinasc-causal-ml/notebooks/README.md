@@ -4,7 +4,7 @@ Todos estão salvos com as saídas e podem ser lidos sem executar nada. Para exe
 
 ## Análise atual — São Paulo (capital), ATO · [`principal/`](principal/)
 
-Estes seis notebooks são a fonte oficial das análises, dos gráficos e das interpretações, com 14 figuras em Plotly JSON e PNG de apoio nas saídas salvas.
+Estes seis notebooks são a fonte oficial das análises, dos gráficos e das interpretações, com 19 figuras em Plotly JSON e PNG de apoio nas saídas salvas.
 
 Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para visualizá-los, utilize VS Code com suporte a Jupyter e Plotly, ou outro ambiente compatível. As representações PNG permanecem disponíveis como alternativa estática.
 
@@ -15,6 +15,6 @@ Os gráficos são produzidos e armazenados nos próprios notebooks Jupyter. Para
 | [03 — estimação ATO 2024](principal/03_estimacao_ato.ipynb) | Qual a diferença de risco ajustada, com IC? | **estimação principal** e sensibilidade |
 | [04 — série 2014–2024](principal/04_evolucao_historica.ipynb) | A direção se mantém ao longo dos anos? | estimativas pontuais anuais, descritivas |
 | [05 — temporalidade](principal/05_temporalidade_prenatal.ipynb) | Quanto a duração gestacional restringe o comparador e a seleção? | descritivo, sem modelos |
-| [06 — análise complementar](principal/06_analise_preditiva_e_peso.ipynb) | Logística do desfecho (< 2.600 g e < 2.500 g) e peso em gramas por mês de início | previsão e associação, não causal |
+| [06 — análise complementar](principal/06_analise_preditiva_e_peso.ipynb) | Logística do desfecho (< 2.500 g e < 2.600 g): equação, coeficientes, dicionário das variáveis, OR, previsão fora da amostra e SHAP; peso em gramas por mês de início | previsão, associação e interpretabilidade, não causal |
 
 A árvore ativa contém somente estes seis notebooks. A sequência atual é 01–06; além da renomeação, foram corrigidos cinco destinos de links Markdown nos notebooks 02, 03 e 04, preservando código, metadados e saídas. As referências históricas dos pacotes acadêmicos estão no [mapeamento da Etapa 2](../README.md#correspondência-dos-notebooks-citados-na-etapa-2). Os antigos notebooks nacionais 01–05 da Entrega 1 foram retirados e permanecem no histórico Git, no commit `af30d8d`.

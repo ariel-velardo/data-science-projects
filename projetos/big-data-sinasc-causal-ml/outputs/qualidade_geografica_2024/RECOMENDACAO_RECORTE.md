@@ -23,4 +23,4 @@ Na capital versus SP, escolaridade válida: 99,98%/99,26%; raça/cor: 99,96%/99,
 
 **Entrega e validação.** CSVs UTF-8/BOM, separador “;”, decimal ponto; chaves recorte_id e (recorte_id, variavel). Qualidade/retenção: denominador total; proporções T: elegíveis; baixo peso (<2.500 g): cada grupo, apenas descritivo. Seis recortes, contagens, percentuais, capital ⊂ SP ⊂ Sudeste e abertura dos três arquivos conferidos.
 
-**Próximo passo:** validar manualmente o recorte com a orientadora e revisar temporalidade das covariáveis e identificação causal. Preenchimento não resolve confundimento, seleção de nascidos vivos ou leakage. População causal ainda não aprovada; nenhum modelo executado.
+**Próximo passo:** confirmar o recorte por revisão metodológica e revisar temporalidade das covariáveis e identificação causal. Preenchimento não resolve confundimento, seleção de nascidos vivos ou leakage. População causal ainda não aprovada; nenhum modelo executado.

@@ -112,7 +112,9 @@ def test_estrutura_reorganizada():
         "notebooks/principal/06_analise_preditiva_e_peso.ipynb",
         "docs/sp_capital_ato/RESUMO_PARA_REDACAO.md",
         "docs/sp_capital_ato/PACOTE_REDACAO_ETAPA_1.pdf",
-        "docs/GUIA_REVISAO_MIKE.md",
+        "docs/GUIA_DE_LEITURA.md",
+        "docs/relatorio_analises_comentadas/RELATORIO_ANALISES_ESTATISTICAS_SINASC_2024.pdf",
+        "docs/relatorio_analises_comentadas/main.tex",
         "docs/dados/DICIONARIO_ANALITICO_SINASC_2024.md",
         # Comparação de seis recortes de 2024, não coberta pela série paulista do 01.
         "outputs/qualidade_geografica_2024/RECOMENDACAO_RECORTE.md",
@@ -129,7 +131,7 @@ def test_estrutura_reorganizada():
         p for p in esperados if p.endswith(".ipynb")}
     retirados = ["docs/entrega", "outputs/entrega", "outputs/compartilhamento_professora",
                  "notebooks/apoio_aula", "requirements_before_spark.txt", "outputs/temporal/figuras",
-                 # fase inicial Brasil 2024 (G1), removida no lote 3 do expurgo
+                 # fase inicial Brasil 2024 (G1), retirada da árvore ativa
                  "notebooks/01_auditoria_sinasc_2024.ipynb", "notebooks/05_heterogeneidade_causal.ipynb",
                  "apresentacao", "docs/architecture", "docs/artigo", "docs/REPRODUCAO.md",
                  "src/validacao.py", "src/entrega.py", "scripts/validar_projeto.py", "scripts/executar_pipeline.py",
@@ -138,7 +140,7 @@ def test_estrutura_reorganizada():
                  "outputs/temporal/estimativas", "outputs/temporal/v2_pre_estimacao",
                  "outputs/temporal/tabelas", "outputs/temporal/contrato_temporal.json",
                  "outputs/diagnostics/fase3_sensibilidades.json",
-                 # Lote 7C: tabelas recalculadas nos notebooks e dicionário consolidado em Markdown.
+                 # Tabelas recalculadas nos notebooks e dicionário consolidado em Markdown.
                  "outputs/qualidade_geografica_2024/qualidade_sp_por_ano.csv",
                  "outputs/comparabilidade_sp_capital_2024",
                  "outputs/tables/dicionario_analitico_sinasc_2024.json"]
@@ -339,7 +341,7 @@ def test_figuras_plotly_incorporadas_nos_notebooks_principais():
     esperados = {
         PRINCIPAL / "01_qualidade_geografica.ipynb": 2,
         PRINCIPAL / "02_comparabilidade.ipynb": 2,
-        NB03: 3, NB04: 2, NB05: 2, NB06: 3,
+        NB03: 3, NB04: 2, NB05: 2, NB06: 8,  # 06: OR, peso, ROC, precisão, calibração e três do SHAP
     }
     total = 0
     for caminho, quantidade in esperados.items():
@@ -363,7 +365,7 @@ def test_figuras_plotly_incorporadas_nos_notebooks_principais():
                 figuras.append(figura)
         assert len(figuras) == quantidade, caminho.name
         total += len(figuras)
-    assert total == 14
+    assert total == 19
 
 
 def test_links_relativos_e_ancoras(tmp_path):
@@ -410,3 +412,52 @@ def test_modulo_graficos():
     fig = layout_academico(go.Figure(), "Título", "Subtítulo", notas=["Nota 1", "Fonte"], nome_arquivo="teste")
     assert fig.layout.separators == ",." and fig.layout.meta == {"nome_arquivo": "teste"}
     assert [a.text for a in fig.layout.annotations] == ["Nota 1", "Fonte"]
+
+
+# ------------------------------------------- padrão de redação dos materiais científicos
+
+INFORMAIS = re.compile(r"\b(mike|olga)\b|professor[a]?\b|orientador[a]?\b|sugest[ãa]o d[ao]\b|sugeriu|a pedido|"
+                       r"pedid[oa] pel[ao]|conforme solicitado|solicitad[oa] pel[ao]|conversamos|reuni[ãa]o|decidimos|"
+                       r"vers[ãa]o anterior|nota de revis[ãa]o|guia de revis[ãa]o", re.IGNORECASE)
+
+
+def _materiais_cientificos_atuais():
+    """Documentação pública, notebooks (Markdown, código e saídas de texto) e fonte do relatório atual.
+
+    Ficam de fora os registros históricos separados (`docs/relatorio_analises_comentadas/historico/`) e o pacote
+    acadêmico das Etapas 1 e 2 (`docs/sp_capital_ato/`), preservado como foi apresentado.
+    """
+    md = [RAIZ / "README.md", *(RAIZ / "docs").rglob("*.md"), *(RAIZ / "notebooks").rglob("*.md"),
+          *(RAIZ / "outputs").rglob("*.md")]
+    for p in md + [RAIZ / "docs/relatorio_analises_comentadas/main.tex"]:
+        rel = p.relative_to(RAIZ).as_posix()
+        if "/historico/" in rel or rel.startswith("docs/sp_capital_ato/") or not p.is_file():
+            continue
+        yield rel, p.read_text(encoding="utf-8")
+    for caminho in sorted(PRINCIPAL.glob("*.ipynb")):
+        for c in _nb(caminho)["cells"]:
+            yield caminho.name, _texto(c["source"])
+            for o in c.get("outputs", []):
+                yield caminho.name, _texto(o.get("text", ""))
+                for mime, valor in o.get("data", {}).items():
+                    if not mime.startswith("image/"):
+                        yield caminho.name, valor if isinstance(valor, str) else json.dumps(valor, ensure_ascii=False)
+
+
+def test_materiais_cientificos_sem_referencias_pessoais_ou_de_processo():
+    achados = sorted({(nome, m.group(0)) for nome, texto in _materiais_cientificos_atuais()
+                      for m in INFORMAIS.finditer(texto)})
+    assert achados == []
+    nomes = [p.relative_to(RAIZ).as_posix() for p in RAIZ.rglob("*")
+             if not any(parte in p.parts for parte in (".venv", "data", "_arquivo_local", ".pytest_cache"))]
+    assert [n for n in nomes if re.search(r"mike|olga|professor", n, re.IGNORECASE)] == []
+
+
+def test_notebooks_usam_a_numeracao_atual():
+    """Títulos sem a numeração anterior e referências entre notebooks pela numeração atual."""
+    for caminho in sorted(PRINCIPAL.glob("*.ipynb")):
+        titulo = _texto(_nb(caminho)["cells"][0]["source"]).splitlines()[0]
+        assert not re.match(r"#\s*0\d\s*—", titulo), (caminho.name, titulo)
+    for caminho in (NB03, NB04, NB05, PRINCIPAL / "02_comparabilidade.ipynb"):
+        texto = caminho.read_text(encoding="utf-8")
+        assert not re.search(r"notebook 0[78]\b|05a_qualidade|05b_comparabilidade", texto), caminho.name
